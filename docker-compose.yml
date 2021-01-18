@@ -1,5 +1,27 @@
 version: "3.8"
 services:
+  db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    ports:
+      - "5432:5432"
+  backend:
+    tty: true
+    restart: on-failure
+    build: ./backend/
+    volumes:
+      - ./backend/src:/home/python/app/src
+      - ./backend/assets:/home/python/app/assets
+      - backend_env:/home/python/.local
+      - backend_extensions:/home/python/.vscode-server
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
   frontend:
     container_name: wepledge-frontend
     tty: true
@@ -20,3 +42,5 @@ services:
 volumes:
   frontend_nodemodules:
   frontend_extensions:
+  backend_env:
+  backend_extensions:

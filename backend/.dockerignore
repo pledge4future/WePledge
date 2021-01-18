@@ -1,0 +1,11 @@
+.dockerignore
+Dockerfile
+*/.env
+**/.env_dev
+**/__pycache__
+*.pyc
+**/pytest.ini
+*ordering_models.png
+*/wait-for.sh
+*/.devcontainer.json
+**/.assets
