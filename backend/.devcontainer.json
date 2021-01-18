@@ -1,0 +1,26 @@
+// See https://aka.ms/vscode-remote/devcontainer.json for format details.
+{
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "backend",
+  "workspaceFolder": "/home/python/app",
+  "runArgs": ["-u", "python"],
+  "extensions": ["ms-python.python", "rduldulao.py-coverage-view"],
+  "shutdownAction": "none",
+  "settings": {
+    // "http.proxy": "http://127.0.0.1:3001",
+    // "http.proxyAuthorization": null,
+    // "http.proxyStrictSSL": false,
+    // "http.proxySupport": "override",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8CategorySeverity.E": "Warning",
+    "python.linting.flake8CategorySeverity.F": "Warning",
+    "python.linting.flake8Args": ["--max-line-length=110"],
+    "python.linting.lintOnSave": true,
+    "python.formatting.provider": "black",
+    "python.formatting.blackArgs": ["--line-length", "110"],
+    "python.formatting.blackPath": "~/.local/bin/black",
+    "python.testing.pytestEnabled": true,
+    "editor.formatOnSave": true
+  }
+}
