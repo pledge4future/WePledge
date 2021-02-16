@@ -2,6 +2,7 @@ version: "3.8"
 services:
   db:
     image: postgres
+    container_name: db
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -36,7 +37,7 @@ services:
     #   - cube
     ports:
       - "3000:3000"
-    env_file: ./.env
+    #env_file: ./.env
     environment:
       HOME: /home/node
 volumes:
