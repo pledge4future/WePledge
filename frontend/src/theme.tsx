@@ -1,42 +1,21 @@
-import { createMuiTheme } from "@material-ui/core/styles";
+import { createMuiTheme } from '@material-ui/core/styles';
+import { red } from '@material-ui/core/colors';
 
-const mainBlack = "#212121";
-const mainWhite = "#fafafa";
-const blue = "#757ce8";
-// Create a theme instance.
+// A custom theme for this app
 const theme = createMuiTheme({
   palette: {
-    common: {
-      black: mainBlack,
-      white: mainWhite,
-      // blue: blue,
-    },
     primary: {
-      main: mainBlack,
+      main: '#556cd6',
     },
     secondary: {
-      main: mainWhite,
+      main: '#19857b',
     },
-    info: {
-      main: blue,
+    error: {
+      main: red.A400,
     },
-  },
-  typography: {
-    h1: {
-      fontSize: "2.25rem",
-      fontWeight: 500,
+    background: {
+      default: '#fff',
     },
-    h2: {
-      fontSize: "1.5rem",
-      fontWeight: 500,
-    },
-    h3: {
-      fontSize: "1.25rem",
-      fontWeight: 500,
-    },
-    // a: {
-    //   color: mainBlack,
-    // },
   },
 });
 
