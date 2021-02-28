@@ -6,6 +6,12 @@ export interface Route {
   link: string;
 }
 
+
+// TODO: add translation
 export const routes: Route[] = [
-  { name: "Welcome", link: "/" }
+  { name: "Welcome", link: "/" },
+  { name: "Overview/Results", link: "/results" },
+  { name: "Participate", link: "/participate" },
+  { name: "About", link: "/about" },
+  { name: "My CO2 balance", link: "/user_profile" }
 ];
