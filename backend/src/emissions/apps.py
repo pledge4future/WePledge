@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class Co2Config(AppConfig):
-    name = 'co2'
+class EmissionsConfig(AppConfig):
+    name = 'emissions'
