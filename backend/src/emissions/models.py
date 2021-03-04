@@ -135,6 +135,7 @@ class PlaneTrip(models.Model):
                             (UNKNOWN, 'Unknown')]
 
     flight_class = models.CharField(max_length=15, choices=flight_class_choices, default=UNKNOWN, blank=False)
+    round_trip = models.BooleanField(default=True)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
 
