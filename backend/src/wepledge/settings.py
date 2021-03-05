@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',
+    'graphene_django'
 ]
 
 MIDDLEWARE = [
@@ -75,22 +77,22 @@ WSGI_APPLICATION = 'wepledge.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, "db.sqlitedb"),
-#        }
-#}
-
 DATABASES = {
      'default': {
-         'ENGINE': 'django.db.backends.postgresql',
-         'NAME': 'postgres',
-         'USER': 'postgres',
-         'HOST': 'db',
-         'PORT': 5432
-     }
+        'ENGINE': 'django.db.backends.sqlite3',
+         'NAME': os.path.join(BASE_DIR, "db.sqlitedb"),
+        }
 }
+
+#DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER': 'postgres',
+#         'HOST': 'db',
+#         'PORT': 5432
+#     }
+#}
 
 
 # Password validation
@@ -132,3 +134,12 @@ USE_TZ = True
 
 STATIC_ROOT = 'static'
 STATIC_URL = '/backend/static/'
+
+GRAPHENE = {
+    'SCHEMA': 'emissions.schema.schema'
+}
+
+GRAPH_MODELS = {
+  'all_applications': True,
+  'group_models': True,
+}
