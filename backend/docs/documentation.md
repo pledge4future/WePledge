@@ -19,5 +19,14 @@ $ python manage.py create_groups
 $ python manage.py populate_data
 ``` 
 
+###### Run server
+
+The super user only has to be created once after the database has been created. 
+```
+$ python manage.py createsuperuser
+$ python manage.py runserver
+```
+
+Open `localhost:8000/admin` in the browser. Login as `super` user. 
 
 
