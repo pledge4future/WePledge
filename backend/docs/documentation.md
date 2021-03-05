@@ -30,3 +30,6 @@ $ python manage.py runserver
 Open `localhost:8000/admin` in the browser. Login as `super` user. 
 
 
+## 2. GraphQL
+
+After server is running open `localhost:8000/graphql` in the browser.
