@@ -155,7 +155,8 @@ class PlaneTrip(models.Model):
 
 class Heating(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField()
+    consumption_kwh = models.FloatField(null=False)
+    year = models.IntegerField(null=False)
 
     PUMPAIR = 'PUMPAIR'
     PUMPGROUND = 'PUMPGROUND'
@@ -179,7 +180,8 @@ class Heating(models.Model):
 
 class Electricity(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField()
+    consumption_kwh = models.FloatField(null=False)
+    year = models.IntegerField(null=False)
 
     GERMAN_ELECTRICITY_MIX = 'GERMAN_ELECTRICITY_MIX'
     GREEN_ENERGY = 'GREEN_ENERGY'

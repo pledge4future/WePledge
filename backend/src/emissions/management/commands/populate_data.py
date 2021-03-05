@@ -47,11 +47,13 @@ class Command(BaseCommand):
             new_trip = BusinessTrip(user=karen,
                                     distance=3000,
                                     co2e=200,
+                                    date="2020-05-10",
                                     transportation_mode=BusinessTrip.PLANE)
             new_trip.save()
             plane_trip = PlaneTrip(IATA_start="MUC", IATA_destination="LAX",
                                     flight_class=PlaneTrip.ECONOMY,
                                     round_trip=True,
+
                                     business_trip=new_trip)
             plane_trip.save()
 
