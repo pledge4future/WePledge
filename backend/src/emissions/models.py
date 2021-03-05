@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
-    email = models.CharField(max_length=100, primary_key=True)
+    email = models.CharField(max_length=100, unique=True)
     working_group = models.ForeignKey('WorkingGroup', on_delete=models.PROTECT, null=True)
     is_representative = models.BooleanField(default=False)
 
@@ -15,7 +15,7 @@ class User(AbstractUser):
 
 
 class WorkingGroup(models.Model):
-    name = models.CharField(max_length=100, blank=False, null=False)
+    name = models.CharField(max_length=100, blank=False)
 
     class Organizations(models.TextChoices):
         UNI_HD = 'Heidelberg University', _('Heidelberg University')
@@ -33,6 +33,7 @@ class WorkingGroup(models.Model):
 
 class BusinessTrip(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    date = models.DateField()
     distance = models.FloatField()
     co2e = models.FloatField()
 
@@ -47,6 +48,9 @@ class BusinessTrip(models.Model):
     transportation_mode = models.CharField(max_length=10,
                                            choices=transportation_choices,
                                            blank=False)
+
+    def __str__(self):
+        return "{} on ".format(self.user.username, self.date)
 
 
 class CarTrip(models.Model):
@@ -80,6 +84,9 @@ class CarTrip(models.Model):
     size = models.CharField(max_length=10, choices=size_choices, default=UNKNOWN, blank=False)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+
+    def __str__(self):
+        return self.id
 
 
 class BusTrip(models.Model):
@@ -141,6 +148,9 @@ class PlaneTrip(models.Model):
     round_trip = models.BooleanField(default=True)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+
+    def __str__(self):
+        return "{} - {} on {}".format(self.IATA_start, self.IATA_destination, str(self.business_trip.date))
 
 
 class Heating(models.Model):
