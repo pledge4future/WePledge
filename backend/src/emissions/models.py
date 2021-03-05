@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
-    email = models.CharField(max_length=100)
+    email = models.CharField(max_length=100, primary_key=True)
     working_group = models.ForeignKey('WorkingGroup', on_delete=models.PROTECT, null=True)
     is_representative = models.BooleanField(default=False)
 
@@ -15,7 +15,7 @@ class User(AbstractUser):
 
 
 class WorkingGroup(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, blank=False, null=False)
 
     class Organizations(models.TextChoices):
         UNI_HD = 'Heidelberg University', _('Heidelberg University')
@@ -23,6 +23,9 @@ class WorkingGroup(models.Model):
         EMBL = 'EMBL', _('European Molecular Biology Laboratory')
 
     organization = models.CharField(max_length=100, choices=Organizations.choices, blank=False)
+
+    class Meta:
+        unique_together = ("name", "organization")
 
     def __str__(self):
         return self.organization + " - " + self.name
