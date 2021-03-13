@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "2em 0 ",
   },
   copylight: {
-    color: "#fff",
+    color: theme.palette.secondary.main,
     fontSize: "1em",
     "&:hover": {
       color: theme.palette.info.main,
