@@ -4,6 +4,9 @@ from django.utils.translation import gettext_lazy as _
 
 
 class User(AbstractUser):
+    """
+    Researcher. May be normal user or a group representative
+    """
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     email = models.CharField(max_length=100, unique=True)
@@ -15,6 +18,9 @@ class User(AbstractUser):
 
 
 class WorkingGroup(models.Model):
+    """
+    Working group
+    """
     name = models.CharField(max_length=100, blank=False)
 
     class Organizations(models.TextChoices):
@@ -32,6 +38,9 @@ class WorkingGroup(models.Model):
 
 
 class BusinessTrip(models.Model):
+    """
+    Business trip
+    """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
     distance = models.FloatField()
@@ -47,13 +56,17 @@ class BusinessTrip(models.Model):
                               (PLANE, "Plane")]
     transportation_mode = models.CharField(max_length=10,
                                            choices=transportation_choices,
-                                           blank=False)
+                                           blank=False,
+                                           )
 
-    def __str__(self):
-        return "{} on ".format(self.user.username, self.date)
+    #def __str__(self):
+    #    return "{} on ".format(self.user.username, self.date)
 
 
 class CarTrip(models.Model):
+    """
+    Additional data for business trips by car
+    """
     passengers = models.IntegerField()
 
     ELECTRIC = 'ELECTRIC'
@@ -90,6 +103,9 @@ class CarTrip(models.Model):
 
 
 class BusTrip(models.Model):
+    """
+    Additional data for business trips by bus
+    """
     capacity = models.FloatField(null=True)
     occupancy = models.IntegerField(null=True)
 
@@ -121,6 +137,9 @@ class BusTrip(models.Model):
 
 
 class TrainTrip(models.Model):
+    """
+    Additional data for business trips by train
+    """
     ELECTRIC = 'ELECTRIC'
     DIESEL = 'DIESEL'
     UNKNOWN = 'UNKNOWN'
@@ -133,6 +152,9 @@ class TrainTrip(models.Model):
 
 
 class PlaneTrip(models.Model):
+    """
+    Additional data for business trips by plane
+    """
     IATA_start = models.CharField(max_length=3)
     IATA_destination = models.CharField(max_length=3)
     ECONOMY = 'ECONOMY'
@@ -154,6 +176,9 @@ class PlaneTrip(models.Model):
 
 
 class Heating(models.Model):
+    """
+    Heating consumption per year
+    """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
     year = models.IntegerField(null=False)
@@ -179,6 +204,9 @@ class Heating(models.Model):
 
 
 class Electricity(models.Model):
+    """
+    Electricity consumption per year
+    """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
     year = models.IntegerField(null=False)
