@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
 from django.db.utils import IntegrityError
 import logging
-from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip
+from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip, CarTrip, Heating, Electricity
 
 
 class Command(BaseCommand):
@@ -80,5 +80,24 @@ class Command(BaseCommand):
             new_user.save()
             researcher_group = Group.objects.get(name='Researcher')
             new_user.groups.add(researcher_group)
+
+        if len(Electricity.objects.all()) == 0:
+            new_electricity = Electricity(working_group= wg_bio,
+                                  year=2020,
+                                  consumption_kwh=5000,
+                                  fuel_type=Electricity.GREEN_ENERGY,
+                                  co2e=300)
+            new_electricity.save()
+
+        if len(Heating.objects.all()) == 0:
+            new_heating = Heating(working_group= wg_bio,
+                                  year=2020,
+                                  consumption_kwh=2500,
+                                  cost_kwh=0.30,
+                                  fuel_type=Heating.OIL,
+                                  co2e=300)
+            new_heating.save()
+
+
 
 
