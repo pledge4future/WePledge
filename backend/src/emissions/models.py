@@ -211,11 +211,12 @@ class Electricity(models.Model):
     consumption_kwh = models.FloatField(null=False)
     year = models.IntegerField(null=False)
 
-    GERMAN_ELECTRICITY_MIX = 'GERMAN_ELECTRICITY_MIX'
-    GREEN_ENERGY = 'GREEN_ENERGY'
-    SOLAR = 'SOLAR'
-    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Electricity Mix'), (GREEN_ENERGY, 'Green energy'),
-                         (SOLAR, 'Solar power')]
+    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
+    #GREEN_ENERGY = 'GREEN_ENERGY'
+    SOLAR = 'solar'
+    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Energy Mix'),
+                         #(GREEN_ENERGY, 'Green energy'),
+                         (SOLAR, 'Solar')]
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()

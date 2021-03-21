@@ -85,7 +85,7 @@ class Command(BaseCommand):
             new_electricity = Electricity(working_group= wg_bio,
                                   year=2020,
                                   consumption_kwh=5000,
-                                  fuel_type=Electricity.GREEN_ENERGY,
+                                  fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
                                   co2e=300)
             new_electricity.save()
 
