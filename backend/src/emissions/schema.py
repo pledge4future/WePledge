@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
 from .models import BusinessTrip, User, Electricity, WorkingGroup
-from co2calculator.co2calculator.calculate import calc_co2_building
+from co2calculator.co2calculator.calculate import calc_co2_electricity
 
 # -------------- GraphQL Types -------------------
 # Create a GraphQL type for the business trip model
@@ -21,6 +21,8 @@ class ElectricityType(DjangoObjectType):
 class Query(ObjectType):
     businesstrip = graphene.Field(BusinessTripType, id=graphene.Int())
     businesstrips = graphene.List(BusinessTripType)
+    electricity = graphene.List(ElectricityType, id=graphene.Int())
+    electricities = graphene.List(ElectricityType)
 
     def resolve_businesstrip(self, info, **kwargs):
         id = kwargs.get('id')
@@ -31,7 +33,14 @@ class Query(ObjectType):
     def resolve_businesstrips(self, info, **kwargs):
         return BusinessTrip.objects.all()
 
+    def resolve_electricity(self, info, **kwargs):
+        id = kwargs.get('id')
+        if id is not None:
+            return BusinessTrip.objects.get(pk=id)
+        return None
 
+    def resolve_electricities(self, info, **kwargs):
+        return Electricity.objects.all()
 
 # -------------- Input Object Types --------------------------
 
@@ -70,10 +79,8 @@ class CreateElectricity(graphene.Mutation):
         else:
             workinggroup = matches[0]
 
-        #if input.fueltype == "solar":
-
         # calculate co2
-        co2e = calc_co2_building(input.consumption_kwh, input.fuel_type)
+        co2e = calc_co2_electricity(input.consumption_kwh, input.fuel_type)
         new_electricity = Electricity(working_group=workinggroup,
                                   year=input.year,
                                   consumption_kwh=input.consumption_kwh,

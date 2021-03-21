@@ -33,3 +33,6 @@ Open `localhost:8000/admin` in the browser. Login as `super` user.
 ## 2. GraphQL
 
 After server is running open `localhost:8000/graphql` in the browser.
+
+### Resources
+[Sanatan, M.: Building a GraphQL API with Django](https://stackabuse.com/building-a-graphql-api-with-django/)
