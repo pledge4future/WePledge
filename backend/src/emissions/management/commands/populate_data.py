@@ -109,6 +109,14 @@ class Command(BaseCommand):
                                       co2e=calc_co2_electricity(c, "german energy mix"))
                 new_electricity.save()
 
+            consumptions = np.random.uniform(low=11000, high=15000, size=24).astype("int")
+            for c, d in zip(consumptions, dates):
+                new_electricity = Electricity(working_group= wg_giscience,
+                                      timestamp=str(d),
+                                      consumption_kwh=c,
+                                      fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
+                                      co2e=calc_co2_electricity(c, "german energy mix"))
+                new_electricity.save()
 
         if len(Heating.objects.all()) == 0:
             consumptions = np.random.uniform(low=1400000, high=2200000, size=24).astype("int")
