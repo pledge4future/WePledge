@@ -1,7 +1,8 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
-from .models import BusinessTrip, User, Electricity, WorkingGroup
+from .models import BusinessTrip, User, Electricity, WorkingGroup, Heating
 from co2calculator.co2calculator.calculate import calc_co2_electricity
+
 
 # -------------- GraphQL Types -------------------
 # Create a GraphQL type for the business trip model
@@ -9,10 +10,17 @@ class BusinessTripType(DjangoObjectType):
     class Meta:
         model = BusinessTrip
 
+
 # Create a GraphQL type for the electricity model
 class ElectricityType(DjangoObjectType):
     class Meta:
         model = Electricity
+
+
+# Create a GraphQL type for the electricity model
+class HeatingType(DjangoObjectType):
+    class Meta:
+        model = Heating
 
 
 # -------------------- Query types -----------------
@@ -23,24 +31,18 @@ class Query(ObjectType):
     businesstrips = graphene.List(BusinessTripType)
     electricity = graphene.List(ElectricityType, id=graphene.Int())
     electricities = graphene.List(ElectricityType)
-
-    def resolve_businesstrip(self, info, **kwargs):
-        id = kwargs.get('id')
-        if id is not None:
-            return BusinessTrip.objects.get(pk=id)
-        return None
+    heating = graphene.List(HeatingType, id=graphene.Int())
+    heatings = graphene.List(HeatingType)
 
     def resolve_businesstrips(self, info, **kwargs):
         return BusinessTrip.objects.all()
 
-    def resolve_electricity(self, info, **kwargs):
-        id = kwargs.get('id')
-        if id is not None:
-            return BusinessTrip.objects.get(pk=id)
-        return None
-
     def resolve_electricities(self, info, **kwargs):
         return Electricity.objects.all()
+
+    def resolve_heatings(self, info, **kwargs):
+        return Heating.objects.all()
+
 
 # -------------- Input Object Types --------------------------
 
@@ -54,10 +56,22 @@ class BusinessTripInput(graphene.InputObjectType):
 
 class ElectricityInput(graphene.InputObjectType):
     id = graphene.ID()
+    userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
     year = graphene.Int()
     fuel_type = graphene.String()
+    co2e = graphene.Int()
+
+
+class HeatingInput(graphene.InputObjectType):
+    id = graphene.ID()
+    userid = graphene.Int()
+    workinggroupid = graphene.Int()
+    consumption_kwh = graphene.Float()
+    year = graphene.Int()
+    fuel_type = graphene.String()
+    cost_kwh = graphene.String()
     co2e = graphene.Int()
 
 
@@ -115,7 +129,6 @@ class CreateBusinessTrip(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_businesstrip = CreateBusinessTrip.Field()
     create_electricity = CreateElectricity.Field()
-    #update_actor = UpdateB.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
