@@ -61,7 +61,7 @@ class Query(ObjectType):
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
     userid = graphene.Int()
-    date = graphene.Date()
+    timestamp = graphene.DateTime()
     distance = graphene.Float()
     co2e = graphene.Float()
 
@@ -71,7 +71,7 @@ class ElectricityInput(graphene.InputObjectType):
     userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
-    year = graphene.Int()
+    timestamp = graphene.DateTime()
     fuel_type = graphene.String()
     co2e = graphene.Int()
 
@@ -81,7 +81,7 @@ class HeatingInput(graphene.InputObjectType):
     userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
-    year = graphene.Int()
+    datetime = graphene.DateTime()
     fuel_type = graphene.String()
     cost_kwh = graphene.String()
     co2e = graphene.Int()
@@ -148,10 +148,10 @@ class CreateElectricity(graphene.Mutation):
         # calculate co2
         co2e = calc_co2_electricity(input.consumption_kwh, input.fuel_type)
         new_electricity = Electricity(working_group=workinggroup,
-                                  year=input.year,
-                                  consumption_kwh=input.consumption_kwh,
-                                  fuel_type=input.fuel_type,
-                                  co2e=co2e)
+                                      timestamp=input.timestamp,
+                                      consumption_kwh=input.consumption_kwh,
+                                      fuel_type=input.fuel_type,
+                                      co2e=co2e)
         new_electricity.save()
         return CreateElectricity(ok=ok, electricity=new_electricity)
 
@@ -175,10 +175,10 @@ class CreateHeating(graphene.Mutation):
         # calculate co2
         co2e = calc_co2_heating(input.consumption_kwh, input.fuel_type)
         new_electricity = Electricity(working_group=workinggroup,
-                                  year=input.year,
-                                  consumption_kwh=input.consumption_kwh,
-                                  fuel_type=input.fuel_type,
-                                  co2e=co2e)
+                                      timestamp=input.timestamp,
+                                      consumption_kwh=input.consumption_kwh,
+                                      fuel_type=input.fuel_type,
+                                      co2e=co2e)
         new_electricity.save()
         return CreateElectricity(ok=ok, electricity=new_electricity)
 
@@ -200,7 +200,7 @@ class CreateBusinessTrip(graphene.Mutation):
         if len(user) == 0:
             print("{} user not found".format(input.userid))
 
-        businesstrip_instance = BusinessTrip(date=input.date, distance=input.distance, co2e=co2e,
+        businesstrip_instance = BusinessTrip(timestamp=input.timestamp, distance=input.distance, co2e=co2e,
                                              user=user[0])
         businesstrip_instance.save()
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)

@@ -43,7 +43,7 @@ class BusinessTrip(models.Model):
     Business trip
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    date = models.DateField()
+    timestamp = models.DateField()
     distance = models.FloatField()
     co2e = models.FloatField()
 
@@ -173,7 +173,7 @@ class PlaneTrip(models.Model):
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
 
     def __str__(self):
-        return "{} - {} on {}".format(self.IATA_start, self.IATA_destination, str(self.business_trip.date))
+        return "{} - {} on {}".format(self.IATA_start, self.IATA_destination, str(self.business_trip.timestamp))
 
 
 class Heating(models.Model):
@@ -182,7 +182,7 @@ class Heating(models.Model):
     """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
-    year = models.IntegerField(null=False)
+    timestamp = models.DateField(null=False)
 
     PUMPAIR = 'PUMPAIR'
     PUMPGROUND = 'PUMPGROUND'
@@ -210,7 +210,7 @@ class Electricity(models.Model):
     """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
-    year = models.IntegerField(null=False)
+    timestamp = models.DateField(null=False)
 
     GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
     #GREEN_ENERGY = 'GREEN_ENERGY'

@@ -33,13 +33,12 @@ class Command(BaseCommand):
             new_trip = BusinessTrip(user=karen,
                                     distance=3000,
                                     co2e=200,
-                                    date="2020-05-10",
+                                    timestamp="2020-05-10",
                                     transportation_mode=BusinessTrip.PLANE)
             new_trip.save()
             plane_trip = PlaneTrip(IATA_start="MUC", IATA_destination="LAX",
                                     flight_class=PlaneTrip.ECONOMY,
                                     round_trip=True,
-
                                     business_trip=new_trip)
             plane_trip.save()
 
@@ -52,6 +51,13 @@ class Command(BaseCommand):
             tom.save()
             researcher_group = Group.objects.get(name='Researcher')
             tom.groups.add(researcher_group)
+
+            new_trip = BusinessTrip(user=tom,
+                                    distance=300,
+                                    co2e=50,
+                                    timestamp="2020-02-01",
+                                    transportation_mode=BusinessTrip.TRAIN)
+            new_trip.save()
 
         if len(User.objects.filter(username="Kim")) == 0:
             kim = User(username="Kim",
@@ -94,15 +100,21 @@ class Command(BaseCommand):
 
         if len(Electricity.objects.all()) == 0:
             new_electricity = Electricity(working_group= wg_bio,
-                                  year=2020,
+                                  timestamp="2020-01-01",
                                   consumption_kwh=5000,
                                   fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
                                   co2e=300)
             new_electricity.save()
+            new_electricity2 = Electricity(working_group= wg_bio,
+                                  timestamp="2020-02-01",
+                                  consumption_kwh=6000,
+                                  fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
+                                  co2e=300)
+            new_electricity2.save()
 
         if len(Heating.objects.all()) == 0:
             new_heating = Heating(working_group= wg_bio,
-                                  year=2020,
+                                  timestamp="2020-01-01",
                                   consumption_kwh=2500,
                                   cost_kwh=0.30,
                                   fuel_type=Heating.OIL,
