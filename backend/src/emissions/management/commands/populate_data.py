@@ -5,9 +5,9 @@ Create permissions (read only) to models for a set of groups
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
-from django.db.utils import IntegrityError
-import logging
-from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip, CarTrip, Heating, Electricity
+from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip, Heating, Electricity
+from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
+import numpy as np
 
 
 class Command(BaseCommand):
@@ -54,7 +54,7 @@ class Command(BaseCommand):
 
             new_trip = BusinessTrip(user=tom,
                                     distance=300,
-                                    co2e=50,
+                                    co2e= 50,
                                     timestamp="2020-02-01",
                                     transportation_mode=BusinessTrip.TRAIN)
             new_trip.save()
@@ -99,27 +99,28 @@ class Command(BaseCommand):
             kim.save()
 
         if len(Electricity.objects.all()) == 0:
-            new_electricity = Electricity(working_group= wg_bio,
-                                  timestamp="2020-01-01",
-                                  consumption_kwh=5000,
-                                  fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
-                                  co2e=300)
-            new_electricity.save()
-            new_electricity2 = Electricity(working_group= wg_bio,
-                                  timestamp="2020-02-01",
-                                  consumption_kwh=6000,
-                                  fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
-                                  co2e=300)
-            new_electricity2.save()
+            consumptions = np.random.uniform(low=8000, high=12000, size=24).astype("int")
+            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
+            for c, d in zip(consumptions, dates):
+                new_electricity = Electricity(working_group= wg_bio,
+                                      timestamp=str(d),
+                                      consumption_kwh=c,
+                                      fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
+                                      co2e=calc_co2_electricity(c, "german energy mix"))
+                new_electricity.save()
+
 
         if len(Heating.objects.all()) == 0:
-            new_heating = Heating(working_group= wg_bio,
-                                  timestamp="2020-01-01",
-                                  consumption_kwh=2500,
-                                  cost_kwh=0.30,
-                                  fuel_type=Heating.OIL,
-                                  co2e=300)
-            new_heating.save()
+            consumptions = np.random.uniform(low=1400000, high=2200000, size=24).astype("int")
+            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
+            for c, d in zip(consumptions, dates):
+                new_heating = Heating(working_group=wg_bio,
+                                      timestamp=str(d),
+                                      consumption_kwh=c,
+                                      cost_kwh=0.30,
+                                      fuel_type=Heating.PUMPWATER,
+                                      co2e=calc_co2_heating(c, "heatpump_water"))
+                new_heating.save()
 
 
 
