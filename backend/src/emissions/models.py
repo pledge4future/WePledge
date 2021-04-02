@@ -10,7 +10,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     email = models.CharField(max_length=100, unique=True)
-    working_group = models.ForeignKey('WorkingGroup', on_delete=models.PROTECT, null=True)
+    working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True)
     is_representative = models.BooleanField(default=False)
 
     def __str__(self):
@@ -29,6 +29,7 @@ class WorkingGroup(models.Model):
         EMBL = 'EMBL', _('European Molecular Biology Laboratory')
 
     organization = models.CharField(max_length=100, choices=Organizations.choices, blank=False)
+    representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
 
     class Meta:
         unique_together = ("name", "organization")

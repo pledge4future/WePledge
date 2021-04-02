@@ -112,7 +112,6 @@ class UpdateUser(graphene.Mutation):
     def mutate(root, info, id, input=None):
         ok = False
         user_instance = User.objects.get(id=id)
-        print(type(input))
         if user_instance:
             ok = True
             if input.first_name:
@@ -128,6 +127,7 @@ class UpdateUser(graphene.Mutation):
             user_instance.save()
             return UpdateUser(ok=ok, user=user_instance)
         return UpdateUser(ok=ok, user=None)
+
 
 class CreateElectricity(graphene.Mutation):
     class Arguments:
