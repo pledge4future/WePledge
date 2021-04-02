@@ -87,7 +87,47 @@ class HeatingInput(graphene.InputObjectType):
     co2e = graphene.Int()
 
 
+class UserInput(graphene.InputObjectType):
+    id = graphene.ID()
+    workinggroupid = graphene.Int()
+    email = graphene.String()
+    first_name = graphene.String()
+    last_name = graphene.String()
+    is_representative = graphene.Boolean()
+    password = graphene.String()
+    username = graphene.String()
+
+
 # --------------- Mutations ------------------------------------
+
+class UpdateUser(graphene.Mutation):
+    class Arguments:
+        id = graphene.Int(required=True)
+        input = UserInput(required=True)
+
+    ok = graphene.Boolean()
+    user = graphene.Field(UserType)
+
+    @staticmethod
+    def mutate(root, info, id, input=None):
+        ok = False
+        user_instance = User.objects.get(id=id)
+        print(type(input))
+        if user_instance:
+            ok = True
+            if input.first_name:
+                user_instance.first_name = input.first_name
+            if input.last_name:
+                user_instance.last_name = input.last_name
+            if input.email:
+                user_instance.email = input.email
+            if input.password:
+                user_instance.password = input.password
+            if input.is_representative:
+                user_instance.is_representative = input.is_representative
+            user_instance.save()
+            return UpdateUser(ok=ok, user=user_instance)
+        return UpdateUser(ok=ok, user=None)
 
 class CreateElectricity(graphene.Mutation):
     class Arguments:
@@ -169,6 +209,7 @@ class CreateBusinessTrip(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_businesstrip = CreateBusinessTrip.Field()
     create_electricity = CreateElectricity.Field()
+    update_user = UpdateUser.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
