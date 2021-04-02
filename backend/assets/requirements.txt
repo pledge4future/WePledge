@@ -1,2 +1,6 @@
 Django>=3.0,<4.0
 psycopg2-binary>=2.8
+django-extensions>=3.0
+graphene>=2.0
+graphene-django>=2.15
+pandas>=1.2
