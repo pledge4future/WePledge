@@ -11,6 +11,7 @@ git submodule update --init --recursive
 
 ### Start services
 ```
+cp sample.env .env
 docker-compose up
 ```
 
