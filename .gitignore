@@ -29,3 +29,4 @@ yarn-error.log*
 
 **/__pycache__/
 **/.pytest_cache/
+.idea
