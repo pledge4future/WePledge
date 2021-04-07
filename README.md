@@ -16,9 +16,9 @@ docker-compose up
 ```
 
 ## Useful Links
-http://localhost:8000/admin/
-http://localhost:8000/graphql/
-http://localhost:4000/graphql/
+- http://localhost:8000/admin/
+- http://localhost:8000/graphql/
+- http://localhost:4000
 
 
 ## Tips
