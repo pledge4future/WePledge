@@ -38,7 +38,6 @@ const styles = (theme: Theme) => {
 };
 
 function MarkdownTable(props) {
-  console.log(props);
   return (
     <TableContainer component={Paper}>
       <Table size="small" aria-label="a dense table">

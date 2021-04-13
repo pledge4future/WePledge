@@ -116,7 +116,6 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   };
 
   const path: Route[] = routes;
-  console.log(router);
 
   const tabs = (
     <div className={classes.right}>
@@ -221,7 +220,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
         <MenuItem onClick={handleClose} component="a" href="/sign-up">
           Sign UP
         </MenuItem>
-        <MenuItem onClick={handleClose} component="a" href="/sign-in">
+        <MenuItem onClick={handleClose} component="a" href="/user_profile">
           Profile
         </MenuItem>
       </Menu>
