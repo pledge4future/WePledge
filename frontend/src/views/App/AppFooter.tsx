@@ -118,11 +118,14 @@ export default function AppFooter() {
             </Typography>
             <ul className={classes.list}>
               <li className={classes.listItem}>
-                <Link href="/privacy/">Privacy</Link>
+                <Link href="/contact">Contact</Link>
               </li>
               <li className={classes.listItem}>
                 <Link href="/impressum">Impressum</Link>
               </li>
+              <li className={classes.listItem}>
+                <Link href="/privacy-policy">Privacy Policy</Link>
+              </li>              
             </ul>
           </Grid>
           <Grid item xs={6} sm={8} md={4}>
