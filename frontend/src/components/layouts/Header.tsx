@@ -100,7 +100,7 @@ const Header = () => {
 
   const tabs = (
     <>
-      <Grid container justify="flex-end" spacing={4}>
+      <Grid container alignContent="flex-end" spacing={4}>
         {path.map(({ name, link }) => (
           <Grid item key={link}>
             <Link href={link}>
