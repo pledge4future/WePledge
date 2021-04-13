@@ -30,6 +30,7 @@ class WorkingGroup(models.Model):
 
     organization = models.CharField(max_length=100, choices=Organizations.choices, blank=False)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    n_employees = models.IntegerField()
 
     class Meta:
         unique_together = ("name", "organization")
