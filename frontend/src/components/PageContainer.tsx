@@ -18,7 +18,7 @@ interface Props {
 
 const PageContainer = (props: Props) => {
   const { title, children } = props;
-  const siteName = "WePledge";
+  const siteName = "Pledge4Future";
 
   return (
     <React.Fragment>

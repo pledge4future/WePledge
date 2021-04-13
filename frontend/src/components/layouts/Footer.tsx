@@ -39,7 +39,7 @@ const Footer = () => {
             textDecoration: "none",
           }}
         >
-          <Typography className={classes.copylight}>&copy;Wepledge</Typography>
+          <Typography className={classes.copylight}>&copy;Pledge4Future</Typography>
         </Grid>
       </Container>
     </footer>

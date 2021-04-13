@@ -185,7 +185,7 @@ const Header = () => {
             }}
           >
             <Link href="/">
-              <Typography className={classes.logo}>WePledge</Typography>
+              <Typography className={classes.logo}>Pledge4Future</Typography>
             </Link>
             {matches ? drawer : tabs}
           </Toolbar>

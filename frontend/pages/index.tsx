@@ -11,7 +11,7 @@ import withRoot from "../src/withRoot";
 
 function Index() {
   const title = "Welcome";
-  const siteName = "WePledge";
+  const siteName = "Pledge4Future";
 
   return (
     <React.Fragment>
