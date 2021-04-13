@@ -53,14 +53,14 @@ const useStyles = makeStyles((theme) => ({
   drawerIcon: {
     height: `50px`,
     width: `50px`,
-    color: `#fff`,
+    color: theme.palette.secondary.main,
     [theme.breakpoints.down("xs")]: {
       height: `40px`,
       width: `40px`,
     },
   },
   drawer: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
     padding: "0 6em",
   },
   link: {
@@ -149,7 +149,7 @@ const Header = () => {
                     style={{
                       color:
                         router.pathname === link
-                          ? "primary"
+                          ? theme.palette.secondary.main
                           : "rgb(107 107 107)",
                       fontWeight: router.pathname === link ? "bold" : undefined,
                     }}
