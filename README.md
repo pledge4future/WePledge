@@ -1,5 +1,5 @@
 # WePledge
-code for the webapp
+code for the pledge4future webapp
 
 
 ## Prepare the data
@@ -19,6 +19,7 @@ docker-compose up
 - http://localhost:8000/admin/
 - http://localhost:8000/graphql/
 - http://localhost:4000
+- http://localhost:3000
 
 
 ## Tips
