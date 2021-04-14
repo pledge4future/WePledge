@@ -9,11 +9,31 @@ code for the pledge4future webapp
 git submodule update --init --recursive
 ```
 
-### Start services
+### Copy env file
 ```
 cp sample.env .env
+```
+
+### Edit .env file to fit your environment
+uncomment the CUBEJS_DB_HOST in .env. For example, if you are a Mac, uncomment `CUBEJS_DB_HOST=host.docker.internal`
+
+```
+# For Mac
+CUBEJS_DB_HOST=host.docker.internal
+
+# For Windows
+# CUBEJS_DB_HOST=docker.for.win.localhost
+
+# For Linux
+# CUBEJS_DB_HOST=localhost
+```
+
+
+### Start services
+```
 docker-compose up
 ```
+
 
 ## Useful Links
 - http://localhost:8000/admin/
