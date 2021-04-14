@@ -120,7 +120,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   const tabs = (
     <div className={classes.right}>
-      {(path.concat([{ name: "Sign In", link: "/sign-in" }])).map(({ name, link }) => (
+      {(path.concat([{ name: "SignIn", link: "/sign-in" }])).map(({ name, link }) => (
         <Link
           key={link}
           color="inherit"
