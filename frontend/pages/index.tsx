@@ -1,61 +1,28 @@
 // Material-UI
-import { Container, Grid, Typography, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import Head from "next/head";
 
 // Components
-import Layout from "../src/components/layouts/Layout";
+import AppAppBar from "../src/views/App/AppAppBar";
 
-const useStyles = makeStyles((theme) => ({
-  btn: {
-    background: theme.palette.primary.main,
-    color: theme.palette.secondary.main,
-    border: `1px solid ${theme.palette.primary.main}`,
-    "&:hover": {
-      color: theme.palette.primary.main,
-    },
-  },
-}));
+import ProductHero from '../src/views/Product/ProductHero';
+import AppFooter from '../src/views/App/AppFooter';
+import withRoot from "../src/withRoot";
 
-const Home = () => {
-  const classes = useStyles();
+function Index() {
+  const title = "Welcome";
+  const siteName = "Pledge4Future";
+
   return (
-    <Layout
-      // TODO: type your page title and page description.
-      title="Home | WePledge"
-      description=""
-    >
-      <Container maxWidth="md">
-        <Typography
-          variant="h1"
-          align="center"
-          gutterBottom
-          style={{ marginBottom: "1em" }}
-        >
-          WePledge
-        </Typography>
-        <Grid container direction="column" alignItems="center" spacing={4}>
-          <Grid item>
-            <Button
-              component={"a"}
-              target="_blank"
-              rel="noreferrer noopener"
-              href="/about"
-              className={classes.btn}
-            >
-              Get Started
-            </Button>
-          </Grid>
-          <Grid item>
-            <Container maxWidth="sm">
-              <Typography variant="h2" align="center">
-                This is the home page of WePledge
-              </Typography>
-            </Container>
-          </Grid>
-        </Grid>
-      </Container>
-    </Layout>
+    <React.Fragment>
+      <Head>
+        <title>{title ? `${title} | ${siteName}` : siteName }</title>
+      </Head>
+      <AppAppBar />
+      <ProductHero />
+      <AppFooter />
+    </React.Fragment>
   );
-};
+}
 
-export default Home;
+export default withRoot(Index);

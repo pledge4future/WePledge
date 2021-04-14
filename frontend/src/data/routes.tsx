@@ -10,8 +10,11 @@ export interface Route {
 // TODO: add translation
 export const routes: Route[] = [
   { name: "Welcome", link: "/" },
-  { name: "Overview/Results", link: "/results" },
+  { name: "Overview/Results", link: "/overview-results" },
   { name: "Participate", link: "/participate" },
-  { name: "About", link: "/about" },
-  { name: "My CO2 balance", link: "/user_profile" }
+  { name: "Methodology", link: "/methodology" },
+  { name: "AboutUs", link: "/about-us" },
+  // { name: "Contact", link: "/contact" },
+  // { name: "Impressum", link: "/impressum" },
+  // { name: "Privacy Policy", link: "/privacy-policy" }
 ];

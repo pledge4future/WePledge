@@ -23,7 +23,7 @@ export default function MyApp(props: AppProps) {
     <React.Fragment>
       <Head>
         {/* TODO: edit title */}
-        <title>WePledge</title>
+        <title>Pledge4Future</title>
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width"

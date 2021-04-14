@@ -4,6 +4,7 @@ import Head from "next/head";
 // Components
 import Header from "./Header";
 import Footer from "./Footer";
+import AppAppBar from '../../views/App/AppAppBar';
 
 type Props = {
   children?: ReactNode;
@@ -41,8 +42,10 @@ const Layout = ({ children, title, description, ogImage, url }: Props) => {
           key="og:description"
         />
       </Head>
+      <AppAppBar/>
+      
       <Header />
-      <main>{children}</main>
+      {children}
       <Footer />
       <style jsx global>
         {`
