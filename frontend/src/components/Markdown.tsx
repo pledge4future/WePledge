@@ -18,7 +18,8 @@ import Paper from "@material-ui/core/Paper";
 const styles = (theme: Theme) => {
   return createStyles({
     listItem: {
-      marginTop: theme.spacing(1)
+      marginTop: theme.spacing(1),
+      wordWrap: "break-word"
     },
     table: {
       minWidth: 650
