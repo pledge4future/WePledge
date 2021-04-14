@@ -115,11 +115,12 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
     setAnchorEl(null);
   };
 
+  // routes[routes.length] = { name: "Sign In", link: "/sign-in" };
   const path: Route[] = routes;
 
   const tabs = (
     <div className={classes.right}>
-      {path.map(({ name, link }) => (
+      {(path.concat([{ name: "Sign In", link: "/sign-in" }])).map(({ name, link }) => (
         <Link
           key={link}
           color="inherit"
@@ -147,32 +148,32 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
       >
         <div className={classes.toolbarMargin} />
         <List disablePadding>
-          {path.map(({ name, link }) => (
-          <ListItem
-            key={link}
-            divider
-            button
-            onClick={() => {
-              setOpenDrawer(false);
-            }}
-          >
-            <ListItemText disableTypography>
-              <Link href={link}>
-                <Typography
-                  style={{
-                    color:
-                      router.pathname === link
-                        ? theme.palette.primary.main
-                        : "rgb(107 107 107)",
-                    fontWeight: router.pathname === link ? "bold" : undefined,
-                  }}
-                >
-                  {name}
-                </Typography>
-              </Link>
-            </ListItemText>
-          </ListItem>
-        ))}
+          {(path.concat([{ name: "Sign In", link: "/sign-in" }])).map(({ name, link }) => (
+            <ListItem
+              key={link}
+              divider
+              button
+              onClick={() => {
+                setOpenDrawer(false);
+              }}
+            >
+              <ListItemText disableTypography>
+                <Link href={link}>
+                  <Typography
+                    style={{
+                      color:
+                        router.pathname === link
+                          ? theme.palette.primary.main
+                          : "rgb(107 107 107)",
+                      fontWeight: router.pathname === link ? "bold" : undefined,
+                    }}
+                  >
+                    {name}
+                  </Typography>
+                </Link>
+              </ListItemText>
+            </ListItem>
+          ))}
         </List>
       </SwipeableDrawer>
       <IconButton
@@ -185,47 +186,47 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
     </>
   );
 
-  const user = (
-    <div>
-      {matches ? (
-        <IconButton
-          aria-controls="simple-menu"
-          className={classes.AccountCircleIconContainer}
-          aria-haspopup="true"
-          onClick={handleClick}
-        >
-          <AccountCircleIcon className={classes.drawerIcon} />
-        </IconButton>
-      ) : (
-        <Button
-          variant="text"
-          className={classes.button}
-          startIcon={<AccountCircleIcon />}
-          onClick={handleClick}
-        >
-          User
-        </Button>
-      )}
+  // const user = (
+  //   <div>
+  //     {matches ? (
+  //       <IconButton
+  //         aria-controls="simple-menu"
+  //         className={classes.AccountCircleIconContainer}
+  //         aria-haspopup="true"
+  //         onClick={handleClick}
+  //       >
+  //         <AccountCircleIcon className={classes.drawerIcon} />
+  //       </IconButton>
+  //     ) : (
+  //       <Button
+  //         variant="text"
+  //         className={classes.button}
+  //         startIcon={<AccountCircleIcon />}
+  //         onClick={handleClick}
+  //       >
+  //         User
+  //       </Button>
+  //     )}
 
-      <Menu
-        id="simple-menu"
-        anchorEl={anchorEl}
-        keepMounted
-        open={Boolean(anchorEl)}
-        onClose={handleClose}
-      >
-        <MenuItem onClick={handleClose} component="a" href="/sign-in">
-          Sign In
-        </MenuItem>
-        <MenuItem onClick={handleClose} component="a" href="/sign-up">
-          Sign UP
-        </MenuItem>
-        <MenuItem onClick={handleClose} component="a" href="/user_profile">
-          Profile
-        </MenuItem>
-      </Menu>
-    </div>
-  );
+  //     <Menu
+  //       id="simple-menu"
+  //       anchorEl={anchorEl}
+  //       keepMounted
+  //       open={Boolean(anchorEl)}
+  //       onClose={handleClose}
+  //     >
+  //       <MenuItem onClick={handleClose} component="a" href="/sign-in">
+  //         Sign In
+  //       </MenuItem>
+  //       <MenuItem onClick={handleClose} component="a" href="/sign-up">
+  //         Sign UP
+  //       </MenuItem>
+  //       <MenuItem onClick={handleClose} component="a" href="/user_profile">
+  //         Profile
+  //       </MenuItem>
+  //     </Menu>
+  //   </div>
+  // );
 
   const logo = (
     <div className={matches ? classes.center : classes.left}>
@@ -246,7 +247,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
           {matches ? drawer : null}
           {logo}
           {matches ? null : tabs}
-          {user}
+          {/* {user} */}
         </Toolbar>
       </AppBar>
       <div className={classes.placeholder} />

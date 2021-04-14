@@ -265,10 +265,10 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
                     My User Profile
                   </MenuItem>
                   <MenuItem onClick={handleClose} component="a" href="/sign-up">
-                    Sign UP
+                    Sign Up
                   </MenuItem>
                   <Divider />
-                  <MenuItem onClick={handleClose} component="a" href="/user_profile">
+                  <MenuItem onClick={handleClose} component="a" href="/">
                     Sign Out
                   </MenuItem>
                 </MenuList>
