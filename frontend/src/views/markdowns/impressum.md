@@ -1,6 +1,8 @@
 Content was created by members of Pledge4Future.
 
-Administration of the website: (photo of address)
+Administration of the website:
+
+<img src="/static/images/address.png" alt="Address" width="25vh">
 
 ## Disclaimer
 

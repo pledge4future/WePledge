@@ -97,24 +97,24 @@ const options = {
       props: { paragraph: true }
     },
     img: {
-      component: withStyles(styles)((props: WithStyles<typeof styles>) => {
+      component: withStyles(styles)((props: WithStyles<typeof styles> & { width: string }) => {
         const { classes, ...other } = props;
 
         const theme = useTheme();
 
         const matches = useMediaQuery(theme.breakpoints.up('sm'));
 
-        return <img className={classes.image} style={matches ?{
+        return <img className={classes.image} style={matches ? {
           display: "block",
           marginLeft: "auto",
           marginRight: "auto",
-          width: " 50%",
-        } :{
+          width: props.width ? props.width : " 50%",
+        } : {
           display: "block",
           marginLeft: "auto",
           marginRight: "auto",
           width: " 100%",
-        }} {...other}/>;
+        }} {...other} />;
       })
     },
     a: { component: Link },
