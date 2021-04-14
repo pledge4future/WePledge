@@ -36,10 +36,10 @@ docker-compose up
 
 
 ## Useful Links
-- http://localhost:8000/admin/
-- http://localhost:8000/graphql/
-- http://localhost:4000
-- http://localhost:3000
+- Django Admin http://localhost:8000/admin/
+- GraphQL Playground http://localhost:8000/graphql/
+- CubeJS Playground http://localhost:4000
+- Frontend http://localhost:3000
 
 
 ## Tips
