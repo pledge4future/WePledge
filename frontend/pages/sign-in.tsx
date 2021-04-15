@@ -43,6 +43,7 @@ function SignIn() {
             <TextField
               id="outlined-full-width"
               label="Password"
+              type="password"
               style={{ margin: 8 }}
               required
               fullWidth
