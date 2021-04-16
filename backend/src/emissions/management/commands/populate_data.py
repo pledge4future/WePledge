@@ -5,7 +5,7 @@ Create permissions (read only) to models for a set of groups
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
-from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip, Heating, Electricity
+from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity
 from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
 import numpy as np
 

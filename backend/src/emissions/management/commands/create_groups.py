@@ -13,18 +13,17 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super(Command, self).__init__(*args, **kwargs)
 
-    help = "Create default groups"
+    help = "Creates default groups"
 
     def handle(self, *args, **options):
 
         group_researcher, created = Group.objects.get_or_create(name='Researcher')
         PERMISSIONS = ["add", "change", "delete", "view"]
-        MODELS = ["business trip", "car trip", "bus trip", "train trip", "plane trip"]
+        MODELS = ["business trip"]
         if created:
             for model in MODELS:
                 for permission in PERMISSIONS:
                     name = 'Can {} {}'.format(permission, model)
-                    #print("Creating {}".format(name))
                     try:
                         model_add_perm = Permission.objects.get(name=name)
                     except Exception:
@@ -34,7 +33,7 @@ class Command(BaseCommand):
 
         group_representative, created = Group.objects.get_or_create(name='Representative')
         PERMISSIONS = ["add", "change", "delete", "view"]
-        MODELS = ["heating", "electricity", "business trip", "car trip", "bus trip", "train trip", "plane trip"]
+        MODELS = ["heating", "electricity", "business trip"]
         if created:
             for model in MODELS:
                 for permission in PERMISSIONS:
