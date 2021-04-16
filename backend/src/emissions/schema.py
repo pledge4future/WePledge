@@ -1,7 +1,7 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
-from .models import BusinessTrip, User, Electricity, WorkingGroup, Heating
-from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating
+from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
+from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
 
 
 # -------------- GraphQL Types -------------------
@@ -27,6 +27,7 @@ class HeatingType(DjangoObjectType):
 class UserType(DjangoObjectType):
     class Meta:
         model = User
+
 
 # -------------------- Query types -----------------
 
@@ -60,10 +61,21 @@ class Query(ObjectType):
 
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
-    userid = graphene.Int()
-    timestamp = graphene.DateTime()
+    userid = graphene.Int(required=True)
+    start = graphene.String()
+    destination = graphene.String()
     distance = graphene.Float()
-    co2e = graphene.Float()
+    timestamp = graphene.DateTime(required=True)
+    transportation_mode = graphene.String(required=True)
+    car_size = graphene.Int()
+    car_fuel_type = graphene.String()
+    bus_size = graphene.Int()
+    bus_fuel_type = graphene.String()
+    capacity = graphene.Int()
+    occupancy = graphene.Float()
+    passengers = graphene.Int()
+    roundtrip = graphene.Boolean()
+
 
 
 class ElectricityInput(graphene.InputObjectType):
@@ -71,9 +83,8 @@ class ElectricityInput(graphene.InputObjectType):
     userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
-    timestamp = graphene.DateTime()
-    fuel_type = graphene.String()
-    co2e = graphene.Int()
+    timestamp = graphene.DateTime(required=True)
+    fuel_type = graphene.String(required=True)
 
 
 class HeatingInput(graphene.InputObjectType):
@@ -81,10 +92,10 @@ class HeatingInput(graphene.InputObjectType):
     userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
+    consumption_kg = graphene.Float()
+    consumption_liter = graphene.Float()
     datetime = graphene.DateTime()
     fuel_type = graphene.String()
-    cost_kwh = graphene.String()
-    co2e = graphene.Int()
 
 
 class UserInput(graphene.InputObjectType):
@@ -183,7 +194,6 @@ class CreateHeating(graphene.Mutation):
         return CreateElectricity(ok=ok, electricity=new_electricity)
 
 
-
 class CreateBusinessTrip(graphene.Mutation):
     class Arguments:
         input = BusinessTripInput(required=True)
@@ -194,13 +204,17 @@ class CreateBusinessTrip(graphene.Mutation):
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        # <--------------------- calculate co2e here ----------->
-        co2e = input.distance / 10
         user = User.objects.filter(id=input.userid)
         if len(user) == 0:
             print("{} user not found".format(input.userid))
 
-        businesstrip_instance = BusinessTrip(timestamp=input.timestamp, distance=input.distance, co2e=co2e,
+        co2e = calc_co2_businesstrip(start=input.start,
+                                     destination=input.destination,
+                                     distance=input.distance,
+                                     )
+        businesstrip_instance = BusinessTrip(timestamp=input.timestamp,
+                                             distance=input.distance,
+                                             co2e=co2e,
                                              user=user[0])
         businesstrip_instance.save()
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
