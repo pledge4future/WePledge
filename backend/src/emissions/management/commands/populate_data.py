@@ -36,11 +36,6 @@ class Command(BaseCommand):
                                     timestamp="2020-05-10",
                                     transportation_mode=BusinessTrip.PLANE)
             new_trip.save()
-            plane_trip = PlaneTrip(IATA_start="MUC", IATA_destination="LAX",
-                                    flight_class=PlaneTrip.ECONOMY,
-                                    round_trip=True,
-                                    business_trip=new_trip)
-            plane_trip.save()
 
         if len(User.objects.filter(username="Tom")) == 0:
             tom = User(username="Tom",
@@ -125,7 +120,6 @@ class Command(BaseCommand):
                 new_heating = Heating(working_group=wg_bio,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      cost_kwh=0.30,
                                       fuel_type=Heating.PUMPWATER,
                                       co2e=calc_co2_heating(c, "heatpump_water"))
                 new_heating.save()
