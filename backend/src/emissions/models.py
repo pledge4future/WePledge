@@ -65,6 +65,7 @@ class BusinessTrip(models.Model):
     #    return "{} on ".format(self.user.username, self.date)
 
 
+'''
 class CarTrip(models.Model):
     """
     Additional data for business trips by car
@@ -90,7 +91,6 @@ class CarTrip(models.Model):
     MEDIUM = 'MEDIUM'
     LARGE = 'LARGE'
     UNKNOWN = 'UNKNOWN'
-
     size_choices = [(SMALL, "Small"),
                     (MEDIUM, "Medium"),
                     (LARGE, "Large"),
@@ -102,8 +102,10 @@ class CarTrip(models.Model):
 
     def __str__(self):
         return self.id
+'''
 
 
+'''
 class BusTrip(models.Model):
     """
     Additional data for business trips by bus
@@ -136,8 +138,10 @@ class BusTrip(models.Model):
     size = models.CharField(max_length=10, choices=size_choices, default=UNKNOWN, blank=False)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+'''
 
 
+'''
 class TrainTrip(models.Model):
     """
     Additional data for business trips by train
@@ -151,8 +155,10 @@ class TrainTrip(models.Model):
     fuel_type = models.CharField(max_length=10, choices=fuel_type_choices, default=UNKNOWN, blank=False)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+'''
 
 
+'''
 class PlaneTrip(models.Model):
     """
     Additional data for business trips by plane
@@ -175,6 +181,7 @@ class PlaneTrip(models.Model):
 
     def __str__(self):
         return "{} - {} on {}".format(self.IATA_start, self.IATA_destination, str(self.business_trip.timestamp))
+'''
 
 
 class Heating(models.Model):
