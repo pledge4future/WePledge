@@ -207,8 +207,6 @@ class Heating(models.Model):
                          (WOODCHIPS, 'Woodchips'),
                          (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-
-    cost_kwh = models.FloatField()
     co2e = models.FloatField()
 
 
