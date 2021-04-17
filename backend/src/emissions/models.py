@@ -18,26 +18,37 @@ class User(AbstractUser):
         return self.username
 
 
+class Institution(models.Model):
+    """
+    Top level research institution, e.g. Heidelberg University
+    """
+    name = models.CharField(max_length=200, null=False, blank=False)
+    city = models.CharField(max_length=100, null=False, blank=False)
+    state = models.CharField(max_length=100, null=True)
+    country = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        unique_together = ("name", "city", "country")
+
+    def __str__(self):
+        return f"{self.name}, {self.city}, {self.country}"
+
+
 class WorkingGroup(models.Model):
     """
     Working group
     """
-    name = models.CharField(max_length=100, blank=False)
-
-    class Organizations(models.TextChoices):
-        UNI_HD = 'Heidelberg University', _('Heidelberg University')
-        MPIA = 'MPIA', _('Max-Planck Institute')
-        EMBL = 'EMBL', _('European Molecular Biology Laboratory')
-
-    organization = models.CharField(max_length=100, choices=Organizations.choices, blank=False)
+    name = models.CharField(max_length=200, blank=False)
+    institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True)
 
     class Meta:
-        unique_together = ("name", "organization")
+        unique_together = ("name", "institution")
 
     def __str__(self):
-        return self.organization + " - " + self.name
+        return f"{self.name}, {self.institution.name}, {self.institution.city}, {self.institution.country}"
+
 
 
 class BusinessTrip(models.Model):
@@ -62,8 +73,8 @@ class BusinessTrip(models.Model):
                                            blank=False,
                                            )
 
-    #def __str__(self):
-    #    return "{} on ".format(self.user.username, self.date)
+    def __str__(self):
+        return f"{self.user.username}, {self.timestamp}"
 
 
 
@@ -92,6 +103,9 @@ class Heating(models.Model):
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
     co2e = models.FloatField()
 
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
+
 
 class Electricity(models.Model):
     """
@@ -110,6 +124,9 @@ class Electricity(models.Model):
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
 
 
 '''
