@@ -209,9 +209,17 @@ class CreateBusinessTrip(graphene.Mutation):
             print("{} user not found".format(input.userid))
 
         co2e = calc_co2_businesstrip(start=input.start,
-                                     destination=input.destination,
-                                     distance=input.distance,
-                                     )
+                                    destination=input.destination,
+                                    distance=input.distance,
+                                    transportation_mode=input.transportation_mode,
+                                    car_size=input.car_size,
+                                    car_fuel_type=input.car_fuel_type,
+                                    bus_size=input.bus_size,
+                                    bus_fuel_type=input.bus_fuel_type,
+                                    capacity=input.capacity,
+                                    occupancy=input.occupancy,
+                                    passengers=input.passengers,
+                                    roundtrip=input.roundtrip)
         businesstrip_instance = BusinessTrip(timestamp=input.timestamp,
                                              distance=input.distance,
                                              co2e=co2e,
