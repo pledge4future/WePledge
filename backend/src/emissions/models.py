@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
-
+from django.core.exceptions import ValidationError
 
 class User(AbstractUser):
     """
@@ -11,7 +11,7 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     email = models.CharField(max_length=100, unique=True)
-    working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True)
+    working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
     def __str__(self):
@@ -41,10 +41,32 @@ class WorkingGroup(models.Model):
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
-    n_employees = models.IntegerField(null=True)
+    n_employees = models.IntegerField(null=True, blank=True)
 
     class Meta:
         unique_together = ("name", "institution")
+
+    def clean(self, *args, **kwargs):
+        """
+        Validate that the representative of the working group is member of the working group
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # add custom validation here
+        if (self.representative.working_group != self) and (self.representative.working_group is not None):
+            raise ValidationError(_('New representative is not a member of this working group.'), code='invalid')
+        super().clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        """
+        Updates the user who is the representative of the working group
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.full_clean()
+        super(WorkingGroup, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.name}, {self.institution.name}, {self.institution.city}, {self.institution.country}"
