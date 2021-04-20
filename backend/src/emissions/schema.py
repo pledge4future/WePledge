@@ -65,7 +65,7 @@ class BusinessTripInput(graphene.InputObjectType):
     start = graphene.String()
     destination = graphene.String()
     distance = graphene.Float()
-    timestamp = graphene.DateTime(required=True)
+    timestamp = graphene.Date(required=True)
     transportation_mode = graphene.String(required=True)
     car_size = graphene.Int()
     car_fuel_type = graphene.String()
@@ -77,13 +77,12 @@ class BusinessTripInput(graphene.InputObjectType):
     roundtrip = graphene.Boolean()
 
 
-
 class ElectricityInput(graphene.InputObjectType):
     id = graphene.ID()
     userid = graphene.Int()
     workinggroupid = graphene.Int()
     consumption_kwh = graphene.Float()
-    timestamp = graphene.DateTime(required=True)
+    timestamp = graphene.Date(required=True)
     fuel_type = graphene.String(required=True)
 
 
@@ -94,7 +93,7 @@ class HeatingInput(graphene.InputObjectType):
     consumption_kwh = graphene.Float()
     consumption_kg = graphene.Float()
     consumption_liter = graphene.Float()
-    datetime = graphene.DateTime()
+    datetime = graphene.Date()
     fuel_type = graphene.String()
 
 
