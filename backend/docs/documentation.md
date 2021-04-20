@@ -37,6 +37,56 @@ After server is running open `localhost:8000/graphql` in the browser.
 ### Resources
 [Sanatan, M.: Building a GraphQL API with Django](https://stackabuse.com/building-a-graphql-api-with-django/)
 
+### Example queries
+
+#### 1. Query a user
+
+```
+query getUser {
+  user(id:3) {
+    id
+    username
+  }
+}
+```
+
+#### 2. Edit user
+
+```
+mutation updateUser {
+  updateUser(id:3, input: {
+    firstName: "Bill"
+  }) {
+    ok
+    user {
+      firstName
+    }
+  }
+}
+```
+
+
+#### 3. Create new electricity entry
+
+```
+mutation createElectricity {
+  createElectricity (input: {
+    workinggroupid:1
+    consumptionKwh: 3000
+    fuelType: "solar"
+    timestamp: "2020-10-01"
+  }) {
+    ok
+    electricity {
+      id
+      timestamp
+      consumptionKwh
+      fuelType
+      co2e
+    }
+  }
+}
+```
 
 ## Error documentation
 
