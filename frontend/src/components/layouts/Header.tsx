@@ -100,7 +100,7 @@ const Header = () => {
 
   const tabs = (
     <>
-      <Grid container justify="flex-end" spacing={4}>
+      <Grid container alignContent="flex-end" spacing={4}>
         {path.map(({ name, link }) => (
           <Grid item key={link}>
             <Link href={link}>
@@ -185,7 +185,7 @@ const Header = () => {
             }}
           >
             <Link href="/">
-              <Typography className={classes.logo}>WePledge</Typography>
+              <Typography className={classes.logo}>Pledge4Future</Typography>
             </Link>
             {matches ? drawer : tabs}
           </Toolbar>
