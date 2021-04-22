@@ -78,6 +78,7 @@ class BusinessTrip(models.Model):
     Business trip
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     timestamp = models.DateField()
     distance = models.FloatField()
     co2e = models.FloatField()

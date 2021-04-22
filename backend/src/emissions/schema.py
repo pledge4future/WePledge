@@ -62,6 +62,7 @@ class Query(ObjectType):
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
     userid = graphene.Int(required=True)
+    workinggroupid = graphene.Int(required=False)
     start = graphene.String()
     destination = graphene.String()
     distance = graphene.Float()
@@ -222,7 +223,8 @@ class CreateBusinessTrip(graphene.Mutation):
         businesstrip_instance = BusinessTrip(timestamp=input.timestamp,
                                              distance=input.distance,
                                              co2e=co2e,
-                                             user=user[0])
+                                             user=user[0],
+                                             working_group=user[0].working_group)
         businesstrip_instance.save()
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
