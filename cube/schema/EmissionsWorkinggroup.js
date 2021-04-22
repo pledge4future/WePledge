@@ -9,6 +9,10 @@ cube(`EmissionsWorkinggroup`, {
     EmissionsElectricity: {
       relationship: `hasMany`,
       sql: `${EmissionsWorkinggroup}.id = ${EmissionsElectricity}.working_group_id`
+    },
+    EmissionsBusinesstrip: {
+      relationship: `hasMany`,
+      sql: `${EmissionsWorkinggroup}.id = ${EmissionsBusinesstrip}.working_group_id`
     }
   },
 
@@ -29,7 +33,8 @@ cube(`EmissionsWorkinggroup`, {
       sql: `id`,
       type: `number`,
       primaryKey: true
-    }
+    },
+
   },
 
   dataSource: `default`

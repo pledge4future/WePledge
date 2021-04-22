@@ -34,7 +34,12 @@ cube(`EmissionsHeating`, {
     timestamp: {
       sql: `timestamp`,
       type: `time`
-    }
+    },
+
+    working_group_id: {
+      sql: `working_group_id`,
+      type: `number`
+    },
   },
 
   dataSource: `default`
