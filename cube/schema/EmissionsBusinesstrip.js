@@ -16,6 +16,10 @@ cube(`EmissionsBusinesstrip`, {
     co2e: {
       type: `sum`,
       sql: `co2e`
+    },
+    co2e_researcher: {
+      type: `number`,
+      sql: `${co2e} / ${EmissionsWorkinggroup.n_employees}`
     }
   },
 
