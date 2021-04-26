@@ -42,6 +42,7 @@ class WorkingGroup(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
+    research_field = models.CharField(null=True, blank=True, max_length=200)
 
     class Meta:
         unique_together = ("name", "institution")
@@ -81,7 +82,7 @@ class BusinessTrip(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     timestamp = models.DateField()
     distance = models.FloatField()
-    co2e = models.FloatField()
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
 
     CAR = 'CAR'
     BUS = 'BUS'
@@ -124,7 +125,7 @@ class Heating(models.Model):
                          (WOODCHIPS, 'Woodchips'),
                          (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    co2e = models.FloatField()
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
@@ -146,7 +147,7 @@ class Electricity(models.Model):
                          (SOLAR, 'Solar')]
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
-    co2e = models.FloatField()
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
