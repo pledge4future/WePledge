@@ -30,6 +30,7 @@ import Paper from "@material-ui/core/Paper";
 import Divider from "@material-ui/core/Divider";
 
 import { routes, Route } from "../../data/routes";
+import LogoutContainer from "../Authentication/LogoutContainer";
 
 const styles = (theme: Theme) => ({
   right: {
@@ -261,6 +262,9 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
                   {/* <MenuItem onClick={handleClose} component="a" href="/sign-in">
                     Sign In
                   </MenuItem> */}
+                  <MenuItem onClick={()=>LogoutContainer()} component="a">
+                    Sign Out
+                  </MenuItem>
                   <MenuItem onClick={handleClose} component="a" href="/user_profile">
                     My User Profile
                   </MenuItem>
