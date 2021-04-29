@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useContext } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -24,6 +24,9 @@ import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 
 import { routes, Route } from "../../data/routes";
+
+import { AuthContext } from "../../providers/Auth/AuthContext";
+import LogoutContainer from "../Authentication/LogoutContainer";
 
 const styles = (theme: Theme) => ({
   right: {
@@ -93,7 +96,7 @@ const styles = (theme: Theme) => ({
   toolbar: {
     justifyContent: "space-between",
   },
-  placeholder: toolbarStyles(theme).root
+  placeholder: toolbarStyles(theme).root,
 });
 
 function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
@@ -102,6 +105,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
   const matches = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
+  const authContext = useContext(AuthContext);
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
@@ -116,11 +120,12 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   };
 
   // routes[routes.length] = { name: "Sign In", link: "/sign-in" };
+
   const path: Route[] = routes;
 
   const tabs = (
     <div className={classes.right}>
-      {(path.concat([{ name: "SignIn", link: "/sign-in" }])).map(({ name, link }) => (
+      {path.map(({ name, link }) => (
         <Link
           key={link}
           color="inherit"
@@ -132,6 +137,27 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
           {name}
         </Link>
       ))}
+      {authContext.isAuthenticated ? (
+        <Link
+          color="inherit"
+          variant="h6"
+          underline="none"
+          className={classes.rightLink}
+          onClik={() => <LogoutContainer />}
+        >
+          {"SignOut"}
+        </Link>
+      ) : (
+        <Link
+          color="inherit"
+          variant="h6"
+          underline="none"
+          className={classes.rightLink}
+          href={"/sign-in"}
+        >
+          {"SignIn"}
+        </Link>
+      )}
     </div>
   );
 
@@ -148,7 +174,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
       >
         <div className={classes.toolbarMargin} />
         <List disablePadding>
-          {(path.concat([{ name: "Sign In", link: "/sign-in" }])).map(({ name, link }) => (
+          {path.map(({ name, link }) => (
             <ListItem
               key={link}
               divider
@@ -162,9 +188,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
                   <Typography
                     style={{
                       color:
-                        router.pathname === link
-                          ? theme.palette.primary.main
-                          : "rgb(107 107 107)",
+                        router.pathname === link ? theme.palette.primary.main : "rgb(107 107 107)",
                       fontWeight: router.pathname === link ? "bold" : undefined,
                     }}
                   >
@@ -174,6 +198,55 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
               </ListItemText>
             </ListItem>
           ))}
+          {authContext.isAuthenticated ? (
+            <ListItem
+              divider
+              button
+              onClick={() => {
+                setOpenDrawer(false);
+              }}
+            >
+              <ListItemText disableTypography>
+                <Link onClick={() => <LogoutContainer />}>
+                  <Typography
+                    style={{
+                      color:
+                        router.pathname === "/sign-in"
+                          ? theme.palette.primary.main
+                          : "rgb(107 107 107)",
+                      fontWeight: router.pathname === "/sign-in" ? "bold" : undefined,
+                    }}
+                  >
+                    {"SignOut"}
+                  </Typography>
+                </Link>
+              </ListItemText>
+            </ListItem>
+          ) : (
+            <ListItem
+              divider
+              button
+              onClick={() => {
+                setOpenDrawer(false);
+              }}
+            >
+              <ListItemText disableTypography>
+                <Link href={"/sign-in"}>
+                  <Typography
+                    style={{
+                      color:
+                        router.pathname === "/sign-in"
+                          ? theme.palette.primary.main
+                          : "rgb(107 107 107)",
+                      fontWeight: router.pathname === "/sign-in" ? "bold" : undefined,
+                    }}
+                  >
+                    {"SignIn"}
+                  </Typography>
+                </Link>
+              </ListItemText>
+            </ListItem>
+          )}
         </List>
       </SwipeableDrawer>
       <IconButton

@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import Box from "@material-ui/core/Box";
 
 // Components
-import AppAppBar from "../src/views/App/AppAppBarUser";
+import AppAppBar from "../src/views/App/AppAppBar";
 import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
