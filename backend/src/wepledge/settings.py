@@ -57,7 +57,12 @@ REST_FRAMEWORK = {
     ),
 }
 
-CORS_ORIGIN_ALLOW_ALL = True
+JWT_ALLOW_REFRESH = True
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ALLOW_CREDENTIALS = True
+CORS_ORIGIN_WHITELIST = [      
+    'http://localhost:3000'
+]   
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

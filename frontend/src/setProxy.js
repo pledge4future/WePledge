@@ -1,9 +1,11 @@
-const proxy = require("http-proxy-middleware");
+import { createProxyMiddleware } from "http-proxy-middleware";
 
 module.exports = function (app) {
   app.use(
-    proxy(["/backend", "/graphql", "/api-token-auth", "/api-token-refresh", "/api-token-verify"], {
+    ["/backend", "/api-token-auth", "/graphql", "/api-token-refresh", "/api-token-verify"],
+    createProxyMiddleware({
       target: "http://localhost:8000",
+      changeOrigin: true,
     })
   );
 };
