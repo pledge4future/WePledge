@@ -1,39 +1,39 @@
-import React from 'react';
-import Head from 'next/head';
-import { AppProps } from 'next/app';
+import React from "react";
+import { AppProps } from "next/app";
 
-// Material-UI
-import { ThemeProvider } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
+// Theme
+import CssBaseline from "@material-ui/core/CssBaseline";
+import { ThemeProvider } from "@material-ui/core/styles";
+import theme from "../src/theme";
 
-import theme from '../src/theme';
+// GraphQL-Client
+import { ApolloProvider } from "@apollo/client";
+import client from "../src/api/apollo-client";
+
+import { AuthContextProvider } from "../src/providers/Auth";
 
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
-    const jssStyles = document.querySelector('#jss-server-side');
+    const jssStyles = document.querySelector("#jss-server-side");
     if (jssStyles) {
       jssStyles.parentElement!.removeChild(jssStyles);
     }
   }, []);
 
   return (
-    <React.Fragment>
-      <Head>
-        {/* TODO: edit title */}
-        <title>Pledge4Future</title>
-        <meta
-          name="viewport"
-          content="minimum-scale=1, initial-scale=1, width=device-width"
-        />
-      </Head>
+    <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
-        <CssBaseline />
-        <Component {...pageProps} />
+        <>
+          {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
+          <CssBaseline />
+          <AuthContextProvider>
+            <Component {...pageProps} />
+          </AuthContextProvider>
+        </>
       </ThemeProvider>
-    </React.Fragment>
+    </ApolloProvider>
   );
 }
