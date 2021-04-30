@@ -23,14 +23,16 @@ const PageContainer = (props: Props) => {
   return (
     <React.Fragment>
       <Head>
-        <title>{title ? `${title} | ${siteName}` : siteName }</title>
+        <title>{title ? `${title} | ${siteName}` : siteName}</title>
       </Head>
       <AppAppBar />
       <Container maxWidth="lg">
         <Box mt={7} mb={12}>
-          <Typography variant="h3" gutterBottom marked="center" align="center">
-            {title}
-          </Typography>
+          {title ? (
+            <Typography variant="h3" gutterBottom marked="center" align="center">
+              {title}
+            </Typography>
+          ) : null}
           {children}
         </Box>
       </Container>
