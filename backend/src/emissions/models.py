@@ -1,7 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-
+from django.contrib.auth.models import Group
+from django.core.exceptions import ValidationError
 
 class User(AbstractUser):
     """
@@ -10,32 +11,67 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     email = models.CharField(max_length=100, unique=True)
-    working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True)
+    working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
 
 
+class Institution(models.Model):
+    """
+    Top level research institution, e.g. Heidelberg University
+    """
+    name = models.CharField(max_length=200, null=False, blank=False)
+    city = models.CharField(max_length=100, null=False, blank=False)
+    state = models.CharField(max_length=100, null=True)
+    country = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        unique_together = ("name", "city", "country")
+
+    def __str__(self):
+        return f"{self.name}, {self.city}, {self.country}"
+
+
 class WorkingGroup(models.Model):
     """
     Working group
     """
-    name = models.CharField(max_length=100, blank=False)
-
-    class Organizations(models.TextChoices):
-        UNI_HD = 'Heidelberg University', _('Heidelberg University')
-        MPIA = 'MPIA', _('Max-Planck Institute')
-        EMBL = 'EMBL', _('European Molecular Biology Laboratory')
-
-    organization = models.CharField(max_length=100, choices=Organizations.choices, blank=False)
+    name = models.CharField(max_length=200, blank=False)
+    institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    n_employees = models.IntegerField(null=True, blank=True)
+    research_field = models.CharField(null=True, blank=True, max_length=200)
 
     class Meta:
-        unique_together = ("name", "organization")
+        unique_together = ("name", "institution")
+
+    def clean(self, *args, **kwargs):
+        """
+        Validate that the representative of the working group is member of the working group
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        # add custom validation here
+        if (self.representative.working_group != self) and (self.representative.working_group is not None):
+            raise ValidationError(_('New representative is not a member of this working group.'), code='invalid')
+        super().clean(*args, **kwargs)
+
+    def save(self, *args, **kwargs):
+        """
+        Updates the user who is the representative of the working group
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        self.full_clean()
+        super(WorkingGroup, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.organization + " - " + self.name
+        return f"{self.name}, {self.institution.name}, {self.institution.city}, {self.institution.country}"
+
 
 
 class BusinessTrip(models.Model):
@@ -43,9 +79,10 @@ class BusinessTrip(models.Model):
     Business trip
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     timestamp = models.DateField()
     distance = models.FloatField()
-    co2e = models.FloatField()
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
 
     CAR = 'CAR'
     BUS = 'BUS'
@@ -60,10 +97,63 @@ class BusinessTrip(models.Model):
                                            blank=False,
                                            )
 
-    #def __str__(self):
-    #    return "{} on ".format(self.user.username, self.date)
+    def __str__(self):
+        return f"{self.user.username}, {self.timestamp}"
 
 
+
+class Heating(models.Model):
+    """
+    Heating consumption per year
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
+    consumption_kwh = models.FloatField(null=False)
+    timestamp = models.DateField(null=False)
+
+    PUMPAIR = 'PUMPAIR'
+    PUMPGROUND = 'PUMPGROUND'
+    PUMPWATER = 'PUMPWATER'
+    LIQUID = 'LIQUID'
+    OIL = 'OIL'
+    PELLETS = 'PELLETS'
+    SOLAR = 'SOLAR'
+    WOODCHIPS = 'WOODCHIPS'
+    ELECTRICITY = 'ELECTRICITY'
+    GAS = 'GAS'
+    fuel_type_choices = [(PUMPAIR, 'Pump air'), (PUMPGROUND, 'Pump ground'), (PUMPWATER, 'Pump water'),
+                         (LIQUID, 'Liquid'), (OIL, 'Oil'), (PELLETS, 'Pellets'), (SOLAR, 'Solar'),
+                         (WOODCHIPS, 'Woodchips'),
+                         (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
+    fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
+
+
+class Electricity(models.Model):
+    """
+    Electricity consumption per year
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
+    consumption_kwh = models.FloatField(null=False)
+    timestamp = models.DateField(null=False)
+
+    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
+    #GREEN_ENERGY = 'GREEN_ENERGY'
+    SOLAR = 'solar'
+    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Energy Mix'),
+                         #(GREEN_ENERGY, 'Green energy'),
+                         (SOLAR, 'Solar')]
+    fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
+
+    co2e = models.DecimalField(max_digits=10, decimal_places=1)
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
+
+
+'''
 class CarTrip(models.Model):
     """
     Additional data for business trips by car
@@ -89,7 +179,6 @@ class CarTrip(models.Model):
     MEDIUM = 'MEDIUM'
     LARGE = 'LARGE'
     UNKNOWN = 'UNKNOWN'
-
     size_choices = [(SMALL, "Small"),
                     (MEDIUM, "Medium"),
                     (LARGE, "Large"),
@@ -101,8 +190,10 @@ class CarTrip(models.Model):
 
     def __str__(self):
         return self.id
+'''
 
 
+'''
 class BusTrip(models.Model):
     """
     Additional data for business trips by bus
@@ -135,8 +226,10 @@ class BusTrip(models.Model):
     size = models.CharField(max_length=10, choices=size_choices, default=UNKNOWN, blank=False)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+'''
 
 
+'''
 class TrainTrip(models.Model):
     """
     Additional data for business trips by train
@@ -150,8 +243,10 @@ class TrainTrip(models.Model):
     fuel_type = models.CharField(max_length=10, choices=fuel_type_choices, default=UNKNOWN, blank=False)
 
     business_trip = models.ForeignKey(BusinessTrip, on_delete=models.CASCADE, blank=False)
+'''
 
 
+'''
 class PlaneTrip(models.Model):
     """
     Additional data for business trips by plane
@@ -174,50 +269,5 @@ class PlaneTrip(models.Model):
 
     def __str__(self):
         return "{} - {} on {}".format(self.IATA_start, self.IATA_destination, str(self.business_trip.timestamp))
+'''
 
-
-class Heating(models.Model):
-    """
-    Heating consumption per year
-    """
-    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
-    timestamp = models.DateField(null=False)
-
-    PUMPAIR = 'PUMPAIR'
-    PUMPGROUND = 'PUMPGROUND'
-    PUMPWATER = 'PUMPWATER'
-    LIQUID = 'LIQUID'
-    OIL = 'OIL'
-    PELLETS = 'PELLETS'
-    SOLAR = 'SOLAR'
-    WOODCHIPS = 'WOODCHIPS'
-    ELECTRICITY = 'ELECTRICITY'
-    GAS = 'GAS'
-    fuel_type_choices = [(PUMPAIR, 'Pump air'), (PUMPGROUND, 'Pump ground'), (PUMPWATER, 'Pump water'),
-                         (LIQUID, 'Liquid'), (OIL, 'Oil'), (PELLETS, 'Pellets'), (SOLAR, 'Solar'),
-                         (WOODCHIPS, 'Woodchips'),
-                         (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
-    fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-
-    cost_kwh = models.FloatField()
-    co2e = models.FloatField()
-
-
-class Electricity(models.Model):
-    """
-    Electricity consumption per year
-    """
-    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
-    timestamp = models.DateField(null=False)
-
-    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
-    #GREEN_ENERGY = 'GREEN_ENERGY'
-    SOLAR = 'solar'
-    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Energy Mix'),
-                         #(GREEN_ENERGY, 'Green energy'),
-                         (SOLAR, 'Solar')]
-    fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
-
-    co2e = models.FloatField()

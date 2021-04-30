@@ -1,5 +1,5 @@
 #!/bin/bash
-python manage.py makemigrations
+python manage.py makemigrations emissions
 python manage.py migrate
 python manage.py create_groups
 python manage.py populate_data
