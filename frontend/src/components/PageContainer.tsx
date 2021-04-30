@@ -14,10 +14,11 @@ import withRoot from "../withRoot";
 interface Props {
   title: string;
   children: React.ReactElement;
+  showTitle?: boolean;
 }
 
 const PageContainer = (props: Props) => {
-  const { title, children } = props;
+  const { title, children, showTitle } = props;
   const siteName = "Pledge4Future";
 
   return (
@@ -28,7 +29,7 @@ const PageContainer = (props: Props) => {
       <AppAppBar />
       <Container maxWidth="lg">
         <Box mt={7} mb={12}>
-          {title ? (
+          {showTitle ? (
             <Typography variant="h3" gutterBottom marked="center" align="center">
               {title}
             </Typography>

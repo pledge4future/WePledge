@@ -6,7 +6,7 @@ import Dashboard from "../src/views/Dashboard";
 
 function DashboardPage() {
   return (
-    <PageContainer>
+    <PageContainer title={"Dashboard"} showTitle={false}>
       <Dashboard />
     </PageContainer>
   );
