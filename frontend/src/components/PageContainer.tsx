@@ -18,7 +18,7 @@ interface Props {
 }
 
 const PageContainer = (props: Props) => {
-  const { title, children, showTitle } = props;
+  const { title, children, showTitle = true } = props;
   const siteName = "Pledge4Future";
 
   return (
