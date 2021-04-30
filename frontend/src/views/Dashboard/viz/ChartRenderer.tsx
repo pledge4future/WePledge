@@ -8,6 +8,7 @@ import { useCubeQuery } from "@cubejs-client/react";
 
 // Components
 import { BarRender, LineRender, PieRender, AreaRender } from "./Charts/ChartJS";
+import { DoughnutRender, DoughnutOptions } from "./Charts/ChartJS";
 import NumberRender, { NumberOptions } from "./Number";
 import TableRender from "./Table";
 import CircularProgress from "../../../components/CircularProgress";
@@ -20,7 +21,7 @@ export interface ChartValue {
 export interface ChartRenderer {
   query: Query;
   vizType: ChartType;
-  options?: NumberOptions;
+  options?: NumberOptions | DoughnutOptions;
 }
 
 interface TypeToChartComponent {
@@ -33,6 +34,7 @@ const TypeToChartComponent: TypeToChartComponent = {
   pie: ({ resultSet }) => <PieRender resultSet={resultSet} />,
   number: ({ resultSet, options }) => <NumberRender resultSet={resultSet} options={options} />,
   table: ({ resultSet }) => <TableRender resultSet={resultSet} />,
+  doughnut: ({ resultSet, options }) => <DoughnutRender resultSet={resultSet} options={options} />,
 };
 export type ChartType = keyof TypeToChartComponent;
 

@@ -83,18 +83,57 @@ const DashboardView = () => {
     },
   ];
 
-  const barChartQuery = {
+  const doughnutQuery = {
     measures: ["EmissionsBusinesstrip.co2e"],
+    timeDimensions: [],
+    order: {
+      "EmissionsBusinesstrip.co2e": "desc",
+    },
+    dimensions: ["EmissionsBusinesstrip.transportationMode"],
+  };
+
+  const commonOptions = {
+    maintainAspectRatio: true,
+    layout: {
+      padding: 30
+    },
+    borderWidth: 10,
+    hoverBorderWidth:5,
+    radius: '90%',
+    plugins: {
+      title: {
+        display: true,
+        text: "CO2e Emissions of business trips",
+        font: {
+          family: 'Montserrat, sans-serif',
+            size: 15
+        }
+      },
+      legend: {
+          labels: {
+              // This more specific font property overrides the global property
+              font: {
+                family: 'Montserrat, sans-serif',
+                  size: 13
+              }
+          }
+      }
+  }
+  };
+
+  const barChartQuery = {
+    measures: ["EmissionsElectricity.co2e", "EmissionsHeating.co2e", "EmissionsBusinesstrip.co2e"],
     timeDimensions: [
       {
-        dimension: "EmissionsBusinesstrip.timestamp",
+        dimension: "EmissionsElectricity.timestamp",
         granularity: "month",
       },
     ],
     order: {
-      "EmissionsBusinesstrip.timestamp": "asc",
+      "EmissionsElectricity.timestamp": "asc",
     },
     dimensions: [],
+    filters: [],
   };
   const lineChartQuery = {
     measures: ["EmissionsBusinesstrip.co2e"],
@@ -180,6 +219,19 @@ const DashboardView = () => {
       <Grid item lg={8} md={12} xl={9} xs={12}>
         <Box title="Area Chart">
           <ChartRenderer query={areaChartQuery} vizType="area" />
+        </Box>
+      </Grid>
+
+      <Grid item lg={8} md={12} xl={9} xs={12}>
+        <Box title="Doughnut Chart">
+          <ChartRenderer
+            query={doughnutQuery}
+            vizType="doughnut"
+            options={{
+              label: "CO2 Emissions of Business trips",
+              commonOptions: commonOptions,
+            }}
+          />
         </Box>
       </Grid>
     </Grid>
