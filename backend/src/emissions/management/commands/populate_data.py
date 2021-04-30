@@ -5,9 +5,19 @@ Create permissions (read only) to models for a set of groups
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
-from ...models import User, WorkingGroup, BusinessTrip, PlaneTrip, Heating, Electricity
+from django.db.utils import IntegrityError
+from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution
 from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
 import numpy as np
+import pandas as pd
+import os
+import logging
+
+logger = logging.basicConfig()
+
+
+script_path = os.path.dirname(os.path.realpath(__file__))
+
 
 
 class Command(BaseCommand):
@@ -18,91 +28,80 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # create users
-        if len(User.objects.filter(username="Karen")) == 0:
-            karen = User(username="Karen",
-                            first_name="Karen",
-                            last_name="Anderson",
-                            email="karen@mpia.com",
-                            password="karen")
-            karen.save()
-            representative_group = Group.objects.get(name='Representative')
-            karen.groups.add(representative_group)
+        # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
+        print("Loading institutions ...")
+        grid = pd.read_csv(f"{script_path}/../../data/grid.csv")
+        grid = grid.loc[grid.Country == "Germany"]
+        for inst in grid.iterrows():
+            try:
+                new_institution = Institution(name=inst[1].Name,
+                                              city=inst[1].City,
+                                              state=inst[1].State,
+                                              country=inst[1].Country)
+                new_institution.save()
+            except IntegrityError:
+                print("Institutions already loaded.")
+                break
+        del grid
 
-            # Creat business trip by plane
-            new_trip = BusinessTrip(user=karen,
-                                    distance=3000,
-                                    co2e=200,
-                                    timestamp="2020-05-10",
-                                    transportation_mode=BusinessTrip.PLANE)
-            new_trip.save()
-            plane_trip = PlaneTrip(IATA_start="MUC", IATA_destination="LAX",
-                                    flight_class=PlaneTrip.ECONOMY,
-                                    round_trip=True,
-                                    business_trip=new_trip)
-            plane_trip.save()
+        # CREATE USERS --------------------------------------------------------
+        print("Loading users ...")
+        user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
+        for usr in user_data.iterrows():
+            try:
+                new_user = User(username=usr[1].first_name + usr[1].last_name,
+                             first_name=usr[1].first_name,
+                             last_name=usr[1].last_name,
+                             email=f"{usr[1].first_name}.{usr[1].last_name}@some-university.com",
+                             password="super")
+                new_user.save()
+            except IntegrityError:
+                print("Users already exist.")
+                break
 
-        if len(User.objects.filter(username="Tom")) == 0:
-            tom = User(username="Tom",
-                            first_name="Tom",
-                            last_name="Tom",
-                            email="tom@mpia.com",
-                            password="tomtom")
-            tom.save()
-            researcher_group = Group.objects.get(name='Researcher')
-            tom.groups.add(researcher_group)
+        # CREATE WORKING GROUPS --------------------------------------------------------
+        environmental_search = WorkingGroup.objects.filter(name="Environmental Research Group")
+        if len(environmental_search) == 0:
+            wg_environmental = WorkingGroup(name="Environmental Research Group",
+                                        institution=Institution.objects.filter(name="Heidelberg University",
+                                                                               city="Heidelberg",
+                                                                               country="Germany")[0],
+                                        representative=User.objects.get(username="LarsWiese"),
+                                            n_employees=20)
+            wg_environmental.save()
+        else:
+            wg_environmental = environmental_search[0]
 
-            new_trip = BusinessTrip(user=tom,
-                                    distance=300,
-                                    co2e= 50,
-                                    timestamp="2020-02-01",
-                                    transportation_mode=BusinessTrip.TRAIN)
-            new_trip.save()
-
-        if len(User.objects.filter(username="Kim")) == 0:
-            kim = User(username="Kim",
-                            first_name="Kim",
-                            last_name="Z",
-                            email="kim@giscience.com",
-                            password="kim")
-            kim.save()
-            researcher_group = Group.objects.get(name='Researcher')
-            kim.groups.add(researcher_group)
-
-        # Create working groups
-        if len(WorkingGroup.objects.filter(name="GIScience")) == 0:
-            wg_giscience = WorkingGroup(name="GIScience",
-                                        organization=WorkingGroup.Organizations.UNI_HD,
-                                        representative=User.objects.get(username="Kim"))
-            wg_giscience.save()
-
-        if len(WorkingGroup.objects.filter(name="Planet and Star Formation")) == 0:
-            wg_bio = WorkingGroup(name="Planet and Star Formation",
-                                  organization=WorkingGroup.Organizations.MPIA,
-                                  representative=User.objects.get(username="Karen"))
-            wg_bio.save()
-
-        wg_bio = WorkingGroup.objects.filter(name="Planet and Star Formation")[0]
-        wg_giscience = WorkingGroup.objects.filter(name="GIScience")[0]
+        biomed_search = WorkingGroup.objects.filter(name="Biomedical Research Group")
+        if len(biomed_search) == 0:
+            wg_biomed = WorkingGroup(name="Biomedical Research Group",
+                                  institution=Institution.objects.filter(name="Heidelberg University",
+                                                                         city="Heidelberg",
+                                                                         country="Germany")[0],
+                                  representative=User.objects.get(username="KarenAnderson"),
+                                     n_employees=15)
+            wg_biomed.save()
+        else:
+            wg_biomed = biomed_search[0]
 
         # Update working groups of users
-        if len(User.objects.filter(username="Karen")) == 0:
-            karen.working_group = wg_bio
-            karen.is_representative = True
-            karen.save()
-        if len(User.objects.filter(username="Tom")) == 0:
-            tom.working_group = wg_bio
-            tom.save()
-        if len(User.objects.filter(username="Kim")) == 0:
-            kim.working_group = wg_giscience
-            kim.is_representative = True
-            kim.save()
+        for usr in user_data.iterrows():
+            user_found = User.objects.filter(username=usr[1].first_name + usr[1].last_name)[0]
+            wg_search = WorkingGroup.objects.filter(name=usr[1].working_group)
+            user_found.working_group = wg_search[0]
+            user_found.save()
+        del user_data
 
+        # CREATE FAKE DATA
+        dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype(
+            'datetime64[D]')
+
+        # CREATE ELECTRICITY OBJECTS --------------------------------------------------------
         if len(Electricity.objects.all()) == 0:
+            print("Loading electricity data ...")
             consumptions = np.random.uniform(low=8000, high=12000, size=24).astype("int")
-            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
             for c, d in zip(consumptions, dates):
-                new_electricity = Electricity(working_group= wg_bio,
+                new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
@@ -111,25 +110,49 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=11000, high=15000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                new_electricity = Electricity(working_group= wg_giscience,
+                new_electricity = Electricity(working_group= wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
                                       co2e=calc_co2_electricity(c, "german energy mix"))
                 new_electricity.save()
 
+        # CREATE HEATING OBJECTS --------------------------------------------------------
         if len(Heating.objects.all()) == 0:
-            consumptions = np.random.uniform(low=1400000, high=2200000, size=24).astype("int")
-            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
+            print("Loading heating data ...")
+
+            consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                new_heating = Heating(working_group=wg_bio,
+                new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      cost_kwh=0.30,
                                       fuel_type=Heating.PUMPWATER,
                                       co2e=calc_co2_heating(c, "heatpump_water"))
                 new_heating.save()
 
+            consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
+            for c, d in zip(consumptions, dates):
+                new_heating = Heating(working_group=wg_environmental,
+                                      timestamp=str(d),
+                                      consumption_kwh=c,
+                                      fuel_type=Heating.PUMPWATER,
+                                      co2e=calc_co2_heating(c, "heatpump_water"))
+                new_heating.save()
 
+        # CREATE BUSINESS TRIPS --------------------------------------------------------
+        if len(BusinessTrip.objects.all()) == 0:
+            print("Loading business trip data ...")
 
+            modes = [BusinessTrip.PLANE, BusinessTrip.CAR, BusinessTrip.TRAIN, BusinessTrip.BUS]
 
+            for usr in User.objects.all():
+                dates = np.arange(np.datetime64('2019-01-15'), np.datetime64('2021-01-15'), np.timedelta64(30, "D")).astype('datetime64[D]')
+
+                for d in dates:
+                    new_trip = BusinessTrip(user=usr,
+                                            working_group=usr.working_group,
+                                        distance=np.random.randint(100, 10000, 1),
+                                        co2e=float(np.random.randint(50, 1000, 1)),
+                                        timestamp=str(d),
+                                        transportation_mode=np.random.choice(modes, 1)[0])
+                    new_trip.save()
