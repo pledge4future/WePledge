@@ -1,5 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
+from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
@@ -40,7 +41,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     electricities = graphene.List(ElectricityType)
     heating = graphene.Field(HeatingType, id=graphene.Int())
     heatings = graphene.List(HeatingType)
-    user = graphene.Field(UserType, id=graphene.Int())
+    user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
 
     def resolve_businesstrips(self, info, **kwargs):
         return BusinessTrip.objects.all()
@@ -55,6 +56,9 @@ class Query(UserQuery, MeQuery, ObjectType):
         id = kwargs.get('id')
         if id is not None:
             return User.objects.get(id=id)
+        username = kwargs.get('username')
+        if username is not None:
+            return User.objects.get(username=username)
         return None
 
 
@@ -63,6 +67,7 @@ class Query(UserQuery, MeQuery, ObjectType):
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
     userid = graphene.Int(required=True)
+    workinggroupid = graphene.Int(required=False)
     start = graphene.String()
     destination = graphene.String()
     distance = graphene.Float()
@@ -80,8 +85,7 @@ class BusinessTripInput(graphene.InputObjectType):
 
 class ElectricityInput(graphene.InputObjectType):
     id = graphene.ID()
-    userid = graphene.Int()
-    workinggroupid = graphene.Int()
+    username = graphene.String()
     consumption_kwh = graphene.Float()
     timestamp = graphene.Date(required=True)
     fuel_type = graphene.String(required=True)
@@ -89,13 +93,12 @@ class ElectricityInput(graphene.InputObjectType):
 
 class HeatingInput(graphene.InputObjectType):
     id = graphene.ID()
-    userid = graphene.Int()
-    workinggroupid = graphene.Int()
+    username = graphene.String()
     consumption_kwh = graphene.Float()
     consumption_kg = graphene.Float()
     consumption_liter = graphene.Float()
-    datetime = graphene.Date()
-    fuel_type = graphene.String()
+    timestamp = graphene.Date(required=True)
+    fuel_type = graphene.String(required=True)
 
 
 class UserInput(graphene.InputObjectType):
@@ -105,7 +108,6 @@ class UserInput(graphene.InputObjectType):
     first_name = graphene.String()
     last_name = graphene.String()
     is_representative = graphene.Boolean()
-    password = graphene.String()
     username = graphene.String()
 
 
@@ -131,8 +133,6 @@ class UpdateUser(graphene.Mutation):
                 user_instance.last_name = input.last_name
             if input.email:
                 user_instance.email = input.email
-            if input.password:
-                user_instance.password = input.password
             if input.is_representative:
                 user_instance.is_representative = input.is_representative
             user_instance.save()
@@ -150,11 +150,14 @@ class CreateElectricity(graphene.Mutation):
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        matches = WorkingGroup.objects.filter(id=input.workinggroupid)
+        usr = User.objects.filter(username=input.username)[0]
+        matches = WorkingGroup.objects.filter(representative=usr)
         if len(matches) == 0:
-            print("{} working group not found".format(input.workinggroupid))
+            raise GraphQLError(f"Permission denied: Could add electricity data, because user '{input.username}' is not a group representative.")
         else:
             workinggroup = matches[0]
+
+        print(workinggroup)
 
         # calculate co2
         co2e = calc_co2_electricity(input.consumption_kwh, input.fuel_type)
@@ -162,7 +165,7 @@ class CreateElectricity(graphene.Mutation):
                                       timestamp=input.timestamp,
                                       consumption_kwh=input.consumption_kwh,
                                       fuel_type=input.fuel_type,
-                                      co2e=co2e)
+                                      co2e=round(co2e, 1))
         new_electricity.save()
         return CreateElectricity(ok=ok, electricity=new_electricity)
 
@@ -177,21 +180,22 @@ class CreateHeating(graphene.Mutation):
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        matches = WorkingGroup.objects.filter(id=input.workinggroupid)
+        usr = User.objects.filter(username=input.username)[0]
+        matches = WorkingGroup.objects.filter(representative=usr)
         if len(matches) == 0:
-            print("{} working group not found".format(input.workinggroupid))
+            raise GraphQLError(f"Permission denied: Could add heating data, because user '{input.username}' is not a group representative.")
         else:
             workinggroup = matches[0]
 
         # calculate co2
         co2e = calc_co2_heating(input.consumption_kwh, input.fuel_type)
-        new_electricity = Electricity(working_group=workinggroup,
+        new_heating = Heating(working_group=workinggroup,
                                       timestamp=input.timestamp,
                                       consumption_kwh=input.consumption_kwh,
                                       fuel_type=input.fuel_type,
-                                      co2e=co2e)
-        new_electricity.save()
-        return CreateElectricity(ok=ok, electricity=new_electricity)
+                                      co2e=round(co2e, 1))
+        new_heating.save()
+        return CreateHeating(ok=ok, heating=new_heating)
 
 
 class CreateBusinessTrip(graphene.Mutation):
@@ -223,7 +227,8 @@ class CreateBusinessTrip(graphene.Mutation):
         businesstrip_instance = BusinessTrip(timestamp=input.timestamp,
                                              distance=input.distance,
                                              co2e=co2e,
-                                             user=user[0])
+                                             user=user[0],
+                                             working_group=user[0].working_group)
         businesstrip_instance.save()
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
@@ -231,6 +236,7 @@ class CreateBusinessTrip(graphene.Mutation):
 class Mutation(graphene.ObjectType):
     create_businesstrip = CreateBusinessTrip.Field()
     create_electricity = CreateElectricity.Field()
+    create_heating = CreateHeating.Field()
     update_user = UpdateUser.Field()
 
 
