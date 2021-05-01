@@ -1,5 +1,6 @@
 import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
+from graphql_auth.schema import UserQuery, MeQuery
 from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
 
@@ -32,7 +33,7 @@ class UserType(DjangoObjectType):
 # -------------------- Query types -----------------
 
 # Create a Query type
-class Query(ObjectType):
+class Query(UserQuery, MeQuery, ObjectType):
     businesstrip = graphene.Field(BusinessTripType, id=graphene.Int())
     businesstrips = graphene.List(BusinessTripType)
     electricity = graphene.Field(ElectricityType, id=graphene.Int())
