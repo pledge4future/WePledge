@@ -2,13 +2,31 @@ version: "3.8"
 services:
   db:
     image: postgres
+    restart: always
+    container_name: db
+    volumes:
+      - db-data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_HOST_AUTH_METHOD=trust
+      - PGDATA=/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
   backend:
     tty: true
     restart: on-failure
@@ -22,25 +40,27 @@ services:
       - "8000:8000"
     depends_on:
       - db
-#   frontend:
-#     container_name: wepledge-frontend
-#     tty: true
-#     build:
-#       context: ./frontend
-#       target: development
-#     volumes:
-#       - ./frontend/:/home/node/app
-#       - frontend_nodemodules:/home/node/app/node_modules
-#       - frontend_extensions:/home/node/.vscode-server
-#     # depends_on:
-#     #   - cube
-#     ports:
-#       - "3000:3000"
-#     env_file: ./.env
-#     environment:
-#       HOME: /home/node
+  # frontend:
+  #   container_name: wepledge-frontend
+  #   tty: true
+  #   build:
+  #     context: ./frontend
+  #     target: development
+  #   volumes:
+  #     - ./frontend/:/home/node/app
+  #     - frontend_nodemodules:/home/node/app/node_modules
+  #     - frontend_extensions:/home/node/.vscode-server
+  #   # depends_on:
+  #   #   - cube
+  #   ports:
+  #     - "3000:3000"
+  #   #env_file: ./.env
+  #   environment:
+  #     HOME: /home/node
 volumes:
-#   frontend_nodemodules:
-#   frontend_extensions:
+  # frontend_nodemodules:
+  # frontend_extensions:
   backend_env:
   backend_extensions:
+  db-data:
+  pgadmin-data:

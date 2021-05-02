@@ -1,0 +1,6 @@
+
+
+
+[submodule "backend/src/co2calculator"]
+	path = backend/src/co2calculator
+	url = https://github.com/pledge4future/co2calculator.git
