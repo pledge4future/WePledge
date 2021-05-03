@@ -14,23 +14,26 @@ import withRoot from "../withRoot";
 interface Props {
   title: string;
   children: React.ReactElement;
+  showTitle?: boolean;
 }
 
 const PageContainer = (props: Props) => {
-  const { title, children } = props;
+  const { title, children, showTitle = true } = props;
   const siteName = "Pledge4Future";
 
   return (
     <React.Fragment>
       <Head>
-        <title>{title ? `${title} | ${siteName}` : siteName }</title>
+        <title>{title ? `${title} | ${siteName}` : siteName}</title>
       </Head>
       <AppAppBar />
       <Container maxWidth="lg">
         <Box mt={7} mb={12}>
-          <Typography variant="h3" gutterBottom marked="center" align="center">
-            {title}
-          </Typography>
+          {showTitle ? (
+            <Typography variant="h3" gutterBottom marked="center" align="center">
+              {title}
+            </Typography>
+          ) : null}
           {children}
         </Box>
       </Container>
