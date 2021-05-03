@@ -100,8 +100,6 @@ class BusinessTrip(models.Model):
     def __str__(self):
         return f"{self.user.username}, {self.timestamp}"
 
-
-
 class Heating(models.Model):
     """
     Heating consumption per year
@@ -152,6 +150,63 @@ class Electricity(models.Model):
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
 
+
+class Heating(models.Model):
+    """
+    Heating consumption per year
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
+    consumption_kwh = models.FloatField(null=False)
+    timestamp = models.DateField(null=False)
+
+    PUMPAIR = 'pump air'
+    PUMPGROUND = 'pump ground'
+    PUMPWATER = 'pump water'
+    LIQUID = 'liquid'
+    OIL = 'oil'
+    PELLETS = 'pellets'
+    SOLAR = 'solar'
+    WOODCHIPS = 'woodchips'
+    ELECTRICITY = 'electricity'
+    GAS = 'gas'
+    fuel_type_choices = [(PUMPAIR, 'Pump air'), (PUMPGROUND, 'Pump ground'), (PUMPWATER, 'Pump water'),
+                         (LIQUID, 'Liquid'), (OIL, 'Oil'), (PELLETS, 'Pellets'), (SOLAR, 'Solar'),
+                         (WOODCHIPS, 'Woodchips'),
+                         (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
+    fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
+    co2e = models.FloatField()
+
+    class Meta:
+        unique_together = ("working_group", "timestamp", "fuel_type")
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
+
+
+class Electricity(models.Model):
+    """
+    Electricity consumption for a timestamp
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
+    consumption_kwh = models.FloatField(null=False)
+    timestamp = models.DateField(null=False)
+
+    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
+    #GREEN_ENERGY = 'GREEN_ENERGY'
+    SOLAR = 'solar'
+    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Energy Mix'),
+                         #(GREEN_ENERGY, 'Green energy'),
+                         (SOLAR, 'Solar')]
+    fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
+
+    co2e = models.FloatField()
+
+    class Meta:
+        unique_together = ("working_group", "timestamp", "fuel_type")
+
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}"
 
 '''
 class CarTrip(models.Model):
