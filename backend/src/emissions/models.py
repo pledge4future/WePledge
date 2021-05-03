@@ -4,6 +4,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
+
 class User(AbstractUser):
     """
     Researcher. May be normal user or a group representative
@@ -42,6 +43,7 @@ class WorkingGroup(models.Model):
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
+    research_field = models.CharField(null=True, blank=True, max_length=200)
 
     class Meta:
         unique_together = ("name", "institution")
@@ -78,6 +80,7 @@ class BusinessTrip(models.Model):
     Business trip
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     timestamp = models.DateField()
     distance = models.FloatField()
     co2e = models.FloatField()
@@ -99,7 +102,6 @@ class BusinessTrip(models.Model):
         return f"{self.user.username}, {self.timestamp}"
 
 
-
 class Heating(models.Model):
     """
     Heating consumption per year
@@ -108,16 +110,16 @@ class Heating(models.Model):
     consumption_kwh = models.FloatField(null=False)
     timestamp = models.DateField(null=False)
 
-    PUMPAIR = 'PUMPAIR'
-    PUMPGROUND = 'PUMPGROUND'
-    PUMPWATER = 'PUMPWATER'
-    LIQUID = 'LIQUID'
-    OIL = 'OIL'
-    PELLETS = 'PELLETS'
-    SOLAR = 'SOLAR'
-    WOODCHIPS = 'WOODCHIPS'
-    ELECTRICITY = 'ELECTRICITY'
-    GAS = 'GAS'
+    PUMPAIR = 'pump air'
+    PUMPGROUND = 'pump ground'
+    PUMPWATER = 'pump water'
+    LIQUID = 'liquid'
+    OIL = 'oil'
+    PELLETS = 'pellets'
+    SOLAR = 'solar'
+    WOODCHIPS = 'woodchips'
+    ELECTRICITY = 'electricity'
+    GAS = 'gas'
     fuel_type_choices = [(PUMPAIR, 'Pump air'), (PUMPGROUND, 'Pump ground'), (PUMPWATER, 'Pump water'),
                          (LIQUID, 'Liquid'), (OIL, 'Oil'), (PELLETS, 'Pellets'), (SOLAR, 'Solar'),
                          (WOODCHIPS, 'Woodchips'),
@@ -125,13 +127,16 @@ class Heating(models.Model):
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
     co2e = models.FloatField()
 
+    class Meta:
+        unique_together = ("working_group", "timestamp", "fuel_type")
+
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
 
 
 class Electricity(models.Model):
     """
-    Electricity consumption per year
+    Electricity consumption for a timestamp
     """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
@@ -146,6 +151,10 @@ class Electricity(models.Model):
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()
+
+    class Meta:
+        unique_together = ("working_group", "timestamp", "fuel_type")
+
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"

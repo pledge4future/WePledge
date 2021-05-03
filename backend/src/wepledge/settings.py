@@ -40,7 +40,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_extensions',
-    'graphene_django'
+    'graphene_django',
+    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    'graphql_auth',
+    'django_filters'
 ]
 
 MIDDLEWARE = [
@@ -116,6 +119,21 @@ AUTH_PASSWORD_VALIDATORS = [
 
 AUTH_USER_MODEL = "emissions.User"
 
+GRAPHENE = {
+    'SCHEMA' : 'emissions.schema.schema',
+    'MIDDELWARE' : [
+        'graphql_jwt.middleware.JSONWebTOkenMiddleware',
+    ]
+}
+
+AUTHENTICATION_BACKENDS = [
+    ##'graphql_jwt.backends.JSONWebTokenBackend',
+    'graphql_auth.backends.GraphQLAuthBackend',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -136,9 +154,6 @@ USE_TZ = True
 STATIC_ROOT = 'static'
 STATIC_URL = '/backend/static/'
 
-GRAPHENE = {
-    'SCHEMA': 'emissions.schema.schema'
-}
 
 GRAPH_MODELS = {
   'all_applications': True,

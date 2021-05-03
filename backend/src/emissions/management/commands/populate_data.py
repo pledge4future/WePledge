@@ -66,7 +66,8 @@ class Command(BaseCommand):
                                         institution=Institution.objects.filter(name="Heidelberg University",
                                                                                city="Heidelberg",
                                                                                country="Germany")[0],
-                                        representative=User.objects.get(username="LarsWiese"))
+                                        representative=User.objects.get(username="LarsWiese"),
+                                            n_employees=20)
             wg_environmental.save()
         else:
             wg_environmental = environmental_search[0]
@@ -77,7 +78,8 @@ class Command(BaseCommand):
                                   institution=Institution.objects.filter(name="Heidelberg University",
                                                                          city="Heidelberg",
                                                                          country="Germany")[0],
-                                  representative=User.objects.get(username="KarenAnderson"))
+                                  representative=User.objects.get(username="KarenAnderson"),
+                                     n_employees=15)
             wg_biomed.save()
         else:
             wg_biomed = biomed_search[0]
@@ -90,10 +92,14 @@ class Command(BaseCommand):
             user_found.save()
         del user_data
 
+        # CREATE FAKE DATA
+        dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype(
+            'datetime64[D]')
+
         # CREATE ELECTRICITY OBJECTS --------------------------------------------------------
         if len(Electricity.objects.all()) == 0:
+            print("Loading electricity data ...")
             consumptions = np.random.uniform(low=8000, high=12000, size=24).astype("int")
-            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
             for c, d in zip(consumptions, dates):
                 new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
@@ -113,8 +119,9 @@ class Command(BaseCommand):
 
         # CREATE HEATING OBJECTS --------------------------------------------------------
         if len(Heating.objects.all()) == 0:
-            consumptions = np.random.uniform(low=1400000, high=2200000, size=24).astype("int")
-            dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype('datetime64[D]')
+            print("Loading heating data ...")
+
+            consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
@@ -123,18 +130,29 @@ class Command(BaseCommand):
                                       co2e=calc_co2_heating(c, "heatpump_water"))
                 new_heating.save()
 
+            consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
+            for c, d in zip(consumptions, dates):
+                new_heating = Heating(working_group=wg_environmental,
+                                      timestamp=str(d),
+                                      consumption_kwh=c,
+                                      fuel_type=Heating.PUMPWATER,
+                                      co2e=calc_co2_heating(c, "heatpump_water"))
+                new_heating.save()
+
         # CREATE BUSINESS TRIPS --------------------------------------------------------
+        if len(BusinessTrip.objects.all()) == 0:
+            print("Loading business trip data ...")
 
-        new_trip = BusinessTrip(user=User.objects.get(username="KarenAnderson"),
-                                distance=3000,
-                                co2e=200,
-                                timestamp="2020-05-10",
-                                transportation_mode=BusinessTrip.PLANE)
-        new_trip.save()
+            modes = [BusinessTrip.PLANE, BusinessTrip.CAR, BusinessTrip.TRAIN, BusinessTrip.BUS]
 
-        new_trip = BusinessTrip(user=User.objects.get(username="KarenAnderson"),
-                                    distance=300,
-                                    co2e= 50,
-                                    timestamp="2020-02-01",
-                                    transportation_mode=BusinessTrip.TRAIN)
-        new_trip.save()
+            for usr in User.objects.all():
+                dates = np.arange(np.datetime64('2019-01-15'), np.datetime64('2021-01-15'), np.timedelta64(30, "D")).astype('datetime64[D]')
+
+                for d in dates:
+                    new_trip = BusinessTrip(user=usr,
+                                            working_group=usr.working_group,
+                                        distance=np.random.randint(100, 10000, 1),
+                                        co2e=float(np.random.randint(50, 1000, 1)),
+                                        timestamp=str(d),
+                                        transportation_mode=np.random.choice(modes, 1)[0])
+                    new_trip.save()
