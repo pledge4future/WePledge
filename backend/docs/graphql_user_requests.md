@@ -200,6 +200,8 @@ query {
 
 ### Resources
 
+[Good intro to Graphql](https://www.howtographql.com)
+
 [GraphQL User Registration and Authentication with JWT Backend (Video Tutorial)](https://www.youtube.com/watch?v=pyV2_F9wlk8&t=494s)
 
 [GraphQL User Registration and Authentication with JWT Backend (GitHub Repo)](https://github.com/veryacademy/YT-GraphQL-User-Authentication-GraphQL-Auth)
