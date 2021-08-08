@@ -171,28 +171,13 @@ mutation {
 
 #### Query current user
 
+Bug: Cannot get the user's working group yet. 
+
 ```
 query {
 	me {
     username
-  }
-}
-```
-
-#### Query user by id
-
-```
-query getUser {
-  user(id:3) {
-    id
-    username
-  }
-}
-```
-```
-query getUser {
-  user(username:"KarenAnderson") {
-    username
+    email
     isRepresentative
   }
 }
@@ -212,19 +197,6 @@ query {
   }
 }
 ```
-
-
-
-
-
-## Error documentation
-
-### `Module not found` in backend container 
-
-The backend container won't build correctly, because `Module not found django_extensions`. 
-
-**Solution:** Delete all containerst and images. Then run `docker volume prune` to delete all data associated with them. 
-
 
 ### Resources
 
