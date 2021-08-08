@@ -136,13 +136,29 @@ GRAPHQL_JWT = {
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
+        "graphql_auth.mutations.VerifyToken",
         "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.RefreshToken",
     ],
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+GRAPHQL_AUTH = {
+    'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
+    'SEND_ACTIVATION_EMAIL': True,
+    'EMAIL_FROM': 'no-reply@pledge4future.org',
+}
+
+
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.greensta.de'
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL: False
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'no-reply@pledge4future.org'
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
