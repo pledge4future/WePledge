@@ -2,6 +2,7 @@ import graphene
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
+from graphql_auth import mutations
 from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
 
@@ -52,14 +53,14 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_heatings(self, info, **kwargs):
         return Heating.objects.all()
 
-    def resolve_user(self, info, **kwargs):
-        id = kwargs.get('id')
-        if id is not None:
-            return User.objects.get(id=id)
-        username = kwargs.get('username')
-        if username is not None:
-            return User.objects.get(username=username)
-        return None
+    #def resolve_user(self, info, **kwargs):
+    #    id = kwargs.get('id')
+    #    if id is not None:
+    #        return User.objects.get(id=id)
+    #    username = kwargs.get('username')
+    #    if username is not None:
+    #        return User.objects.get(username=username)
+    #    return None
 
 
 # -------------- Input Object Types --------------------------
@@ -105,6 +106,7 @@ class UserInput(graphene.InputObjectType):
     id = graphene.ID()
     workinggroupid = graphene.Int()
     email = graphene.String()
+    username = graphene.String()
     first_name = graphene.String()
     last_name = graphene.String()
     is_representative = graphene.Boolean()
@@ -113,32 +115,43 @@ class UserInput(graphene.InputObjectType):
 
 # --------------- Mutations ------------------------------------
 
-class UpdateUser(graphene.Mutation):
-    class Arguments:
-        id = graphene.Int(required=True)
-        input = UserInput(required=True)
+class AuthMutation(graphene.ObjectType):
+   register = mutations.Register.Field()
+   verify_account = mutations.VerifyAccount.Field()
+   token_auth = mutations.ObtainJSONWebToken.Field()
+   update_account = mutations.UpdateAccount.Field()
+   resend_activation_email = mutations.ResendActivationEmail.Field()
+   send_password_reset_email = mutations.SendPasswordResetEmail.Field()
+   password_reset = mutations.PasswordReset.Field()
+   password_change = mutations.PasswordChange.Field()
 
-    ok = graphene.Boolean()
-    user = graphene.Field(UserType)
-
-    @staticmethod
-    def mutate(root, info, id, input=None):
-        ok = False
-        user_instance = User.objects.get(id=id)
-        if user_instance:
-            ok = True
-            if input.first_name:
-                user_instance.first_name = input.first_name
-            if input.last_name:
-                user_instance.last_name = input.last_name
-            if input.email:
-                user_instance.email = input.email
-            if input.is_representative:
-                user_instance.is_representative = input.is_representative
-            user_instance.save()
-            return UpdateUser(ok=ok, user=user_instance)
-        return UpdateUser(ok=ok, user=None)
-
+#
+# class UpdateUser(graphene.Mutation):
+#     class Arguments:
+#         id = graphene.Int(required=True)
+#         input = UserInput(required=True)
+#
+#     ok = graphene.Boolean()
+#     user = graphene.Field(UserType)
+#
+#     @staticmethod
+#     def mutate(root, info, id, input=None):
+#         ok = False
+#         user_instance = User.objects.get(id=id)
+#         if user_instance:
+#             ok = True
+#             if input.first_name:
+#                 user_instance.first_name = input.first_name
+#             if input.last_name:
+#                 user_instance.last_name = input.last_name
+#             if input.email:
+#                 user_instance.email = input.email
+#             if input.is_representative:
+#                 user_instance.is_representative = input.is_representative
+#             user_instance.save()
+#             return UpdateUser(ok=ok, user=user_instance)
+#         return UpdateUser(ok=ok, user=None)
+#
 
 class CreateElectricity(graphene.Mutation):
     class Arguments:
@@ -233,11 +246,11 @@ class CreateBusinessTrip(graphene.Mutation):
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
 
-class Mutation(graphene.ObjectType):
+class Mutation(AuthMutation, graphene.ObjectType):
     create_businesstrip = CreateBusinessTrip.Field()
     create_electricity = CreateElectricity.Field()
     create_heating = CreateHeating.Field()
-    update_user = UpdateUser.Field()
+    #update_user = UpdateUser.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

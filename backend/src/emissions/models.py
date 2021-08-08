@@ -9,11 +9,16 @@ class User(AbstractUser):
     """
     Researcher. May be normal user or a group representative
     """
-    first_name = models.CharField(max_length=25)
-    last_name = models.CharField(max_length=25)
-    email = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(blank=False, max_length=255, verbose_name="email", unique=True)
+    username = models.CharField(max_length=100, unique=True)
+    first_name = models.CharField(max_length=25, blank=True)
+    last_name = models.CharField(max_length=25, blank=True)
     working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    EMAIL_FIELD = "email"
+    REQUIRED_FIELDS = ['username']
 
     def __str__(self):
         return self.username
