@@ -18,7 +18,7 @@ import * as yup from 'yup';
 
 // Backend Queries
 import { gql, useMutation } from '@apollo/client';
-import { setCookie } from '../src/utils/common';
+import { setCookie } from '../src/utils/commons';
 
 
 // mutation to sing in user
@@ -73,7 +73,7 @@ function SignIn() {
               password: values.password
             },
           onCompleted: ( { signIn }) => {
-            localStorage.setCookie('token', signIn.token);
+            setCookie('token', signIn.token);
             router.push('/')
           }
     }
