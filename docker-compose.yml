@@ -40,6 +40,7 @@ services:
       - "8000:8000"
     depends_on:
       - db
+    env_file: ./.env
   # frontend:
   #   container_name: wepledge-frontend
   #   tty: true
@@ -54,7 +55,7 @@ services:
   #   #   - cube
   #   ports:
   #     - "3000:3000"
-  #   #env_file: ./.env
+  #   env_file: ./.env
   #   environment:
   #     HOME: /home/node
 volumes:
