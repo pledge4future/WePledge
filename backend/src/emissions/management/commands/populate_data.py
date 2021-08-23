@@ -12,6 +12,7 @@ import numpy as np
 import pandas as pd
 import os
 import logging
+from django.contrib.auth.management.commands import createsuperuser
 
 logger = logging.basicConfig()
 
@@ -27,6 +28,9 @@ class Command(BaseCommand):
     help = 'Seeds the database.'
 
     def handle(self, *args, **options):
+
+        # Create super user
+        User.objects.create_superuser("admin", 'admin@admin.com', 'adminpass')
 
         # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
         print("Loading institutions ...")
@@ -52,8 +56,8 @@ class Command(BaseCommand):
                 new_user = User(username=usr[1].first_name + usr[1].last_name,
                              first_name=usr[1].first_name,
                              last_name=usr[1].last_name,
-                             email=f"{usr[1].first_name}.{usr[1].last_name}@some-university.com",
-                             password="super")
+                             email=f"{usr[1].first_name}.{usr[1].last_name}@uni-hd.de",
+                             password="password1234")
                 new_user.save()
             except IntegrityError:
                 print("Users already exist.")

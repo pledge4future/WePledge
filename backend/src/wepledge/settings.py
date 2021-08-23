@@ -139,6 +139,12 @@ GRAPHQL_JWT = {
         "graphql_auth.mutations.VerifyToken",
         "graphql_auth.mutations.ObtainJSONWebToken",
         "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.PasswordChange",
+        "graphql_auth.mutations.UpdateAccount",
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.ResendActivationEmail",
+
     ],
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
@@ -151,8 +157,8 @@ GRAPHQL_AUTH = {
 }
 
 
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.greensta.de'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL: False
