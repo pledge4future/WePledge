@@ -2,7 +2,7 @@
 
 The API including requests and possible responses is well documented [here](https://django-graphql-auth.readthedocs.io/en/latest/api).
 
-The requests (except for the updateUser) can be sent through GraphiQL on `localhost:8000/graphql` or using [Postman](https://www.postman.com/). If the requests reuqired sending a token in the header, you need to use postman. 
+The requests (except for the updateUser) can be sent through GraphiQL on `localhost:8000/graphql` or using [Postman](https://www.postman.com/) to `localhost:8000/graphql/`. If the requests reuqired sending a token in the header, you need to use postman. 
 
 As a tutorial, everything is explained in this [video tutorial](https://www.youtube.com/watch?v=pyV2_F9wlk8&t=494s) along with code on [GitHub](https://github.com/veryacademy/YT-GraphQL-User-Authentication-GraphQL-Auth)
 
