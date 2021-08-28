@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -11,6 +11,8 @@ import {
   ListItemText,
   IconButton,
   Button,
+  ListItemIcon,
+  MenuItem,
 } from "@material-ui/core";
 import { withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
@@ -18,10 +20,13 @@ import AppBar from "../../components/AppBar";
 import Toolbar, { styles as toolbarStyles } from "../../components/Toolbar";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MenuIcon from "@material-ui/icons/Menu";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 
-import Menu from "@material-ui/core/Menu";
-import MenuItem from "@material-ui/core/MenuItem";
+// icons for user submenu 
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+
+import Menu from '@material-ui/core/Menu';
+import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
 
 import { routes, Route } from "../../data/routes";
 
@@ -109,19 +114,24 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  authContext.isAuthenticated = true;
 
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
-  };
+  const [userSubmenuAnchorElement, setUserSubmenuAnchorElement] = useState(null);
+  const userSubmenuOpen = Boolean(userSubmenuAnchorElement);
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  function openUserSubmenu(event: any): void{
+    setUserSubmenuAnchorElement(event?.currentTarget);
 
-  // routes[routes.length] = { name: "Sign In", link: "/sign-in" };
+  }
+
+  const handleUserSubmenuClose = () => {
+    setUserSubmenuAnchorElement(null);
+  }
+
 
   const path: Route[] = routes;
+
+
 
   const tabs = (
     <div className={classes.right}>
@@ -138,15 +148,45 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
         </Link>
       ))}
       {authContext.isAuthenticated ? (
+        <>
         <Link
           color="inherit"
           variant="h6"
           underline="none"
           className={classes.rightLink}
-          onClik={() => <LogoutContainer />}
+          onClick={openUserSubmenu}
+          href="#"
         >
-          {"SignOut"}
+          {"User"}
         </Link>
+        <Menu
+          id="user-menu-popover"
+          open={userSubmenuOpen}
+          anchorEl={userSubmenuAnchorElement}
+          onClose={handleUserSubmenuClose}
+          anchorOrigin={{
+            vertical: 'center',
+            horizontal: 'center',
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'center',
+          }}
+        >
+          <StyledMenuItem>
+            <ListItemIcon>
+              <AccountCircleIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="User Profile" />
+          </StyledMenuItem>
+          <StyledMenuItem>
+            <ListItemIcon>
+              <ExitToAppIcon fontSize="small" />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </StyledMenuItem>
+        </Menu>
+        </>
       ) : (
         <Link
           color="inherit"
@@ -258,48 +298,6 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
       </IconButton>
     </>
   );
-
-  // const user = (
-  //   <div>
-  //     {matches ? (
-  //       <IconButton
-  //         aria-controls="simple-menu"
-  //         className={classes.AccountCircleIconContainer}
-  //         aria-haspopup="true"
-  //         onClick={handleClick}
-  //       >
-  //         <AccountCircleIcon className={classes.drawerIcon} />
-  //       </IconButton>
-  //     ) : (
-  //       <Button
-  //         variant="text"
-  //         className={classes.button}
-  //         startIcon={<AccountCircleIcon />}
-  //         onClick={handleClick}
-  //       >
-  //         User
-  //       </Button>
-  //     )}
-
-  //     <Menu
-  //       id="simple-menu"
-  //       anchorEl={anchorEl}
-  //       keepMounted
-  //       open={Boolean(anchorEl)}
-  //       onClose={handleClose}
-  //     >
-  //       <MenuItem onClick={handleClose} component="a" href="/sign-in">
-  //         Sign In
-  //       </MenuItem>
-  //       <MenuItem onClick={handleClose} component="a" href="/sign-up">
-  //         Sign UP
-  //       </MenuItem>
-  //       <MenuItem onClick={handleClose} component="a" href="/user_profile">
-  //         Profile
-  //       </MenuItem>
-  //     </Menu>
-  //   </div>
-  // );
 
   const logo = (
     <div className={matches ? classes.center : classes.left}>
