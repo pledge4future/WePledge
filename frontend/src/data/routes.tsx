@@ -13,6 +13,7 @@ export const routes: Route[] = [
   { name: "Overview/Results", link: "/overview-results" },
   { name: "Participate", link: "/participate" },
   { name: "Methodology", link: "/methodology" },
+  { name: "Demo", link: "/dashboard" },
   { name: "AboutUs", link: "/about-us" },
   // { name: "Contact", link: "/contact" },
   // { name: "Impressum", link: "/impressum" },
