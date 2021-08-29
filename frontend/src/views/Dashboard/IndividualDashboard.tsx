@@ -3,6 +3,8 @@ import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend, Line } from 'rechart
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 
+import { makeStyles } from '@material-ui/core/styles';
+
 function getRandomEmissions(){
   return Math.floor(Math.random() * 500) + 100;
 }
@@ -38,8 +40,19 @@ const exampleData = [
     getRandomData("Dezember"),
 ]
 
+const useStyles = makeStyles({
+  legendContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: '200px'
+  },
+})
+
 
 export function IndividualDashboard(){
+
+  const styles = useStyles();
 
   const [showElectricity, setShowElectricity] = useState(true);
   const [showHeating, setShowHeating] = useState(true);
@@ -57,7 +70,7 @@ export function IndividualDashboard(){
 
   const renderComposedChart = useCallback(() => {
     return (
-      <div id="containerDiv">
+      <div>
       <ComposedChart width={1000} height={400} data={exampleData}>
         <XAxis dataKey="name" />
         <YAxis />
@@ -77,7 +90,7 @@ export function IndividualDashboard(){
         <Line dataKey="sum" stroke={ChartColors.trendLine} />
         <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
       </ComposedChart>
-      <div id="subcontainer">
+      <div className={styles.legendContainer}>
         <CustomLegend items = {legendData}/>
       </div>
       </div>

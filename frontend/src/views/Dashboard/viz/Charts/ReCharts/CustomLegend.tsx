@@ -25,7 +25,7 @@ const useStyles = makeStyles({
   container: {
     display: 'flex',
     alignItems: 'center',
-    height: '5px',
+    height: '3px',
     justifyContent: 'center'
   }
 })
