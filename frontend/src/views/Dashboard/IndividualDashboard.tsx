@@ -1,34 +1,23 @@
-import React from "react"
+import React, { useCallback, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts';
 import { ChartColors } from './viz/VizColors';
-
-function getRandElectricityEmissions(){
-  return Math.floor(Math.random() * 500) + 1
-}
-
-function getRandHeatingEmissions(){
-  return 300;
-}
-
-function getRandBusinessEmissions(){
-  return 300;
-}
-
-function getRandCommutingEmissions(){
-  return 300;
-}
+import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 
 function getRandomEmissions(){
   return Math.floor(Math.random() * 500) + 100;
 }
 
 function getRandomData(month: string){
+
+  const data = [getRandomEmissions(),getRandomEmissions(),getRandomEmissions(),getRandomEmissions()]
+
   return {
     "name": month,
-    "electricity": getRandomEmissions(),
-    "heating": getRandomEmissions(),
-    "commuting": getRandomEmissions(),
-    "business": getRandomEmissions(),
+    "electricity": data[0],
+    "heating": data[1],
+    "commuting": data[2],
+    "business": data[3],
+    "sum": data.reduce((total, current) => total += current),
     "max": 1000
   }
 }
@@ -49,25 +38,53 @@ const exampleData = [
     getRandomData("Dezember"),
 ]
 
-function renderComposedChart(){
-  return (
-    <ComposedChart width={1000} height={400} data={exampleData}>
-      <XAxis dataKey="name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
-      <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
-      <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
-      <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
-      <Line dataKey="max" />
-    </ComposedChart>
-  )
-}
 
+export function IndividualDashboard(){
 
+  const [showElectricity, setShowElectricity] = useState(true);
+  const [showHeating, setShowHeating] = useState(true);
+  const [showCommuting, setShowCommuting] = useState(true);
+  const [showBusiness, setShowBusiness] = useState(true);
 
-export default function IndividualDashboard(){
+  const legendData: CustomLegendItem[] = [
+    { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
+    { label: 'Commuting', color: ChartColors.commuting, shown: showCommuting, onItemChange: (() => setShowCommuting(!showCommuting)) },
+    { label: 'Heating', color: ChartColors.heating, shown: showHeating, onItemChange: (() => setShowHeating(!showHeating)) },
+    { label: 'Business', color: ChartColors.business, shown: showBusiness, onItemChange: (() => setShowBusiness(!showBusiness)) },
+    /* { label: 'per Capita',color: ChartColors.perCapitaLine},
+    { label: 'Trendline', color: ChartColors.trendLine}, */
+  ]
+
+  const renderComposedChart = useCallback(() => {
+    return (
+      <div id="containerDiv">
+      <ComposedChart width={1000} height={400} data={exampleData}>
+        <XAxis dataKey="name" />
+        <YAxis />
+        <Tooltip />
+        ({ 
+        showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
+        })
+        ({
+          showHeating && <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
+        })
+        ({
+          showCommuting && <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
+        })
+        ({
+        showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
+        })
+        <Line dataKey="sum" stroke={ChartColors.trendLine} />
+        <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+      </ComposedChart>
+      <div id="subcontainer">
+        <CustomLegend items = {legendData}/>
+      </div>
+      </div>
+
+    )
+  }, [showElectricity, showHeating, showCommuting, showBusiness]);
+  
   return (
     <React.Fragment>
     <h3>Individual Emissions</h3>

@@ -5,7 +5,7 @@ import Tab from '@material-ui/core/Tab';
 import {TabPanel} from './TabPanel';
 
 // import dashboard components
-import IndividualDashboard from './IndividualDashboard';
+import { IndividualDashboard } from './IndividualDashboard';
 import GroupDashboard from './GroupDashboard';
 
 
