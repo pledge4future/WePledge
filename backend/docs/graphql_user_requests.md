@@ -315,8 +315,6 @@ mutation {
 
 #### Get current user
 
-Bug: Cannot get the user's working group yet. 
-
 ```
 query {
 	me {

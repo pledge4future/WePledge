@@ -1,35 +1,65 @@
 import graphene
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
 from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
-
+from graphene_django.filter import DjangoFilterConnectionField
 
 # -------------- GraphQL Types -------------------
-# Create a GraphQL type for the business trip model
+
+
+class UserType(DjangoObjectType):
+    class Meta:
+        model = User
+
+
+class WorkingGroupType(DjangoObjectType):
+    class Meta:
+        model = WorkingGroup
+
+
 class BusinessTripType(DjangoObjectType):
     class Meta:
         model = BusinessTrip
 
 
-# Create a GraphQL type for the electricity model
 class ElectricityType(DjangoObjectType):
     class Meta:
         model = Electricity
 
 
-# Create a GraphQL type for the electricity model
 class HeatingType(DjangoObjectType):
     class Meta:
         model = Heating
 
 
-# Create a GraphQL type for the electricity model
-class UserType(DjangoObjectType):
+class HeatingMonthlyType(ObjectType):
+    month = graphene.String()
+    co2e = graphene.Float()
+
     class Meta:
-        model = User
+        name = "HeatingMonthly"
+        filter_fields = ['group_id']
+
+
+class ElectricityMonthlyType(ObjectType):
+    month = graphene.String()
+    co2e = graphene.Float()
+
+    class Meta:
+        name = "ElectricityMonthly"
+
+
+class BusinessTripMonthlyType(ObjectType):
+    month = graphene.String()
+    co2e = graphene.Float()
+
+    class Meta:
+        name = "BusinessTripMonthly"
 
 
 # -------------------- Query types -----------------
@@ -42,7 +72,11 @@ class Query(UserQuery, MeQuery, ObjectType):
     electricities = graphene.List(ElectricityType)
     heating = graphene.Field(HeatingType, id=graphene.Int())
     heatings = graphene.List(HeatingType)
-    user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
+    heating_monthly = graphene.List(HeatingMonthlyType, group_id=graphene.UUID())
+    electricity_monthly = graphene.List(ElectricityMonthlyType, group_id=graphene.UUID())
+    businesstrips_monthly = graphene.List(BusinessTripMonthlyType, group_id=graphene.UUID(), username=graphene.String())
+    #user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
+    working_groups = graphene.List(WorkingGroupType)
 
     def resolve_businesstrips(self, info, **kwargs):
         return BusinessTrip.objects.all()
@@ -52,6 +86,58 @@ class Query(UserQuery, MeQuery, ObjectType):
 
     def resolve_heatings(self, info, **kwargs):
         return Heating.objects.all()
+
+    def resolve_working_groups(self, info, **kwargs):
+        return WorkingGroup.objects.all()
+
+    def resolve_heating_monthly(self, info, group_id=None, **kwargs):
+        if group_id:
+            wg = WorkingGroup.objects.get(pk=group_id)
+            return Heating.objects.filter(working_group=wg)\
+                .annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+        else:
+            return Heating.objects.annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+
+    def resolve_electricity_monthly(self, info, group_id=None, **kwargs):
+        if group_id:
+            wg = WorkingGroup.objects.get(pk=group_id)
+            return Electricity.objects.filter(working_group=wg)\
+                .annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+        else:
+            return Electricity.objects.annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+
+    def resolve_businesstrip_monthly(self, info, group_id=None, username=None, **kwargs):
+        if group_id:
+            wg = WorkingGroup.objects.get(pk=group_id)
+            return BusinessTrip.objects.filter(working_group=wg)\
+                .annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+        elif username:
+            user = User.objects.get(username=username)
+            return BusinessTrip.objects.filter(user=user)\
+                .annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
+        else:
+            return BusinessTrip.objects.annotate(month=TruncMonth('timestamp'))\
+                .values('month')\
+                .annotate(co2e=Sum('co2e'))\
+                .order_by('month')
 
 
 # -------------- Input Object Types --------------------------
@@ -166,10 +252,10 @@ class CreateHeating(graphene.Mutation):
         # calculate co2
         co2e = calc_co2_heating(input.consumption_kwh, input.fuel_type)
         new_heating = Heating(working_group=workinggroup,
-                                      timestamp=input.timestamp,
-                                      consumption_kwh=input.consumption_kwh,
-                                      fuel_type=input.fuel_type,
-                                      co2e=round(co2e, 1))
+                              timestamp=input.timestamp,
+                              consumption_kwh=input.consumption_kwh,
+                              fuel_type=input.fuel_type,
+                              co2e=round(co2e, 1))
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)
 
