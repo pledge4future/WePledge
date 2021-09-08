@@ -20,7 +20,6 @@ logger = logging.basicConfig()
 script_path = os.path.dirname(os.path.realpath(__file__))
 
 
-
 class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super(Command, self).__init__(*args, **kwargs)
@@ -30,7 +29,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # Create super user
-        User.objects.create_superuser("admin", 'admin@admin.com', 'adminpass')
+        try:
+            User.objects.create_superuser("admin", 'admin@admin.com', 'adminpass')
+        except IntegrityError:
+            pass
 
         # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
         print("Loading institutions ...")
@@ -155,8 +157,8 @@ class Command(BaseCommand):
                 for d in dates:
                     new_trip = BusinessTrip(user=usr,
                                             working_group=usr.working_group,
-                                        distance=np.random.randint(100, 10000, 1),
-                                        co2e=float(np.random.randint(50, 1000, 1)),
-                                        timestamp=str(d),
-                                        transportation_mode=np.random.choice(modes, 1)[0])
+                                            distance=np.random.randint(100, 10000, 1),
+                                            co2e=float(np.random.randint(50, 1000, 1)),
+                                            timestamp=str(d),
+                                            transportation_mode=np.random.choice(modes, 1)[0])
                     new_trip.save()
