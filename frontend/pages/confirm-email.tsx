@@ -40,7 +40,6 @@ function confirmEmail(){
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert('test')
       verifyAccount({variables: {token: values.token}})
     }
   })

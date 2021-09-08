@@ -55,7 +55,13 @@ function SignIn() {
 
   const router = useRouter();
 
-  const [signIn] = useMutation(TOKEN_AUTH)
+  const [signIn] = useMutation(TOKEN_AUTH,
+    {
+    onCompleted: (data) => {
+      setCookie('token', data.tokenAuth.token);
+      router.push('/')
+    }
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -64,18 +70,13 @@ function SignIn() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert('logging in');
       signIn(
         {
           variables: 
             {
               email: values.email,
               password: values.password
-            },
-          onCompleted: ( { signIn }) => {
-            setCookie('token', signIn.token);
-            router.push('/')
-          }
+            }
     }
     )
     }

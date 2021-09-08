@@ -114,8 +114,6 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   const [openDrawer, setOpenDrawer] = React.useState(false);
 
-  authContext.isAuthenticated = true;
-
   const [userSubmenuAnchorElement, setUserSubmenuAnchorElement] = useState(null);
   const userSubmenuOpen = Boolean(userSubmenuAnchorElement);
 
