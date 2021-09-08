@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -49,9 +51,11 @@ class WorkingGroup(models.Model):
     representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
+    group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    readonly_fields = ('group_id',)
 
-    class Meta:
-        unique_together = ("name", "institution")
+    #class Meta:
+    #    unique_together = ("name", "institution")
 
     def clean(self, *args, **kwargs):
         """
@@ -159,7 +163,6 @@ class Electricity(models.Model):
 
     class Meta:
         unique_together = ("working_group", "timestamp", "fuel_type")
-
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
