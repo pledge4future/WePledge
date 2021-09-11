@@ -158,7 +158,7 @@ class Command(BaseCommand):
 
                 for d in dates:
                     new_trip = BusinessTrip(user=usr,
-                                            working_group=wg_biomed,
+                                            working_group=usr.working_group,
                                             distance=np.random.randint(100, 10000, 1),
                                             co2e=float(np.random.randint(50, 1000, 1)),
                                             timestamp=str(d),
