@@ -45,6 +45,7 @@ class HeatingType(DjangoObjectType):
 class HeatingMonthlyType(ObjectType):
     month = graphene.String()
     co2e = graphene.Float()
+    co2e_pc = graphene.Float()
 
     class Meta:
         name = "HeatingMonthly"
@@ -54,6 +55,7 @@ class HeatingMonthlyType(ObjectType):
 class ElectricityMonthlyType(ObjectType):
     month = graphene.String()
     co2e = graphene.Float()
+    co2e_pc = graphene.Float()
 
     class Meta:
         name = "ElectricityMonthly"
@@ -62,6 +64,7 @@ class ElectricityMonthlyType(ObjectType):
 class BusinessTripMonthlyType(ObjectType):
     month = graphene.String()
     co2e = graphene.Float()
+    co2e_pc = graphene.Float()
 
     class Meta:
         name = "BusinessTripMonthly"
@@ -79,9 +82,19 @@ class Query(UserQuery, MeQuery, ObjectType):
     heatings = graphene.List(HeatingType)
 
     # Monthly aggregated data
-    heating_monthly = graphene.List(HeatingMonthlyType, group_id=graphene.UUID(), inst_id=graphene.UUID())
-    electricity_monthly = graphene.List(ElectricityMonthlyType, group_id=graphene.UUID(), inst_id=graphene.UUID())
-    businesstrip_monthly = graphene.List(BusinessTripMonthlyType, username=graphene.String(), group_id=graphene.UUID(), inst_id=graphene.UUID())
+    heating_monthly = graphene.List(HeatingMonthlyType,
+                                    group_id=graphene.UUID(),
+                                    inst_id=graphene.UUID(),
+                                    per_capita=graphene.Boolean())
+    electricity_monthly = graphene.List(ElectricityMonthlyType,
+                                        group_id=graphene.UUID(),
+                                        inst_id=graphene.UUID(),
+                                        per_capita=graphene.Boolean())
+    businesstrip_monthly = graphene.List(BusinessTripMonthlyType,
+                                         username=graphene.String(),
+                                         group_id=graphene.UUID(),
+                                         inst_id=graphene.UUID(),
+                                         per_capita=graphene.Boolean())
 
     #user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
     working_groups = graphene.List(WorkingGroupType)
@@ -102,30 +115,31 @@ class Query(UserQuery, MeQuery, ObjectType):
         """ Yields all working group objects """
         return WorkingGroup.objects.all()
 
-    def resolve_heating_monthly(self, info, group_id=None, inst_id=None, **kwargs):
+    def resolve_heating_monthly(self, info, group_id=None, inst_id=None, per_capita=False, **kwargs):
         """
-        Yields monthly co2e emissions of heating consumption
+        Yields monthly co2e emissions (per capita) of heating consumption
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
+        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
         """
-
+        # Get relevant data entries
         if group_id:
             entries = Heating.objects.filter(working_group__group_id=group_id)
         elif inst_id:
             entries = Heating.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = Heating.objects.all()
-
-        return entries\
-            .annotate(month=TruncMonth('timestamp'))\
+        # Annotate with month
+        unit = "co2e_pc" if per_capita else "co2e"
+        return entries.annotate(month=TruncMonth('timestamp'))\
             .values('month')\
-            .annotate(co2e=Sum('co2e'))\
+            .annotate(co2e=Sum(unit)) \
             .order_by('month')
 
-    def resolve_electricity_monthly(self, info, group_id=None, inst_id=None, **kwargs):
+    def resolve_electricity_monthly(self, info, group_id=None, inst_id=None, per_capita=False, **kwargs):
         """
         Yields monthly co2e emissions of electricity consumption
         - for a group (if group_id is given),
@@ -133,6 +147,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
+        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
         """
         if group_id:
             entries = Electricity.objects.filter(working_group__group_id=group_id)
@@ -140,13 +155,14 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = Electricity.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = Electricity.objects.all()
+        unit = "co2e_pc" if per_capita else "co2e"
         return entries\
             .annotate(month=TruncMonth('timestamp'))\
             .values('month')\
-            .annotate(co2e=Sum('co2e'))\
+            .annotate(co2e=Sum(unit))\
             .order_by('month')
 
-    def resolve_businesstrip_monthly(self, info, username=None, group_id=None, inst_id=None, **kwargs):
+    def resolve_businesstrip_monthly(self, info, username=None, group_id=None, inst_id=None, per_capita=False, **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
         - for a user (if username is given),
@@ -155,6 +171,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
+        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
         """
         if group_id:
             entries = BusinessTrip.objects.filter(working_group__group_id=group_id)
@@ -164,10 +181,11 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = BusinessTrip.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = BusinessTrip.objects.all()
+        unit = "co2e" if per_capita else "co2e_pc"
         return entries\
             .annotate(month=TruncMonth('timestamp'))\
             .values('month')\
-            .annotate(co2e=Sum('co2e'))\
+            .annotate(co2e=Sum(unit))\
             .order_by('month')
 
 

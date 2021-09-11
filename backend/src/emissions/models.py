@@ -34,6 +34,7 @@ class Institution(models.Model):
     state = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100, null=False, blank=False)
     inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    readonly_fields = ('inst_id',)
 
     class Meta:
         unique_together = ("name", "city", "country")
@@ -54,8 +55,8 @@ class WorkingGroup(models.Model):
     group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     readonly_fields = ('group_id',)
 
-    #class Meta:
-    #    unique_together = ("name", "institution")
+    class Meta:
+        unique_together = ("name", "institution")
 
     def clean(self, *args, **kwargs):
         """
@@ -89,10 +90,11 @@ class BusinessTrip(models.Model):
     Business trip
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
+    co2e_pc = models.FloatField()
 
     CAR = 'CAR'
     BUS = 'BUS'
@@ -135,6 +137,7 @@ class Heating(models.Model):
                          (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
     co2e = models.FloatField()
+    co2e_pc = models.FloatField()
 
     class Meta:
         unique_together = ("working_group", "timestamp", "fuel_type")
@@ -160,6 +163,7 @@ class Electricity(models.Model):
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()
+    co2e_pc = models.FloatField()
 
     class Meta:
         unique_together = ("working_group", "timestamp", "fuel_type")
