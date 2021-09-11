@@ -116,7 +116,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=11000, high=15000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                new_electricity = Electricity(working_group= wg_environmental,
+                new_electricity = Electricity(working_group=wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
@@ -152,11 +152,13 @@ class Command(BaseCommand):
             modes = [BusinessTrip.PLANE, BusinessTrip.CAR, BusinessTrip.TRAIN, BusinessTrip.BUS]
 
             for usr in User.objects.all():
-                dates = np.arange(np.datetime64('2019-01-15'), np.datetime64('2021-01-15'), np.timedelta64(30, "D")).astype('datetime64[D]')
+                dates = np.arange(np.datetime64('2019-01-15'),
+                                  np.datetime64('2021-01-15'),
+                                  np.timedelta64(30, "D")).astype('datetime64[D]')
 
                 for d in dates:
                     new_trip = BusinessTrip(user=usr,
-                                            working_group=usr.working_group,
+                                            working_group=wg_biomed,
                                             distance=np.random.randint(100, 10000, 1),
                                             co2e=float(np.random.randint(50, 1000, 1)),
                                             timestamp=str(d),

@@ -3,7 +3,6 @@ import uuid
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
-from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 
 
@@ -34,6 +33,7 @@ class Institution(models.Model):
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100, null=False, blank=False)
+    inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
 
     class Meta:
         unique_together = ("name", "city", "country")
@@ -90,7 +90,7 @@ class BusinessTrip(models.Model):
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    timestamp = models.DateField()
+    timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
 

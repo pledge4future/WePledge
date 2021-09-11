@@ -1,11 +1,11 @@
 import graphene
-from django.db.models import Count, Sum
+from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
-from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating
+from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
 from graphene_django.filter import DjangoFilterConnectionField
 
@@ -20,6 +20,11 @@ class UserType(DjangoObjectType):
 class WorkingGroupType(DjangoObjectType):
     class Meta:
         model = WorkingGroup
+
+
+class InstitutionType(DjangoObjectType):
+    class Meta:
+        model = Institution
 
 
 class BusinessTripType(DjangoObjectType):
@@ -72,72 +77,98 @@ class Query(UserQuery, MeQuery, ObjectType):
     electricities = graphene.List(ElectricityType)
     heating = graphene.Field(HeatingType, id=graphene.Int())
     heatings = graphene.List(HeatingType)
-    heating_monthly = graphene.List(HeatingMonthlyType, group_id=graphene.UUID())
-    electricity_monthly = graphene.List(ElectricityMonthlyType, group_id=graphene.UUID())
-    businesstrips_monthly = graphene.List(BusinessTripMonthlyType, group_id=graphene.UUID(), username=graphene.String())
+
+    # Monthly aggregated data
+    heating_monthly = graphene.List(HeatingMonthlyType, group_id=graphene.UUID(), inst_id=graphene.UUID())
+    electricity_monthly = graphene.List(ElectricityMonthlyType, group_id=graphene.UUID(), inst_id=graphene.UUID())
+    businesstrip_monthly = graphene.List(BusinessTripMonthlyType, username=graphene.String(), group_id=graphene.UUID(), inst_id=graphene.UUID())
+
     #user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
     working_groups = graphene.List(WorkingGroupType)
 
     def resolve_businesstrips(self, info, **kwargs):
+        """ Yields all heating consumption objects"""
         return BusinessTrip.objects.all()
 
     def resolve_electricities(self, info, **kwargs):
+        """ Yields all heating consumption objects"""
         return Electricity.objects.all()
 
     def resolve_heatings(self, info, **kwargs):
+        """ Yields all heating consumption objects"""
         return Heating.objects.all()
 
     def resolve_working_groups(self, info, **kwargs):
+        """ Yields all working group objects """
         return WorkingGroup.objects.all()
 
-    def resolve_heating_monthly(self, info, group_id=None, **kwargs):
-        if group_id:
-            wg = WorkingGroup.objects.get(pk=group_id)
-            return Heating.objects.filter(working_group=wg)\
-                .annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
-        else:
-            return Heating.objects.annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+    def resolve_heating_monthly(self, info, group_id=None, inst_id=None, **kwargs):
+        """
+        Yields monthly co2e emissions of heating consumption
+        - for a group (if group_id is given),
+        - for an institution (if inst_id is given)
+        param: username: username of user model (str)
+        param: group_id: UUID id of WorkingGroup model (str)
+        param: inst_id: UUID id of Institute model (str)
+        """
 
-    def resolve_electricity_monthly(self, info, group_id=None, **kwargs):
         if group_id:
-            wg = WorkingGroup.objects.get(pk=group_id)
-            return Electricity.objects.filter(working_group=wg)\
-                .annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+            entries = Heating.objects.filter(working_group__group_id=group_id)
+        elif inst_id:
+            entries = Heating.objects.filter(working_group__institution__inst_id=inst_id)
         else:
-            return Electricity.objects.annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+            entries = Heating.objects.all()
 
-    def resolve_businesstrip_monthly(self, info, group_id=None, username=None, **kwargs):
+        return entries\
+            .annotate(month=TruncMonth('timestamp'))\
+            .values('month')\
+            .annotate(co2e=Sum('co2e'))\
+            .order_by('month')
+
+    def resolve_electricity_monthly(self, info, group_id=None, inst_id=None, **kwargs):
+        """
+        Yields monthly co2e emissions of electricity consumption
+        - for a group (if group_id is given),
+        - for an institutions (if inst_id is given)
+        param: username: username of user model (str)
+        param: group_id: UUID id of WorkingGroup model (str)
+        param: inst_id: UUID id of Institute model (str)
+        """
         if group_id:
-            wg = WorkingGroup.objects.get(pk=group_id)
-            return BusinessTrip.objects.filter(working_group=wg)\
-                .annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+            entries = Electricity.objects.filter(working_group__group_id=group_id)
+        elif inst_id:
+            entries = Electricity.objects.filter(working_group__institution__inst_id=inst_id)
+        else:
+            entries = Electricity.objects.all()
+        return entries\
+            .annotate(month=TruncMonth('timestamp'))\
+            .values('month')\
+            .annotate(co2e=Sum('co2e'))\
+            .order_by('month')
+
+    def resolve_businesstrip_monthly(self, info, username=None, group_id=None, inst_id=None, **kwargs):
+        """
+        Yields monthly co2e emissions of businesstrips
+        - for a user (if username is given),
+        - for a group (if group_id is given),
+        - for an institution (if inst_id is given)
+        param: username: username of user model (str)
+        param: group_id: UUID id of WorkingGroup model (str)
+        param: inst_id: UUID id of Institute model (str)
+        """
+        if group_id:
+            entries = BusinessTrip.objects.filter(working_group__group_id=group_id)
         elif username:
-            user = User.objects.get(username=username)
-            return BusinessTrip.objects.filter(user=user)\
-                .annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+            entries = BusinessTrip.objects.filter(user__username=username)
+        elif inst_id:
+            entries = BusinessTrip.objects.filter(working_group__institution__inst_id=inst_id)
         else:
-            return BusinessTrip.objects.annotate(month=TruncMonth('timestamp'))\
-                .values('month')\
-                .annotate(co2e=Sum('co2e'))\
-                .order_by('month')
+            entries = BusinessTrip.objects.all()
+        return entries\
+            .annotate(month=TruncMonth('timestamp'))\
+            .values('month')\
+            .annotate(co2e=Sum('co2e'))\
+            .order_by('month')
 
 
 # -------------- Input Object Types --------------------------
