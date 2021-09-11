@@ -4,19 +4,24 @@
 
 There are three types of queries to request monthly co2e data: 
 
-* **heatingMonthly**
-* **electricityMonthly**
-* **businesstripMonthly** 
+- **heatingMonthly**
+- **electricityMonthly**
+- **businesstripMonthly** 
 
-The aggregation level can be specified using the arguments
+The **aggregation level** can be specified using the arguments
 
-* **username:** co2e on user level (only for businesstrips) 
-* **groupId:** co2e on working group level
-* **instId:** co2e on institution level 
+- **username:** co2e on user level (only for businesstrips) 
+- **groupId:** co2e on working group level
+- **instId:** co2e on institution level 
+
+The co2e emission can be returned as 
+
+- **total** emissions (if `perCapita:false`)
+- emission **per capita** (if `perCapita:true`)
 
 ### Examples:  
 
-#### Monthly Business Trip data of a user
+#### Monthly total emissions of business trip of a user  
 **Request:**
 
 ``` json
@@ -51,7 +56,7 @@ query {
 }
 ```
 
-#### Monthly Heating data of a working group
+#### Monthly total emissions of heating consumption of a working group 
 
 **Request:**
 
@@ -87,13 +92,14 @@ query {
 }
 ```
 
-#### Monthly Electricity data of an institution 
+#### Monthly per capita emissions of electricity consumption of an institution 
 
 **Request:**
 
 ``` json
 query {
-	electricityMonthly (instId:"f6c2965c-539e-456c-8e99-41cea9be4168") {
+	electricityMonthly (instId:"f6c2965c-539e-456c-8e99-41cea9be4168", 
+	perCapita:true) {
 	 co2e
     month
   }
@@ -107,15 +113,15 @@ query {
   "data": {
     "electricityMonthly": [
       {
-        "co2e": 9695.365696799923,
+        "co2e": 533.3614214399956,
         "month": "2019-01-01"
       },
       {
-        "co2e": 8504.686000799931,
+        "co2e": 528.8799448799957,
         "month": "2019-02-01"
       },
       {
-        "co2e": 9129.201443999926,
+        "co2e": 483.3620737199961,
         "month": "2019-03-01"
       },
     ]
