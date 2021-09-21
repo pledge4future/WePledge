@@ -6,8 +6,8 @@ Create permissions (read only) to models for a set of groups
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
 from django.db.utils import IntegrityError
-from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution
-from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
+from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting
+from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity, calc_co2_commuting, calc_co2_businesstrip
 import numpy as np
 import pandas as pd
 import os
@@ -178,3 +178,36 @@ class Command(BaseCommand):
                                             timestamp=str(d),
                                             transportation_mode=np.random.choice(modes, 1)[0])
                     new_trip.save()
+
+        if len(Commuting.objects.all()) == 0:
+            print("Loading commuting data ...")
+            workweeks = 40
+
+            for usr in User.objects.all():
+                distance = np.random.randint(0, 20, 1)
+                co2e = co2e_cap = calc_co2_commuting(transportation_mode="bicycle",
+                                          weekly_distance=distance)
+                new_trip = Commuting(user=usr,
+                                    working_group=usr.working_group,
+                                    distance=distance,
+                                    co2e=co2e,
+                                    co2e_cap=co2e_cap,
+                                    from_timestamp='2019-01-01',
+                                    to_timestamp='2019-12-01',
+                                    transportation_mode="BIKE")
+                new_trip.save()
+
+                co2e = co2e_cap = calc_co2_commuting(transportation_mode="car",
+                                                     weekly_distance=distance,
+                                                     passengers=1,
+                                                     size="medium",
+                                                     fuel_type="gasoline")
+                new_trip = Commuting(user=usr,
+                                        working_group=usr.working_group,
+                                        distance=distance,
+                                        co2e=co2e,
+                                        co2e_cap=co2e_cap,
+                                        from_timestamp='2020-01-01',
+                                        to_timestamp='2020-12-01',
+                                        transportation_mode="CAR")
+                new_trip.save()
