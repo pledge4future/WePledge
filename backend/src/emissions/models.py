@@ -5,7 +5,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from co2calculator.co2calculator import TransportationMode
+from co2calculator.co2calculator import CommutingTransportationMode
 
 
 class User(AbstractUser):
@@ -96,7 +96,7 @@ class Commuting(models.Model):
     to_timestamp = models.DateField(null=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
-    transportation_choices = [(x.name, x.value) for x in TransportationMode]
+    transportation_choices = [(x.name, x.value) for x in CommutingTransportationMode]
 
     transportation_mode = models.CharField(max_length=15,
                                            choices=transportation_choices,
