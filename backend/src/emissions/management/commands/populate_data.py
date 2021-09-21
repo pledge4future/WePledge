@@ -135,7 +135,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "l", "heat_pump_water")
+                co2e = calc_co2_heating(consumption=c, unit="l", fuel_type="oil")
                 co2e_cap = co2e / wg_biomed.n_employees
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
@@ -147,7 +147,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "l", "heat_pump_water")
+                co2e = calc_co2_heating(c, "l", "oil")
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(working_group=wg_environmental,
                                       timestamp=str(d),
