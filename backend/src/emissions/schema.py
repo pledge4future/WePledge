@@ -1,5 +1,5 @@
 import graphene
-from django.db.models import Sum
+from django.db.models import Sum, CharField, Value
 from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
@@ -8,6 +8,8 @@ from graphql_auth import mutations
 from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
 from graphene_django.filter import DjangoFilterConnectionField
+from emissions.graphene_utils import get_fields
+
 
 # -------------- GraphQL Types -------------------
 
@@ -42,60 +44,59 @@ class HeatingType(DjangoObjectType):
         model = Heating
 
 
-class HeatingMonthlyType(ObjectType):
-    month = graphene.String()
+class HeatingAggregatedType(ObjectType):
+    date = graphene.String()
     co2e = graphene.Float()
-    co2e_pc = graphene.Float()
+    co2e_cap = graphene.Float()
 
     class Meta:
-        name = "HeatingMonthly"
+        name = "HeatingAggregated"
         filter_fields = ['group_id']
 
 
-class ElectricityMonthlyType(ObjectType):
-    month = graphene.String()
+class ElectricityAggregatedType(ObjectType):
+    date = graphene.String()
     co2e = graphene.Float()
-    co2e_pc = graphene.Float()
+    co2e_cap = graphene.Float()
 
     class Meta:
-        name = "ElectricityMonthly"
+        name = "ElectricityAggregated"
 
 
-class BusinessTripMonthlyType(ObjectType):
-    month = graphene.String()
+class BusinessTripAggregatedType(ObjectType):
+    date = graphene.String()
     co2e = graphene.Float()
-    co2e_pc = graphene.Float()
+    co2e_cap = graphene.Float()
 
     class Meta:
-        name = "BusinessTripMonthly"
+        name = "BusinessTripAggregated"
 
 
 # -------------------- Query types -----------------
 
 # Create a Query type
 class Query(UserQuery, MeQuery, ObjectType):
-    businesstrip = graphene.Field(BusinessTripType, id=graphene.Int())
+    #businesstrip = graphene.Field(BusinessTripType, id=graphene.Int())
     businesstrips = graphene.List(BusinessTripType)
-    electricity = graphene.Field(ElectricityType, id=graphene.Int())
+    #electricity = graphene.Field(ElectricityType, id=graphene.Int())
     electricities = graphene.List(ElectricityType)
-    heating = graphene.Field(HeatingType, id=graphene.Int())
+    #heating = graphene.Field(HeatingType, id=graphene.Int())
     heatings = graphene.List(HeatingType)
 
-    # Monthly aggregated data
-    heating_monthly = graphene.List(HeatingMonthlyType,
+    # Aggregated data
+    heating_aggregated = graphene.List(HeatingAggregatedType,
                                     group_id=graphene.UUID(),
                                     inst_id=graphene.UUID(),
-                                    per_capita=graphene.Boolean())
-    electricity_monthly = graphene.List(ElectricityMonthlyType,
+                                    time_interval=graphene.String())
+    electricity_aggregated = graphene.List(ElectricityAggregatedType,
                                         group_id=graphene.UUID(),
                                         inst_id=graphene.UUID(),
-                                        per_capita=graphene.Boolean())
-    businesstrip_monthly = graphene.List(BusinessTripMonthlyType,
+                                        time_interval=graphene.String())
+    businesstrip_aggregated = graphene.List(BusinessTripAggregatedType,
                                          username=graphene.String(),
                                          group_id=graphene.UUID(),
                                          inst_id=graphene.UUID(),
-                                         per_capita=graphene.Boolean())
-
+                                         time_interval=graphene.String())
     #user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
     working_groups = graphene.List(WorkingGroupType)
 
@@ -115,7 +116,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         """ Yields all working group objects """
         return WorkingGroup.objects.all()
 
-    def resolve_heating_monthly(self, info, group_id=None, inst_id=None, per_capita=False, **kwargs):
+    def resolve_heating_aggregated(self, info, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions (per capita) of heating consumption
         - for a group (if group_id is given),
@@ -123,7 +124,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
-        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
+        param: time_interval: Aggregate co2e per "month" or "year"
         """
         # Get relevant data entries
         if group_id:
@@ -132,14 +133,31 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = Heating.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = Heating.objects.all()
-        # Annotate with month
-        unit = "co2e_pc" if per_capita else "co2e"
-        return entries.annotate(month=TruncMonth('timestamp'))\
-            .values('month')\
-            .annotate(co2e=Sum(unit)) \
-            .order_by('month')
 
-    def resolve_electricity_monthly(self, info, group_id=None, inst_id=None, per_capita=False, **kwargs):
+        metrics = {
+            'co2e': Sum('co2e'),
+            'co2e_cap': Sum('co2e_cap')
+        }
+
+        # Annotate based on groupby
+        #if groupby == "total":
+        #    return not entries.annotate(date=Value('total', output_field=CharField()))\
+        #        .values('date')\
+        #        .annotate(co2e=Sum("co2e"))\
+        #        .order_by('date')
+        #        #.annotate(co2e_cap=Sum("co2e_cap"))\
+         #       #.order_by('date')
+        if time_interval == "month":
+            return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
+        elif time_interval == "year":
+            return entries.annotate(date=TruncYear('timestamp'))\
+                .values('date')\
+                .annotate(**metrics) \
+                .order_by('date')
+        else:
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+
+    def resolve_electricity_aggregated(self, info, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions of electricity consumption
         - for a group (if group_id is given),
@@ -147,7 +165,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
-        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
+        param: time_interval: Aggregate co2e per "month" or "year"
         """
         if group_id:
             entries = Electricity.objects.filter(working_group__group_id=group_id)
@@ -155,14 +173,21 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = Electricity.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = Electricity.objects.all()
-        unit = "co2e_pc" if per_capita else "co2e"
-        return entries\
-            .annotate(month=TruncMonth('timestamp'))\
-            .values('month')\
-            .annotate(co2e=Sum(unit))\
-            .order_by('month')
+        metrics = {
+            'co2e': Sum('co2e'),
+            'co2e_cap': Sum('co2e_cap')
+        }
+        if time_interval == "month":
+            return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
+        elif time_interval == "year":
+            return entries.annotate(date=TruncYear('timestamp'))\
+                .values('date')\
+                .annotate(**metrics) \
+                .order_by('date')
+        else:
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
-    def resolve_businesstrip_monthly(self, info, username=None, group_id=None, inst_id=None, per_capita=False, **kwargs):
+    def resolve_businesstrip_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
         - for a user (if username is given),
@@ -171,7 +196,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: username: username of user model (str)
         param: group_id: UUID id of WorkingGroup model (str)
         param: inst_id: UUID id of Institute model (str)
-        param: unit: Unit of emissions, co2e: total emissions, co2e_pc: emissions per capita
+        param: time_interval: Aggregate co2e per "month" or "year"
         """
         if group_id:
             entries = BusinessTrip.objects.filter(working_group__group_id=group_id)
@@ -181,12 +206,28 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = BusinessTrip.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = BusinessTrip.objects.all()
-        unit = "co2e" if per_capita else "co2e_pc"
-        return entries\
-            .annotate(month=TruncMonth('timestamp'))\
-            .values('month')\
-            .annotate(co2e=Sum(unit))\
-            .order_by('month')
+
+        metrics = {
+            'co2e': Sum('co2e'),
+            'co2e_cap': Sum('co2e_cap')
+        }
+
+        if time_interval == "month":
+            return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
+        elif time_interval == "year":
+            return entries.annotate(date=TruncYear('timestamp'))\
+                .values('date')\
+                .annotate(**metrics) \
+                .order_by('date')
+        else:
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+
+
+
+
+
+
+
 
 
 # -------------- Input Object Types --------------------------
