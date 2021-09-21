@@ -88,12 +88,11 @@ class WorkingGroup(models.Model):
 
 class Commuting(models.Model):
     """
-    CO2 emissions from commuting
+    CO2 emissions from commuting per month
     """
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
-    from_timestamp = models.DateField(null=False)
-    to_timestamp = models.DateField(null=False)
+    timestamp = models.DateField(null=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
     distance = models.FloatField()
