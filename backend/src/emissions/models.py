@@ -94,7 +94,7 @@ class BusinessTrip(models.Model):
     timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
-    co2e_pc = models.FloatField()
+    co2e_cap = models.FloatField()
 
     CAR = 'CAR'
     BUS = 'BUS'
@@ -137,7 +137,7 @@ class Heating(models.Model):
                          (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
     co2e = models.FloatField()
-    co2e_pc = models.FloatField()
+    co2e_cap = models.FloatField()
 
     class Meta:
         unique_together = ("working_group", "timestamp", "fuel_type")
@@ -163,7 +163,7 @@ class Electricity(models.Model):
     fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()
-    co2e_pc = models.FloatField()
+    co2e_cap = models.FloatField()
 
     class Meta:
         unique_together = ("working_group", "timestamp", "fuel_type")

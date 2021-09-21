@@ -321,6 +321,10 @@ query {
     username
     email
     isRepresentative
+    workingGroup {
+    	groupId
+    	name
+    }
   }
 }
 ```

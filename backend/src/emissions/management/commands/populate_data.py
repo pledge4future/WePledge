@@ -108,25 +108,25 @@ class Command(BaseCommand):
             consumptions = np.random.uniform(low=8000, high=12000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
                 co2e = calc_co2_electricity(c, "german energy mix")
-                co2e_pc = co2e / wg_biomed.n_employees
+                co2e_cap = co2e / wg_biomed.n_employees
                 new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
                                       co2e=co2e,
-                                      co2e_pc=co2e_pc)
+                                      co2e_cap=co2e_cap)
                 new_electricity.save()
 
             consumptions = np.random.uniform(low=11000, high=15000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
                 co2e = calc_co2_electricity(c, "german energy mix")
-                co2e_pc = co2e / wg_environmental.n_employees
+                co2e_cap = co2e / wg_environmental.n_employees
                 new_electricity = Electricity(working_group=wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
                                       co2e=co2e,
-                                      co2e_pc=co2e_pc)
+                                      co2e_cap=co2e_cap)
                 new_electricity.save()
 
         # CREATE HEATING OBJECTS --------------------------------------------------------
@@ -136,25 +136,25 @@ class Command(BaseCommand):
             consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
                 co2e = calc_co2_heating(c, "heatpump_water")
-                co2e_pc = co2e / wg_biomed.n_employees
+                co2e_cap = co2e / wg_biomed.n_employees
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Heating.PUMPWATER,
                                       co2e=co2e,
-                                      co2e_pc=co2e_pc)
+                                      co2e_cap=co2e_cap)
                 new_heating.save()
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
                 co2e = calc_co2_heating(c, "heatpump_water")
-                co2e_pc = co2e / wg_environmental.n_employees
+                co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(working_group=wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
                                       fuel_type=Heating.PUMPWATER,
                                       co2e=co2e,
-                                      co2e_pc=co2e_pc)
+                                      co2e_cap=co2e_cap)
                 new_heating.save()
 
         # CREATE BUSINESS TRIPS --------------------------------------------------------
@@ -169,12 +169,12 @@ class Command(BaseCommand):
                                   np.timedelta64(30, "D")).astype('datetime64[D]')
 
                 for d in dates:
-                    co2e = co2e_pc = float(np.random.randint(50, 1000, 1))
+                    co2e = co2e_cap = float(np.random.randint(50, 1000, 1))
                     new_trip = BusinessTrip(user=usr,
                                             working_group=usr.working_group,
                                             distance=np.random.randint(100, 10000, 1),
                                             co2e=co2e,
-                                            co2e_pc=co2e_pc,
+                                            co2e_cap=co2e_cap,
                                             timestamp=str(d),
                                             transportation_mode=np.random.choice(modes, 1)[0])
                     new_trip.save()

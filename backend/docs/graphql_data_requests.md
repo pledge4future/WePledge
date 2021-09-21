@@ -2,11 +2,11 @@
 
 ## Queries
 
-There are three types of queries to request monthly co2e data: 
+There are three types of queries to request monthly (default) or annual co2e data: 
 
-- **heatingMonthly**
-- **electricityMonthly**
-- **businesstripMonthly** 
+- **heatingAggregated**
+- **electricityAggregated**
+- **businesstripAggregated** 
 
 The **aggregation level** can be specified using the arguments
 
@@ -16,19 +16,19 @@ The **aggregation level** can be specified using the arguments
 
 The co2e emission can be returned as 
 
-- **total** emissions (if `perCapita:false`)
-- emission **per capita** (if `perCapita:true`)
+- absolute emissions (`co2e`)
+- emissions per capita (`co2eCap`)
 
 ### Examples:  
 
-#### Monthly total emissions of business trip of a user  
+#### Monthly absolute emissions of business trip of a user  
 **Request:**
 
 ``` json
 query {
-	businessTripMonthly (username:"KimKlaus") {
+	businessTripAggregated (username:"KimKlaus", time_interval="month") {
 	 co2e
-    month
+    date
   }
 }
 ```
@@ -38,33 +38,35 @@ query {
 ```
 {
   "data": {
-    "businesstripMonthly": [
+    "businesstripAggregated": [
       {
         "co2e": 3229,
-        "month": "2019-01-01"
+        "date": "2019-01-01"
       },
       {
         "co2e": 3608,
-        "month": "2019-02-01"
+        "date": "2019-02-01"
       },
       {
         "co2e": 3111,
-        "month": "2019-03-01"
+        "date": "2019-03-01"
       },
     ]
   }
 }
 ```
 
-#### Monthly total emissions of heating consumption of a working group 
+#### Monthly absolute emissions of heating consumption of a working group 
+
+[How to get all group ids](./graphql_user_requests.md).
 
 **Request:**
 
 ``` json
 query {
-	heatingMonthly (groupId:"f6c2965c-539e-456c-8e99-41cea9be4168") {
+	heatingAggregated (groupId:"f6c2965c-539e-456c-8e99-41cea9be4168") {
 	 co2e
-    month
+    date
   }
 }
 ```
@@ -74,34 +76,35 @@ query {
 ```
 {
   "data": {
-    "heatingMonthly": [
+    "heatingAggregated": [
       {
         "co2e": 188.04196799999846,
-        "month": "2019-01-01"
+        "date": "2019-01-01"
       },
       {
         "co2e": 186.1296767999985,
-        "month": "2019-02-01"
+        "date": "2019-02-01"
       },
       {
         "co2e": 221.6664215999982,
-        "month": "2019-03-01"
+        "date": "2019-03-01"
       },
     ]
   }
 }
 ```
 
-#### Monthly per capita emissions of electricity consumption of an institution 
+#### Monthly absolute and per capita emissions of electricity consumption of an institution 
 
 **Request:**
 
 ``` json
 query {
-	electricityMonthly (instId:"f6c2965c-539e-456c-8e99-41cea9be4168", 
-	perCapita:true) {
-	 co2e
-    month
+	electricityAggregated (groupId:"c7876b21-6166-443b-97e5-f7c5413de520", 
+    timeInterval:"month") {
+		co2e
+    co2eCap
+    date
   }
 }
 ```
@@ -111,19 +114,17 @@ query {
 ```
 {
   "data": {
-    "electricityMonthly": [
+    "electricityAggregate": [
       {
-        "co2e": 533.3614214399956,
-        "month": "2019-01-01"
+        "co2e": 3521.1789287999713,
+        "co2eCap": 234.7452619199981,
+        "date": "2019-01-01"
       },
       {
-        "co2e": 528.8799448799957,
-        "month": "2019-02-01"
-      },
-      {
-        "co2e": 483.3620737199961,
-        "month": "2019-03-01"
-      },
+        "co2e": 4669.278026399962,
+        "co2eCap": 311.28520175999745,
+        "date": "2019-02-01"
+      }
     ]
   }
 }
