@@ -5,6 +5,8 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
+from co2calculator.co2calculator import TransportationMode
+
 
 class User(AbstractUser):
     """
@@ -83,6 +85,26 @@ class WorkingGroup(models.Model):
     def __str__(self):
         return f"{self.name}, {self.institution.name}, {self.institution.city}, {self.institution.country}"
 
+
+class Commuting(models.Model):
+    """
+    CO2 emissions from commuting
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
+    from_timestamp = models.DateField(null=False)
+    to_timestamp = models.DateField(null=False)
+    co2e = models.FloatField()
+    co2e_cap = models.FloatField()
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
+
+    transportation_mode = models.CharField(max_length=15,
+                                           choices=transportation_choices,
+                                           blank=False,
+                                           )
+
+    def __str__(self):
+        return f"{self.user.username}, {self.transportation_mode}"
 
 
 class BusinessTrip(models.Model):

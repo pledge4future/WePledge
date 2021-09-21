@@ -107,7 +107,7 @@ class Command(BaseCommand):
             print("Loading electricity data ...")
             consumptions = np.random.uniform(low=8000, high=12000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_electricity(c, "german energy mix")
+                co2e = calc_co2_electricity(c, "german_energy_mix")
                 co2e_cap = co2e / wg_biomed.n_employees
                 new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
@@ -119,7 +119,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=11000, high=15000, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_electricity(c, "german energy mix")
+                co2e = calc_co2_electricity(c, "german_energy_mix")
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_electricity = Electricity(working_group=wg_environmental,
                                       timestamp=str(d),
@@ -135,7 +135,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "heatpump_water")
+                co2e = calc_co2_heating(c, "l", "heat_pump_water")
                 co2e_cap = co2e / wg_biomed.n_employees
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
@@ -147,7 +147,7 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "heatpump_water")
+                co2e = calc_co2_heating(c, "l", "heat_pump_water")
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(working_group=wg_environmental,
                                       timestamp=str(d),
