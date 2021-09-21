@@ -182,32 +182,50 @@ class Command(BaseCommand):
         if len(Commuting.objects.all()) == 0:
             print("Loading commuting data ...")
             workweeks = 40
+            weeks_per_month = 4.34524
+            weeks_per_year = 52.1429
 
-            for usr in User.objects.all():
-                distance = np.random.randint(0, 20, 1)
-                co2e = co2e_cap = calc_co2_commuting(transportation_mode="bicycle",
-                                          weekly_distance=distance)
-                new_trip = Commuting(user=usr,
-                                    working_group=usr.working_group,
-                                    distance=distance,
-                                    co2e=co2e,
-                                    co2e_cap=co2e_cap,
-                                    from_timestamp='2019-01-01',
-                                    to_timestamp='2019-12-01',
-                                    transportation_mode="BIKE")
-                new_trip.save()
+            dates_2019 = np.arange(np.datetime64('2019-01-01'),
+                              np.datetime64('2020-01-01'),
+                              np.timedelta64(30, "D")).astype('datetime64[D]')
 
-                co2e = co2e_cap = calc_co2_commuting(transportation_mode="car",
-                                                     weekly_distance=distance,
-                                                     passengers=1,
-                                                     size="medium",
-                                                     fuel_type="gasoline")
-                new_trip = Commuting(user=usr,
+            for d in dates_2019:
+
+                for usr in User.objects.all():
+                    distance = np.random.randint(0, 20, 1)
+                    co2e = calc_co2_commuting(transportation_mode="bicycle",
+                                              weekly_distance=distance)
+                    monthly_co2e = monthly_co2e_cap = weeks_per_month * (workweeks / weeks_per_year) * co2e
+                    new_trip = Commuting(user=usr,
                                         working_group=usr.working_group,
                                         distance=distance,
-                                        co2e=co2e,
-                                        co2e_cap=co2e_cap,
-                                        from_timestamp='2020-01-01',
-                                        to_timestamp='2020-12-01',
-                                        transportation_mode="CAR")
-                new_trip.save()
+                                        co2e=monthly_co2e,
+                                        co2e_cap=monthly_co2e_cap,
+                                        from_timestamp='2019-01-01',
+                                        to_timestamp='2019-12-01',
+                                        transportation_mode="BIKE")
+                    new_trip.save()
+
+            dates_2020 = np.arange(np.datetime64('2020-01-01'),
+                              np.datetime64('2021-01-01'),
+                              np.timedelta64(30, "D")).astype('datetime64[D]')
+
+            for d in dates_2020:
+
+                for usr in User.objects.all():
+
+                    co2e = calc_co2_commuting(transportation_mode="car",
+                                                         weekly_distance=distance,
+                                                         passengers=1,
+                                                         size="medium",
+                                                         fuel_type="gasoline")
+                    monthly_co2e = monthly_co2e_cap = weeks_per_month * (workweeks / weeks_per_year) * co2e
+                    new_trip = Commuting(user=usr,
+                                            working_group=usr.working_group,
+                                            distance=distance,
+                                            co2e=monthly_co2e,
+                                            co2e_cap=monthly_co2e_cap,
+                                            from_timestamp='2020-01-01',
+                                            to_timestamp='2020-12-01',
+                                            transportation_mode="CAR")
+                    new_trip.save()

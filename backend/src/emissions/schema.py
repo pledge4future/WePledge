@@ -5,8 +5,8 @@ from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
-from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution
-from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip
+from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting
+from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip, calc_co2_commuting
 from graphene_django.filter import DjangoFilterConnectionField
 from emissions.graphene_utils import get_fields
 
@@ -33,6 +33,9 @@ class BusinessTripType(DjangoObjectType):
     class Meta:
         model = BusinessTrip
 
+class CommutingType(DjangoObjectType):
+    class Meta:
+        model = Commuting
 
 class ElectricityType(DjangoObjectType):
     class Meta:
@@ -72,16 +75,23 @@ class BusinessTripAggregatedType(ObjectType):
         name = "BusinessTripAggregated"
 
 
+class CommutingAggregatedType(ObjectType):
+    date = graphene.String()
+    co2e = graphene.Float()
+    co2e_cap = graphene.Float()
+
+    class Meta:
+        name = "CommutingAggregated"
+
 # -------------------- Query types -----------------
 
 # Create a Query type
 class Query(UserQuery, MeQuery, ObjectType):
-    #businesstrip = graphene.Field(BusinessTripType, id=graphene.Int())
     businesstrips = graphene.List(BusinessTripType)
-    #electricity = graphene.Field(ElectricityType, id=graphene.Int())
     electricities = graphene.List(ElectricityType)
-    #heating = graphene.Field(HeatingType, id=graphene.Int())
     heatings = graphene.List(HeatingType)
+    commutings = graphene.List(CommutingType)
+    working_groups = graphene.List(WorkingGroupType)
 
     # Aggregated data
     heating_aggregated = graphene.List(HeatingAggregatedType,
@@ -97,8 +107,11 @@ class Query(UserQuery, MeQuery, ObjectType):
                                          group_id=graphene.UUID(),
                                          inst_id=graphene.UUID(),
                                          time_interval=graphene.String())
-    #user = graphene.Field(UserType, id=graphene.Int(), username=graphene.String())
-    working_groups = graphene.List(WorkingGroupType)
+    commuting_aggregated = graphene.List(CommutingAggregatedType,
+                                         username=graphene.String(),
+                                         group_id=graphene.UUID(),
+                                         inst_id=graphene.UUID(),
+                                         time_interval=graphene.String())
 
     def resolve_businesstrips(self, info, **kwargs):
         """ Yields all heating consumption objects"""
@@ -111,6 +124,10 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_heatings(self, info, **kwargs):
         """ Yields all heating consumption objects"""
         return Heating.objects.all()
+
+    def resolve_commutingss(self, info, **kwargs):
+        """ Yields all heating consumption objects"""
+        return Commuting.objects.all()
 
     def resolve_working_groups(self, info, **kwargs):
         """ Yields all working group objects """
