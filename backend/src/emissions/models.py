@@ -96,6 +96,7 @@ class Commuting(models.Model):
     to_timestamp = models.DateField(null=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
+    distance = models.FloatField()
     transportation_choices = [(x.name, x.value) for x in CommutingTransportationMode]
     transportation_mode = models.CharField(max_length=15,
                                            choices=transportation_choices,
