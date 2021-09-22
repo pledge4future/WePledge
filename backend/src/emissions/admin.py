@@ -1,5 +1,5 @@
 from django.contrib import admin
-from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting
+from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting, CommutingGroup
 from django.apps import apps
 
 # Register your models here.
@@ -9,6 +9,7 @@ admin.site.register(Institution)
 admin.site.register(Heating)
 admin.site.register(Electricity)
 admin.site.register(Commuting)
+admin.site.register(CommutingGroup)
 admin.site.register(BusinessTrip)
 
 app = apps.get_app_config('graphql_auth')
