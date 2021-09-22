@@ -187,12 +187,14 @@ class Command(BaseCommand):
 
             dates_2019 = np.arange(np.datetime64('2019-01-01'),
                               np.datetime64('2020-01-01'),
-                              np.timedelta64(30, "D")).astype('datetime64[D]')
+                              np.timedelta64(1, "M")).astype('datetime64[D]')
+            dates_2020 = np.arange(np.datetime64('2020-01-01'),
+                                   np.datetime64('2021-01-01'),
+                                   np.timedelta64(1, "M")).astype('datetime64[D]')
 
-            for d in dates_2019:
-
-                for usr in User.objects.all():
-                    distance = np.random.randint(0, 20, 1)
+            for usr in User.objects.all():
+                distance = np.random.randint(0, 20, 1)
+                for d in dates_2019:
                     co2e = calc_co2_commuting(transportation_mode="bicycle",
                                               weekly_distance=distance)
                     monthly_co2e = monthly_co2e_cap = weeks_per_month * (workweeks / weeks_per_year) * co2e
@@ -201,19 +203,11 @@ class Command(BaseCommand):
                                         distance=distance,
                                         co2e=monthly_co2e,
                                         co2e_cap=monthly_co2e_cap,
-                                        from_timestamp='2019-01-01',
-                                        to_timestamp='2019-12-01',
+                                        timestamp=str(d),
                                         transportation_mode="BIKE")
                     new_trip.save()
 
-            dates_2020 = np.arange(np.datetime64('2020-01-01'),
-                              np.datetime64('2021-01-01'),
-                              np.timedelta64(30, "D")).astype('datetime64[D]')
-
-            for d in dates_2020:
-
-                for usr in User.objects.all():
-
+                for d in dates_2020:
                     co2e = calc_co2_commuting(transportation_mode="car",
                                                          weekly_distance=distance,
                                                          passengers=1,
@@ -225,7 +219,6 @@ class Command(BaseCommand):
                                             distance=distance,
                                             co2e=monthly_co2e,
                                             co2e_cap=monthly_co2e_cap,
-                                            from_timestamp='2020-01-01',
-                                            to_timestamp='2020-12-01',
+                                            timestamp=str(d),
                                             transportation_mode="CAR")
                     new_trip.save()
