@@ -99,8 +99,9 @@ class Command(BaseCommand):
         del user_data
 
         # CREATE FAKE DATA
-        dates = np.arange(np.datetime64('2019-01'), np.datetime64('2021-01'), np.timedelta64(1, "M")).astype(
-            'datetime64[D]')
+        dates = np.arange(np.datetime64('2019-01'),
+                          np.datetime64('2021-01'),
+                          np.timedelta64(1, "M")).astype( 'datetime64[D]')
 
         # CREATE ELECTRICITY OBJECTS --------------------------------------------------------
         if len(Electricity.objects.all()) == 0:
@@ -179,17 +180,18 @@ class Command(BaseCommand):
                                             transportation_mode=np.random.choice(modes, 1)[0])
                     new_trip.save()
 
+"""
         if len(Commuting.objects.all()) == 0:
             print("Loading commuting data ...")
             workweeks = 40
             weeks_per_month = 4.34524
             weeks_per_year = 52.1429
 
-            dates_2019 = np.arange(np.datetime64('2019-01-01'),
-                              np.datetime64('2020-01-01'),
+            dates_2019 = np.arange(np.datetime64('2019-01', "M"),
+                              np.datetime64('2020-01', "M"),
                               np.timedelta64(1, "M")).astype('datetime64[D]')
-            dates_2020 = np.arange(np.datetime64('2020-01-01'),
-                                   np.datetime64('2021-01-01'),
+            dates_2020 = np.arange(np.datetime64('2020-01', "M"),
+                                   np.datetime64('2021-01', "M"),
                                    np.timedelta64(1, "M")).astype('datetime64[D]')
 
             for usr in User.objects.all():
@@ -204,7 +206,7 @@ class Command(BaseCommand):
                                         co2e=monthly_co2e,
                                         co2e_cap=monthly_co2e_cap,
                                         timestamp=str(d),
-                                        transportation_mode="BIKE")
+                                        transportation_mode="BICYCLE")
                     new_trip.save()
 
                 for d in dates_2020:
@@ -222,3 +224,4 @@ class Command(BaseCommand):
                                             timestamp=str(d),
                                             transportation_mode="CAR")
                     new_trip.save()
+"""
