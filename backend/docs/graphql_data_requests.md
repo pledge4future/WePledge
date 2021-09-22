@@ -140,11 +140,31 @@ query {
 query {
 	commutingAggregated (groupId:"e0ee4c7f-f266-47e5-877f-15dd396d3a57", 
     timeInterval:"year") {
-		co2e
     	co2eCap
+    	co2e
     	date
   }
 }
 ```
 
+**Response:**
+
+```
+{
+  "data": {
+    "commutingAggregated": [
+      {
+        "co2eCap": 1.5799993939731014,
+        "co2e": 23.69999090959652,
+        "date": "2017-01-01"
+      },
+      {
+        "co2eCap": 1.5799993939731014,
+        "co2e": 23.69999090959652,
+        "date": "2017-02-01"
+      }
+     ]
+   }
+}
+```
 

@@ -231,15 +231,15 @@ class Query(UserQuery, MeQuery, ObjectType):
             'co2e': Sum('co2e'),
         }
 
-        if time_interval == "month":
+        if time_interval.lower() == "month":
             return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
-        elif time_interval == "year":
+        elif time_interval.lower() == "year":
             return entries.annotate(date=TruncYear('timestamp'))\
                 .values('date')\
                 .annotate(**metrics) \
                 .order_by('date')
         else:
-            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+            raise GraphQLError(f"'{time_interval}' is not a valid option for parameter 'time_interval'.")
 
 
     def resolve_commuting_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
@@ -253,28 +253,32 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: inst_id: UUID id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
+        metrics = {
+            'co2e': Sum('co2e'),
+            'co2e_cap': Sum('co2e_cap'),
+        }
         if group_id:
-            entries = Commuting.objects.filter(working_group__group_id=group_id)
+            entries = CommutingGroup.objects.filter(working_group__group_id=group_id)
         elif username:
             entries = Commuting.objects.filter(user__username=username)
+            metrics.pop("co2e_cap")
         elif inst_id:
-            entries = Commuting.objects.filter(working_group__institution__inst_id=inst_id)
+            entries = CommutingGroup.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = Commuting.objects.all()
 
-        metrics = {
-            'co2e': Sum('co2e'),
-        }
-
-        if time_interval == "month":
-            return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
-        elif time_interval == "year":
+        if time_interval.lower() == "month":
+            return entries.annotate(date=TruncMonth('timestamp'))\
+                .values('date')\
+                .annotate(**metrics)\
+                .order_by('date')
+        elif time_interval.lower() == "year":
             return entries.annotate(date=TruncYear('timestamp'))\
                 .values('date')\
                 .annotate(**metrics) \
                 .order_by('date')
         else:
-            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+            raise GraphQLError(f"'{time_interval}' is not a valid option for parameter 'time_interval'.")
 
 
 

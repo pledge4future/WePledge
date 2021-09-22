@@ -49,5 +49,25 @@ mutation createHeating{
 }
 ```
 
+#### Create new commuting entry
+
+```
+mutation createCommuting {
+  createCommuting (input: {
+    username: "KlausMayer"
+    distance: 30
+    transportationMode: "car"
+    fuelType: "gasoline"
+    size: "medium"
+    fromTimestamp: "2017-01-01"
+    toTimestamp: "2017-06-01"
+    workweeks: 40
+    passengers: 1
+  }) {
+    ok
+  }
+}
+```
+
 ### Resources
 [Sanatan, M.: Building a GraphQL API with Django](https://stackabuse.com/building-a-graphql-api-with-django/)
