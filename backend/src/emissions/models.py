@@ -86,6 +86,22 @@ class WorkingGroup(models.Model):
         return f"{self.name}, {self.institution.name}, {self.institution.city}, {self.institution.country}"
 
 
+class CommutingGroup(models.Model):
+    """
+    Monthly emissions from commuting per working group
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
+    timestamp = models.DateField(null=False)
+    n_employees = models.IntegerField(null=False)
+    transportation_mode = models.CharField(max_length=30)
+    distance = models.FloatField(null=True)
+    co2e = models.FloatField()
+    co2e_cap = models.FloatField()
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.transportation_mode}, {self.timestamp}"
+
+
 class Commuting(models.Model):
     """
     CO2 emissions from commuting per month
@@ -94,7 +110,6 @@ class Commuting(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     co2e = models.FloatField()
-    co2e_cap = models.FloatField()
     distance = models.FloatField()
     transportation_choices = [(x.name, x.value) for x in CommutingTransportationMode]
     transportation_mode = models.CharField(max_length=15,
@@ -103,7 +118,18 @@ class Commuting(models.Model):
                                            )
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}"
+        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+
+
+class BusinessTripGroup(models.Model):
+    """
+    Monthly business trip emissions per working group
+    """
+    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
+    timestamp = models.DateField(null=False)
+    n_employees = models.IntegerField(null=False)
+    co2e = models.FloatField()
+    co2e_cap = models.FloatField()
 
 
 class BusinessTrip(models.Model):

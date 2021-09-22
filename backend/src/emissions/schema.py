@@ -5,14 +5,17 @@ from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
-from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting
+from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting, CommutingGroup
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip, calc_co2_commuting
 from graphene_django.filter import DjangoFilterConnectionField
 from emissions.graphene_utils import get_fields
 
+import numpy as np
 
 # -------------- GraphQL Types -------------------
 
+WEEKS_PER_MONTH = 4.34524
+WEEKS_PER_YEAR = 52.1429
 
 class UserType(DjangoObjectType):
     class Meta:
@@ -226,7 +229,41 @@ class Query(UserQuery, MeQuery, ObjectType):
 
         metrics = {
             'co2e': Sum('co2e'),
-            'co2e_cap': Sum('co2e_cap')
+        }
+
+        if time_interval == "month":
+            return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')
+        elif time_interval == "year":
+            return entries.annotate(date=TruncYear('timestamp'))\
+                .values('date')\
+                .annotate(**metrics) \
+                .order_by('date')
+        else:
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+
+
+    def resolve_commuting_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
+        """
+        Yields monthly co2e emissions of businesstrips
+        - for a user (if username is given),
+        - for a group (if group_id is given),
+        - for an institution (if inst_id is given)
+        param: username: username of user model (str)
+        param: group_id: UUID id of WorkingGroup model (str)
+        param: inst_id: UUID id of Institute model (str)
+        param: time_interval: Aggregate co2e per "month" or "year"
+        """
+        if group_id:
+            entries = Commuting.objects.filter(working_group__group_id=group_id)
+        elif username:
+            entries = Commuting.objects.filter(user__username=username)
+        elif inst_id:
+            entries = Commuting.objects.filter(working_group__institution__inst_id=inst_id)
+        else:
+            entries = Commuting.objects.all()
+
+        metrics = {
+            'co2e': Sum('co2e'),
         }
 
         if time_interval == "month":
@@ -245,14 +282,27 @@ class Query(UserQuery, MeQuery, ObjectType):
 
 
 
-
-
 # -------------- Input Object Types --------------------------
+
+
+class CommutingInput(graphene.InputObjectType):
+    id = graphene.ID()
+    username = graphene.String(required=True)
+    from_timestamp = graphene.Date(required=True)
+    to_timestamp = graphene.Date(required=True)
+    transportation_mode = graphene.String(required=True)
+    workweeks = graphene.Int()
+    distance = graphene.Float()
+    size = graphene.String()
+    fuel_type = graphene.String()
+    occupancy = graphene.Float()
+    passengers = graphene.Int()
+
 
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
-    userid = graphene.Int(required=True)
-    workinggroupid = graphene.Int(required=False)
+    username = graphene.String(required=True)
+    group_id = graphene.Int(required=False)
     start = graphene.String()
     destination = graphene.String()
     distance = graphene.Float()
@@ -402,10 +452,75 @@ class CreateBusinessTrip(graphene.Mutation):
         return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
 
+
+class CreateCommuting(graphene.Mutation):
+    class Arguments:
+        input = CommutingInput(required=True)
+
+    ok = graphene.Boolean()
+    #commute = graphene.Field(CommutingType)
+
+    @staticmethod
+    def mutate(root, info, input=None):
+        ok = True
+        user = User.objects.filter(username=input.username)
+        if len(user) == 0:
+            raise GraphQLError(f"{input.username} user not found")
+        user = user[0]
+        dates = np.arange(np.datetime64(input.from_timestamp, "M"),
+                            np.datetime64(input.to_timestamp, "M") + np.timedelta64(1, 'M'),
+                            np.timedelta64(1, "M")).astype('datetime64[D]')
+
+        weekly_co2e = calc_co2_commuting(transportation_mode=input.transportation_mode,
+                                         weekly_distance=input.distance,
+                                         size=input.size,
+                                         fuel_type=input.fuel_type,
+                                         occupancy=input.occupancy,
+                                         passengers=input.passengers
+                                         )
+        if input.workweeks is None:
+            input.workweeks = WEEKS_PER_YEAR
+        monthly_co2e = WEEKS_PER_MONTH * (input.workweeks / WEEKS_PER_YEAR) * weekly_co2e
+
+        for d in dates:
+            commuting_instance = Commuting(timestamp=str(d),
+                                            distance=input.distance,
+                                            transportation_mode=input.transportation_mode,
+                                            co2e=monthly_co2e,
+                                            user=user,
+                                            working_group=user.working_group)
+            commuting_instance.save()
+
+            # Update emissions of working group for date and transportation mode
+            entries = Commuting.objects.filter(working_group=user.working_group,
+                                               transportation_mode=input.transportation_mode,
+                                               timestamp=str(d))
+            metrics = {
+                "co2e": Sum("co2e"),
+                "distance": Sum("distance")
+            }
+            group_data = entries.aggregate(**metrics)
+
+            co2e_cap = group_data["co2e"] / user.working_group.n_employees
+            commuting_group_instance = CommutingGroup(working_group=user.working_group,
+                                                      timestamp=str(d),
+                                                      transportation_mode=input.transportation_mode,
+                                                      n_employees=user.working_group.n_employees,
+                                                      co2e=group_data["co2e"],
+                                                      co2e_cap=co2e_cap,
+                                                      distance=group_data["distance"])
+            commuting_group_instance.save()
+
+
+        return CreateCommuting(ok=ok)
+
+
+
 class Mutation(AuthMutation, graphene.ObjectType):
     create_businesstrip = CreateBusinessTrip.Field()
     create_electricity = CreateElectricity.Field()
     create_heating = CreateHeating.Field()
+    create_commuting = CreateCommuting.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
