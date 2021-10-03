@@ -13,6 +13,7 @@ import pandas as pd
 import os
 import logging
 from django.contrib.auth.management.commands import createsuperuser
+from co2calculator.co2calculator import CommutingTransportationMode, BusinessTripTransportationMode, HeatingFuel, ElectricityFuel
 
 logger = logging.basicConfig()
 
@@ -113,7 +114,9 @@ class Command(BaseCommand):
                 new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
+                                      fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                                      building="348",
+                                      energy_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_electricity.save()
@@ -125,7 +128,9 @@ class Command(BaseCommand):
                 new_electricity = Electricity(working_group=wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      fuel_type=Electricity.GERMAN_ELECTRICITY_MIX,
+                                      fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                                      building="348",
+                                      energy_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_electricity.save()
@@ -141,7 +146,10 @@ class Command(BaseCommand):
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      fuel_type=Heating.PUMPWATER,
+                                      fuel_type=HeatingFuel.OIL,
+                                      unit="l",
+                                      building="348",
+                                      area_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_heating.save()
@@ -153,7 +161,10 @@ class Command(BaseCommand):
                 new_heating = Heating(working_group=wg_environmental,
                                       timestamp=str(d),
                                       consumption_kwh=c,
-                                      fuel_type=Heating.PUMPWATER,
+                                      fuel_type=HeatingFuel.OIL,
+                                      unit="l",
+                                      building="348",
+                                      area_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_heating.save()
@@ -162,7 +173,10 @@ class Command(BaseCommand):
         if len(BusinessTrip.objects.all()) == 0:
             print("Loading business trip data ...")
 
-            modes = [BusinessTrip.PLANE, BusinessTrip.CAR, BusinessTrip.TRAIN, BusinessTrip.BUS]
+            modes = [BusinessTripTransportationMode.PLANE,
+                     BusinessTripTransportationMode.CAR,
+                     BusinessTripTransportationMode.TRAIN,
+                     BusinessTripTransportationMode.BUS]
 
             for usr in User.objects.all():
                 dates = np.arange(np.datetime64('2019-01-15'),
@@ -177,7 +191,7 @@ class Command(BaseCommand):
                                             co2e=co2e,
                                             co2e_cap=co2e_cap,
                                             timestamp=str(d),
-                                            transportation_mode=np.random.choice(modes, 1)[0])
+                                            transportation_mode=np.random.choice(modes, 1)[0].value)
                     new_trip.save()
 
 """
