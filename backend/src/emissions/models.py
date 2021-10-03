@@ -1,11 +1,13 @@
 import uuid
 
+from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
-from co2calculator.co2calculator import CommutingTransportationMode, HeatingFuel, ElectricityFuel
+from co2calculator.co2calculator import CommutingTransportationMode, BusinessTripTransportationMode, HeatingFuel, \
+    ElectricityFuel, Unit
 
 
 class User(AbstractUser):
@@ -142,15 +144,7 @@ class BusinessTrip(models.Model):
     distance = models.FloatField()
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
-
-    CAR = 'CAR'
-    BUS = 'BUS'
-    TRAIN = 'TRAIN'
-    PLANE = 'PLANE'
-    transportation_choices = [(CAR, "Car"),
-                              (BUS, "Bus"),
-                              (TRAIN, "Train"),
-                              (PLANE, "Plane")]
+    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
     transportation_mode = models.CharField(max_length=10,
                                            choices=transportation_choices,
                                            blank=False,
@@ -167,24 +161,17 @@ class Heating(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
     timestamp = models.DateField(null=False)
-
-    PUMPAIR = 'pump air'
-    PUMPGROUND = 'pump ground'
-    PUMPWATER = 'pump water'
-    LIQUID = 'liquid'
-    OIL = 'oil'
-    PELLETS = 'pellets'
-    SOLAR = 'solar'
-    WOODCHIPS = 'woodchips'
-    ELECTRICITY = 'electricity'
-    GAS = 'gas'
+    building = models.CharField(null=False, max_length=30)
+    area_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
+    unit_choices = [(x.name, x.value) for x in Unit]
+    unit = models.CharField(max_length=10, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
 
     class Meta:
-        unique_together = ("working_group", "timestamp", "fuel_type")
+        unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
@@ -197,18 +184,16 @@ class Electricity(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
     consumption_kwh = models.FloatField(null=False)
     timestamp = models.DateField(null=False)
-
-    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
-    #GREEN_ENERGY = 'GREEN_ENERGY'
-    SOLAR = 'solar'
+    building = models.CharField(null=False, max_length=30)
+    energy_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     fuel_type_choices = [(x.name, x.value) for x in ElectricityFuel]
-    fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
+    fuel_type = models.CharField(max_length=40, choices=fuel_type_choices, blank=False)
 
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
 
     class Meta:
-        unique_together = ("working_group", "timestamp", "fuel_type")
+        unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}"
