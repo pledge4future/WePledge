@@ -113,10 +113,10 @@ class Command(BaseCommand):
                 co2e_cap = co2e / wg_biomed.n_employees
                 new_electricity = Electricity(working_group=wg_biomed,
                                       timestamp=str(d),
-                                      consumption_kwh=c,
+                                      consumption=c,
                                       fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
                                       building="348",
-                                      energy_share=1,
+                                      group_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_electricity.save()
@@ -127,10 +127,10 @@ class Command(BaseCommand):
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_electricity = Electricity(working_group=wg_environmental,
                                       timestamp=str(d),
-                                      consumption_kwh=c,
+                                      consumption=c,
                                       fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
                                       building="348",
-                                      energy_share=1,
+                                      group_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_electricity.save()
@@ -141,30 +141,28 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1400, high=2200, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(consumption=c, unit="l", fuel_type="oil")
+                co2e = calc_co2_heating(consumption=c, unit="l", fuel_type="oil", area_share=1)
                 co2e_cap = co2e / wg_biomed.n_employees
                 new_heating = Heating(working_group=wg_biomed,
                                       timestamp=str(d),
-                                      consumption_kwh=c,
+                                      consumption=c,
                                       fuel_type=HeatingFuel.OIL,
-                                      unit="l",
                                       building="348",
-                                      area_share=1,
+                                      group_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_heating.save()
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "l", "oil")
+                co2e = calc_co2_heating(c, "l", "oil", area_share=1)
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(working_group=wg_environmental,
                                       timestamp=str(d),
-                                      consumption_kwh=c,
+                                      consumption=c,
                                       fuel_type=HeatingFuel.OIL,
-                                      unit="l",
                                       building="348",
-                                      area_share=1,
+                                      group_share=1,
                                       co2e=co2e,
                                       co2e_cap=co2e_cap)
                 new_heating.save()
@@ -189,7 +187,6 @@ class Command(BaseCommand):
                                             working_group=usr.working_group,
                                             distance=np.random.randint(100, 10000, 1),
                                             co2e=co2e,
-                                            co2e_cap=co2e_cap,
                                             timestamp=str(d),
                                             transportation_mode=np.random.choice(modes, 1)[0].value)
                     new_trip.save()

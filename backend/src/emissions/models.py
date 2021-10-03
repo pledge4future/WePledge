@@ -3,6 +3,7 @@ import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 
@@ -130,8 +131,20 @@ class BusinessTripGroup(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     n_employees = models.IntegerField(null=False)
+    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
+    transportation_mode = models.CharField(max_length=10,
+                                           choices=transportation_choices,
+                                           blank=False,
+                                           )
+    distance = models.FloatField()
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
+
+    class Meta:
+        unique_together = ("working_group", "timestamp", "transportation_mode")
+
+    def __str__(self):
+        return f"{self.working_group.name}, {self.timestamp}, {self.transportation_mode}"
 
 
 class BusinessTrip(models.Model):
@@ -143,12 +156,91 @@ class BusinessTrip(models.Model):
     timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
-    co2e_cap = models.FloatField()
     transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
     transportation_mode = models.CharField(max_length=10,
                                            choices=transportation_choices,
                                            blank=False,
                                            )
+    range_category = models.CharField(max_length=50)
+
+    def save(self, *args, **kwargs):
+        # Calculate monthly co2
+        super(BusinessTrip, self).save(*args, **kwargs)
+        print(self.working_group)
+        entries = BusinessTrip.objects.filter(working_group=self.working_group,
+                                              timestamp__year=self.timestamp.year,
+                                              timestamp__month=self.timestamp.month,
+                                              transportation_mode=self.transportation_mode)
+        print(entries)
+        metrics = {
+            "co2e": Sum("co2e"),
+            "distance": Sum("distance")
+        }
+        group_data = entries.aggregate(**metrics)
+        print(group_data)
+        co2e_cap = group_data["co2e"] / self.working_group.n_employees
+
+        try:
+            obj = BusinessTripGroup.objects.get(working_group=self.working_group,
+                                                timestamp="{0}-{1}-01".format(self.timestamp.year, self.timestamp.month),
+                                                transportation_mode=self.transportation_mode)
+            obj.n_employees = self.working_group.n_employees
+            obj.distance = group_data["distance"]
+            obj.co2e = group_data["co2e"]
+            obj.co2e_cap = co2e_cap
+            obj.save()
+        except BusinessTripGroup.DoesNotExist:
+            BusinessTripGroup(
+                working_group=self.working_group,
+                timestamp="{0}-{1}-01".format(self.timestamp.year, self.timestamp.month),
+                transportation_mode=self.transportation_mode,
+                n_employees=self.working_group.n_employees,
+                distance=group_data["distance"],
+                co2e=group_data["co2e"],
+                co2e_cap=co2e_cap).save()
+
+    def delete(self):
+        # Calculate monthly co2
+        super(BusinessTrip, self).delete()
+        entries = BusinessTrip.objects.filter(working_group=self.working_group,
+                                              timestamp__year=self.timestamp.year,
+                                              timestamp__month=self.timestamp.month,
+                                              transportation_mode=self.transportation_mode)
+        print(entries)
+        if len(entries) == 0:
+            co2e = 0
+            co2e_cap = 0
+            distance = 0
+        else:
+            metrics = {
+                "co2e": Sum("co2e"),
+                "distance": Sum("distance")
+            }
+            group_data = entries.aggregate(**metrics)
+            co2e = group_data["co2e"]
+            distance = group_data["distance"]
+            co2e_cap =  co2e / self.working_group.n_employees
+
+        try:
+            obj = BusinessTripGroup.objects.get(working_group=self.working_group,
+                                                timestamp="{0}-{1}-01".format(self.timestamp.year,
+                                                                              self.timestamp.month),
+                                                transportation_mode=self.transportation_mode)
+            obj.n_employees = self.working_group.n_employees
+            obj.distance = distance
+            obj.co2e = co2e
+            obj.co2e_cap = co2e_cap
+            obj.save()
+        except BusinessTripGroup.DoesNotExist:
+            BusinessTripGroup(
+                working_group=self.working_group,
+                timestamp="{0}-{1}-01".format(self.timestamp.year, self.timestamp.month),
+                transportation_mode=self.transportation_mode,
+                n_employees=self.working_group.n_employees,
+                distance=distance,
+                co2e=co2e,
+                co2e_cap=co2e_cap).save()
+
 
     def __str__(self):
         return f"{self.user.username}, {self.timestamp}"
@@ -159,14 +251,12 @@ class Heating(models.Model):
     Heating consumption per year
     """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
+    consumption = models.FloatField(null=False, validators=[MinValueValidator(0.0)])
     timestamp = models.DateField(null=False)
     building = models.CharField(null=False, max_length=30)
-    area_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    group_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    unit_choices = [(x.name, x.value) for x in Unit]
-    unit = models.CharField(max_length=10, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
 
@@ -174,7 +264,7 @@ class Heating(models.Model):
         unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):
-        return f"{self.working_group.name}, {self.timestamp}"
+        return f"{self.working_group.name}, {self.timestamp}, {self.fuel_type}, {self.building}"
 
 
 class Electricity(models.Model):
@@ -182,10 +272,10 @@ class Electricity(models.Model):
     Electricity consumption for a timestamp
     """
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
+    consumption = models.FloatField(null=False)
     timestamp = models.DateField(null=False)
     building = models.CharField(null=False, max_length=30)
-    energy_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
+    group_share = models.FloatField(null=False, validators=[MinValueValidator(0.0), MaxValueValidator(1.0)])
     fuel_type_choices = [(x.name, x.value) for x in ElectricityFuel]
     fuel_type = models.CharField(max_length=40, choices=fuel_type_choices, blank=False)
 
@@ -196,5 +286,5 @@ class Electricity(models.Model):
         unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):
-        return f"{self.working_group.name}, {self.timestamp}"
+        return f"{self.working_group.name}, {self.timestamp}, {self.fuel_type}, {self.building}"
 
