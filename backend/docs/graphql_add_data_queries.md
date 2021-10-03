@@ -1,26 +1,43 @@
-# GraphQL: Queries to add data
+# GraphQL: Adding co2 data
 
 
 After server is running open `localhost:8000/graphql` in the browser.
 
 
-### Mutations
+
+## Electricity
+
+### Front-End Form:
+
+Electricity data should be entered for each month. 
+
+| Name| Input Type | Options / Comment 	       |
+|-----|------------------|--------------------|
+| Date | Dropdown Fields | 1 box for Year and 1 box for Month   |
+| Building | Text input field | |
+| Group share | Float input field | min:0, max: 1 |
+| Consumption (kWh) | Float input field | | 
+| Energy source | Dropdown field | Options: Coal,District Heating,Electricity,Gas, Heat pump (air), Heat pump (ground), Heat pump (water), Liquid gas, Oil, Solar, Wood (pellets), Wood (wood chips) |
 
 
-#### Create new electricity entry
+
+### Query: 
 
 ```
 mutation createElectricity {
   createElectricity (input: {
-    username: "KarenAnderson"
-    consumptionKwh: 3000
-    fuelType: "solar"
+    group_id: ""
     timestamp: "2020-10-01"
+    consumption: 3000
+    fuelType: "solar"
+    building: "348"
+    groupShare: 1
   }) {
     ok
     electricity {
       timestamp
-      consumptionKwh
+      consumption
+      building
       fuelType
       co2e
     }
@@ -28,15 +45,33 @@ mutation createElectricity {
 }
 ```
 
-#### Create new heating entry
+
+## Heating 
+
+### Front-End Form:
+
+| Name| Input Type | Options / Comment 	       |
+|-----|------------------|--------------------|
+| Date | Dropdown Fields | 1 box for Year and 1 box for Month   |
+| Building | Text input field | |
+| Consumption (kWh) | Float input field | | 
+| Unit | Dropdown field | Options: l, kg, kwh, m^3| 
+| Energy source | Dropdown field | Options: German energy mix, Solar |
+| Group share | Float input field | min:0, max: 1 |
+
+
+### Query: 
 
 ```
 mutation createHeating{
   createHeating (input: {
-    username: "KarenAnderson"
-    consumptionKwh: 3000
-    fuelType: "oil"
+    group_id: ""
+    building: "348"
     timestamp: "2022-10-01"
+    consumption: 3000
+    unit: "l"
+    fuelType: "oil"
+    groupShare: 1
   }) {
     ok
     heating {
@@ -49,7 +84,62 @@ mutation createHeating{
 }
 ```
 
-#### Create new commuting entry
+## Business Trip
+
+### Front-End Form:
+
+| Name| Input Type | Options / Comment 	       |
+|-----|------------------|--------------------|
+| Date | Date Field | with year, month, day   |
+| Transportation mode | Drop down | Options: Car, Train, Plane, Bus |
+| Start | Text fields | 3 fields for address, city, country | 
+| Destination | Text fields | 3 fields for address, city, country | 
+| Distance | Float field |  |
+| Size | Dropdown | Options: small, medium, large, average (only for car and bus) |
+| Fuel type | Dropdown | Options: gasoline, diesel (only for car and bus) |
+| Occupancy | Int Field | 0 - 100 (only for bus) |
+| Seating class | Dropdown | Options: "average", "Economy class", "Premium economy class", "Business class", "First class" (only for plane) |
+| Passengers | Int Field | 1 - 9 (only for car) |
+| Round trip | Check box | |
+
+    
+### Query:
+
+
+```
+mutation createBusinesstrip {
+    createBusinesstrip (input: {
+      username: "KarenAnderson"
+      groupId: "573b7bec-e9fe-4505-bb41-2bf9a2769a80"
+      timestamp: "2020-01-01"
+      transportationMode: "car"
+      distance: 200 
+      size: "medium"
+      fuelType: "gasoline"
+      passengers: 1
+      roundtrip: false	
+    }) {
+        ok
+      }
+}
+```
+
+## Commuting
+
+### Front-End Form:
+
+| Name| Input Type | Options / Comment 	       |
+|-----|------------------|--------------------|
+| Date | Dropdown Fields | 1 box for Year and 1 box for Month   |
+| Building | Text input field | |
+| Consumption (kWh) | Float input field | | 
+| Unit | Dropdown | Options: l, kg, kwh, m^3| 
+| Energy source | Dropdown field | German energy mix, Solar |
+| Group share | Float input field | min:0, max: 1 |
+
+
+
+### Query
 
 ```
 mutation createCommuting {

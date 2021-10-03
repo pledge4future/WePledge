@@ -5,7 +5,7 @@ from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
-from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting, CommutingGroup
+from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting, CommutingGroup, BusinessTripGroup
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip, calc_co2_commuting
 from graphene_django.filter import DjangoFilterConnectionField
 from emissions.graphene_utils import get_fields
@@ -283,9 +283,6 @@ class Query(UserQuery, MeQuery, ObjectType):
 
 
 
-
-
-
 # -------------- Input Object Types --------------------------
 
 
@@ -306,38 +303,39 @@ class CommutingInput(graphene.InputObjectType):
 class BusinessTripInput(graphene.InputObjectType):
     id = graphene.ID()
     username = graphene.String(required=True)
-    group_id = graphene.Int(required=False)
+    group_id = graphene.UUID(required=True)
+    timestamp = graphene.Date(required=True)
+    transportation_mode = graphene.String(required=True)
     start = graphene.String()
     destination = graphene.String()
     distance = graphene.Float()
-    timestamp = graphene.Date(required=True)
-    transportation_mode = graphene.String(required=True)
-    car_size = graphene.Int()
-    car_fuel_type = graphene.String()
-    bus_size = graphene.Int()
-    bus_fuel_type = graphene.String()
-    capacity = graphene.Int()
+    size = graphene.String()
+    fuel_type = graphene.String()
     occupancy = graphene.Float()
+    seating_class = graphene.Int()
     passengers = graphene.Int()
     roundtrip = graphene.Boolean()
 
 
 class ElectricityInput(graphene.InputObjectType):
     id = graphene.ID()
-    username = graphene.String()
-    consumption_kwh = graphene.Float()
+    group_id = graphene.UUID()
     timestamp = graphene.Date(required=True)
+    consumption = graphene.Float()
     fuel_type = graphene.String(required=True)
+    building = graphene.String(required=True)
+    group_share = graphene.Float(required=True)
 
 
 class HeatingInput(graphene.InputObjectType):
     id = graphene.ID()
-    username = graphene.String()
-    consumption_kwh = graphene.Float()
-    consumption_kg = graphene.Float()
-    consumption_liter = graphene.Float()
+    group_id = graphene.UUID()
     timestamp = graphene.Date(required=True)
+    consumption = graphene.Float(required=True)
+    unit = graphene.String(required=True)
     fuel_type = graphene.String(required=True)
+    building = graphene.String(required=True)
+    group_share = graphene.Float(required=True)
 
 
 class UserInput(graphene.InputObjectType):
@@ -373,21 +371,21 @@ class CreateElectricity(graphene.Mutation):
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        usr = User.objects.filter(username=input.username)[0]
-        matches = WorkingGroup.objects.filter(representative=usr)
+        matches = WorkingGroup.objects.filter(group_id=input.group_id)
         if len(matches) == 0:
-            raise GraphQLError(f"Permission denied: Could add electricity data, because user '{input.username}' is not a group representative.")
+            raise GraphQLError(f"Permission denied: Could add electricity data, because user '{input.username}' "
+                               f"is not a group representative.")
         else:
-            workinggroup = matches[0]
+            working_group = matches[0]
 
-        print(workinggroup)
-
-        # calculate co2
-        co2e = calc_co2_electricity(input.consumption_kwh, input.fuel_type)
-        new_electricity = Electricity(working_group=workinggroup,
+        # Calculate co2
+        co2e = calc_co2_electricity(input.consumption, input.fuel_type, input.group_share)
+        new_electricity = Electricity(working_group=working_group,
                                       timestamp=input.timestamp,
-                                      consumption_kwh=input.consumption_kwh,
+                                      consumption=input.consumption,
                                       fuel_type=input.fuel_type,
+                                      group_share=input.group_share,
+                                      building=input.building,
                                       co2e=round(co2e, 1))
         new_electricity.save()
         return CreateElectricity(ok=ok, electricity=new_electricity)
@@ -403,19 +401,21 @@ class CreateHeating(graphene.Mutation):
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        usr = User.objects.filter(username=input.username)[0]
-        matches = WorkingGroup.objects.filter(representative=usr)
+        matches = WorkingGroup.objects.filter(group_id=input.group_id)
         if len(matches) == 0:
-            raise GraphQLError(f"Permission denied: Could add heating data, because user '{input.username}' is not a group representative.")
+            raise GraphQLError(f"Permission denied: Could add electricity data, because user '{input.username}' "
+                               f"is not a group representative.")
         else:
-            workinggroup = matches[0]
+            working_group = matches[0]
 
         # calculate co2
-        co2e = calc_co2_heating(input.consumption_kwh, input.fuel_type)
-        new_heating = Heating(working_group=workinggroup,
+        co2e = calc_co2_heating(input.consumption, input.unit, input.fuel_type, input.group_share)
+        new_heating = Heating(working_group=working_group,
                               timestamp=input.timestamp,
-                              consumption_kwh=input.consumption_kwh,
+                              consumption=input.consumption,
                               fuel_type=input.fuel_type,
+                              building=input.building,
+                              group_share=input.group_share,
                               co2e=round(co2e, 1))
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)
@@ -426,35 +426,36 @@ class CreateBusinessTrip(graphene.Mutation):
         input = BusinessTripInput(required=True)
 
     ok = graphene.Boolean()
-    businesstrip = graphene.Field(BusinessTripType)
+    #businesstrip = graphene.Field(BusinessTripType)
 
     @staticmethod
     def mutate(root, info, input=None):
         ok = True
-        user = User.objects.filter(id=input.userid)
+        user = User.objects.filter(username=input.username)
         if len(user) == 0:
-            print("{} user not found".format(input.userid))
+            print("{} user not found".format(input.username))
 
-        co2e = calc_co2_businesstrip(start=input.start,
-                                    destination=input.destination,
-                                    distance=input.distance,
-                                    transportation_mode=input.transportation_mode,
-                                    car_size=input.car_size,
-                                    car_fuel_type=input.car_fuel_type,
-                                    bus_size=input.bus_size,
-                                    bus_fuel_type=input.bus_fuel_type,
-                                    capacity=input.capacity,
-                                    occupancy=input.occupancy,
-                                    passengers=input.passengers,
-                                    roundtrip=input.roundtrip)
+        co2e, distance, range_category, _ = calc_co2_businesstrip(
+            start=input.start,
+            destination=input.destination,
+            distance=input.distance,
+            transportation_mode=input.transportation_mode,
+            size=input.size,
+            fuel_type=input.fuel_type,
+            occupancy=input.occupancy,
+            seating=input.seating_class,
+            passengers=input.passengers,
+            roundtrip=input.roundtrip)
         businesstrip_instance = BusinessTrip(timestamp=input.timestamp,
-                                             distance=input.distance,
+                                             distance=distance,
+                                             range_category=range_category,
+                                             transportation_mode=input.transportation_mode,
                                              co2e=co2e,
                                              user=user[0],
                                              working_group=user[0].working_group)
         businesstrip_instance.save()
-        return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
+        return CreateBusinessTrip(ok=ok)
 
 
 class CreateCommuting(graphene.Mutation):
@@ -471,10 +472,9 @@ class CreateCommuting(graphene.Mutation):
         if len(user) == 0:
             raise GraphQLError(f"{input.username} user not found")
         user = user[0]
-        dates = np.arange(np.datetime64(input.from_timestamp, "M"),
-                            np.datetime64(input.to_timestamp, "M") + np.timedelta64(1, 'M'),
-                            np.timedelta64(1, "M")).astype('datetime64[D]')
-
+        if input.workweeks is None:
+            input.workweeks = WEEKS_PER_YEAR
+        # calculate co2
         weekly_co2e = calc_co2_commuting(transportation_mode=input.transportation_mode,
                                          weekly_distance=input.distance,
                                          size=input.size,
@@ -482,10 +482,12 @@ class CreateCommuting(graphene.Mutation):
                                          occupancy=input.occupancy,
                                          passengers=input.passengers
                                          )
-        if input.workweeks is None:
-            input.workweeks = WEEKS_PER_YEAR
-        monthly_co2e = WEEKS_PER_MONTH * (input.workweeks / WEEKS_PER_YEAR) * weekly_co2e
 
+        # Calculate monthly co2
+        monthly_co2e = WEEKS_PER_MONTH * (input.workweeks / WEEKS_PER_YEAR) * weekly_co2e
+        dates = np.arange(np.datetime64(input.from_timestamp, "M"),
+                          np.datetime64(input.to_timestamp, "M") + np.timedelta64(1, 'M'),
+                          np.timedelta64(1, "M")).astype('datetime64[D]')
         for d in dates:
             commuting_instance = Commuting(timestamp=str(d),
                                             distance=input.distance,
