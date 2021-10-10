@@ -313,17 +313,19 @@ mutation {
 
 ## Queries
 
-#### Get current user
+#### Get current user with working group and institution info
 
 ```
 query {
 	me {
     username
-    email
-    isRepresentative
     workingGroup {
-    	groupId
-    	name
+      name
+      groupId
+      institution {
+        name
+        instId
+      }
     }
   }
 }
