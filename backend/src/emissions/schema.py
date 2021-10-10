@@ -218,18 +218,20 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: inst_id: UUID id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        if group_id:
-            entries = BusinessTrip.objects.filter(working_group__group_id=group_id)
-        elif username:
+        if username:
             entries = BusinessTrip.objects.filter(user__username=username)
+        elif group_id:
+            entries = BusinessTripGroup.objects.filter(working_group__group_id=group_id)
         elif inst_id:
-            entries = BusinessTrip.objects.filter(working_group__institution__inst_id=inst_id)
+            entries = BusinessTripGroup.objects.filter(working_group__institution__inst_id=inst_id)
         else:
             entries = BusinessTrip.objects.all()
 
         metrics = {
             'co2e': Sum('co2e'),
         }
+        if not username:
+            metrics['co2e_cap'] = Sum('co2e_cap')
 
         if time_interval.lower() == "month":
             return entries.annotate(date=TruncMonth('timestamp')).values('date').annotate(**metrics).order_by('date')

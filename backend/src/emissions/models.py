@@ -166,23 +166,25 @@ class BusinessTrip(models.Model):
     def save(self, *args, **kwargs):
         # Calculate monthly co2
         super(BusinessTrip, self).save(*args, **kwargs)
-        print(self.working_group)
+        if self.working_group is None:
+            return
+
+        year = self.timestamp[:4]
+        month = self.timestamp[5:7]
         entries = BusinessTrip.objects.filter(working_group=self.working_group,
-                                              timestamp__year=self.timestamp.year,
-                                              timestamp__month=self.timestamp.month,
+                                              timestamp__year=year,
+                                              timestamp__month=month,
                                               transportation_mode=self.transportation_mode)
-        print(entries)
         metrics = {
             "co2e": Sum("co2e"),
             "distance": Sum("distance")
         }
         group_data = entries.aggregate(**metrics)
-        print(group_data)
         co2e_cap = group_data["co2e"] / self.working_group.n_employees
 
         try:
             obj = BusinessTripGroup.objects.get(working_group=self.working_group,
-                                                timestamp="{0}-{1}-01".format(self.timestamp.year, self.timestamp.month),
+                                                timestamp="{0}-{1}-01".format(year, month),
                                                 transportation_mode=self.transportation_mode)
             obj.n_employees = self.working_group.n_employees
             obj.distance = group_data["distance"]
@@ -192,7 +194,7 @@ class BusinessTrip(models.Model):
         except BusinessTripGroup.DoesNotExist:
             BusinessTripGroup(
                 working_group=self.working_group,
-                timestamp="{0}-{1}-01".format(self.timestamp.year, self.timestamp.month),
+                timestamp="{0}-{1}-01".format(year, month),
                 transportation_mode=self.transportation_mode,
                 n_employees=self.working_group.n_employees,
                 distance=group_data["distance"],
