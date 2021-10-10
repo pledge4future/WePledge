@@ -5,8 +5,9 @@ Create permissions (read only) to models for a set of groups
 
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
+from django.db.models import Sum
 from django.db.utils import IntegrityError
-from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting
+from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting, CommutingGroup
 from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity, calc_co2_commuting, calc_co2_businesstrip
 import numpy as np
 import pandas as pd
@@ -194,12 +195,13 @@ class Command(BaseCommand):
                                             transportation_mode=np.random.choice(modes, 1)[0].value)
                     new_trip.save()
 
-"""
+
         if len(Commuting.objects.all()) == 0:
+
             print("Loading commuting data ...")
             workweeks = 40
-            weeks_per_month = 4.34524
-            weeks_per_year = 52.1429
+            WEEKS_PER_MONTH = 4.34524
+            WEEKS_PER_YEAR = 52.1429
 
             dates_2019 = np.arange(np.datetime64('2019-01', "M"),
                               np.datetime64('2020-01', "M"),
@@ -209,33 +211,97 @@ class Command(BaseCommand):
                                    np.timedelta64(1, "M")).astype('datetime64[D]')
 
             for usr in User.objects.all():
-                distance = np.random.randint(0, 20, 1)
-                for d in dates_2019:
-                    co2e = calc_co2_commuting(transportation_mode="bicycle",
-                                              weekly_distance=distance)
-                    monthly_co2e = monthly_co2e_cap = weeks_per_month * (workweeks / weeks_per_year) * co2e
-                    new_trip = Commuting(user=usr,
-                                        working_group=usr.working_group,
-                                        distance=distance,
-                                        co2e=monthly_co2e,
-                                        co2e_cap=monthly_co2e_cap,
-                                        timestamp=str(d),
-                                        transportation_mode="BICYCLE")
-                    new_trip.save()
+                if usr.working_group is None:
+                    continue
 
-                for d in dates_2020:
-                    co2e = calc_co2_commuting(transportation_mode="car",
-                                                         weekly_distance=distance,
-                                                         passengers=1,
-                                                         size="medium",
-                                                         fuel_type="gasoline")
-                    monthly_co2e = monthly_co2e_cap = weeks_per_month * (workweeks / weeks_per_year) * co2e
-                    new_trip = Commuting(user=usr,
-                                            working_group=usr.working_group,
-                                            distance=distance,
-                                            co2e=monthly_co2e,
-                                            co2e_cap=monthly_co2e_cap,
-                                            timestamp=str(d),
-                                            transportation_mode="CAR")
-                    new_trip.save()
-"""
+                distance = np.random.randint(0, 20, 1)
+                transportation_mode = "bicycle"
+
+                for d_2019 in range(len(dates_2019) - 1):
+                    from_timestamp = dates_2019[d_2019]
+                    to_timestamp = dates_2019[d_2019+1]
+
+                    # calculate co2
+                    weekly_co2e = calc_co2_commuting(transportation_mode=transportation_mode,
+                                                     weekly_distance=distance)
+                    # Calculate monthly co2
+                    monthly_co2e = WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
+                    dates = np.arange(np.datetime64(from_timestamp, "M"),
+                                      np.datetime64(to_timestamp, "M") + np.timedelta64(1, 'M'),
+                                      np.timedelta64(1, "M")).astype('datetime64[D]')
+                    for d in dates:
+                        commuting_instance = Commuting(timestamp=str(d),
+                                                       distance=distance,
+                                                       transportation_mode=transportation_mode,
+                                                       co2e=monthly_co2e,
+                                                       user=usr,
+                                                       working_group=usr.working_group)
+                        commuting_instance.save()
+
+                        # Update emissions of working group for date and transportation mode
+                        entries = Commuting.objects.filter(working_group=usr.working_group,
+                                                           transportation_mode=transportation_mode,
+                                                           timestamp=str(d))
+                        metrics = {
+                            "co2e": Sum("co2e"),
+                            "distance": Sum("distance")
+                        }
+                        group_data = entries.aggregate(**metrics)
+
+                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                        commuting_group_instance = CommutingGroup(working_group=usr.working_group,
+                                                                  timestamp=str(d),
+                                                                  transportation_mode=transportation_mode,
+                                                                  n_employees=usr.working_group.n_employees,
+                                                                  co2e=group_data["co2e"],
+                                                                  co2e_cap=co2e_cap,
+                                                                  distance=group_data["distance"])
+                        commuting_group_instance.save()
+
+                transportation_mode = "car"
+                for d_2020 in range(len(dates_2020) - 1):
+                    from_timestamp = dates_2020[d_2020]
+                    to_timestamp = dates_2020[d_2020 + 1]
+
+                    # calculate co2
+                    weekly_co2e = calc_co2_commuting(transportation_mode=transportation_mode,
+                                              weekly_distance=distance,
+                                              passengers=1,
+                                              size="medium",
+                                              fuel_type="gasoline")
+
+                    # Calculate monthly co2
+                    monthly_co2e = WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
+                    dates = np.arange(np.datetime64(from_timestamp, "M"),
+                                      np.datetime64(to_timestamp, "M") + np.timedelta64(1, 'M'),
+                                      np.timedelta64(1, "M")).astype('datetime64[D]')
+                    for d in dates:
+                        commuting_instance = Commuting(timestamp=str(d),
+                                                       distance=distance,
+                                                       transportation_mode=transportation_mode,
+                                                       co2e=monthly_co2e,
+                                                       user=usr,
+                                                       working_group=usr.working_group)
+                        commuting_instance.save()
+
+                        # Update emissions of working group for date and transportation mode
+                        entries = Commuting.objects.filter(working_group=usr.working_group,
+                                                           transportation_mode=transportation_mode,
+                                                           timestamp=str(d))
+                        metrics = {
+                            "co2e": Sum("co2e"),
+                            "distance": Sum("distance")
+                        }
+                        group_data = entries.aggregate(**metrics)
+
+                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                        commuting_group_instance = CommutingGroup(working_group=usr.working_group,
+                                                                  timestamp=str(d),
+                                                                  transportation_mode=transportation_mode,
+                                                                  n_employees=usr.working_group.n_employees,
+                                                                  co2e=group_data["co2e"],
+                                                                  co2e_cap=co2e_cap,
+                                                                  distance=group_data["distance"])
+                        commuting_group_instance.save()
+
+
