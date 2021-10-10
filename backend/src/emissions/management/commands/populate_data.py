@@ -176,10 +176,13 @@ class Command(BaseCommand):
                      BusinessTripTransportationMode.TRAIN,
                      BusinessTripTransportationMode.BUS]
 
+            dates = np.arange(np.datetime64('2019-01-15'),
+                              np.datetime64('2021-01-15'),
+                              np.timedelta64(30, "D")).astype('datetime64[D]')
+
             for usr in User.objects.all():
-                dates = np.arange(np.datetime64('2019-01-15'),
-                                  np.datetime64('2021-01-15'),
-                                  np.timedelta64(30, "D")).astype('datetime64[D]')
+                if usr.working_group is None:
+                    continue
 
                 for d in dates:
                     co2e = co2e_cap = float(np.random.randint(50, 1000, 1))
