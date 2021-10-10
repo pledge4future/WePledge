@@ -259,11 +259,11 @@ class Query(UserQuery, MeQuery, ObjectType):
             'co2e': Sum('co2e'),
             'co2e_cap': Sum('co2e_cap'),
         }
-        if group_id:
-            entries = CommutingGroup.objects.filter(working_group__group_id=group_id)
-        elif username:
+        if username:
             entries = Commuting.objects.filter(user__username=username)
             metrics.pop("co2e_cap")
+        elif group_id:
+            entries = CommutingGroup.objects.filter(working_group__group_id=group_id)
         elif inst_id:
             entries = CommutingGroup.objects.filter(working_group__institution__inst_id=inst_id)
         else:
@@ -476,6 +476,7 @@ class CreateCommuting(graphene.Mutation):
         user = user[0]
         if input.workweeks is None:
             input.workweeks = WEEKS_PER_YEAR
+
         # calculate co2
         weekly_co2e = calc_co2_commuting(transportation_mode=input.transportation_mode,
                                          weekly_distance=input.distance,
@@ -518,7 +519,6 @@ class CreateCommuting(graphene.Mutation):
                                                       co2e_cap=co2e_cap,
                                                       distance=group_data["distance"])
             commuting_group_instance.save()
-
 
         return CreateCommuting(ok=ok)
 
