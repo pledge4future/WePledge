@@ -12,6 +12,7 @@ import PageContainer from "../src/components/PageContainer";
 import Typography from "../src/components/Typography";
 import { TextField, Button } from "@material-ui/core";
 
+
 // Form Validation
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -19,6 +20,7 @@ import * as yup from 'yup';
 // Backend Queries
 import { gql, useMutation } from '@apollo/client';
 import { setCookie } from '../src/utils/commons';
+import { useState } from "react";
 
 
 // mutation to sing in user
@@ -55,11 +57,18 @@ function SignIn() {
 
   const router = useRouter();
 
+  const [errorState, setErrorState] = useState(false)
+
   const [signIn] = useMutation(TOKEN_AUTH,
     {
     onCompleted: (data) => {
-      setCookie('token', data.tokenAuth.token);
-      router.push('/')
+      if(data.tokenAuth.success){
+        setCookie('token', data.tokenAuth.token);
+        router.push('/')
+      }
+      else{
+        setErrorState(true);
+      }
     }
   });
 
@@ -137,6 +146,14 @@ function SignIn() {
             Sign in
           </Button>
         </form>
+          <Typography variant="body2" align="center">
+            <div>
+              { // TODO: Style this!
+              errorState && (
+                <p>Please add valid credentials!</p>
+              )}
+            </div>
+          </Typography>
           <Typography variant="body2" align="center">
             <Link href="/sign-up/" align="center" underline="always">
               Forgot password?
