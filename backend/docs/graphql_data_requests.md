@@ -8,6 +8,7 @@ There are three types of queries to request monthly (default) or annual co2e dat
 - **electricityAggregated**
 - **businesstripAggregated** 
 - **commutingAggregated**
+- **allAggregated** (not implemented yet)
 
 The **aggregation level** can be specified using the arguments
 
@@ -20,7 +21,37 @@ The co2e emission can be returned as
 - absolute emissions (`co2e`)
 - emissions per capita (`co2eCap`)
 
+per 
+
+- month (`time_interval="month"`) 
+- year (`time_interval="year"`)
+
 ### Examples:  
+
+##### All aggregated (not implemented yet)
+
+```
+  "data": {
+    "businesstripAggregated": [
+      {
+        "co2e": 3229,
+        "date": "2019-01-01"
+      },
+      {
+        "co2e": 3608,
+        "date": "2019-02-01"
+      },
+      {
+        "co2e": 3111,
+        "date": "2019-03-01"
+      },
+    ],
+    "heatingAggregated": [
+        ...
+    ]
+  }
+} 
+```
 
 #### Monthly absolute emissions of business trips of a user  
 **Request:**
