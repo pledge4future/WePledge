@@ -64,7 +64,7 @@ function SignIn() {
     onCompleted: (data) => {
       if(data.tokenAuth.success){
         setCookie('token', data.tokenAuth.token);
-        router.push('/')
+        router.push('/dashboard')
       }
       else{
         setErrorState(true);

@@ -126,6 +126,11 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
     setUserSubmenuAnchorElement(null);
   }
 
+  function logoutUser(){
+    authContext.logout();
+    router.push('/');
+  }
+
 
   const path: Route[] = routes;
 
@@ -177,7 +182,8 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
             </ListItemIcon>
             <ListItemText primary="User Profile" />
           </StyledMenuItem>
-          <StyledMenuItem>
+          <StyledMenuItem
+          onClick ={logoutUser}>
             <ListItemIcon>
               <ExitToAppIcon fontSize="small" />
             </ListItemIcon>
