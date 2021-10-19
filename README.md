@@ -1,80 +1,20 @@
 # WePledge
-code for the pledge4future webapp
+code for the webapp
 
 
-## Prepare the data
+## Django login
 
-### Import data from submodule  
-```
-git submodule update --init --recursive
-```
+You can login at `http://localhost:8000/admin` using 
 
-### Copy env file
-```
-cp sample.env .env
-```
-
-### Edit .env file to fit your environment
-uncomment the CUBEJS_DB_HOST in .env. For example, if you are a Mac, uncomment `CUBEJS_DB_HOST=host.docker.internal`
-
-```
-# For Mac
-CUBEJS_DB_HOST=host.docker.internal
-
-# For Windows
-# CUBEJS_DB_HOST=docker.for.win.localhost
-
-# For Linux
-# CUBEJS_DB_HOST=localhost
-```
+- user: *admin@admin.com* 
+- password *adminpass*
 
 
-### Start services
-```
-docker-compose up
-```
+## Debugging backend containers
 
+Before rebuilding all backend docker containers, do the following: 
 
-## Useful Links
-- Django Admin http://localhost:8000/admin/
-- GraphQL Playground http://localhost:8000/graphql/
-- CubeJS Playground http://localhost:4000
-- Frontend http://localhost:3000
-
-
-## Tips
-
-1. GraphQl Query
-```
-query getUser {
-  user(id: 3) {
-    id
-    username
-    firstName
-  }
-}
-```
-
-2. GraphQl Mutation
-```
-mutation updateUser {
-  updateUser(id:3, input: {
-    firstName: "Bill"
-  }) {
-    ok
-    user {
-      firstName
-    }
-  }
-}
-```
-
-3. Create Superuser in backend
-
-```
-docker exec -it  wepledge_backend_1 /bin/sh; exit
-```
-
-```
-python manage.py createsuperuser
-```
+1. Delete all files except for the *__init__.py* in the folder *./WePledge/backend/src/emissions/migrations*.
+2. Delete all backend containers (wepledge_pgadmin_1, wepledge_backend_1 and db)
+3. Run `docker volume prune` to delete the database. 
+4. Run `docker compose up´.
