@@ -147,57 +147,6 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
           {name}
         </Link>
       ))}
-      {authContext.isAuthenticated ? (
-        <>
-        <Link
-          color="inherit"
-          variant="h6"
-          underline="none"
-          className={classes.rightLink}
-          onClick={openUserSubmenu}
-          href="#"
-        >
-          {"User"}
-        </Link>
-        <Menu
-          id="user-menu-popover"
-          open={userSubmenuOpen}
-          anchorEl={userSubmenuAnchorElement}
-          onClose={handleUserSubmenuClose}
-          anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          <StyledMenuItem>
-            <ListItemIcon>
-              <AccountCircleIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="User Profile" />
-          </StyledMenuItem>
-          <StyledMenuItem>
-            <ListItemIcon>
-              <ExitToAppIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </StyledMenuItem>
-        </Menu>
-        </>
-      ) : (
-        <Link
-          color="inherit"
-          variant="h6"
-          underline="none"
-          className={classes.rightLink}
-          href={"/sign-in"}
-        >
-          {"SignIn"}
-        </Link>
-      )}
     </div>
   );
 
