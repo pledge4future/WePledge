@@ -1,10 +1,11 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
+
 
 const useStyles = makeStyles({
   legendContainer: {
@@ -14,6 +15,7 @@ const useStyles = makeStyles({
     marginLeft: '200px'
   },
 })
+
 
 
 export function IndividualDashboard(){
@@ -39,15 +41,44 @@ export function IndividualDashboard(){
     { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
   ]
 
+  const exampleData = useMemo(() => {
+    return getAllExampleData();
+  }, [])
 
-  const exampleData = getAllExampleData();
+  function calculateSum(data: any): number[]{
+    let newSums = data.map(item => item.sum)
+    if(!showHeating){
+      newSums = data.map((item, index) => newSums[index]-item.heating)
+    }
+    if(!showElectricity){
+      newSums = data.map((item, index) => newSums[index]-item.electricity);
+    }
+    if(!showCommuting){
+      newSums = data.map((item, index) => newSums[index]-item.commuting);
+    }
+    if(!showBusiness){
+      newSums = data.map((item, index) => newSums[index]-item.business);
+    }
+    return newSums
+  }
 
   const renderComposedChart = useCallback(() => {
+
+    const sums = calculateSum(exampleData);
+    
+    const chartData = exampleData.map((item, index) => { 
+      let newItem = {
+        newSum: sums[index],
+        ...item
+      }
+      return newItem
+    });
+
     return (
       <div>
-      <ComposedChart width={1000} height={400} data={exampleData}>
+      <ComposedChart width={1000} height={400} data={chartData}>
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]} />
         <Tooltip />
         ({ 
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
@@ -61,7 +92,7 @@ export function IndividualDashboard(){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="sum" stroke={ChartColors.trendLine} />
+        <Line dataKey="newSum" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })

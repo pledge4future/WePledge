@@ -1,6 +1,6 @@
 import { makeStyles } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line } from 'recharts';
 
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
@@ -43,14 +43,44 @@ export function GroupDashboard(){
 
   const workingGroupSize = 10;
 
-  const exampleData = getAllExampleData(workingGroupSize);
+  const exampleData = useMemo(() => {
+    return getAllExampleData(workingGroupSize);
+  }, [])
+
+  function calculateSum(data: any): number[]{
+    let newSums = data.map(item => item.sum)
+    if(!showHeating){
+      newSums = data.map((item, index) => newSums[index]-item.heating)
+    }
+    if(!showElectricity){
+      newSums = data.map((item, index) => newSums[index]-item.electricity);
+    }
+    if(!showCommuting){
+      newSums = data.map((item, index) => newSums[index]-item.commuting);
+    }
+    if(!showBusiness){
+      newSums = data.map((item, index) => newSums[index]-item.business);
+    }
+    return newSums
+  }
 
   const renderComposedGroupChart = useCallback(() => {
+
+    const sums = calculateSum(exampleData);
+    
+    const chartData = exampleData.map((item, index) => { 
+      let newItem = {
+        newSum: sums[index],
+        ...item
+      }
+      return newItem
+    });
+
     return (
       <div>
-      <ComposedChart width={1000} height={400} data={exampleData}>
+      <ComposedChart width={1000} height={400} data={chartData}>
         <XAxis dataKey="name" />
-        <YAxis />
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]} />
         <Tooltip />
         ({ 
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
@@ -64,7 +94,7 @@ export function GroupDashboard(){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="sum" stroke={ChartColors.trendLine} />
+        <Line dataKey="newSum" stroke={ChartColors.trendLine} />
         ({
           showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
