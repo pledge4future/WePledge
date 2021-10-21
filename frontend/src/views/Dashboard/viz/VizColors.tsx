@@ -4,5 +4,6 @@ export enum ChartColors{
   electricity = '#B75D69',
   business = '#EACDC2',
   perCapitaLine = '#73c608',
-  trendLine = '#4493c6'
+  trendLine = '#4493c6',
+  averageLine = '#fcbe03'
 }

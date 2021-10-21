@@ -25,15 +25,20 @@ export function IndividualDashboard(){
   const [showCommuting, setShowCommuting] = useState(true);
   const [showBusiness, setShowBusiness] = useState(true);
 
+  const [showPerCapita, setShowPerCapita] = useState(false);
 
-  const legendData: CustomLegendItem[] = [
+
+  const legendBarData: CustomLegendItem[] = [
     { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
     { label: 'Commuting', color: ChartColors.commuting, shown: showCommuting, onItemChange: (() => setShowCommuting(!showCommuting)) },
     { label: 'Heating', color: ChartColors.heating, shown: showHeating, onItemChange: (() => setShowHeating(!showHeating)) },
     { label: 'Business', color: ChartColors.business, shown: showBusiness, onItemChange: (() => setShowBusiness(!showBusiness)) },
-    /* { label: 'per Capita',color: ChartColors.perCapitaLine},
-    { label: 'Trendline', color: ChartColors.trendLine}, */
   ]
+
+  const legendLineData: CustomLegendItem[] = [
+    { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
+  ]
+
 
   const exampleData = getAllExampleData();
 
@@ -57,15 +62,17 @@ export function IndividualDashboard(){
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
         <Line dataKey="sum" stroke={ChartColors.trendLine} />
-        <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+        ({
+        showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+        })
       </ComposedChart>
       <div className={styles.legendContainer}>
-        <CustomLegend items = {legendData}/>
+        <CustomLegend lineItems = {legendLineData} barItems = {legendBarData}/>
       </div>
       </div>
 
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
   
   return (
     <React.Fragment>

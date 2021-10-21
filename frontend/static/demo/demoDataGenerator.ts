@@ -15,7 +15,8 @@ function getRandomData(month: string, multiplicator?: number){
     "commuting": data[2],
     "business": data[3],
     "sum": data.reduce((total, current) => total += current),
-    "max": 1000
+    "max": 1000,
+    "avg": multiplicator ? data.reduce((total, current) => total += current) / multiplicator : 0
   }
 }
 

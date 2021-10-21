@@ -13,7 +13,8 @@ export interface CustomLegendItem{
 }
 
 export interface CustomLegendProps{
-  items: CustomLegendItem[]
+  barItems?: CustomLegendItem[]
+  lineItems?: CustomLegentItem[]
 }
 
 const useStyles = makeStyles({
@@ -35,13 +36,27 @@ export function CustomLegend(props: CustomLegendProps){
 
   const styles = useStyles();
 
-  const {items} = props
+  const {barItems, lineItems} = props
 
   return(
     <Grid container spacing={2}>
       <Grid item xs={12}>
         <Grid container justify-content="center" spacing={2}>
-          {items?.map((legendItem) => (
+          {barItems?.map((legendItem) => (
+              <Paper className={styles.paper} style={{background: legendItem.color}}>
+                <div className={styles.container}>
+                <Checkbox
+                  checked={legendItem.shown}
+                  onChange={legendItem.onItemChange}
+                  color="default"
+                />
+                  <span>{legendItem.label}</span>
+                </div>
+                </Paper>
+          ))}
+          </Grid>
+          <Grid container justify-content="center" spacing={2}>
+          {lineItems?.map((legendItem) => (
               <Paper className={styles.paper} style={{background: legendItem.color}}>
                 <div className={styles.container}>
                 <Checkbox

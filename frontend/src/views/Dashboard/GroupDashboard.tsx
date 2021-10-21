@@ -25,18 +25,26 @@ export default function GroupDashboard(){
   const [showHeating, setShowHeating] = useState(true);
   const [showCommuting, setShowCommuting] = useState(true);
   const [showBusiness, setShowBusiness] = useState(true);
+  //optional lines in chart
+  const [showAverage, setShowAverage] = useState(false);
+  const [showPerCapita, setShowPerCapita] = useState(false)
 
-  const legendData: CustomLegendItem[] = [
+  const legendBarData: CustomLegendItem[] = [
     { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
     { label: 'Commuting', color: ChartColors.commuting, shown: showCommuting, onItemChange: (() => setShowCommuting(!showCommuting)) },
     { label: 'Heating', color: ChartColors.heating, shown: showHeating, onItemChange: (() => setShowHeating(!showHeating)) },
     { label: 'Business', color: ChartColors.business, shown: showBusiness, onItemChange: (() => setShowBusiness(!showBusiness)) },
-    /* { label: 'per Capita',color: ChartColors.perCapitaLine},
-    { label: 'Trendline', color: ChartColors.trendLine}, */
   ]
 
-  const exampleData = getAllExampleData(10);
-  
+  const legendLineData: CustomLegendItem[] = [
+    { label: 'Average per Person', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
+    { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
+  ]
+
+  const workingGroupSize = 10;
+
+  const exampleData = getAllExampleData(workingGroupSize);
+
   const renderComposedGroupChart = useCallback(() => {
     return (
       <div>
@@ -57,15 +65,20 @@ export default function GroupDashboard(){
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
         <Line dataKey="sum" stroke={ChartColors.trendLine} />
-        <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+        ({
+          showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+        })
+        ({
+          showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
+        })
       </ComposedChart>
       <div className={styles.legendContainer}>
-        <CustomLegend items = {legendData}/>
+        <CustomLegend barItems = {legendBarData} lineItems={legendLineData}/>
       </div>
       </div>
 
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita]);
   
   return (
     <React.Fragment>
