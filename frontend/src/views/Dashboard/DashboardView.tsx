@@ -6,7 +6,8 @@ import {TabPanel} from './TabPanel';
 
 // import dashboard components
 import { IndividualDashboard } from './IndividualDashboard';
-import GroupDashboard from './GroupDashboard';
+import { GroupDashboard } from './GroupDashboard';
+import { InstituteDashboard } from './InstituteDashboard';
 
 
 function a11yProps(index: any){
@@ -34,12 +35,16 @@ export default function DashboardView(){
     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
       <Tab label="Individual Emissions" {...a11yProps(0)} />
       <Tab label="Group Emissions" {...a11yProps(1)} />
+      <Tab label="Institue Emissions" {...a11yProps(2)} />
     </Tabs>
     <TabPanel value={value} index={0}>
       <IndividualDashboard></IndividualDashboard>
     </TabPanel>
     <TabPanel value={value} index={1}>
       <GroupDashboard></GroupDashboard>
+    </TabPanel>
+    <TabPanel value={value} index={2}>
+      <InstituteDashboard></InstituteDashboard>
     </TabPanel>
   </React.Fragment>
   );

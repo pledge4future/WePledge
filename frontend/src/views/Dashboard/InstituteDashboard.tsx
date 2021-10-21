@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 
 
-export function GroupDashboard(){
+export function InstituteDashboard(){
 
   const styles = useStyles();
 
@@ -41,7 +41,7 @@ export function GroupDashboard(){
     { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
   ]
 
-  const workingGroupSize = 10;
+  const workingGroupSize = 100;
 
   const exampleData = getAllExampleData(workingGroupSize);
 
@@ -56,20 +56,20 @@ export function GroupDashboard(){
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
         })
         ({
-          showHeating && <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
+        showHeating && <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
         })
         ({
-          showCommuting && <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
+        showCommuting && <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
         })
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
         <Line dataKey="sum" stroke={ChartColors.trendLine} />
         ({
-          showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+        showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
         ({
-          showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
+        showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
         })
       </ComposedChart>
       <div className={styles.legendContainer}>
@@ -82,7 +82,7 @@ export function GroupDashboard(){
   
   return (
     <React.Fragment>
-    <h3>Group Emissions</h3>
+    <h3>Institute Emissions</h3>
     <div id="ChartContainer">
       {
         renderComposedGroupChart()
