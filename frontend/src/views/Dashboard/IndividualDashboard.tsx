@@ -5,6 +5,8 @@ import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLege
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
+import { Button, Grid } from "@material-ui/core";
+import AddIcon from '@material-ui/icons/Add';
 
 
 const useStyles = makeStyles({
@@ -14,6 +16,11 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     marginLeft: '200px'
   },
+  buttonContainer: {
+    alignItems: 'center',
+    justifyConten: 'center',
+    display: 'flex'
+  }
 })
 
 
@@ -68,7 +75,7 @@ export function IndividualDashboard(){
     
     const chartData = exampleData.map((item, index) => { 
       let newItem = {
-        newSum: sums[index],
+        total: sums[index],
         ...item
       }
       return newItem
@@ -92,7 +99,7 @@ export function IndividualDashboard(){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="newSum" stroke={ChartColors.trendLine} />
+        <Line dataKey="total" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
@@ -107,7 +114,27 @@ export function IndividualDashboard(){
   
   return (
     <React.Fragment>
-    <h3>Individual Emissions</h3>
+    <Grid 
+        container
+        alignItems="center"
+        justifyContent="center"
+        spacing={2}>
+      <Grid item xs={10}>
+        <h3>Individual Emissions</h3>
+      </Grid>
+      <Grid item xs={2}>
+        <div className={styles.buttonContainer}>
+        <Button 
+          variant="outlined"
+          startIcon={<AddIcon />}
+          color="secondary"
+          href="/dataforms"
+          >
+          Add Emissions
+        </Button>
+        </div>
+      </Grid>
+    </Grid>
     <div id="ChartContainer">
       {
         renderComposedChart()

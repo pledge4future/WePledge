@@ -71,7 +71,7 @@ export function InstituteDashboard(){
     
     const chartData = exampleData.map((item, index) => { 
       let newItem = {
-        newSum: sums[index],
+        total: sums[index],
         ...item
       }
       return newItem
@@ -95,7 +95,7 @@ export function InstituteDashboard(){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="newSum" stroke={ChartColors.trendLine} />
+        <Line dataKey="total" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
