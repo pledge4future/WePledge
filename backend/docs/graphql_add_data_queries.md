@@ -130,13 +130,15 @@ mutation createBusinesstrip {
 
 | Name| Input Type | Options / Comment 	       |
 |-----|------------------|--------------------|
-| Date | Dropdown Fields | 1 box for Year and 1 box for Month   |
-| Building | Text input field | |
-| Consumption (kWh) | Float input field | | 
-| Unit | Dropdown | Options: l, kg, kwh, m^3| 
-| Energy source | Dropdown field | German energy mix, Solar |
-| Group share | Float input field | min:0, max: 1 |
-
+| Transportation mode | Drop down | Options: Car, Bus, Train, Bicycle, Pedelec, Motorbike, Tram |
+| Distance [km] | Float | Min: 0 |
+| From | Dropdown | 1 box for Year and 1 box for Month  |
+| To | Dropdown | 1 box for Year and 1 box for Month | 
+| Fuel type | Float input field | Only for car, bus or train | 
+| Size | Dropdown | Options: small, medium, large, average (only for car and bus) |
+| Passengers | Integer | 1 - 9 (only for car) |
+| Occupancy [%] | Dropdown | options: [20, 50, 80, 100] (only for bus)  |
+| Annual work weeks| Integer | Max: 52  |
 
 
 ### Query
@@ -145,14 +147,14 @@ mutation createBusinesstrip {
 mutation createCommuting {
   createCommuting (input: {
     username: "KlausMayer"
-    distance: 30
     transportationMode: "car"
-    fuelType: "gasoline"
-    size: "medium"
+    distance: 30
     fromTimestamp: "2017-01-01"
     toTimestamp: "2017-06-01"
-    workweeks: 40
+    fuelType: "gasoline"
+    size: "medium"
     passengers: 1
+    workweeks: 40
   }) {
     ok
   }
