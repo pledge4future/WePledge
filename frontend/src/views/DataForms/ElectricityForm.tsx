@@ -48,6 +48,11 @@ export function ElectricityForm(
     } 
     <InputLabel id='selectMonthLabel'>Month</InputLabel>
     <Select
+    style={
+      {
+        margin: 8
+      }
+    }
     fullWidth
     labelId='selectMonthLabel'
     label="Month"
@@ -69,6 +74,11 @@ export function ElectricityForm(
 
     <InputLabel id="selectYearLabel">Year</InputLabel>
     <Select
+    style={
+      {
+        margin: 8
+      }
+    }
     fullWidth
     labelId='selectYearLabel'
     label='Year'
@@ -134,6 +144,11 @@ export function ElectricityForm(
 
       <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
           <Select
+          style={
+            {
+              margin: 8
+            }
+          }
           fullWidth
           labelId='selectEnergySourceLabel'
           label='Energy Source'

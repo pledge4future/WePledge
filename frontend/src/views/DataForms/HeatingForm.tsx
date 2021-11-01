@@ -50,6 +50,11 @@ export function HeatingForm(
     } 
     <InputLabel id='selectMonthLabel'>Month</InputLabel>
     <Select
+    style={
+      {
+        margin: 8
+      }
+    }
     fullWidth
     labelId='selectMonthLabel'
     label="Month"
@@ -71,6 +76,11 @@ export function HeatingForm(
 
     <InputLabel id="selectYearLabel">Year</InputLabel>
     <Select
+    style={
+      {
+        margin: 8
+      }
+    }
     fullWidth
     labelId='selectYearLabel'
     label='Year'
@@ -136,6 +146,11 @@ export function HeatingForm(
 
       <InputLabel id="selectUnitLabel">Unit</InputLabel>
       <Select
+      style={
+        {
+          margin: 8
+        }
+      }
       fullWidth
       labelId="selectUnitLabel"
       label='Label'
@@ -149,6 +164,11 @@ export function HeatingForm(
 
       <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
           <Select
+          style={
+      {
+        margin: 8
+      }
+    }
           fullWidth
           labelId='selectEnergySourceLabel'
           label='Energy Source'
