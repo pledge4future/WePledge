@@ -9,13 +9,14 @@ interface FormValues {
   building: string,
   groupShare: number,
   consumption: number,
-  energySource: string
+  energySource: string,
+  unit: string
 }
 
-const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips']
+const energySources = ['Germany energy mix','Solar']
+const units = ['l','kg','m³']
 
-
-export function ElectricityForm(
+export function CommutingForm(
   props: {
     error?: boolean,
     onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
@@ -28,7 +29,8 @@ export function ElectricityForm(
     building: '',
     groupShare: 0.0,
     consumption: 0,
-    energySource: ''
+    energySource: '',
+    unit: ''
   }
 
   const formik = useFormik({
@@ -131,6 +133,19 @@ export function ElectricityForm(
           error={formik.touched.consumption && Boolean(formik.errors.consumption)}
           helperText={formik.touched.consumption && formik.errors.consumption}
         />
+
+      <InputLabel id="selectUnitLabel">Unit</InputLabel>
+      <Select
+      fullWidth
+      labelId="selectUnitLabel"
+      label='Label'
+      value={formik.values.energySource}
+      onChange={formik.handleChange}
+      >
+        {units.map((unit) => {
+          return <MenuItem value={unit}>{unit}</MenuItem>
+        })}
+      </Select>
 
       <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
           <Select

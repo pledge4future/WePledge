@@ -3,6 +3,9 @@ import React, { useState } from "react";
 import { TabPanel } from "../Dashboard/TabPanel";
 
 import { ElectricityForm } from './ElectricityForm';
+import { HeatingForm } from './HeatingForm';
+import { CommutingForm } from './CommutingForm';
+import { BusinessTripForm } from './BusinessTripForm';
 
 function a11yProps(index: any){
   return {
@@ -20,7 +23,7 @@ export default function DataFormView(){
     setValue(newValue);
   }
 
-  const tabContents = [<ElectricityForm />, <span>Insert heating form</span>, <span>Insert commuting form</span>, <span>insert business trip form</span>]
+  const tabContents = [<ElectricityForm />, <HeatingForm />, <CommutingForm />, <BusinessTripForm />]
 
   return <React.Fragment>
     <Tabs value={value} onChange={handleChange} aria-label="forms tabs">
