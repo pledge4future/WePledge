@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
@@ -56,6 +56,7 @@ export function HeatingForm(
       }
     }
     fullWidth
+    name="month"
     labelId='selectMonthLabel'
     label="Month"
     value={formik.values.month}
@@ -82,6 +83,7 @@ export function HeatingForm(
       }
     }
     fullWidth
+    name="year"
     labelId='selectYearLabel'
     label='Year'
     value={formik.values.year}
@@ -118,7 +120,7 @@ export function HeatingForm(
           }}
           variant="outlined"
           id="group share"
-          name="group share"
+          name="groupShare"
           label="group share"
           type="number"
           value={formik.values.groupShare}
@@ -138,6 +140,9 @@ export function HeatingForm(
           name="consumption"
           label="consumption in kwH"
           type="number"
+          InputProps = {{
+            endAdornment: <InputAdornment position="end">kwH</InputAdornment>
+          }}
           value={formik.values.consumption}
           onChange={formik.handleChange}
           error={formik.touched.consumption && Boolean(formik.errors.consumption)}
@@ -152,9 +157,10 @@ export function HeatingForm(
         }
       }
       fullWidth
+      name="unit"
       labelId="selectUnitLabel"
       label='Label'
-      value={formik.values.energySource}
+      value={formik.values.unit}
       onChange={formik.handleChange}
       >
         {units.map((unit) => {
@@ -170,6 +176,7 @@ export function HeatingForm(
       }
     }
           fullWidth
+          name="energySource"
           labelId='selectEnergySourceLabel'
           label='Energy Source'
           value={formik.values.energySource}

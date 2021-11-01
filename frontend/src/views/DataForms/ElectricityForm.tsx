@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, TextField, InputAdornment } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
@@ -54,6 +54,7 @@ export function ElectricityForm(
       }
     }
     fullWidth
+    naem="month"
     labelId='selectMonthLabel'
     label="Month"
     value={formik.values.month}
@@ -80,6 +81,7 @@ export function ElectricityForm(
       }
     }
     fullWidth
+    name="year"
     labelId='selectYearLabel'
     label='Year'
     value={formik.values.year}
@@ -116,7 +118,7 @@ export function ElectricityForm(
           }}
           variant="outlined"
           id="group share"
-          name="group share"
+          name="groupShare"
           label="group share"
           type="number"
           value={formik.values.groupShare}
@@ -136,6 +138,9 @@ export function ElectricityForm(
           name="consumption"
           label="consumption in kwH"
           type="number"
+          InputProps = {{
+            endAdornment: <InputAdornment position="end">kwH</InputAdornment>
+          }}
           value={formik.values.consumption}
           onChange={formik.handleChange}
           error={formik.touched.consumption && Boolean(formik.errors.consumption)}
@@ -150,6 +155,7 @@ export function ElectricityForm(
             }
           }
           fullWidth
+          name="energySource"
           labelId='selectEnergySourceLabel'
           label='Energy Source'
           value={formik.values.energySource}
