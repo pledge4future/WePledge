@@ -28,6 +28,8 @@ The CO<sub>2</sub>e emissions are calculated using emission factors from differe
 - [UBA (2021). "Umweltfreundlich mobil"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil): bicycles, pedelecs, trams
 - [GOV.UK (2020). Greenhouse gas reporting: conversion factors 2020](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020): planes, ferries, electric cars, motorbikes
 
+More information about the sources of the emission factors can be found in chapter 6 of this document.
+
 The specific emission factors for different activities are collected in [this emission factor table](https://github.com/pledge4future/co2calculator/blob/dev/data/emission_factors.csv). 
 
 The basic formula is:
@@ -112,28 +114,74 @@ Train | x 1.2 | Adapted from [GES 1point5](https://labos1point5.org/ges-1point5)
 Plane | + 95 km | CSN EN 16258 - Methodology for calculation and declaration of energy consumption and GHG emissions of transport services (freight and passengers), European Committee for Standardization, Brussels, November 2012, [Méthode pour la réalisation des bilans d’émissions de gaz à effet de , Version 4](https://www.ecologie.gouv.fr/sites/default/files/Guide%20m%C3%A9thodologique%20sp%C3%A9cifique%20pour%20les%20collectivit%C3%A9s%20pour%20la%20r%C3%A9alisation%20du%20bilan%20d%E2%80%99%C3%A9missions%20de%20GES.pdf), p. 53
 
 
+### Specifica of the modes of transport for business trips
 
-
-Business and field trips include four transportation types: car, bus, train and airplane.
-
-If choosing the option car or bus, we ask about the vehicle’s size, the fuel type, and the number of passengers/occupancy n. The emission factor of the vehicle (CO<sub>2</sub>ecar, CO<sub>2</sub>ebus [kg/km]) is then determined based on its size class and fuel type. For trains, the user is asked to provide the fuel type. If these specifications of the vehicles are not known, the option “use average” can be chosen. For each transportation type we ask to provide the traveled distance d [km]. Alternatively, the user can enter the origin and the destination. 
+Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions in kg per passenger are calculated by multiplying the distance with a specific emission factor. For cars, the distance is multiplied by the emission factor and divided by the number of passengers. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. 
 
 > e<sub>car</sub>(person) = d * CO<sub>2</sub>e<sub>car</sub> / n [kg]
 
 
-> e<sub>bus/train</sub>(person)= d * CO<sub>2</sub>e<sub>bus/train</sub> [kg]
+> e<sub>bus/train/plane/ferry</sub>(person)= d * CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
+
+We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+
+Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
+------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
+Car | [diesel, gasoline, cng, electric, hybrid, plug-in_hybrid, **average**] | [small, medium, large, **average**] | - | - | [**1**, 2, 3, 4, 5, 6, 7, 8, 9] | -
+Train | [diesel, electric, **average**] | - | - | - | - | - (assumes "long-distance")
+Bus | [diesel] | [medium, large, **average**] | in % [20, **50**, 80, 100] | - | - | - (assumes "long-distance")
+Plane | - | - | - | [**average**, Economy class, Business class, Premium economy class, First class] | - | - (determined from distance)
+Ferry | - | - | - | [**average**, Foot passenger, Car passenger] | - | -
 
 
-The distance between the locations is retrieved using the OpenRouteService API. The CO2
-equivalents are calculated using emission factors from the ProBas Database. You can find
-tables of the different vehicle sizes and fuel types and their respective CO<sub>2</sub> equivalents below.
+### Range categories
 
-The definition of the different vehicle sizes, fuel types etc. can be found in the questionnaire.
+Trips are categorized based on their ranges, which can be used later for analysis and visualization purposes. 
 
+- Very short haul: < 500 km
+- Short distance: 500 - 1500 km
+- Medium distance: 1500 - 4000 km
+- Long distance: > 4000 km
 <br/>
 
+## 5 Commuting
 
-## Sources of the data downloaded from the ProBas database
+Emissions from commuting are also quantified individually for each mode of transport [calc_co2_commuting](https://github.com/pledge4future/co2calculator/blob/2e102a0971dda57423fe7aef9958d0e61358248c/co2calculator/calculate.py#L445). For a given mode of transport, the user provides the average weekly distance travelled in a given time period (`work_weeks`). Available transportation modes are:
+- Car
+- (Local) bus
+- (Local) train
+- Tram
+- Motorbike
+- Bicycle
+- Pedelec
+
+### Specifica of the modes of transport for commuting
+
+Emissions from commuting are calculated the same way as emissions from business trips by multiplying the weekly distance by an emission factor. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+
+Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
+------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
+Car | [diesel, gasoline, cng, electric, hybrid, plug-in_hybrid, **average**] | [small, medium, large, **average**] | - | - | [**1**, 2, 3, 4, 5, 6, 7, 8, 9] | -
+Motorbike | - | [small, medium, large, **average**] | - | - | - | -
+Train | [diesel, electric, **average**] | - | - | - | - | - (assumes "local")
+Bus | [diesel] | [medium, large, **average**] | in % [20, **50**, 80, 100] | - | - | - (assumes "local")
+Tram | - | - | - | - | - | -
+Bicycle | - | - | - | - | - | -
+Pedelec | - | - | - | - | - | -
+
+
+### Aggregating to the group's level
+
+If we assume that a representative sample (`n_participants`) of the entire group (`n_member`) entered their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
+
+`group_co2e = aggr_co2 / n_participants * n_members` 
+with `aggr_co2` the sum of the CO<sub>2</sub>e emissions of all participants.
+<br/>
+<br/>
+
+## 6 Emission factor sources
+
+### ProBas database
 
 The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010
 project, i.e. Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel
@@ -144,20 +192,24 @@ IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) a
 [International Institute for Sustainability Analysis and Strategy](http://iinas.org/news.html) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
 
 
+### Brochure "Umweltfeundlich mobil!"
 
-<br/>
+The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport (UBA, 2021). The emission factors for bicycles, pedelecs, and tram were taken from table 3 on p. 38 of this brochure.
 
-## Emission factor
 
-- Car
+### Greenhouse gas reporting: conversion factors 2020
+
+This comprehensive set of [conversion factors](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020) provided by the UK Department for Business, Energy & Industrial Strategy is intended for use by companies and other organizations to report on their greenhouse gas emissions. We have used conversion factors for planes, ferries, electric cars, and motorbikes from this source.
+
+### Emission factor tables: REMOVE?
+
+**Car**
 
 | Source       | Model  | Size class   | Fuel type                | CO2e [kg/pkm] |
 |--------------|--------|--------------|--------------------------|---------------|
-| Öko-Institut | gemis  | < 1,4 l      | electric                 | 0.04          |
-| Öko-Institut | gemis  | 1,4 - 2 l    | electric                 | 0.05          |
-| Öko-Institut | gemis  | 2 - 9 l      | compressed natural   gas | 0.26          |
-| Öko-Institut | gemis  | < 1,4 l      | compressed natural   gas | 0.17          |
-| Öko-Institut | gemis  | 1,4 - 2 l    | compressed natural   gas | 0.21          |
+| Öko-Institut | gemis  | 2 - 9 l      | compressed natural   gas | 0.29          |
+| Öko-Institut | gemis  | < 1,4 l      | compressed natural   gas | 0.20          |
+| Öko-Institut | gemis  | 1,4 - 2 l    | compressed natural   gas | 0.24          |
 | UBA          | tremod | average      | average                  | 0.22          |
 | UBA          | tremod | < 1,4 l      | average                  | 0.18          |
 | UBA          | tremod | 1,4 - 2 l    | average                  | 0.21          |
@@ -169,6 +221,19 @@ IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) a
 | UBA          | tremod | < 1,4 l      | diesel                   | 0.13          |
 | UBA          | tremod | 1,4 - 2 l    | diesel                   | 0.18          |
 | UBA          | tremod | 2 - 9 l      | diesel                   | 0.25          |
+| UK BEIS      | 2020 UK GHG Conversion factors | small   | hybrid | 0.10 |
+| UK BEIS      | 2020 UK GHG Conversion factors | medium  | hybrid | 0.11 |
+| UK BEIS      | 2020 UK GHG Conversion factors | large   | hybrid | 0.14 |
+| UK BEIS      | 2020 UK GHG Conversion factors | average | hybrid | 0.12 |
+| UK BEIS      | 2020 UK GHG Conversion factors | small   | plug-in hybrid | 0.06 |
+| UK BEIS      | 2020 UK GHG Conversion factors | medium  | plug-in hybrid | 0.09 |
+| UK BEIS      | 2020 UK GHG Conversion factors | large   | plug-in hybrid | 0.11 |
+| UK BEIS      | 2020 UK GHG Conversion factors | average | plug-in hybrid | 0.10 |
+| UK BEIS      | 2020 UK GHG Conversion factors | small   | electric | 0.05 |
+| UK BEIS      | 2020 UK GHG Conversion factors | medium  | electric | 0.06 |
+| UK BEIS      | 2020 UK GHG Conversion factors | large   | electric | 0.07 |
+| UK BEIS      | 2020 UK GHG Conversion factors | average | electric | 0.06 |
+
 
 - **Bus**
 
@@ -220,25 +285,13 @@ IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) a
 |     solar                |     Öko-Institut    |     gemis    |     11874           |
 |     german energy mix    |     IINAS           |     gemis    |     109518          |
 
-
-
-Stuff for the future which is not implemented yet:
-
 <br/>
 
-## Plane
+## 7 References
 
-We are using GoClimate API (https://api.goclimate.com/docs). - maybe
+- Department for Business, Energy & Industrial Strategy, (2020). Greenhouse gas reporting: conversion factors 2020. https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020
 
-In case of traveling by plane, the user provides an origin and a destination as a three-digit airport
-code, a seating class and whether it is a round trip. All intermediate airport stops need to be
-entered as separate trips if possible.
-
-<br/>
-
-## References
-
-- Gohar, L. K. & Shine, K. P. (2007), Equivalent CO2 and its use in understanding the climate effects
+- Gohar, L. K. & Shine, K. P., (2007). Equivalent CO2 and its use in understanding the climate effects
 of increased greenhouse gas concentrations. Weather, 62: 307-311.
 https://doi.org/10.1002/wea.103
 
@@ -253,7 +306,7 @@ https://www.bmu.de/fileadmin/Daten_BMU/Pools/Forschungsdatenbank/fkz_3707_45_101
 https://www.ifeu.de/en/project/uba-tremod-2019/
 
 
-- Moss, A. R., Jouany, J. P., & Newbold, J. (2000), Methane production by ruminants: its
+- Moss, A. R., Jouany, J. P., & Newbold, J., (2000). Methane production by ruminants: its
 contribution to global warming. In Annales de zootechnie (Vol. 49, No. 3, pp. 231-253). EDP
 Sciences. https://doi.org/10.1051/animres:2000119
 
@@ -263,3 +316,5 @@ integrated database for lifecycle asessments and co2 footprints of energy, resou
 transport systems, developed by Öko-Institut, 2012 passed to the International Institute for
 Sustainability Analysis and Strategy/Internationales Institut für Nachhaltigkeitsanalysen und
 -strategien (IINAS). http://iinas.org/about-gemis.html
+
+- Umweltbundesamt (UBA), 2021. Umweltfreundlich mobil! Ein ökologischer Verkehrsartenvergleich für den Personen- und Güterverkehr in Deutschland. https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil
