@@ -92,14 +92,14 @@ mutation createHeating{
 | Name| Input Type | Options / Comment 	       | Tooltip |
 |-----|------------------|--------------------|-----------|
 | Date | Date Field | with year, month, day   |
-| Transportation mode | Drop down | Options: Car, Train, Plane, Bus | If one trip was done with different modes of transport (e.g. train and bus), please enter them as individual trips or select the dominant mode of transport. |
+| Transportation mode | Drop down | Options: Car, Train, Plane, Bus, Ferry | If one trip was done with different modes of transport (e.g. train and bus), please enter them as individual trips or select the dominant mode of transport. |
 | Start | Text fields | 3 fields for address, city, country | Start of the trip (alternatively, distance can be provided) |
 | Destination | Text fields | 3 fields for address, city, country | Destination of the trip (alternatively, distance can be provided) |
 | Distance | Float field |  | Distance travelled in km (alternatively, start and destination can be provided) |
 | Size | Dropdown | Options: small, medium, large, average (only for car and bus) | Default: average |
-| Fuel type | Dropdown | Options: diesel, gasoline, electricity, cng, hydrogen, average (only for car, bus, and train) | Possible values: car: [diesel, gasoline, cng, electricity, average] bus: [diesel, hydrogen, cng, electricity] train: [diesel, electricity, average]. Defaults: average for car and train, diesel for bus |
+| Fuel type | Dropdown | Options: diesel, gasoline, electricity, cng, hybrid, plug-in_hybrid, average (only for car, bus, and train) | Possible values: car: [diesel, gasoline, cng, electricity, hybrid, plug-in_hybrid, average] bus: [diesel] train: [diesel, electricity, average]. Defaults: average for car and train, diesel for bus |
 | Occupancy [%] | Dropdown | options: [20, 50, 80, 100] (only for bus) | Occupancy of the bus in %. Occupancy of 50 % means half of the bus seats were occupied. Default: 50 |
-| Seating class | Dropdown | Options: "average", "Economy class", "Premium economy class", "Business class", "First class" (only for plane) | Default: average |
+| Seating class | Dropdown | Options: "average", "Economy class", "Premium economy class", "Business class", "First class", "Foot passenger", "Car passenger" (only for plane and ferry) | Default: average |
 | Passengers | Int Field | 1 - 9 (only for car) | Number of passengers in the car (including the person answering the questionnaire). Default: 1 |
 | Round trip | Check box | | Please check the box if the trip was a roundtrip. |
 
