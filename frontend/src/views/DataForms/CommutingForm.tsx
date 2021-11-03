@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField, InputAdornment } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
@@ -9,13 +9,14 @@ interface FormValues {
   building: string,
   groupShare: number,
   consumption: number,
-  energySource: string
+  energySource: string,
+  unit: string
 }
 
-const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips']
+const energySources = ['Germany energy mix','Solar']
+const units = ['l','kg','m³']
 
-
-export function ElectricityForm(
+export function CommutingForm(
   props: {
     error?: boolean,
     onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
@@ -28,7 +29,8 @@ export function ElectricityForm(
     building: '',
     groupShare: 0.0,
     consumption: 0,
-    energySource: ''
+    energySource: '',
+    unit: ''
   }
 
   const formik = useFormik({
@@ -54,7 +56,6 @@ export function ElectricityForm(
       }
     }
     fullWidth
-    naem="month"
     labelId='selectMonthLabel'
     label="Month"
     value={formik.values.month}
@@ -81,7 +82,6 @@ export function ElectricityForm(
       }
     }
     fullWidth
-    name="year"
     labelId='selectYearLabel'
     label='Year'
     value={formik.values.year}
@@ -118,7 +118,7 @@ export function ElectricityForm(
           }}
           variant="outlined"
           id="group share"
-          name="groupShare"
+          name="group share"
           label="group share"
           type="number"
           value={formik.values.groupShare}
@@ -138,14 +138,29 @@ export function ElectricityForm(
           name="consumption"
           label="consumption in kwH"
           type="number"
-          InputProps = {{
-            endAdornment: <InputAdornment position="end">kwH</InputAdornment>
-          }}
           value={formik.values.consumption}
           onChange={formik.handleChange}
           error={formik.touched.consumption && Boolean(formik.errors.consumption)}
           helperText={formik.touched.consumption && formik.errors.consumption}
         />
+
+      <InputLabel id="selectUnitLabel">Unit</InputLabel>
+      <Select
+      style={
+        {
+          margin: 8
+        }
+      }
+      fullWidth
+      labelId="selectUnitLabel"
+      label='Label'
+      value={formik.values.energySource}
+      onChange={formik.handleChange}
+      >
+        {units.map((unit) => {
+          return <MenuItem value={unit}>{unit}</MenuItem>
+        })}
+      </Select>
 
       <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
           <Select
@@ -155,7 +170,6 @@ export function ElectricityForm(
             }
           }
           fullWidth
-          name="energySource"
           labelId='selectEnergySourceLabel'
           label='Energy Source'
           value={formik.values.energySource}

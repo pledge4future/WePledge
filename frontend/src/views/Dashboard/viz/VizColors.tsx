@@ -1,5 +1,5 @@
 export enum ChartColors{
-  commuting = '#372549',
+  commuting = '#5b4178',
   heating = '#774C60',
   electricity = '#B75D69',
   business = '#EACDC2',
