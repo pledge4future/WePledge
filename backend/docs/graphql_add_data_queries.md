@@ -135,7 +135,7 @@ mutation createBusinesstrip {
 | Distance [km] | Float | Min: 0 | Distance you commuted per week in the selected time period with the selected transportation mode. Please enter your usual commuting behaviour. If you often use a different mode of transport if there is bad weather or in the cold season, please account for this by estimating the mean distance for each transportation mode over the entire year. You may also fill in this form separately for each month or once for the summer months and for the winter months (e.g., April-October and November-March). |
 | From | Dropdown | 1 box for Year and 1 box for Month  |
 | To | Dropdown | 1 box for Year and 1 box for Month | 
-| Fuel type | Float input field | Options: diesel, gasoline, electricity, cng, hydrogen, average (only for car, bus, and train) | Possible values: car: [diesel, gasoline, cng, electricity, average] bus: [diesel, hydrogen, cng, electricity] train: [diesel, electricity, average]. Defaults: average for car and train, diesel for bus |
+| Fuel type | Float input field | Options: diesel, gasoline, electricity, cng, hydrogen, average (only for car, bus, and train) | Possible values: car: [diesel, gasoline, cng, electricity, average] bus: [diesel] train: [diesel, electricity, average]. Defaults: average for car and train, diesel for bus |
 | Size | Dropdown | Options: small, medium, large, average (only for car and bus) | Default: average |
 | Passengers | Integer | 1 - 9 (only for car) | Number of passengers in the car (including the person answering the questionnaire). Default: 1 |
 | Occupancy [%] | Dropdown | options: [20, 50, 80, 100] (only for bus) | Occupancy of the bus in %. Occupancy of 50 % means half of the bus seats were occupied. Default: 50 |
