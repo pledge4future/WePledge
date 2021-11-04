@@ -33,26 +33,26 @@ More information about the sources of the emission factors can be found in chapt
 The specific emission factors for different activities are collected in [this emission factor table](https://github.com/pledge4future/co2calculator/blob/dev/data/emission_factors.csv). 
 
 The basic formula is:
-`CO<sub>2</sub>e emissions = consumption * emission factor` 
+> CO<sub>2</sub>e emissions = consumption * emission factor
 <br/>
-<br/>
+
 
 ## 2 Electricity
 
-For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular electricity contract. Solar power is applicable, if the institute uses self-generated solar power. The user is asked for the annual electricity consumption c [kWh] which is then used to calculate the CO<sub>2</sub> equivalents [kg/TJ]. Since the emission factors for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
+For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular German electricity contract. Solar power is applicable, if the institute uses self-generated power from solar panels. The user is asked for the annual electricity consumption c [kWh] which is then used to calculate the CO<sub>2</sub> equivalents [kg/TJ]. Since the emission factors for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
 
-> e<sub>electricity</sub>(group) = c/277777.7778 * CO<sub>2</sub>e<sub>electricity</sub>[kg]
+> CO<sub>2</sub>e<sub>electricity</sub>(group) [kg] = c [kWh]/277777.7778 * CO<sub>2</sub>e<sub>electricity</sub>[kg/TJ]
 
 
 ### Defining a share of electricity use
 
-If the electricity consumption is only known for a building or building complex and the group occupies only parts of the building and uses only parts of the appliances, the total consumption and an estimate of the share of energy use can be provided.
+If the electricity consumption is only known for a building or building complex and the group occupies only parts of the building and uses only parts of the appliances, the total consumption and an estimate of the share of energy use (approximated from the share of the building area) can be provided.
 <br/>
 <br/>
 
 ## 3 Heating
 
-The user is asked about the annual consumption and the primary energy source for heating, based on which the CO<sub>2</sub>e emissions are determined. Heating consumption can be provided in kWh, or in other units, depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
+The user is asked about the annual consumption and the energy sources for heating, based on which the CO<sub>2</sub>e emissions are determined. Heating consumption can be provided in kWh, or in other units, depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
 - Oil: l
 - Liquid gas, Coal, Pellets, Woodchips: kg
 - Gas: m<sup>3</sup>
@@ -63,7 +63,9 @@ The conversion factors are retrieved from:
 
 The emission factors depend on the fuel type. Fuel types may be oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
 
-e<sub>heating</sub>(group) = c/277777.7778 * CO<sub>2</sub>e<sub>heating</sub> [kg]
+> c [kWh]= c<sub>other unit</sub> * conversion factor
+
+> CO<sub>2</sub>e<sub>heating</sub>(group) [kg] = c [kWh]/277777.7778 * CO<sub>2</sub>e<sub>heating</sub>[kg/TJ]
 
 ### Defining a share of heating consumption
 
@@ -77,24 +79,14 @@ The `co2calculator` allows to quantify the emissions for individual business tri
 
 ### Geocoding
 
-Geocoding is done using the [openrouteservice](https://openrouteservice.org/dev/#/api-docs) geocoding service, which is built on top of the [Pelias](https://github.com/pelias/pelias), a modular, open-source search engine for the world.
+Geocoding is done using the [openrouteservice](https://openrouteservice.org/dev/#/api-docs) geocoding service, which is built on top of [Pelias](https://github.com/pelias/pelias), a modular, open-source search engine for the world.
 
-To find airports [geocoding_airport](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L45), we use [Pelias search](https://github.com/pelias/documentation/blob/master/search.md) with the search text "Airplane" + **IATA-code**. To find train stations inside the EU [geocoding_train_stations](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L156), we use the train station database of [Trainline EU](https://github.com/trainline-eu/stations). For train trips outside of the EU and other modes of transport, we use [structured geocoding](https://github.com/pelias/documentation/blob/master/structured-geocoding.md) ([geocoding_structured](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L98)). The structured geocoding parameters are:
+To find airports ([geocoding_airport](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L45)), we use [Pelias search](https://github.com/pelias/documentation/blob/master/search.md) with the search text "**IATA-code** + Airport". For this, the user is asked to provide the IATA-codes of the start and end airport. To find train stations inside the EU ([geocoding_train_stations](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L156)), we use the train station database of [Trainline EU](https://github.com/trainline-eu/stations). For this, the user is asked to provide the country and the name of the start and the end train station. For train trips outside of the EU and other modes of transport, we use [structured geocoding](https://github.com/pelias/documentation/blob/master/structured-geocoding.md) ([geocoding_structured](https://github.com/pledge4future/co2calculator/blob/5ac4e624f742f404299276e013f0f0194e5ba6da/co2calculator/distances.py#L98)). The structured geocoding parameters are:
 - country: highest-level administrative division supported in a search. Full country name or two-/three-letter abbreviations supported
     - e.g., Germany / "DE" / "DEU"
-- region: first-level administrative divisions within countries, analogous to states and provinces in the US and Canada
-    - e.g., Delaware, Ontario, Ardennes, Baden-Württemberg
-- county: administrative divisions between localities and regions
-    - e.g., Alb-Donau-Kreis
 - locality: equivalent to what are commonly referred to as cities (also municipalities)
     - e.g., Bangkok, Caracas
-- borough: mostly known in the context of NY, may exist in other cities like Mexico City
-    - e.g. Manhatten in NY, Iztapalapa in Mexico City
-- postalcode: postal code; note: This may not work for all countries!
-    - e.g., it works for the US and the UK, but not for Germany (and other countries)
 - address: street name, optionally also house number
-- neighbourhood: vernacular geographic entities that may not necessarily be official administrative divisions but are important nonetheless
-    - e.g. Notting Hill in London, Le Marais in Paris
 
 ### Distance computation
 
@@ -118,10 +110,10 @@ Plane | + 95 km | CSN EN 16258 - Methodology for calculation and declaration of 
 
 Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions in kg per passenger are calculated by multiplying the distance with a specific emission factor. For cars, the distance is multiplied by the emission factor and divided by the number of passengers. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. 
 
-> e<sub>car</sub>(person) = d * CO<sub>2</sub>e<sub>car</sub> / n [kg]
+> CO<sub>2</sub>e<sub>car</sub>(person) = d * CO<sub>2</sub>e<sub>car</sub> / n [kg]
 
 
-> e<sub>bus/train/plane/ferry</sub>(person)= d * CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
+> CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub>(person)= d * CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
 
 We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
@@ -174,8 +166,9 @@ Pedelec | - | - | - | - | - | -
 
 If we assume that a representative sample (`n_participants`) of the entire group (`n_member`) entered their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
 
-`group_co2e = aggr_co2 / n_participants * n_members` 
-with `aggr_co2` the sum of the CO<sub>2</sub>e emissions of all participants.
+> CO<sub>2</sub>e<sub>group</sub> = CO<sub>2</sub>e<sub>aggr</sub> / n_participants * n_members
+
+with "CO<sub>2</sub>e<sub>aggr</sub>" the sum of the CO<sub>2</sub>e emissions of all participants.
 <br/>
 <br/>
 
@@ -201,89 +194,6 @@ The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publi
 
 This comprehensive set of [conversion factors](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020) provided by the UK Department for Business, Energy & Industrial Strategy is intended for use by companies and other organizations to report on their greenhouse gas emissions. We have used conversion factors for planes, ferries, electric cars, and motorbikes from this source.
 
-### Emission factor tables: REMOVE?
-
-**Car**
-
-| Source       | Model  | Size class   | Fuel type                | CO2e [kg/pkm] |
-|--------------|--------|--------------|--------------------------|---------------|
-| Öko-Institut | gemis  | 2 - 9 l      | compressed natural   gas | 0.29          |
-| Öko-Institut | gemis  | < 1,4 l      | compressed natural   gas | 0.20          |
-| Öko-Institut | gemis  | 1,4 - 2 l    | compressed natural   gas | 0.24          |
-| UBA          | tremod | average      | average                  | 0.22          |
-| UBA          | tremod | < 1,4 l      | average                  | 0.18          |
-| UBA          | tremod | 1,4 - 2 l    | average                  | 0.21          |
-| UBA          | tremod | 2 - 9 l      | average                  | 0.27          |
-| UBA          | tremod | < 1,4 l      | gasoline                 | 0.18          |
-| UBA          | tremod | 1,4 - 2 l    | gasoline                 | 0.23          |
-| UBA          | tremod | 2 - 9 l      | gasoline                 | 0.31          |
-| UBA          | tremod | average      | diesel                   | 0.20          |
-| UBA          | tremod | < 1,4 l      | diesel                   | 0.13          |
-| UBA          | tremod | 1,4 - 2 l    | diesel                   | 0.18          |
-| UBA          | tremod | 2 - 9 l      | diesel                   | 0.25          |
-| UK BEIS      | 2020 UK GHG Conversion factors | small   | hybrid | 0.10 |
-| UK BEIS      | 2020 UK GHG Conversion factors | medium  | hybrid | 0.11 |
-| UK BEIS      | 2020 UK GHG Conversion factors | large   | hybrid | 0.14 |
-| UK BEIS      | 2020 UK GHG Conversion factors | average | hybrid | 0.12 |
-| UK BEIS      | 2020 UK GHG Conversion factors | small   | plug-in hybrid | 0.06 |
-| UK BEIS      | 2020 UK GHG Conversion factors | medium  | plug-in hybrid | 0.09 |
-| UK BEIS      | 2020 UK GHG Conversion factors | large   | plug-in hybrid | 0.11 |
-| UK BEIS      | 2020 UK GHG Conversion factors | average | plug-in hybrid | 0.10 |
-| UK BEIS      | 2020 UK GHG Conversion factors | small   | electric | 0.05 |
-| UK BEIS      | 2020 UK GHG Conversion factors | medium  | electric | 0.06 |
-| UK BEIS      | 2020 UK GHG Conversion factors | large   | electric | 0.07 |
-| UK BEIS      | 2020 UK GHG Conversion factors | average | electric | 0.06 |
-
-
-- **Bus**
-
-|     Source    |     Model     |     Size class    |     Fuel type    |     Capacity    |     Occupancy [%]    |     CO2e [kg/pkm]    |
-|---------------|---------------|-------------------|------------------|-----------------|----------------------|----------------------|
-|     UBA       |     tremod    |     3,5-18 t      |     diesel       |     39.9        |     20               |     0.1              |
-|     UBA       |     tremod    |     3,5-18 t      |     diesel       |     39.9        |     50               |     0.04             |
-|     UBA       |     tremod    |     3,5-18 t      |     diesel       |     39.9        |     80               |     0.03             |
-|     UBA       |     tremod    |     3,5-18 t      |     diesel       |     39.9        |     100              |     0.02             |
-|     UBA       |     tremod    |     18-30 t       |     diesel       |     60          |     20               |     0.08             |
-|     UBA       |     tremod    |     18-30 t       |     diesel       |     60          |     50               |     0.03             |
-|     UBA       |     tremod    |     18-30 t       |     diesel       |     60          |     80               |     0.02             |
-|     UBA       |     tremod    |     18-30 t       |     diesel       |     60          |     100              |     0.02             |
-|     UBA       |     tremod    |     average       |     diesel       |     44.6        |     20               |     0.09             |
-|     UBA       |     tremod    |     average       |     diesel       |     44.6        |     50               |     0.04             |
-|     UBA       |     tremod    |     average       |     diesel       |     44.6        |     80               |     0.03             |
-|     UBA       |     tremod    |     average       |     diesel       |     44.6        |     100              |     0.02             |
-
-- **Train**
-
-|     Source    |     Model     |     Fuel type    |     CO2e [kg/pkm]    |
-|---------------|---------------|------------------|----------------------|
-|     UBA       |     tremod    |     average      |     0.03             |
-|     UBA       |     tremod    |     diesel       |     0.07             |
-|     UBA       |     tremod    |     electric     |     0.03             |
-
-- **Heating**
-
-|     Type                 |     Source          |     Model    |     CO2e [kg/TJ]    |
-|--------------------------|---------------------|--------------|---------------------|
-|     coal                 |     Öko-Institut    |     gemis    |     126383          |
-|     district heating     |     Öko-Institut    |     gemis    |     77367           |
-|     electricity          |     Öko-Institut    |     gemis    |     62579           |
-|     gas                  |     IINAS           |     gemis    |     65578           |
-|     heatpump (air)       |     Öko-Institut    |     gemis    |     33581           |
-|     heatpump (ground)    |     Öko-Institut    |     gemis    |     48541           |
-|     heatpump (water)     |     Öko-Institut    |     gemis    |     44266           |
-|     liquid gas           |     Öko-Institut    |     gemis    |     82455           |
-|     oil                  |     IINAS           |     gemis    |     87444           |
-|     pellets              |     IINAS           |     gemis    |     14866           |
-|     solar                |     Öko-Institut    |     gemis    |     10881           |
-|     woodchips            |     IINAS           |     gemis    |     9322            |
-
-
-- **Electricity**
-
-|     Type                 |     Source          |     Model    |     CO2e [kg/TJ]    |
-|--------------------------|---------------------|--------------|---------------------|
-|     solar                |     Öko-Institut    |     gemis    |     11874           |
-|     german energy mix    |     IINAS           |     gemis    |     109518          |
 
 <br/>
 
