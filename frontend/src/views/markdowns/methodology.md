@@ -69,7 +69,7 @@ The emission factors depend on the fuel type. Fuel types may be oil, gas, liquid
 
 ### Defining a share of heating consumption
 
-If the heating consumption is only known for a building or building complex and the group occupies only parts of the building, the total consumption and an estimate of the share of the heating consumption can be provided.
+If the heating consumption is only known for a building or building complex and the group occupies only parts of the building, the total consumption and an estimate of the share of energy use (approximated from the share of the building area) can be provided.
 <br/>
 <br/>
 
@@ -113,7 +113,7 @@ Business trips include five transportation types: car, train, bus, airplane, and
 > CO<sub>2</sub>e<sub>car</sub>(person) = d * CO<sub>2</sub>e<sub>car</sub> / n [kg]
 
 
-> CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub>(person)= d * CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
+> CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub>(person) = d * CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
 
 We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
