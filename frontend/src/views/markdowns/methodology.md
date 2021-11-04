@@ -1,4 +1,4 @@
-# Documentation of CO<sub>2</sub> calculations
+# Documentation of CO<sub>2</sub>e calculations
 
 We believe that good solutions come with the use of scientifically sound approaches and transparency. This is why we are sharing the information about how we calculate CO<sub>2</sub> emissions from the user inputs. For this, we need so-called emission factors, which allow us to convert units of activity (e.g. distance travelled in km) to greenhouse gas emissions in CO<sub>2</sub> equivalents. 
 
