@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react"
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Legend, Line } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 
@@ -53,18 +53,18 @@ export function IndividualDashboard(){
   }, [])
 
   function calculateSum(data: any): number[]{
-    let newSums = data.map(item => item.sum)
+    let newSums = data.map((item: { sum: any; }) => item.sum)
     if(!showHeating){
-      newSums = data.map((item, index) => newSums[index]-item.heating)
+      newSums = data.map((item: { heating: number; }, index: string | number) => newSums[index]-item.heating)
     }
     if(!showElectricity){
-      newSums = data.map((item, index) => newSums[index]-item.electricity);
+      newSums = data.map((item: { electricity: number; }, index: string | number) => newSums[index]-item.electricity);
     }
     if(!showCommuting){
-      newSums = data.map((item, index) => newSums[index]-item.commuting);
+      newSums = data.map((item: { commuting: number; }, index: string | number) => newSums[index]-item.commuting);
     }
     if(!showBusiness){
-      newSums = data.map((item, index) => newSums[index]-item.business);
+      newSums = data.map((item: { business: number; }, index: string | number) => newSums[index]-item.business);
     }
     return newSums
   }

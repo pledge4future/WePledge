@@ -1,6 +1,6 @@
 import { withStyles } from "@material-ui/core";
 import React from "react";
-import Menu, { MenuProps } from '@material-ui/core/MenuItem';
+import Menu  from '@material-ui/core/MenuItem';
 
 export const StyledMenu = withStyles({
   paper: {
@@ -8,16 +8,6 @@ export const StyledMenu = withStyles({
   },
 })((props) => (
   <Menu
-    elevation={0}
-    getContentAnchorEl={null}
-    anchorOrigin={{
-      vertical: 'bottom',
-      horizontal: 'center',
-    }}
-    transformOrigin={{
-      vertical: 'top',
-      horizontal: 'center',
-    }}
     {...props}
   />
 ));

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext} from "react";
 import { useRouter } from "next/router";
 
 import {
@@ -9,10 +9,7 @@ import {
   List,
   ListItem,
   ListItemText,
-  IconButton,
-  Button,
-  ListItemIcon,
-  MenuItem,
+  IconButton
 } from "@material-ui/core";
 import { withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
@@ -22,11 +19,11 @@ import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MenuIcon from "@material-ui/icons/Menu";
 
 // icons for user submenu 
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+/* import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import Menu from '@material-ui/core/Menu';
-import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
+import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem' */
 
 import { routes, Route } from "../../data/routes";
 
@@ -116,8 +113,8 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   authContext.isAuthenticated = true;
 
-  const [userSubmenuAnchorElement, setUserSubmenuAnchorElement] = useState(null);
-  const userSubmenuOpen = Boolean(userSubmenuAnchorElement);
+  //const [userSubmenuAnchorElement, setUserSubmenuAnchorElement] = useState(null);
+/*   const userSubmenuOpen = Boolean(userSubmenuAnchorElement);
 
   function openUserSubmenu(event: any): void{
     setUserSubmenuAnchorElement(event?.currentTarget);
@@ -127,7 +124,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   const handleUserSubmenuClose = () => {
     setUserSubmenuAnchorElement(null);
   }
-
+ */
 
   const path: Route[] = routes;
 

@@ -2,10 +2,10 @@ import { Tab, Tabs } from "@material-ui/core";
 import React, { useState } from "react";
 import { TabPanel } from "../Dashboard/TabPanel";
 
-import { ElectricityForm } from './ElectricityForm';
-import { HeatingForm } from './HeatingForm';
-import { CommutingForm } from './CommutingForm';
-import { BusinessTripForm } from './BusinessTripForm';
+import { ElectricityForm, ElectricityFormValues } from './ElectricityForm';
+import { HeatingForm, HeatingFormValues } from './HeatingForm';
+import { CommutingForm, CommutingFormValues } from './CommutingForm';
+import { BusinessTripForm, BusinessFormValues } from './BusinessTripForm';
 
 function a11yProps(index: any){
   return {
@@ -20,10 +20,32 @@ export default function DataFormView(){
   const [value, setValue] = useState(0)
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number)=>{
+    console.log(event);
     setValue(newValue);
   }
 
-  const tabContents = [<ElectricityForm />, <HeatingForm />, <CommutingForm />, <BusinessTripForm />]
+  const onESubmit = (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+    console.log(values);
+    setSubmitting(false);
+  }
+
+  const onHSubmit = (values: HeatingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+    console.log(values)
+    setSubmitting(false)
+  }
+
+  const onCSubmit = (values: CommutingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+    console.log(values)
+    setSubmitting(false)
+  }
+
+  const onBSubmit = (values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+    console.log(values)
+    setSubmitting(false)
+  }
+  const tabContents = [<ElectricityForm error={false} onSubmit = {onESubmit} />, <HeatingForm error={false} onSubmit={onHSubmit}/>, 
+                      <CommutingForm error={false} onSubmit = {onCSubmit}/>, 
+                      <BusinessTripForm error={false} onSubmit = {onBSubmit}/>]
 
   return <React.Fragment>
     <Tabs value={value} onChange={handleChange} aria-label="forms tabs">

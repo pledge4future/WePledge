@@ -37,7 +37,7 @@ const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"
 function SignUp() {
 
   // mutation to register user
-  const [register, registerResponse] = useMutation(REGISTER_USER);
+  const [register] = useMutation(REGISTER_USER);
 
 
   const [username, setUsername] = useState('');
@@ -45,7 +45,7 @@ function SignUp() {
   const [password, setPassword] = useState('');
   const [repeatedPassword, setRepeatedPassword] = useState('');
   const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [errorText, setErrorText] = useState('')
+  const [errorText] = useState('')
 
   function handleRepeatedPasswordChange(e: any){
     setRepeatedPassword(e?.target?.value)
@@ -83,6 +83,7 @@ function SignUp() {
 
   function sendRegistration(e: any){
     register({variables: {username: username, email: email, password1: password, password2: repeatedPassword}});
+    console.log(e);
   }
 
   useEffect(() => {

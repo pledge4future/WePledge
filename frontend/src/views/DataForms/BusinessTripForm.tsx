@@ -4,7 +4,7 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
 
-interface FormValues {
+export interface BusinessFormValues {
   month: number,
   year: number,
   transportationMode: string,
@@ -33,7 +33,7 @@ const seatingClasses = ['average','economy class','premium economy class','busin
 export function BusinessTripForm(
   props: {
     error?: boolean,
-    onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+    onSubmit: (values: BusinessFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
 
@@ -58,7 +58,7 @@ export function BusinessTripForm(
 
   const formik = useFormik({
     initialValues: initialFormValues,
-    onSubmit: (values: FormValues, formikHelpers: FormikHelpers<FormValues>)  => {
+    onSubmit: (values: BusinessFormValues, formikHelpers: FormikHelpers<BusinessFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
       props.onSubmit(values, setSubmitting);

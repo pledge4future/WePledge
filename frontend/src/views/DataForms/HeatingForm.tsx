@@ -3,7 +3,7 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
 
-interface FormValues {
+export interface HeatingFormValues {
   month: number,
   year: number,
   building: string,
@@ -19,7 +19,7 @@ const units = ['l','kg','m³']
 export function HeatingForm(
   props: {
     error?: boolean,
-    onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+    onSubmit: (values: HeatingFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
 
@@ -35,7 +35,7 @@ export function HeatingForm(
 
   const formik = useFormik({
     initialValues: initialFormValues,
-    onSubmit: (values: FormValues, formikHelpers: FormikHelpers<FormValues>)  => {
+    onSubmit: (values: HeatingFormValues, formikHelpers: FormikHelpers<HeatingFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
       props.onSubmit(values, setSubmitting);

@@ -5,11 +5,11 @@ import Head from "next/head";
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
 
-import ProductHero from '../src/views/Product/ProductHero';
+//import ProductHero from '../src/views/Product/ProductHero';
 import ProductHeroLayout from "../src/views/Product/ProductHeroLayout";
 import AppFooter from '../src/views/App/AppFooter';
 import withRoot from "../src/withRoot";
-import { Typography, WithStyles, makeStyles, Theme, Button } from "@material-ui/core";
+import { Typography, makeStyles, Theme, Button } from "@material-ui/core";
 
 
 const backgroundImage = '../static/images/background_pic.jpg'

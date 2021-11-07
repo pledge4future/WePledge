@@ -6,7 +6,6 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import InstagramIcon from '@material-ui/icons/Instagram';
-import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 
 // Components
@@ -98,13 +97,10 @@ export default function AppFooter() {
             >
               <Grid item className={classes.icons}>
                 <a href="https://twitter.com/MaterialUI" className={classes.icon}>
-                  <InstagramIcon alt="Instagram" />
+                  <InstagramIcon />
                 </a>
                 <a href="https://twitter.com/" className={classes.icon}>
-                  <FacebookIcon alt="Facebook" />
-                </a>
-                <a href="https://twitter.com/" className={classes.icon}>
-                  <TwitterIcon alt="Twitter" />
+                  <TwitterIcon />
                 </a>
               </Grid>
             </Grid>

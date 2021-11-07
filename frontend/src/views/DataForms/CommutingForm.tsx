@@ -3,7 +3,7 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
 
-interface FormValues {
+export interface CommutingFormValues {
   month: number,
   year: number,
   building: string,
@@ -19,7 +19,7 @@ const units = ['l','kg','m³']
 export function CommutingForm(
   props: {
     error?: boolean,
-    onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+    onSubmit: (values: CommutingFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
 
@@ -35,7 +35,7 @@ export function CommutingForm(
 
   const formik = useFormik({
     initialValues: initialFormValues,
-    onSubmit: (values: FormValues, formikHelpers: FormikHelpers<FormValues>)  => {
+    onSubmit: (values: CommutingFormValues, formikHelpers: FormikHelpers<CommutingFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
       props.onSubmit(values, setSubmitting);

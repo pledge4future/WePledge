@@ -3,7 +3,7 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 
 
-interface FormValues {
+export interface ElectricityFormValues {
   month: number,
   year: number,
   building: string,
@@ -18,7 +18,7 @@ const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump 
 export function ElectricityForm(
   props: {
     error?: boolean,
-    onSubmit: (values: FormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+    onSubmit: (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
 
@@ -33,7 +33,7 @@ export function ElectricityForm(
 
   const formik = useFormik({
     initialValues: initialFormValues,
-    onSubmit: (values: FormValues, formikHelpers: FormikHelpers<FormValues>)  => {
+    onSubmit: (values: ElectricityFormValues, formikHelpers: FormikHelpers<ElectricityFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
       props.onSubmit(values, setSubmitting);
@@ -54,7 +54,7 @@ export function ElectricityForm(
       }
     }
     fullWidth
-    naem="month"
+    name="month"
     labelId='selectMonthLabel'
     label="Month"
     value={formik.values.month}

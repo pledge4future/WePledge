@@ -1,5 +1,5 @@
 import Checkbox from '@material-ui/core/Checkbox';
-import Grid, { GridSpacing } from '@material-ui/core/Grid';
+import Grid  from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 
 import { makeStyles } from '@material-ui/core/styles';
@@ -14,7 +14,7 @@ export interface CustomLegendItem{
 
 export interface CustomLegendProps{
   barItems?: CustomLegendItem[]
-  lineItems?: CustomLegentItem[]
+  lineItems?: CustomLegendItem[]
 }
 
 const useStyles = makeStyles({
