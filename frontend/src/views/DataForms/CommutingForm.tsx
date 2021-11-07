@@ -199,7 +199,7 @@ export function CommutingForm(
           variant="outlined"
           id="distance"
           name="distance"
-          label="distance"
+          label="Distance"
           type="number"
           InputProps = {{
             endAdornment: <InputAdornment position="end">km</InputAdornment>

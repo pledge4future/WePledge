@@ -1,6 +1,7 @@
 import { Tab, Tabs } from "@material-ui/core";
 import React, { useState } from "react";
 import { TabPanel } from "../Dashboard/TabPanel";
+import{useRouter} from 'next/router'
 
 import { ElectricityForm, ElectricityFormValues } from './ElectricityForm';
 import { HeatingForm, HeatingFormValues } from './HeatingForm';
@@ -17,6 +18,8 @@ function a11yProps(index: any){
 
 export default function DataFormView(){
 
+  const router = useRouter();
+
   const [value, setValue] = useState(0)
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number)=>{
@@ -27,21 +30,25 @@ export default function DataFormView(){
   const onESubmit = (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     console.log(values);
     setSubmitting(false);
+    router.push('/dashboard')
   }
 
   const onHSubmit = (values: HeatingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     console.log(values)
     setSubmitting(false)
+    router.push('/dashboard')
   }
 
   const onCSubmit = (values: CommutingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     console.log(values)
     setSubmitting(false)
+    router.push('/dashboard')
   }
 
   const onBSubmit = (values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     console.log(values)
     setSubmitting(false)
+    router.push('/dashboard')
   }
   const tabContents = [<ElectricityForm error={false} onSubmit = {onESubmit} />, <HeatingForm error={false} onSubmit={onHSubmit}/>, 
                       <CommutingForm error={false} onSubmit = {onCSubmit}/>, 
