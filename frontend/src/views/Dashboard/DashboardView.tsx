@@ -36,7 +36,7 @@ export default function DashboardView(){
     <Tabs value={value} onChange={handleChange} aria-label="simple tabs example">
       <Tab label="Individual Emissions" {...a11yProps(0)} />
       <Tab label="Group Emissions" {...a11yProps(1)} />
-      <Tab label="Institue Emissions" {...a11yProps(2)} />
+      <Tab label="Institute Emissions" {...a11yProps(2)} />
     </Tabs>
     <TabPanel value={value} index={0}>
       <IndividualDashboard></IndividualDashboard>

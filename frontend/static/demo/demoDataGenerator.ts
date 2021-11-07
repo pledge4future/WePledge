@@ -23,18 +23,18 @@ function getRandomData(month: string, multiplicator?: number){
 export function getAllExampleData(multiplicator?: number){
 
 const exampleData = [
-    getRandomData("Januar", multiplicator),
-    getRandomData("Feburar", multiplicator),
-    getRandomData("März", multiplicator),
+    getRandomData("January", multiplicator),
+    getRandomData("February", multiplicator),
+    getRandomData("March", multiplicator),
     getRandomData("April", multiplicator),
-    getRandomData("Mai", multiplicator),
-    getRandomData("Juni", multiplicator),
-    getRandomData("Juli", multiplicator),
+    getRandomData("May", multiplicator),
+    getRandomData("June", multiplicator),
+    getRandomData("July", multiplicator),
     getRandomData("August", multiplicator),
     getRandomData("September", multiplicator),
-    getRandomData("Oktober", multiplicator),
+    getRandomData("October", multiplicator),
     getRandomData("November", multiplicator),
-    getRandomData("Dezember", multiplicator),
+    getRandomData("December", multiplicator),
 
 ]
 
