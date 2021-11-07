@@ -12,7 +12,7 @@ export interface ElectricityFormValues {
   energySource: string
 }
 
-const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips']
+const energySources = ['Germany energy mix','Solar']
 
 
 export function ElectricityForm(

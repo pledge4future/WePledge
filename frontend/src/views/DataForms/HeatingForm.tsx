@@ -13,7 +13,7 @@ export interface HeatingFormValues {
   unit: string
 }
 
-const energySources = ['Germany energy mix','Solar']
+const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips']
 const units = ['l','kg','m³']
 
 export function HeatingForm(
