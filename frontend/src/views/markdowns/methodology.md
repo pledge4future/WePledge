@@ -16,7 +16,7 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
 
 ### Calculation of your carbon footprint
 
- ![Methodology](/static/images/methodology.png)
+ ![Methodology](https://github.com/pledge4future/WePledge/blob/demo/frontend/public/static/images/methodology.png)
 
 
 The *co2calculator* can compute emissions caused by four big areas of the work life: Electricity, Heating, Business trips and Commuting. Emissions are given as CO<sub>2</sub> equivalents (CO<sub>2</sub>e). 
