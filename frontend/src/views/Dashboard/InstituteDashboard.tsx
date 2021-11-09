@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
@@ -26,7 +26,7 @@ export function InstituteDashboard(){
   const [showCommuting, setShowCommuting] = useState(true);
   const [showBusiness, setShowBusiness] = useState(true);
   //optional lines in chart
-  const [showAverage, setShowAverage] = useState(false);
+  //const [showAverage, setShowAverage] = useState(false);
   const [showPerCapita, setShowPerCapita] = useState(false)
 
   const legendBarData: CustomLegendItem[] = [
@@ -37,8 +37,7 @@ export function InstituteDashboard(){
   ]
 
   const legendLineData: CustomLegendItem[] = [
-    { label: 'Average per Person', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
-    { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
+    { label: 'CO2 - Budget',color: ChartColors.totalBudgetLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
   ]
 
   const workingGroupSize = 100;
@@ -79,9 +78,11 @@ export function InstituteDashboard(){
 
     return (
       <div>
-      <ComposedChart width={1000} height={400} data={chartData}>
+      <ComposedChart width={1000} height={500} data={chartData}>
         <XAxis dataKey="name" />
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]} />
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+        <Label value="tCO2" position="insideLeft" angle={270} />
+        </YAxis>
         <Tooltip />
         ({ 
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
@@ -97,10 +98,7 @@ export function InstituteDashboard(){
         })
         <Line dataKey="total" stroke={ChartColors.trendLine} />
         ({
-        showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
-        })
-        ({
-        showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
+        showPerCapita && <Line dataKey="totalMax" stroke={ChartColors.totalBudgetLine} />
         })
       </ComposedChart>
       <div className={styles.legendContainer}>
@@ -109,7 +107,7 @@ export function InstituteDashboard(){
       </div>
 
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
   
   return (
     <React.Fragment>

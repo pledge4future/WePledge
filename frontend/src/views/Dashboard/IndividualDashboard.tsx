@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from "react"
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 
@@ -14,12 +14,16 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px'
+    marginLeft: '200px',
+    marginTop: '20px'
   },
   buttonContainer: {
     alignItems: 'center',
     justifyConten: 'center',
     display: 'flex'
+  },
+  containerDiv: {
+    padding: '20px'
   }
 })
 
@@ -45,7 +49,7 @@ export function IndividualDashboard(){
   ]
 
   const legendLineData: CustomLegendItem[] = [
-    { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
+    { label: 'CO2-Budget',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
   ]
 
   const exampleData = useMemo(() => {
@@ -82,10 +86,13 @@ export function IndividualDashboard(){
     });
 
     return (
-      <div>
-      <ComposedChart width={1000} height={400} data={chartData}>
-        <XAxis dataKey="name" />
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]} />
+      <div className={styles.containerDiv}>
+      <ComposedChart width={1000} height={500} data={chartData}>
+        <XAxis dataKey="name">
+        </XAxis>
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+          <Label value="tCO2" position="insideLeft" angle={270}/>
+        </YAxis>
         <Tooltip />
         ({ 
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />

@@ -6,6 +6,8 @@ function getRandomEmissions(multiplicator?: number){
 
 function getRandomData(month: string, multiplicator?: number){
 
+  const multi = multiplicator ? multiplicator : 1;
+
   const data = [getRandomEmissions(multiplicator),getRandomEmissions(multiplicator),getRandomEmissions(multiplicator),getRandomEmissions(multiplicator)]
 
   return {
@@ -16,6 +18,7 @@ function getRandomData(month: string, multiplicator?: number){
     "business": data[3],
     "sum": data.reduce((total, current) => total += current),
     "max": 1000,
+    "totalMax": 1000*multi,
     "avg": multiplicator ? data.reduce((total, current) => total += current) / multiplicator : 0
   }
 }

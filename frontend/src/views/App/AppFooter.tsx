@@ -73,10 +73,6 @@ const LANGUAGES = [
   {
     code: 'en-US',
     name: 'English',
-  },
-  {
-    code: 'de-DE',
-    name: 'Deutsch',
   }
 ];
 

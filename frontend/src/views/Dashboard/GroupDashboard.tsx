@@ -1,7 +1,7 @@
 import { makeStyles } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
-import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line } from 'recharts';
+import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
@@ -28,6 +28,7 @@ export function GroupDashboard(){
   //optional lines in chart
   const [showAverage, setShowAverage] = useState(false);
   const [showPerCapita, setShowPerCapita] = useState(false)
+  const [showTotalBudget, setShowTotalBudget] = useState(false);
 
   const legendBarData: CustomLegendItem[] = [
     { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
@@ -38,7 +39,8 @@ export function GroupDashboard(){
 
   const legendLineData: CustomLegendItem[] = [
     { label: 'Average per Person', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
-    { label: 'per Capita',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
+    { label: 'CO2-Budget per Person',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))},
+    { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
   const workingGroupSize = 10;
@@ -78,9 +80,11 @@ export function GroupDashboard(){
 
     return (
       <div>
-      <ComposedChart width={1000} height={400} data={chartData}>
+      <ComposedChart width={1000} height={500} data={chartData}>
         <XAxis dataKey="name" />
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]} />
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+          <Label value="tCO2" position="insideLeft" angle={270} offset={0}/>
+        </YAxis>
         <Tooltip />
         ({ 
         showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
@@ -101,6 +105,9 @@ export function GroupDashboard(){
         ({
           showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
         })
+        ({
+          showTotalBudget && <Line dataKey="totalMax" stroke={ChartColors.totalBudgetLine} />
+        })
       </ComposedChart>
       <div className={styles.legendContainer}>
         <CustomLegend barItems = {legendBarData} lineItems={legendLineData}/>
@@ -108,7 +115,7 @@ export function GroupDashboard(){
       </div>
 
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget]);
   
   return (
     <React.Fragment>
