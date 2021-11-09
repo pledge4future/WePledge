@@ -93,7 +93,7 @@ To find airports ([geocoding_airport](https://github.com/pledge4future/co2calcul
 For cars and motorbikes, distances are computed with [openrouteservice](https://openrouteservice.org/dev/#/api-docs/directions) with the `profile='driving-car'`.
 
 For other modes of transport (airplane, ferry, train, bus), the distances between the locations as the crow flies are computed with the [haversine formula](https://github.com/pledge4future/co2calculator/blob/ffc12ec577cb18bf7c67b628ff7d9d79ffeef25b/co2calculator/distances.py#L20). Then, different detour coefficients or constants are applied.
-With the `roundtrip`-options, users can define if their trip is a roundtrip in which case the distance will be doubled. 
+With the `roundtrip` option, users can define if their trip is a roundtrip in which case the distance will be doubled. 
 
 #### Detour
 
