@@ -17,7 +17,7 @@ const backgroundImage = '../static/images/background_pic.jpg'
 
 const useStyles = makeStyles((theme: Theme) => ({
     background: {
-      backgroundImage: `url${backgroundImage}`,
+      backgroundImage: `url(${backgroundImage})`,
       backgroundColor: '#7fc7d9', // Average color of the background image.
       backgroundPosition: 'center',
     },
@@ -53,7 +53,7 @@ function Index() {
         <title>{title ? `${title} | ${siteName}` : siteName }</title>
       </Head>
       <AppAppBar />
-      <ProductHeroLayout backgroundClassName={classes?.background}>
+      <ProductHeroLayout backgroundClassName={classes?.background} classes={classes}>
       {/* Increase the network loading priority of the background image. */}
       <>
       <Typography color="inherit" align="center" variant="h2" className={classes?.h2}>
