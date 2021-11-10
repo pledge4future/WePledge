@@ -1,14 +1,15 @@
 function getRandomEmissions(multiplicator?: number){
   const multi = multiplicator ? multiplicator : 1;
-  const emissions = Math.floor(Math.random() * 500) + 100;
+  const emissions = Math.floor(Math.random() * 450) + 100;
   return emissions * multi
 }
 
-function getRandomData(month: string, multiplicator?: number){
+function getRandomData(month: string, multiplicator?: number, seasonalParam?: number){
 
   const multi = multiplicator ? multiplicator : 1;
+  const reductor = seasonalParam ? seasonalParam : 1;
 
-  const data = [getRandomEmissions(multiplicator),getRandomEmissions(multiplicator),getRandomEmissions(multiplicator),getRandomEmissions(multiplicator)]
+  const data = [getRandomEmissions(multiplicator),getRandomEmissions(multiplicator)/reductor,getRandomEmissions(multiplicator),getRandomEmissions(multiplicator)]
 
   return {
     "name": month,
@@ -26,18 +27,18 @@ function getRandomData(month: string, multiplicator?: number){
 export function getAllExampleData(multiplicator?: number){
 
 const exampleData = [
-    getRandomData("January", multiplicator),
-    getRandomData("February", multiplicator),
+    getRandomData("January", multiplicator, 0.7),
+    getRandomData("February", multiplicator, 0.9),
     getRandomData("March", multiplicator),
     getRandomData("April", multiplicator),
-    getRandomData("May", multiplicator),
-    getRandomData("June", multiplicator),
-    getRandomData("July", multiplicator),
-    getRandomData("August", multiplicator),
-    getRandomData("September", multiplicator),
+    getRandomData("May", multiplicator, 1.5),
+    getRandomData("June", multiplicator, 3),
+    getRandomData("July", multiplicator, 5),
+    getRandomData("August", multiplicator, 5),
+    getRandomData("September", multiplicator, 3),
     getRandomData("October", multiplicator),
-    getRandomData("November", multiplicator),
-    getRandomData("December", multiplicator),
+    getRandomData("November", multiplicator, 0.9),
+    getRandomData("December", multiplicator, 0.7),
 
 ]
 

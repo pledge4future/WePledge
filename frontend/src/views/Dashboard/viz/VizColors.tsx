@@ -5,6 +5,6 @@ export enum ChartColors{
   business = '#EACDC2',
   perCapitaLine = '#73c608',
   totalBudgetLine = '#4287f5',
-  trendLine = '#4493c6',
+  trendLine = '#000000',
   averageLine = '#fcbe03'
 }
