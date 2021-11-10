@@ -1,6 +1,8 @@
 import {Button, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
+import { tooltips } from './FormTooltips'
 import React from 'react';
+import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 
 
 export interface HeatingFormValues {
@@ -13,8 +15,9 @@ export interface HeatingFormValues {
   unit: string
 }
 
-const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips']
+const energySources = ['Coal','District Heating','Electricity','Gas','Hear pump (air)','Heat pump (ground)','Heat pump (water)', 'Liquid gas','Oil','Solar','Wood (pellets)','Wood (wood chips)']
 const units = ['l','kg','m³']
+
 
 export function HeatingForm(
   props: {
@@ -104,11 +107,16 @@ export function HeatingForm(
           variant="outlined"
           id="building"
           name="building"
-          label="building"
+          label="Building"
           value={formik.values.building}
           onChange={formik.handleChange}
           error={formik.touched.building && Boolean(formik.errors.building)}
           helperText={formik.touched.building && formik.errors.building}
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.building} />
+            )
+          }}
         />
 
       <TextField
@@ -121,12 +129,17 @@ export function HeatingForm(
           variant="outlined"
           id="group share"
           name="groupShare"
-          label="group share"
+          label="Group Share"
           type="number"
           value={formik.values.groupShare}
           onChange={formik.handleChange}
           error={formik.touched.groupShare && Boolean(formik.errors.groupShare)}
           helperText={formik.touched.groupShare && formik.errors.groupShare}
+          InputProps = {{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.groupShare} />
+            )
+          }}
         />
       <TextField
           fullWidth
@@ -138,16 +151,34 @@ export function HeatingForm(
           variant="outlined"
           id="consumption"
           name="consumption"
-          label="consumption in kwH"
+          label="Consumption in kwH"
           type="number"
           InputProps = {{
-            endAdornment: <InputAdornment position="end">kwH</InputAdornment>
+            endAdornment: <InputFieldTooltip position={'end'} text={tooltips.consumption} />
           }}
           value={formik.values.consumption}
           onChange={formik.handleChange}
           error={formik.touched.consumption && Boolean(formik.errors.consumption)}
           helperText={formik.touched.consumption && formik.errors.consumption}
         />
+
+        <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
+          <Select
+          style={
+                {
+                  margin: 8
+                }
+              }
+          fullWidth
+          name="energySource"
+          labelId='selectEnergySourceLabel'
+          label='Energy Source'
+          value={formik.values.energySource}
+          onChange={formik.handleChange}>
+            {energySources.map((energySource) => {
+              return <MenuItem value={energySource}>{`${energySource}`}</MenuItem>
+            })}
+          </Select>
 
       <InputLabel id="selectUnitLabel">Unit</InputLabel>
       <Select
@@ -167,24 +198,6 @@ export function HeatingForm(
           return <MenuItem value={unit}>{unit}</MenuItem>
         })}
       </Select>
-
-      <InputLabel id="selectEnergySourceLabel">Energy Source</InputLabel>
-          <Select
-          style={
-      {
-        margin: 8
-      }
-    }
-          fullWidth
-          name="energySource"
-          labelId='selectEnergySourceLabel'
-          label='Energy Source'
-          value={formik.values.energySource}
-          onChange={formik.handleChange}>
-            {energySources.map((energySource) => {
-              return <MenuItem value={energySource}>{`${energySource}`}</MenuItem>
-            })}
-          </Select>
         
           <Button
           fullWidth

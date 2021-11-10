@@ -2,6 +2,8 @@ import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornmen
 import { FormControlLabel } from '@mui/material';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
+import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
+import { tooltips } from './FormTooltips';
 
 
 export interface BusinessFormValues {
@@ -24,10 +26,15 @@ export interface BusinessFormValues {
   
 }
 
-const transportationModes = ['Car','Train','Plane','Bus']
+const transportationModes = ['Car','Train','Plane','Bus','Ferry']
 const vehicleSizes = ['small','medium','large','average']
-const fuelTypes = ['gasoline','diesel']
+const fuelTypes = {
+  car: ['Diesel','Gasoline','CNG','Electricity','hybrid','Plug_In Hybrid','Average'],
+  bus: ['Diesel'],
+  train: ['Diesel','Electricity','Average']
+}
 const seatingClasses = ['average','economy class','premium economy class','business class','first class']
+const occupancies = [20,50,80,100]
 
 
 export function BusinessTripForm(
@@ -64,6 +71,24 @@ export function BusinessTripForm(
       props.onSubmit(values, setSubmitting);
     },
   });
+
+  function renderFuelTypes(mode: string){
+    if(mode==='Car'){
+      return fuelTypes.car.map((fuelType) => {
+        return <MenuItem value={fuelType}>{`${fuelType}`}</MenuItem>
+      })
+    }
+    if(mode==='Bus'){
+      return fuelTypes.bus.map((fuelType) => {
+        return <MenuItem value={fuelType}>{`${fuelType}`}</MenuItem>
+      })
+    }
+    if(mode==='Train'){
+    return fuelTypes.train.map((fuelType) => {
+      return <MenuItem value={fuelType}>{`${fuelType}`}</MenuItem>
+    })
+  }
+  }
 
   return (
     <div>
@@ -126,7 +151,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="startAddress"
           name="startAddress"
-          label="start address"
+          label="Start Address"
           value={formik.values.startAddress}
           onChange={formik.handleChange}
           error={formik.touched.startAddress && Boolean(formik.values.startAddress)}
@@ -143,7 +168,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="startCity"
           name="startCity"
-          label="start city"
+          label="Start City"
           value={formik.values.startCity}
           onChange={formik.handleChange}
           error={formik.touched.startCity && Boolean(formik.values.startCity)}
@@ -159,7 +184,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="startCountry"
           name="startCountry"
-          label="start country"
+          label="Start Country"
           value={formik.values.startCountry}
           onChange={formik.handleChange}
           error={formik.touched.startCountry && Boolean(formik.values.startCountry)}
@@ -178,7 +203,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="endAddress"
           name="endAddress"
-          label="end address"
+          label="End Address"
           value={formik.values.endAddress}
           onChange={formik.handleChange}
           error={formik.touched.endAddress && Boolean(formik.values.endAddress)}
@@ -195,7 +220,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="endCity"
           name="endCity"
-          label="end city"
+          label="End City"
           value={formik.values.endCity}
           onChange={formik.handleChange}
           error={formik.touched.endCity && Boolean(formik.values.endCity)}
@@ -211,7 +236,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="endCountry"
           name="endCountry"
-          label="end country"
+          label="End Country"
           value={formik.values.endCountry}
           onChange={formik.handleChange}
           error={formik.touched.endCountry && Boolean(formik.values.endCountry)}
@@ -228,7 +253,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="distance"
           name="distance"
-          label="distance"
+          label="Distance"
           type="number"
           InputProps = {{
             endAdornment: <InputAdornment position="end">km</InputAdornment>
@@ -249,9 +274,12 @@ export function BusinessTripForm(
       fullWidth
       name="transportationMode"
       labelId="selectUnitLabel"
-      label='trnasportation mode'
+      label='Transportation Mode'
       value={formik.values.transportationMode}
       onChange={formik.handleChange}
+      endAdornment = {
+          <InputFieldTooltip position={'end'} text={tooltips.transportationMode} style={{marginRight:'20px'}}/> 
+      }
       >
         {transportationModes.map((tm) => {
           return <MenuItem value={tm}>{tm}</MenuItem>
@@ -278,8 +306,13 @@ export function BusinessTripForm(
               return <MenuItem value={vehicleSize}>{`${vehicleSize}`}</MenuItem>
             })}
           </Select>
-          <InputLabel id="selectFuelTypeLabel">Fuel Type</InputLabel>
-          <Select
+          </React.Fragment>
+      )}
+      {formik.values.transportationMode &&
+      ['Train','Bus','Car'].includes(formik.values.transportationMode) && (
+        <React.Fragment>
+        <InputLabel id="selectFuelTypeLabel">Fuel Type</InputLabel>
+        <Select
           style={
             {
               margin: 8
@@ -291,33 +324,32 @@ export function BusinessTripForm(
           label='fuel type'
           value={formik.values.fuelType}
           onChange={formik.handleChange}>
-            {fuelTypes.map((fuelType) => {
-              return <MenuItem value={fuelType}>{`${fuelType}`}</MenuItem>
-            })}
-          </Select>
+            {renderFuelTypes(formik.values.transportationMode)}
+        </Select>
         </React.Fragment>
       )}
       {formik.values.transportationMode &&
       formik.values.transportationMode === 'Bus' && (
-        <React.Fragment>
-          <TextField
-          fullWidth
-          style={{ margin: 8 }}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true
-          }}
-          variant="outlined"
-          id="occupancy"
-          name="occupancy"
-          label="occupancy"
-          type="number"
-          value={formik.values.occupancy}
-          onChange={formik.handleChange}
-          error={formik.touched.occupancy && Boolean(formik.values.occupancy)}
-          helperText={formik.touched.occupancy && formik.values.occupancy}
-        />
-        </React.Fragment>
+          <React.Fragment>
+            <InputLabel id="selectOccupancyLabel">Occupancy</InputLabel>
+            <Select
+            style={
+              {
+                margin: 8,
+              }
+            }
+            fullWidth
+            name="occupancy"
+            labelId='selectOccupancyLabel'
+            label='Occupancy'
+            endAdornment = {<InputFieldTooltip position={'start'} text={tooltips.occupancy} style={{marginRight: '20px'}}/>}
+            value={formik.values.occupancy}
+            onChange={formik.handleChange}>
+              {occupancies.map((occ) => {
+                return <MenuItem value={occ}>{`${occ}`}</MenuItem>
+              })}
+           </Select>        
+          </React.Fragment>
       )}
       {formik.values.transportationMode &&
       formik.values.transportationMode === 'Plane' && (
@@ -357,6 +389,11 @@ export function BusinessTripForm(
           name="passengers"
           label="passengers"
           type="number"
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.passengers} />
+            )
+          }}
           value={formik.values.passengers}
           onChange={formik.handleChange}
           error={formik.touched.passengers && Boolean(formik.values.passengers)}

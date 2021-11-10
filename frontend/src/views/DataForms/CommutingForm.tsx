@@ -1,6 +1,8 @@
 import {Button, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
+import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
+import { tooltips } from './FormTooltips';
 
 
 export interface CommutingFormValues {
@@ -183,6 +185,7 @@ export function CommutingForm(
     labelId='selectTransportationModeLabel'
     label='Transportation Mode'
     value={formik.values.transportationMode}
+    endAdornment={<InputFieldTooltip position={'end'} text={tooltips.transportationMode} style={{marginRight: '20px'}} />}
     onChange={formik.handleChange}>
       {transportationModes.map((tm) => {
           return <MenuItem value={tm}>{tm}</MenuItem>
@@ -199,10 +202,10 @@ export function CommutingForm(
           variant="outlined"
           id="distance"
           name="distance"
-          label="Distance"
+          label="Distance in km"
           type="number"
           InputProps = {{
-            endAdornment: <InputAdornment position="end">km</InputAdornment>
+            endAdornment: <InputFieldTooltip position={'end'} text={tooltips.distance}/>
           }}
           value={formik.values.distance}
           onChange={formik.handleChange}
@@ -264,12 +267,17 @@ export function CommutingForm(
           variant="outlined"
           id="passengers"
           name="passengers"
-          label="passengers"
+          label="Passengers"
           type="number"
           value={formik.values.passengers}
           onChange={formik.handleChange}
           error={formik.touched.passengers && Boolean(formik.values.passengers)}
           helperText={formik.touched.passengers && formik.values.passengers}
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.passengers} />
+            )
+          }}
       />
       )
     }
@@ -288,6 +296,7 @@ export function CommutingForm(
           name="occupancy"
           labelId='selectOccupancyLabel'
           label='Occupancy'
+          endAdornment={<InputFieldTooltip position={'end'} text={tooltips.occupancy} style={{marginRight:'20px'}} />}
           value={formik.values.occupancy}
           onChange={formik.handleChange}>
             {occupancies.map((occ) => {
@@ -313,6 +322,11 @@ export function CommutingForm(
           onChange={formik.handleChange}
           error={formik.touched.workWeeks && Boolean(formik.values.workWeeks)}
           helperText={formik.touched.workWeeks && formik.values.workWeeks}
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.annualWorkWeeks} />
+            )
+          }}
       />
         
     <Button

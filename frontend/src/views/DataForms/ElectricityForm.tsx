@@ -1,5 +1,7 @@
-import {Button, InputLabel, MenuItem, Select, TextField, InputAdornment } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, TextField, InputAdornment} from '@material-ui/core';
+import {InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { FormikHelpers, useFormik } from "formik";
+import {tooltips } from './FormTooltips';
 import React from 'react';
 
 
@@ -26,9 +28,9 @@ export function ElectricityForm(
     month: 0,
     year: 0,
     building: '',
-    groupShare: 0.0,
+    groupShare: 1.0,
     consumption: 0,
-    energySource: ''
+    energySource: 'Germany energy mix'
   }
 
   const formik = useFormik({
@@ -89,7 +91,6 @@ export function ElectricityForm(
       <MenuItem value={2019}>2019</MenuItem>
       <MenuItem value={2020}>2020</MenuItem>
       <MenuItem value={2021}>2021</MenuItem>
-      <MenuItem value={2022}>2022</MenuItem>
     </Select>
 
     <TextField
@@ -102,13 +103,18 @@ export function ElectricityForm(
           variant="outlined"
           id="building"
           name="building"
-          label="building"
+          label="Building"
           value={formik.values.building}
           onChange={formik.handleChange}
           error={formik.touched.building && Boolean(formik.errors.building)}
           helperText={formik.touched.building && formik.errors.building}
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.building} />
+            )
+          }}
         />
-
+      
       <TextField
           fullWidth
           style={{ margin: 8 }}
@@ -119,12 +125,17 @@ export function ElectricityForm(
           variant="outlined"
           id="group share"
           name="groupShare"
-          label="group share"
+          label="Group Share"
           type="number"
           value={formik.values.groupShare}
           onChange={formik.handleChange}
           error={formik.touched.groupShare && Boolean(formik.errors.groupShare)}
           helperText={formik.touched.groupShare && formik.errors.groupShare}
+          InputProps={{
+            endAdornment: (
+              <InputFieldTooltip position={'end'} text={tooltips.groupShare} />
+            )
+          }}
         />
       <TextField
           fullWidth
@@ -136,10 +147,11 @@ export function ElectricityForm(
           variant="outlined"
           id="consumption"
           name="consumption"
-          label="consumption in kwH"
+          label="Consumption in kwH"
           type="number"
           InputProps = {{
-            endAdornment: <InputAdornment position="end">kwH</InputAdornment>
+            endAdornment: 
+              <InputFieldTooltip position={'end'} text={tooltips.consumption} />
           }}
           value={formik.values.consumption}
           onChange={formik.handleChange}
