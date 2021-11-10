@@ -1,4 +1,4 @@
-import {Button, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import { tooltips } from './FormTooltips'
 import React from 'react';
