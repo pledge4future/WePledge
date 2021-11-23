@@ -1,3 +1,4 @@
+// Material-UI
 import { makeStyles } from "@material-ui/core/styles";
 import { Container, Grid, Typography } from "@material-ui/core";
 
@@ -33,12 +34,12 @@ const Footer = () => {
           rel="noreferrer noopener"
           // TODO: change link
           href="https://github.com/pledge4future/WePledge"
-          justify="center"
+          alignContent="center"
           style={{
             textDecoration: "none",
           }}
         >
-          <Typography className={classes.copylight}>&copy;Wepledge</Typography>
+          <Typography className={classes.copylight}>&copy;Pledge4Future</Typography>
         </Grid>
       </Container>
     </footer>

@@ -5,6 +5,7 @@ chardet==4.0.0
 Django==3.1.7
 django-cors-headers==3.7.0
 django-extensions==3.1.1
+django-cors-headers==3.7.0
 django-filter==2.4.0
 django-graphql-auth==0.3.16
 django-graphql-jwt==0.3.0

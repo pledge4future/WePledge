@@ -422,7 +422,6 @@ class CreateHeating(graphene.Mutation):
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)
 
-
 class CreateBusinessTrip(graphene.Mutation):
     class Arguments:
         input = BusinessTripInput(required=True)
