@@ -15,6 +15,16 @@ import { useRouter } from "next/router";
 
 import * as ga from '../lib/ga';
 
+import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react';
+
+const MATOMO_URL = 'https://pledge4future.matomo.cloud/'
+const MATOMO_SITE_ID = 1
+
+const instance = createInstance({
+  urlBase: MATOMO_URL,
+  siteId: MATOMO_SITE_ID
+})
+
 export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
 
@@ -47,6 +57,7 @@ export default function MyApp(props: AppProps) {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
+        <MatomoProvider value={instance}>
         <>
           {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
           <CssBaseline />
@@ -54,6 +65,7 @@ export default function MyApp(props: AppProps) {
             <Component {...pageProps} />
           </AuthContextProvider>
         </>
+        </MatomoProvider>
       </ThemeProvider>
     </ApolloProvider>
   );

@@ -251,7 +251,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
         <img
           className={classes.logo}
           width="128"
-          src={"/static/images/logos/logo.svg"}
+          src={"./static/images/logos/logo.svg"}
           alt="Cube.js"
         />
       </Link>
