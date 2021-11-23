@@ -19,7 +19,7 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
  ![Methodology](https://github.com/pledge4future/WePledge/blob/demo/frontend/public/static/images/methodology.png)
 
 
-The *co2calculator* can compute emissions caused by four big areas of the work life: Electricity, Heating, Business trips and Commuting. Emissions are given as CO<sub>2</sub> equivalents (CO<sub>2</sub>e). 
+The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. Emissions are given as CO<sub>2</sub> equivalents (CO<sub>2</sub>e). 
 
 Business trips and field trips are assessed on an individual level whereas heating and electricity are assessed once for the entire research group.
 
