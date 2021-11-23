@@ -30,7 +30,6 @@ function AboutUs() {
   const classes = useStyles();
 
   const members = [
-    { title: "Aimée C. Chen", desc: "website developer", url: "/static/images/avatars/1.jpg", width: '20%' },
     { title: "Hannah Weiser", desc: "Geography student", url: "/static/images/avatars/2.jpeg", width: '20%' },
     { title: "Sarah Lohr", desc: "researcher (Geoinformatics)", url: "/static/images/avatars/3.png", width: '20%' },
     { title: "Nina Krašovec", desc: "researcher (Geoinformatics)", url: "/static/images/avatars/4.jpg", width: '20%' },
