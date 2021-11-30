@@ -2,14 +2,6 @@
 code for the webapp
 
 
-## Django login
-
-You can login at `http://localhost:8000/admin` using 
-
-- user: *admin@admin.com* 
-- password *adminpass*
-
-
 ## Debugging backend containers
 
 Before rebuilding all backend docker containers, do the following: 
