@@ -1,25 +1,25 @@
 import graphene
-from django.db.models import Sum, CharField, Value
+from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
 from graphql_auth.schema import UserQuery, MeQuery
 from graphql_auth import mutations
-from emissions.models import BusinessTrip, User, Electricity, WorkingGroup, Heating, Institution, Commuting, CommutingGroup, BusinessTripGroup
+from emissions.models import BusinessTrip, CustomUser, Electricity, WorkingGroup, Heating, Institution, Commuting, CommutingGroup, BusinessTripGroup
 from co2calculator.co2calculator.calculate import calc_co2_electricity, calc_co2_heating, calc_co2_businesstrip, calc_co2_commuting
-from graphene_django.filter import DjangoFilterConnectionField
-from emissions.graphene_utils import get_fields
 
 import numpy as np
 
 # -------------- GraphQL Types -------------------
+from graphql_jwt.decorators import login_required
 
 WEEKS_PER_MONTH = 4.34524
 WEEKS_PER_YEAR = 52.1429
 
+
 class UserType(DjangoObjectType):
     class Meta:
-        model = User
+        model = CustomUser
 
 
 class WorkingGroupType(DjangoObjectType):
@@ -116,26 +116,32 @@ class Query(UserQuery, MeQuery, ObjectType):
                                          inst_id=graphene.UUID(),
                                          time_interval=graphene.String())
 
+    @login_required
     def resolve_businesstrips(self, info, **kwargs):
         """ Yields all heating consumption objects"""
         return BusinessTrip.objects.all()
 
+    @login_required
     def resolve_electricities(self, info, **kwargs):
         """ Yields all heating consumption objects"""
         return Electricity.objects.all()
 
+    @login_required
     def resolve_heatings(self, info, **kwargs):
         """ Yields all heating consumption objects"""
         return Heating.objects.all()
 
+    @login_required
     def resolve_commutingss(self, info, **kwargs):
         """ Yields all heating consumption objects"""
         return Commuting.objects.all()
 
+    @login_required
     def resolve_working_groups(self, info, **kwargs):
         """ Yields all working group objects """
         return WorkingGroup.objects.all()
 
+    @login_required
     def resolve_heating_aggregated(self, info, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions (per capita) of heating consumption
@@ -177,6 +183,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
+    @login_required
     def resolve_electricity_aggregated(self, info, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions of electricity consumption
@@ -207,6 +214,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
+    @login_required
     def resolve_businesstrip_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
@@ -243,7 +251,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"'{time_interval}' is not a valid option for parameter 'time_interval'.")
 
-
+    @login_required
     def resolve_commuting_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
@@ -353,14 +361,25 @@ class UserInput(graphene.InputObjectType):
 # --------------- Mutations ------------------------------------
 
 class AuthMutation(graphene.ObjectType):
-   register = mutations.Register.Field()
-   verify_account = mutations.VerifyAccount.Field()
-   token_auth = mutations.ObtainJSONWebToken.Field()
-   update_account = mutations.UpdateAccount.Field()
-   resend_activation_email = mutations.ResendActivationEmail.Field()
-   send_password_reset_email = mutations.SendPasswordResetEmail.Field()
-   password_reset = mutations.PasswordReset.Field()
-   password_change = mutations.PasswordChange.Field()
+    register = mutations.Register.Field()
+    verify_account = mutations.VerifyAccount.Field()
+    resend_activation_email = mutations.ResendActivationEmail.Field()
+    send_password_reset_email = mutations.SendPasswordResetEmail.Field()
+    password_reset = mutations.PasswordReset.Field()
+    password_set = mutations.PasswordSet.Field()
+    archive_account = mutations.ArchiveAccount.Field()
+    delete_account = mutations.DeleteAccount.Field()
+    password_change = mutations.PasswordChange.Field()
+    update_account = mutations.UpdateAccount.Field()
+    send_secondary_email_activation = mutations.SendSecondaryEmailActivation.Field()
+    verify_secondary_email = mutations.VerifySecondaryEmail.Field()
+    swap_emails = mutations.SwapEmails.Field()
+    remove_secondary_email = mutations.RemoveSecondaryEmail.Field()
+
+    token_auth = mutations.ObtainJSONWebToken.Field()
+    verify_token = mutations.VerifyToken.Field()
+    refresh_token = mutations.RefreshToken.Field()
+    revoke_token = mutations.RevokeToken.Field()
 
 
 class CreateElectricity(graphene.Mutation):
@@ -371,6 +390,7 @@ class CreateElectricity(graphene.Mutation):
     electricity = graphene.Field(ElectricityType)
 
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         ok = True
         matches = WorkingGroup.objects.filter(group_id=input.group_id)
@@ -401,6 +421,7 @@ class CreateHeating(graphene.Mutation):
     heating = graphene.Field(HeatingType)
 
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         ok = True
         matches = WorkingGroup.objects.filter(group_id=input.group_id)
@@ -431,9 +452,10 @@ class CreateBusinessTrip(graphene.Mutation):
     #businesstrip = graphene.Field(BusinessTripType)
 
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         ok = True
-        user = User.objects.filter(username=input.username)
+        user = CustomUser.objects.filter(username=input.username)
         if len(user) == 0:
             print("{} user not found".format(input.username))
 
@@ -468,9 +490,10 @@ class CreateCommuting(graphene.Mutation):
     #commute = graphene.Field(CommutingType)
 
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         ok = True
-        user = User.objects.filter(username=input.username)
+        user = CustomUser.objects.filter(username=input.username)
         if len(user) == 0:
             raise GraphQLError(f"{input.username} user not found")
         user = user[0]

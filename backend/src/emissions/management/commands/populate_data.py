@@ -7,7 +7,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
 from django.db.models import Sum
 from django.db.utils import IntegrityError
-from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting, CommutingGroup
+from emissions.models import CustomUser, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting, CommutingGroup
 from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity, calc_co2_commuting, calc_co2_businesstrip
 import numpy as np
 import pandas as pd
@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
         # Create super user
         try:
-            User.objects.create_superuser("admin", 'admin@admin.com', 'adminpass')
+            CustomUser.objects.create_superuser("admin", 'admin@admin.com', 'adminpass')
         except IntegrityError:
             pass
 
@@ -57,12 +57,15 @@ class Command(BaseCommand):
         user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
         for usr in user_data.iterrows():
             try:
-                new_user = User(username=usr[1].first_name + usr[1].last_name,
+                new_user = CustomUser(username=usr[1].first_name + usr[1].last_name,
                              first_name=usr[1].first_name,
                              last_name=usr[1].last_name,
-                             email=f"{usr[1].first_name}.{usr[1].last_name}@uni-hd.de",
-                             password="password1234")
+                             email=f"{usr[1].first_name}.{usr[1].last_name}@uni-hd.de")
+                new_user.set_password('test_password')
                 new_user.save()
+                status = new_user.status
+                status.verified = True
+                status.save(update_fields=["verified"])
             except IntegrityError:
                 print("Users already exist.")
                 break
@@ -74,7 +77,7 @@ class Command(BaseCommand):
                                         institution=Institution.objects.filter(name="Heidelberg University",
                                                                                city="Heidelberg",
                                                                                country="Germany")[0],
-                                        representative=User.objects.get(username="LarsWiese"),
+                                        representative=CustomUser.objects.get(username="LarsWiese"),
                                             n_employees=20)
             wg_environmental.save()
         else:
@@ -86,7 +89,7 @@ class Command(BaseCommand):
                                   institution=Institution.objects.filter(name="Heidelberg University",
                                                                          city="Heidelberg",
                                                                          country="Germany")[0],
-                                  representative=User.objects.get(username="KarenAnderson"),
+                                  representative=CustomUser.objects.get(username="KarenAnderson"),
                                      n_employees=15)
             wg_biomed.save()
         else:
@@ -94,7 +97,7 @@ class Command(BaseCommand):
 
         # Update working groups of users
         for usr in user_data.iterrows():
-            user_found = User.objects.filter(username=usr[1].first_name + usr[1].last_name)[0]
+            user_found = CustomUser.objects.filter(username=usr[1].first_name + usr[1].last_name)[0]
             wg_search = WorkingGroup.objects.filter(name=usr[1].working_group)
             user_found.working_group = wg_search[0]
             user_found.save()
@@ -181,7 +184,7 @@ class Command(BaseCommand):
                               np.datetime64('2021-01-15'),
                               np.timedelta64(30, "D")).astype('datetime64[D]')
 
-            for usr in User.objects.all():
+            for usr in CustomUser.objects.all():
                 if usr.working_group is None:
                     continue
 
@@ -210,7 +213,7 @@ class Command(BaseCommand):
                                    np.datetime64('2021-01', "M"),
                                    np.timedelta64(1, "M")).astype('datetime64[D]')
 
-            for usr in User.objects.all():
+            for usr in CustomUser.objects.all():
                 if usr.working_group is None:
                     continue
 

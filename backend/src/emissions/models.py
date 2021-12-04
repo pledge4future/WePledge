@@ -11,7 +11,7 @@ from co2calculator.co2calculator import CommutingTransportationMode, BusinessTri
     ElectricityFuel, Unit
 
 
-class User(AbstractUser):
+class CustomUser(AbstractUser):
     """
     Researcher. May be normal user or a group representative
     """
@@ -22,7 +22,7 @@ class User(AbstractUser):
     working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'username'
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = ['username']
 
@@ -54,7 +54,7 @@ class WorkingGroup(models.Model):
     """
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
-    representative = models.ForeignKey(User, on_delete=models.PROTECT, null=True)
+    representative = models.ForeignKey(CustomUser, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
     group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
@@ -109,7 +109,7 @@ class Commuting(models.Model):
     """
     CO2 emissions from commuting per month
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     co2e = models.FloatField()
@@ -151,7 +151,7 @@ class BusinessTrip(models.Model):
     """
     Business trip
     """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     distance = models.FloatField()

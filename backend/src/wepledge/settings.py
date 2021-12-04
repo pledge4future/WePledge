@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
-
+from datetime import timedelta
 from pathlib import Path
 import os
 
@@ -33,45 +33,45 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
 
 INSTALLED_APPS = [
     'emissions',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'django_extensions',
-    'graphene_django',
-    'graphql_jwt.refresh_token.apps.RefreshTokenConfig',
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
+    "graphene_django",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
     'graphql_auth',
-    'django_filters'
+    'django_filters',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
 ]
 
 ROOT_URLCONF = 'wepledge.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = 'wepledge.wsgi.application'
@@ -104,56 +104,61 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 
-AUTH_USER_MODEL = "emissions.User"
+LANGUAGE_CODE = "en-us"
+
+TIME_ZONE = "UTC"
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+STATIC_URL = "/static/"
+
+AUTH_USER_MODEL = "emissions.CustomUser"
 
 GRAPHENE = {
-    'SCHEMA' : 'emissions.schema.schema',
-    'MIDDELWARE' : [
-        'graphql_jwt.middleware.JSONWebTOkenMiddleware',
-    ]
+    "SCHEMA": "emissions.schema.schema",
+    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
 }
 
 AUTHENTICATION_BACKENDS = [
-    ##'graphql_jwt.backends.JSONWebTokenBackend',
-    'graphql_auth.backends.GraphQLAuthBackend',
-    'django.contrib.auth.backends.ModelBackend'
+    "graphql_auth.backends.GraphQLAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
 ]
 
 GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
         "graphql_auth.mutations.VerifyAccount",
-        "graphql_auth.mutations.VerifyToken",
-        "graphql_auth.mutations.ObtainJSONWebToken",
-        "graphql_auth.mutations.RefreshToken",
-        "graphql_auth.mutations.PasswordReset",
-        "graphql_auth.mutations.PasswordChange",
-        "graphql_auth.mutations.UpdateAccount",
-        "graphql_auth.mutations.SendPasswordResetEmail",
         "graphql_auth.mutations.ResendActivationEmail",
-
+        "graphql_auth.mutations.SendPasswordResetEmail",
+        "graphql_auth.mutations.PasswordReset",
+        "graphql_auth.mutations.ObtainJSONWebToken",
+        "graphql_auth.mutations.VerifyToken",
+        "graphql_auth.mutations.RefreshToken",
+        "graphql_auth.mutations.RevokeToken",
+        "graphql_auth.mutations.VerifySecondaryEmail",
     ],
-    "JWT_VERIFY_EXPIRATION": True,
-    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
 }
 
 GRAPHQL_AUTH = {
     'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
+    'ALLOW_DELETE_ACCOUNT' : True,
     'SEND_ACTIVATION_EMAIL': True,
+    "ALLOW_LOGIN_NOT_VERIFIED": False,
     'EMAIL_FROM': 'no-reply@pledge4future.org',
+    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate",
 }
 
 
@@ -169,22 +174,8 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_L10N = True
-
-USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-STATIC_ROOT = 'static'
-STATIC_URL = '/backend/static/'
 
 
 GRAPH_MODELS = {
