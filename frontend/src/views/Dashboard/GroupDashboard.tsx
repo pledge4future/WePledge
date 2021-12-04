@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { Grid, makeStyles } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
@@ -7,12 +7,19 @@ import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLege
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 
 const useStyles = makeStyles({
-  legendContainer: {
+  horizontalLegendContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px'
+    marginLeft: '50px'
   },
+  verticalLegendContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: '150px',
+    paddingTop: '100px'
+  }
 })
 
 
@@ -38,8 +45,8 @@ export function GroupDashboard(){
   ]
 
   const legendLineData: CustomLegendItem[] = [
-    { label: 'Average per Person', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
-    { label: 'CO2-Budget per Person',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))},
+    { label: 'Average p.P.', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
+    { label: 'CO2-Budget p.P',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))},
     { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
@@ -79,40 +86,49 @@ export function GroupDashboard(){
     });
 
     return (
-      <div>
-      <ComposedChart width={1000} height={500} data={chartData}>
-        <XAxis dataKey="name" />
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
-          <Label value="tCO2" position="insideLeft" angle={270} offset={0}/>
-        </YAxis>
-        <Tooltip />
-        ({ 
-        showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
-        })
-        ({
-          showHeating && <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
-        })
-        ({
-          showCommuting && <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
-        })
-        ({
-        showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
-        })
-        <Line dataKey="total" stroke={ChartColors.trendLine} />
-        ({
-          showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
-        })
-        ({
-          showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
-        })
-        ({
-          showTotalBudget && <Line dataKey="totalMax" stroke={ChartColors.totalBudgetLine} />
-        })
-      </ComposedChart>
-      <div className={styles.legendContainer}>
-        <CustomLegend barItems = {legendBarData} lineItems={legendLineData}/>
-      </div>
-      </div>
+      <Grid container>
+        <Grid item xs={12} md={8}>
+          <div>
+          <ComposedChart width={950} height={500} data={chartData}>
+            <XAxis dataKey="name" />
+            <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+              <Label value="tCO2" position="insideLeft" angle={270} offset={0}/>
+            </YAxis>
+            <Tooltip />
+            ({ 
+            showElectricity && <Bar dataKey="electricity" barSize={20} fill={ChartColors.electricity} stackId="a" />
+            })
+            ({
+              showHeating && <Bar dataKey="heating" barSize={20} fill={ChartColors.heating} stackId="a" />
+            })
+            ({
+              showCommuting && <Bar dataKey="commuting" barSize={20} fill={ChartColors.commuting} stackId="a" />
+            })
+            ({
+            showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
+            })
+            <Line dataKey="total" stroke={ChartColors.trendLine} />
+            ({
+              showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
+            })
+            ({
+              showAverage && <Line dataKey="avg" stroke={ChartColors.averageLine} />
+            })
+            ({
+              showTotalBudget && <Line dataKey="totalMax" stroke={ChartColors.totalBudgetLine} />
+            })
+          </ComposedChart>
+              <div className={styles.horizontalLegendContainer}>
+                <CustomLegend items={legendBarData} column={false}/>
+              </div>
+              </div>
+              </Grid>
+              <Grid item md={4}>
+                <div className={styles.verticalLegendContainer}>
+                  <CustomLegend items = {legendLineData} column={true}/>
+                </div>
+              </Grid>
+          </Grid>
 
     )
   }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget]);

@@ -10,12 +10,19 @@ import AddIcon from '@material-ui/icons/Add';
 
 
 const useStyles = makeStyles({
-  legendContainer: {
+  horizontalLegendContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px',
+    marginLeft: '100px',
     marginTop: '20px'
+  },
+  verticalLegendContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingLeft: '100px',
+    paddingTop: '100px'
   },
   buttonContainer: {
     alignItems: 'center',
@@ -86,8 +93,10 @@ export function IndividualDashboard(){
     });
 
     return (
+      <Grid container>
+      <Grid item xs={9}>
       <div className={styles.containerDiv}>
-      <ComposedChart width={1000} height={500} data={chartData}>
+      <ComposedChart width={950} height={500} data={chartData}>
         <XAxis dataKey="name">
         </XAxis>
         <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
@@ -111,11 +120,17 @@ export function IndividualDashboard(){
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
       </ComposedChart>
-      <div className={styles.legendContainer}>
-        <CustomLegend lineItems = {legendLineData} barItems = {legendBarData}/>
+      <div className={styles.horizontalLegendContainer}>
+        <CustomLegend items = {legendBarData} column={false}/>
       </div>
       </div>
-
+      </Grid>
+        <Grid item xs={3}>
+          <div className={styles.verticalLegendContainer}>
+            <CustomLegend items = {legendLineData} column={true}/>
+          </div>
+        </Grid>
+      </Grid>
     )
   }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
   
