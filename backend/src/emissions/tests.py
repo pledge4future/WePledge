@@ -3,12 +3,17 @@
 
 """Testing of GraphQL API queries related to user authentication"""
 
+import os
 import requests
+from dotenv import load_dotenv
 
-GRAPHQL_URL = "http://localhost:8000/graphql/"
-TEST_USERNAME = "test_user"
-TEST_EMAIL = "test@pledge4future.org"
-TEST_PASSWORD = "dasisteintest!"
+# Load settings from ./.env file
+load_dotenv()
+
+GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
+TEST_USERNAME = os.environ.get("TEST_USERNAME")
+TEST_EMAIL = os.environ.get("TEST_EMAIL")
+TEST_PASSWORD = os.environ.get("TEST_PASSWORD")
 TOKEN = ""
 REFRESH_TOKEN = ""
 
