@@ -14,14 +14,14 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px',
+    marginLeft: '100px',
     marginTop: '20px'
   },
   verticalLegendContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: '40px',
+    paddingLeft: '100px',
     paddingTop: '100px'
   },
   buttonContainer: {
@@ -94,9 +94,9 @@ export function IndividualDashboard(){
 
     return (
       <Grid container>
-      <Grid item xs={10}>
+      <Grid item xs={9}>
       <div className={styles.containerDiv}>
-      <ComposedChart width={1000} height={500} data={chartData}>
+      <ComposedChart width={950} height={500} data={chartData}>
         <XAxis dataKey="name">
         </XAxis>
         <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
@@ -125,7 +125,7 @@ export function IndividualDashboard(){
       </div>
       </div>
       </Grid>
-        <Grid item xs={2}>
+        <Grid item xs={3}>
           <div className={styles.verticalLegendContainer}>
             <CustomLegend items = {legendLineData} column={true}/>
           </div>

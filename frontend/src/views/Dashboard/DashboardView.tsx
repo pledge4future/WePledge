@@ -26,7 +26,7 @@ export default function DashboardView(){
 
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    console.log(event);
+    console.log(event); // only log to satisfy linter
     setValue(newValue);
   }
 

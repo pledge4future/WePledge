@@ -11,13 +11,13 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px'
+    marginLeft: '50px'
   },
   verticalLegendContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: '40px',
+    paddingLeft: '150px',
     paddingTop: '100px'
   }
 })
@@ -45,8 +45,8 @@ export function GroupDashboard(){
   ]
 
   const legendLineData: CustomLegendItem[] = [
-    { label: 'Average per Person', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
-    { label: 'CO2-Budget per Person',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))},
+    { label: 'Average p.P.', color: ChartColors.averageLine, shown: showAverage, onItemChange: (() => setShowAverage(!showAverage))},
+    { label: 'CO2-Budget p.P',color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))},
     { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
@@ -87,9 +87,9 @@ export function GroupDashboard(){
 
     return (
       <Grid container>
-        <Grid item xs={10}>
+        <Grid item xs={12} md={8}>
           <div>
-          <ComposedChart width={1000} height={500} data={chartData}>
+          <ComposedChart width={950} height={500} data={chartData}>
             <XAxis dataKey="name" />
             <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
               <Label value="tCO2" position="insideLeft" angle={270} offset={0}/>
@@ -123,7 +123,7 @@ export function GroupDashboard(){
               </div>
               </div>
               </Grid>
-              <Grid item xs={2}>
+              <Grid item md={4}>
                 <div className={styles.verticalLegendContainer}>
                   <CustomLegend items = {legendLineData} column={true}/>
                 </div>

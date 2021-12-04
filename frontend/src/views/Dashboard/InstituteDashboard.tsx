@@ -11,13 +11,13 @@ const useStyles = makeStyles({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: '200px'
+    marginLeft: '100px'
   },
   verticalLegendContainer: {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    paddingLeft: '40px',
+    paddingLeft: '100px',
     paddingTop: '100px'
   }
 })
@@ -85,7 +85,7 @@ export function InstituteDashboard(){
 
     return (
       <Grid container>
-        <Grid item xs={9}>
+        <Grid item  xs ={12} md={9}>
           <div>
           <ComposedChart width={1000} height={500} data={chartData}>
             <XAxis dataKey="name" />
@@ -115,7 +115,7 @@ export function InstituteDashboard(){
           </div>
           </div>
           </Grid>
-          <Grid item xs = {2}>
+          <Grid item md = {3}>
             <div className={styles.verticalLegendContainer}>
               <CustomLegend items={legendLineData} column={true} />
             </div>
