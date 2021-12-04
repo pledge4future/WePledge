@@ -7,6 +7,7 @@ import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 // Components
 import Typography from '../../components/Typography';
@@ -92,10 +93,10 @@ export default function AppFooter() {
               spacing={2}
             >
               <Grid item className={classes.icons}>
-                <a href="https://twitter.com/MaterialUI" className={classes.icon}>
+                <a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
                   <InstagramIcon />
                 </a>
-                <a href="https://twitter.com/" className={classes.icon}>
+                <a href="https://twitter.com/pledge4futurede" className={classes.icon}>
                   <TwitterIcon />
                 </a>
               </Grid>
