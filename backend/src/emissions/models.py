@@ -22,7 +22,7 @@ class CustomUser(AbstractUser):
     working_group = models.ForeignKey('WorkingGroup', on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
     EMAIL_FIELD = "email"
     REQUIRED_FIELDS = ['username']
 

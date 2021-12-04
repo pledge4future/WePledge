@@ -143,6 +143,27 @@ def test_update_query():
     assert data["data"]["updateAccount"]["success"]
 
 
+def test_me_query():
+    """
+    Test whether me query returns the currently logged in user
+    """
+    me_query = '''
+        query {
+          me {
+            username,
+            verified
+          }
+    }
+    '''
+    headers = {"Content-Type": "application/json",
+               'Authorization': f'JWT {TOKEN}'}
+    response = requests.post(GRAPHQL_URL, json={'query': me_query}, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["data"]["me"]["username"] == TEST_USERNAME
+    assert data["data"]["me"]["verified"]
+
+
 def test_refresh_token():
     """
     Test whether new token can be queried
@@ -209,7 +230,6 @@ def test_working_groups():
     #assert response.status_code == 200
     #data = response.json()
     #assert data["data"]["workingGroups"]
-
 
 
 def list_users():
