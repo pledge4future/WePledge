@@ -18,7 +18,7 @@ function Copyright() {
   return (
     <React.Fragment>
       {'© '}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" href="/about-us">
         Pledge4Future
       </Link>{' '}
       {new Date().getFullYear()}
@@ -98,6 +98,9 @@ export default function AppFooter() {
                 </a>
                 <a href="https://twitter.com/pledge4futurede" className={classes.icon}>
                   <TwitterIcon />
+                </a>
+                <a href="https://github.com/pledge4future/WePledge" className={classes.icon}>
+                  <GitHubIcon />
                 </a>
               </Grid>
             </Grid>
