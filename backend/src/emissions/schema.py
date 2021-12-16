@@ -618,7 +618,6 @@ class CreateHeating(graphene.Mutation):
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)
 
-
 class CreateBusinessTrip(graphene.Mutation):
     """GraphQL mutation for business trips"""
 

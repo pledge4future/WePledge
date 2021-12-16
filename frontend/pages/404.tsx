@@ -1,10 +1,13 @@
+import * as React from "react";
+import withRoot from "../src/withRoot";
+
 // Material-UI
 import { Container, Grid, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
 // Components
 import Link from "../src/components/Link";
-import Layout from "../src/components/layouts/Layout";
+import PageContainer from "../src/components/PageContainer";
 
 const useStyles = makeStyles((theme) => ({
   link: {
@@ -13,21 +16,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ErrorPage = () => {
-  const classes = useStyles();
+function ErrorPage() {
 
+  const classes = useStyles();
   return (
-    <Layout
-      // TODO: type your page title and page description.
-      title="404 | WePledge"
-      description=""
-    >
+    <PageContainer title="Error">
       <Container maxWidth="md">
         <Grid container direction="column" spacing={8}>
           <Grid item>
-            <Typography variant="h1" align="center" gutterBottom>
-              Error
-            </Typography>
             <Typography variant="h2" align="center">
               404 - Page Not Found
             </Typography>
@@ -39,8 +35,8 @@ const ErrorPage = () => {
           </Grid>
         </Grid>
       </Container>
-    </Layout>
+    </PageContainer>
   );
-};
+}
 
-export default ErrorPage;
+export default withRoot(ErrorPage);

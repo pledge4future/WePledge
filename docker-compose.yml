@@ -14,6 +14,11 @@ services:
       - PGDATA=/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  redis_db:
+    container_name: cube-redis
+    image: redis
+    ports:
+      - "6379"
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -40,28 +45,46 @@ services:
       - "8000:8000"
     depends_on:
       - db
-    env_file: ./.env
-  # frontend:
-  #   container_name: wepledge-frontend
-  #   tty: true
-  #   build:
-  #     context: ./frontend
-  #     target: development
-  #   volumes:
-  #     - ./frontend/:/home/node/app
-  #     - frontend_nodemodules:/home/node/app/node_modules
-  #     - frontend_extensions:/home/node/.vscode-server
-  #   # depends_on:
-  #   #   - cube
-  #   ports:
-  #     - "3000:3000"
-  #   env_file: ./.env
-  #   environment:
-  #     HOME: /home/node
+  frontend:
+    container_name: wepledge-frontend
+    tty: true
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend/:/home/node/app
+      - frontend_nodemodules:/home/node/app/node_modules
+      - frontend_extensions:/home/node/.vscode-server
+    # depends_on:
+    #   - cube
+    ports:
+      - "3000:3000"
+    #env_file: ./.env
+    environment:
+      HOME: /home/node
+  cube:
+    container_name: cube
+    build:
+      context: ./cube
+      target: development
+    env_file: .env
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./cube/:/home/node/app/
+      - cube_nodemodules:/home/node/app/node_modules
+      - cube_extensions:/home/node/.vscode-server
+    command: npm run dev
+    links:
+      - redis_db
 volumes:
-  # frontend_nodemodules:
-  # frontend_extensions:
+  frontend_nodemodules:
+  frontend_extensions:
   backend_env:
   backend_extensions:
   db-data:
   pgadmin-data:
+  cube_nodemodules:
+  cube_extensions:
