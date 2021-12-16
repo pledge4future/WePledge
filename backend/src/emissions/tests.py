@@ -60,7 +60,7 @@ def test_verify():
                 }
             }
     """
-    token_from_email = "eyJ1c2VybmFtZSI6InRlc3RfdXNlciIsImFjdGlvbiI6ImFjdGl2YXRpb24ifQ:1mtaae:3YqWW-l10wf1eONm1nz0qtJFZ53ueWbxITh_5P0lcF4"
+    token_from_email = "eyJlbWFpbCI6InRlc3RAcGxlZGdlNGZ1dHVyZS5vcmciLCJhY3Rpb24iOiJhY3RpdmF0aW9uIn0:1mxwDA:vf9qO0ZVpLU7PMs1aZ4s2dittneWLixlwzahka-qUwk"
     variables = {"token": token_from_email}
     response = requests.post(
         GRAPHQL_URL, json={"query": verify_query, "variables": variables}
@@ -126,6 +126,10 @@ def test_me_query():
           me {
             username,
             verified
+            workingGroup {
+                groupId
+                name
+            }
           }
     }
     """
@@ -142,7 +146,9 @@ def test_update_query():
     update_query = """
         mutation {
         updateAccount (
-        firstName: "Louise"
+            firstName: "Louise"
+            isRepresentative: "False"
+            workingGroup: "30e8d77e-9861-4e0e-8eaa-98ba8cad24ae"
       ) {
         success
         errors
@@ -205,21 +211,22 @@ def test_delete_account():
     assert data["data"]["deleteAccount"]["success"]
 
 
-def test_working_groups():
+def test_groups():
     """Test whether working groups can be queried (not implemented yet)"""
 
-    # group_query = """
-    #    query {
-    #        workingGroups {
-    #          name
-    #        }
-    #    }
-    # """
-    # headers = {"Content-Type": "application/json", "Authorization": f"Token {TOKEN}"}
-    # response = requests.post(GRAPHQL_URL, json={'query': group_query}, headers=headers)
-    # assert response.status_code == 200
-    # data = response.json()
-    # assert data["data"]["workingGroups"]
+    group_query = """
+        query {
+            workingGroups {
+              name
+              groupId
+            }
+        }
+     """
+    headers = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+    response = requests.post(GRAPHQL_URL, json={"query": group_query}, headers=headers)
+    assert response.status_code == 200
+    data = response.json()
+    assert len(data["data"]["workingGroups"]) == 2
 
 
 def test_list_users():

@@ -83,22 +83,22 @@ WSGI_APPLICATION = "pledge4future.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 # local database for development
-# DATABASES = {
-#     'default': {
-#        'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, "db.sqlitedb"),
-#        }
-# }
-
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "NAME": "postgres",
-        "USER": "postgres",
-        "HOST": "db",
-        "PORT": 5432,
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": os.path.join(BASE_DIR, "db.sqlitedb"),
     }
 }
+
+# DATABASES = {
+#    "default": {
+#        "ENGINE": "django.db.backends.postgresql",
+#        "NAME": "postgres",
+#        "USER": "postgres",
+#        "HOST": "db",
+#        "PORT": 5432,
+#    }
+# }
 
 
 # Password validation
@@ -138,6 +138,8 @@ AUTHENTICATION_BACKENDS = [
 ]
 
 GRAPHQL_JWT = {
+    # "JWT_AUTH_HEADER_NAME": "HTTP_Authorization",
+    "JWT_AUTH_HEADER_PREFIX": "JWT",
     "JWT_VERIFY_EXPIRATION": True,
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_ALLOW_ANY_CLASSES": [
@@ -156,6 +158,10 @@ GRAPHQL_JWT = {
 
 GRAPHQL_AUTH = {
     "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "UPDATE_MUTATION_FIELDS": [
+        "first_name",
+        "last_name",
+    ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,
     "ALLOW_LOGIN_NOT_VERIFIED": False,
