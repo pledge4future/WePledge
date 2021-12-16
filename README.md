@@ -1,16 +1,8 @@
 # WePledge
 code for the webapp
 
-
-## Django login
-
-You can login at `http://localhost:8000/admin` using 
-
-- user: *admin@admin.com* 
-- password *adminpass*
-
-
-## Rebuilding the backend containers
+## Debugging backend containers
+>>>>>>> d72b03207e50c5273949600ce64390e49785a3c0
 
 Before rebuilding all backend docker containers (wepledge_pgadmin_1, wepledge_backend_1 and db) do the following: 
 
