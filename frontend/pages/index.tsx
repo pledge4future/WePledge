@@ -1,61 +1,93 @@
 // Material-UI
-import { Container, Grid, Typography, Button } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
+import React from "react";
+import Head from "next/head";
 
 // Components
-import Layout from "../src/components/layouts/Layout";
+import AppAppBar from "../src/views/App/AppAppBar";
 
-const useStyles = makeStyles((theme) => ({
-  btn: {
-    background: theme.palette.primary.main,
-    color: theme.palette.secondary.main,
-    border: `1px solid ${theme.palette.primary.main}`,
-    "&:hover": {
-      color: theme.palette.primary.main,
+//import ProductHero from '../src/views/Product/ProductHero';
+import ProductHeroLayout from "../src/views/Product/ProductHeroLayout";
+import AppFooter from '../src/views/App/AppFooter';
+import withRoot from "../src/withRoot";
+import { Typography, makeStyles, Theme, Button } from "@material-ui/core";
+
+
+const backgroundImage = '../static/images/background_pic.jpg'
+
+
+const useStyles = makeStyles((theme: Theme) => ({
+    background: {
+      backgroundImage: `url(${backgroundImage})`,
+      backgroundColor: '#7fc7d9', // Average color of the background image.
+      backgroundPosition: 'center',
     },
-  },
-}));
+    button: {
+      minWidth: 200,
+      margin: 15
+    },
+    h5: {
+      marginBottom: theme.spacing(4),
+      marginTop: theme.spacing(4),
+      [theme.breakpoints.up('sm')]: {
+        marginTop: theme.spacing(10),
+      },
+    },
+    h2: {
+      marginTop: theme.spacing(10),
+    },
+    more: {
+      marginTop: theme.spacing(2),
+    },
+  }));
 
-const Home = () => {
+function Index() {
+  const title = "Welcome";
+  const siteName = "Pledge4Future";
+
   const classes = useStyles();
-  return (
-    <Layout
-      // TODO: type your page title and page description.
-      title="Home | WePledge"
-      description=""
-    >
-      <Container maxWidth="md">
-        <Typography
-          variant="h1"
-          align="center"
-          gutterBottom
-          style={{ marginBottom: "1em" }}
-        >
-          WePledge
-        </Typography>
-        <Grid container direction="column" alignItems="center" spacing={4}>
-          <Grid item>
-            <Button
-              component={"a"}
-              target="_blank"
-              rel="noreferrer noopener"
-              href="/about"
-              className={classes.btn}
-            >
-              Get Started
-            </Button>
-          </Grid>
-          <Grid item>
-            <Container maxWidth="sm">
-              <Typography variant="h2" align="center">
-                This is the home page of WePledge
-              </Typography>
-            </Container>
-          </Grid>
-        </Grid>
-      </Container>
-    </Layout>
-  );
-};
 
-export default Home;
+
+  return (
+    <React.Fragment>
+      <Head>
+        <title>{title ? `${title} | ${siteName}` : siteName }</title>
+      </Head>
+      <AppAppBar />
+      <ProductHeroLayout backgroundClassName={classes?.background} classes={classes}>
+      {/* Increase the network loading priority of the background image. */}
+      <>
+      <Typography color="inherit" align="center" variant="h2" className={classes?.h2}>
+          Pledge. Measure. Solve.
+      </Typography>
+      </>
+      <Typography color="inherit" align="center" variant="h5" className={classes?.h5}>
+        Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e-footprint.
+        It helps you and everyone else to contribute protecting our climate and life on Earth.
+      </Typography>
+      <Button
+        color="primary"
+        variant="contained"
+        size="large"
+        className={classes?.button}
+        component="a"
+        href="/dashboard"
+      >
+        Check out the demo
+      </Button>
+      <Button
+        color="primary"
+        variant="outlined"
+        size="large"
+        className={classes?.button}
+        component="a"
+        href="https://docs.google.com/forms/d/e/1FAIpQLSc5Lj8i0pWIlLU58jycqAlaPSGYYrPJgPUqm1l3Hw_60yOSYA/viewform?usp=sf_link"
+      >
+        Subscribe for Updates
+      </Button>
+      </ProductHeroLayout>
+      <AppFooter />
+    </React.Fragment>
+  );
+}
+
+export default withRoot(Index);

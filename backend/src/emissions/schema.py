@@ -207,7 +207,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
-    def resolve_businesstrip_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
+    def resolve_businesstrip_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
         - for a user (if username is given),
@@ -244,7 +244,7 @@ class Query(UserQuery, MeQuery, ObjectType):
             raise GraphQLError(f"'{time_interval}' is not a valid option for parameter 'time_interval'.")
 
 
-    def resolve_commuting_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="monthly", **kwargs):
+    def resolve_commuting_aggregated(self, info, username=None, group_id=None, inst_id=None, time_interval="month", **kwargs):
         """
         Yields monthly co2e emissions of businesstrips
         - for a user (if username is given),
@@ -421,7 +421,6 @@ class CreateHeating(graphene.Mutation):
                               co2e=round(co2e, 1))
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)
-
 
 class CreateBusinessTrip(graphene.Mutation):
     class Arguments:
