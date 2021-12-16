@@ -9,7 +9,7 @@ After server is running open `localhost:8000/graphql` in the browser.
 
 ### Front-End Form:
 
-Electricity data should be entered for each month. 
+Electricity data should be entered for each month.
 
 | Name| Input Type | Options / Comment 	       |
 |-----|------------------|--------------------|
@@ -21,7 +21,7 @@ Electricity data should be entered for each month.
 
 
 
-### Query: 
+### Query:
 
 ```
 mutation createElectricity {
@@ -46,7 +46,7 @@ mutation createElectricity {
 ```
 
 
-## Heating 
+## Heating
 
 ### Front-End Form:
 
@@ -60,7 +60,7 @@ mutation createElectricity {
 | Group share | Float input field | min:0, max: 1 |
 
 
-### Query: 
+### Query:
 
 ```
 mutation createHeating{
@@ -102,7 +102,7 @@ mutation createHeating{
 | Passengers | Int Field | 1 - 9 (only for car) |
 | Round trip | Check box | |
 
-    
+
 ### Query:
 
 
@@ -113,11 +113,11 @@ mutation createBusinesstrip {
       groupId: "573b7bec-e9fe-4505-bb41-2bf9a2769a80"
       timestamp: "2020-01-01"
       transportationMode: "car"
-      distance: 200 
+      distance: 200
       size: "medium"
       fuelType: "gasoline"
       passengers: 1
-      roundtrip: false	
+      roundtrip: false
     }) {
         ok
       }

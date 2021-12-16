@@ -1,15 +1,15 @@
 # Errors
 
-### `Module not found` in backend container 
+### `Module not found` in backend container
 
-The backend container won't build correctly, because `Module not found django_extensions`. 
+The backend container won't build correctly, because `Module not found django_extensions`.
 
-**Solution:** Delete all containerst and images. Then run `docker volume prune` to delete all data associated with them. 
+**Solution:** Delete all containerst and images. Then run `docker volume prune` to delete all data associated with them.
 
 
 ### Send Registration email failed
 
-When registering a new user, sending the activation email fails. 
+When registering a new user, sending the activation email fails.
 
 **Solution:** Add the `EMAIL_FROM` variable to `settings.py` (see [Django-Graphql_Auth Docs](https://django-graphql-auth.readthedocs.io/en/latest/settings/))
 

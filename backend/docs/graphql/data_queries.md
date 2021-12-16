@@ -2,31 +2,31 @@
 
 ## Queries
 
-There are three types of queries to request monthly (default) or annual co2e data: 
+There are three types of queries to request monthly (default) or annual co2e data:
 
 - **heatingAggregated**
 - **electricityAggregated**
-- **businesstripAggregated** 
+- **businesstripAggregated**
 - **commutingAggregated**
 - **allAggregated** (not implemented yet)
 
 The **aggregation level** can be specified using the arguments
 
-- **username:** co2e on user level (only for businesstrips) 
+- **username:** co2e on user level (only for businesstrips)
 - **groupId:** co2e on working group level
-- **instId:** co2e on institution level 
+- **instId:** co2e on institution level
 
-The co2e emission can be returned as 
+The co2e emission can be returned as
 
 - absolute emissions (`co2e`)
 - emissions per capita (`co2eCap`)
 
-per 
+per
 
-- month (`time_interval="month"`) 
+- month (`time_interval="month"`)
 - year (`time_interval="year"`)
 
-### Examples:  
+### Examples:
 
 ##### All aggregated (not implemented yet)
 
@@ -50,10 +50,10 @@ per
         ...
     ]
   }
-} 
+}
 ```
 
-#### Monthly absolute emissions of business trips of a user  
+#### Monthly absolute emissions of business trips of a user
 **Request:**
 
 ``` json
@@ -88,9 +88,9 @@ query {
 }
 ```
 
-#### Monthly absolute emissions of heating consumption of a working group 
+#### Monthly absolute emissions of heating consumption of a working group
 
-[How to get all group ids](./graphql_user_requests.md).
+[How to get all group ids](./authentication.md).
 
 **Request:**
 
@@ -126,13 +126,13 @@ query {
 }
 ```
 
-#### Monthly absolute and per capita emissions of electricity consumption of an institution 
+#### Monthly absolute and per capita emissions of electricity consumption of an institution
 
 **Request:**
 
 ``` json
 query {
-	electricityAggregated (groupId:"c7876b21-6166-443b-97e5-f7c5413de520", 
+	electricityAggregated (groupId:"c7876b21-6166-443b-97e5-f7c5413de520",
     timeInterval:"month") {
 		co2e
     	co2eCap
@@ -163,13 +163,13 @@ query {
 ```
 
 
-#### Monthly absolute and per capita emissions from commuting for a working group 
+#### Monthly absolute and per capita emissions from commuting for a working group
 
 **Request:**
 
 ```
 query {
-	commutingAggregated (groupId:"e0ee4c7f-f266-47e5-877f-15dd396d3a57", 
+	commutingAggregated (groupId:"e0ee4c7f-f266-47e5-877f-15dd396d3a57",
     timeInterval:"year") {
     	co2eCap
     	co2e
@@ -198,4 +198,3 @@ query {
    }
 }
 ```
-

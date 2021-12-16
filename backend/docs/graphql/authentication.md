@@ -1,22 +1,22 @@
-# GraphQL: User management
+# GraphQL: Authentication
 
 The API including requests and possible responses is well documented [here](https://django-graphql-auth.readthedocs.io/en/latest/api).
 
-The requests (except for the updateUser) can be sent through GraphiQL on `localhost:8000/graphql` or using [Postman](https://www.postman.com/) to `localhost:8000/graphql/`. If the requests reuqired sending a token in the header, you need to use postman. 
+The requests (except for the updateUser) can be sent through GraphiQL on `localhost:8000/graphql` or using [Postman](https://www.postman.com/) to `localhost:8000/graphql/`. If the requests reuqired sending a token in the header, you need to use postman.
 
 As a tutorial, everything is explained in this [video tutorial](https://www.youtube.com/watch?v=pyV2_F9wlk8&t=494s) along with code on [GitHub](https://github.com/veryacademy/YT-GraphQL-User-Authentication-GraphQL-Auth)
 
 ## Register a new user account
 
-### 1. Register new user 
+### 1. Register new user
 
-Required info from user: 
+Required info from user:
 
 * Email
 * username
 * Password
-* Repeat password  
- 
+* Repeat password
+
 
 #### request
 
@@ -31,7 +31,7 @@ mutation {
 	 success
     errors
     token
-    refreshToken 
+    refreshToken
   }
 }
 ```
@@ -51,19 +51,19 @@ mutation {
 }
 ```
 
-### 2. Verify email 
+### 2. Verify email
 
-After the user has been registered an activation email is sent to the email given by the user. 
+After the user has been registered an activation email is sent to the email given by the user.
 
-If sending the email fails, set `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'` in `./backend/src/wepledge/settings.py` so the email text will be printed in the command line. 
-	
-	
+If sending the email fails, set `EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'` in `./backend/src/wepledge/settings.py` so the email text will be printed in the command line.
+
+
 	<h3>localhost:8000</h3>
 	<p>Hello lisalou!</p>
 	<p>Please activate your account on the link:</p>
 	<p>http://localhost:8000/activate/eyJlbWFpbCI6Imxpc2Fsb3VAdW5pLWhkLmRlIiwiYWN0aW9uIjoiYWN0aXZhdGlvbiJ9:1mCmEp:eBGetW65MtzO5f9LJAIhFKHjhTcwEeS1Ys2sxUgMWIQ</p>
 
-The token in the activation url is needed to verify the account. 
+The token in the activation url is needed to verify the account.
 
 #### request
 
@@ -93,9 +93,9 @@ mutation {
 
 ### 3. Log in User
 
-Required info from user: 
+Required info from user:
 
-* email 
+* email
 * password
 
 #### request
@@ -141,11 +141,11 @@ mutation {
 }
 ```
 
-### 4. Update account 
+### 4. Update account
 
-User needs to be verified to update account data. Send requests using Postman so that token can be passed in header. 
+User needs to be verified to update account data. Send requests using Postman so that token can be passed in header.
 
-See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#updateaccount) for more details. 
+See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#updateaccount) for more details.
 
 #### Graphql Query
 
@@ -160,7 +160,7 @@ mutation {
 }
 ```
 
-#### response 
+#### response
 
 ```
 {
@@ -176,7 +176,7 @@ mutation {
 
 ### 5. Password reset
 
-See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#passwordreset) for more details. 
+See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#passwordreset) for more details.
 
 #### Graphql Query
 
@@ -193,7 +193,7 @@ mutation {
 }
 ```
 
-#### response 
+#### response
 
 ```
 {
@@ -206,9 +206,9 @@ mutation {
 }
 ```
 
-### 6. Resend activation email 
+### 6. Resend activation email
 
-See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#resendactivationemail) for more details. 
+See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#resendactivationemail) for more details.
 
 #### Graphql Query
 
@@ -224,7 +224,7 @@ mutation {
 }
 ```
 
-#### response 
+#### response
 
 ```
 {
@@ -237,11 +237,11 @@ mutation {
 }
 ```
 
-### 7. Send password reset email 
+### 7. Send password reset email
 
 Send password reset email. For non verified users, send an activation email instead. Accepts both primary and secondary email. If there is no user with the requested email, a successful response is returned.
 
-See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#sendpasswordresetemail) for more details. 
+See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#sendpasswordresetemail) for more details.
 
 #### Graphql Query
 
@@ -256,7 +256,7 @@ mutation {
 }
 ```
 
-#### response 
+#### response
 
 ```
 {
@@ -270,11 +270,11 @@ mutation {
 ```
 
 
-### 8. Send password reset email 
+### 8. Send password reset email
 
 Change account password when user knows the old password. A new token and refresh token are sent. User must be verified.
 
-See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#passwordchange) for more details. 
+See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#passwordchange) for more details.
 
 #### Graphql Query
 
@@ -293,7 +293,7 @@ mutation {
 }
 ```
 
-#### response 
+#### response
 
 ```
 {
@@ -331,7 +331,7 @@ query {
 }
 ```
 
-#### Get all users 
+#### Get all users
 
 ```
 query {
