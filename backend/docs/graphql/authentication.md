@@ -1,10 +1,20 @@
 # GraphQL: Authentication
 
-The API including requests and possible responses is well documented [here](https://django-graphql-auth.readthedocs.io/en/latest/api).
+The API including requests and  responses is well documented [in the Django-GraphQL-Auth documentation](https://django-graphql-auth.readthedocs.io/en/latest/api). There is also a [video tutorial](https://www.youtube.com/watch?v=pyV2_F9wlk8&t=494s) along with code on [GitHub](https://github.com/veryacademy/YT-GraphQL-User-Authentication-GraphQL-Auth)
 
-The requests (except for the updateUser) can be sent through GraphiQL on `localhost:8000/graphql` or using [Postman](https://www.postman.com/) to `localhost:8000/graphql/`. If the requests reuqired sending a token in the header, you need to use postman.
+### authentication
 
-As a tutorial, everything is explained in this [video tutorial](https://www.youtube.com/watch?v=pyV2_F9wlk8&t=494s) along with code on [GitHub](https://github.com/veryacademy/YT-GraphQL-User-Authentication-GraphQL-Auth)
+Some request require authentication by sending a valid token in the header with the request.
+
+```
+header = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+```
+
+For testing purposes, requests without authentication can be sent through `localhost:8000/graphql`. Requests with authentication require a valid token in the header, so they need to be sent through external software like [Postman](https://www.postman.com/) or scripts e.g. [Python API tests](../src/emissions/tests.py).
+
+
+
+
 
 ## Register a new user account
 
@@ -97,13 +107,8 @@ Required info from user:
 
 * email
 * password
-* JWT Token in Header
 
 #### Request
-
-```
-header = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
-```
 
 ```
 mutation {
@@ -148,11 +153,21 @@ mutation {
 
 ### 4. Update account
 
-User needs to be verified to update account data. Send requests using Postman so that token can be passed in header.
+User account needs to be verified firist.
+
+**Requres authentication by sending token in header**
 
 See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#updateaccount) for more details.
 
 #### Graphql Query
+
+**Header**
+
+```
+header = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+```
+
+**Request**
 
 ```
 mutation {
@@ -165,7 +180,7 @@ mutation {
 }
 ```
 
-#### response
+#### Response
 
 ```
 {
@@ -183,7 +198,17 @@ mutation {
 
 See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#passwordreset) for more details.
 
+**Requres authentication by sending token in header**
+  
 #### Graphql Query
+
+**Header**
+
+```
+header = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+```
+
+**Request**
 
 ```
 mutation {
@@ -247,6 +272,7 @@ mutation {
 Send password reset email. For non verified users, send an activation email instead. Accepts both primary and secondary email. If there is no user with the requested email, a successful response is returned.
 
 See [documentation](https://django-graphql-auth.readthedocs.io/en/latest/api/#sendpasswordresetemail) for more details.
+
 
 #### Graphql Query
 

@@ -1,7 +1,13 @@
 # Endpoints
 
+Authentication levels:
 
-|Name | Status| Tested | Auth level|
+- **public**: No authentication needed
+- **log_in_user**: User must be authenticated by sending valid JWT Token in header.
+- **log_in_representative**: User must be authenticated and be the representative of their group.
+
+
+|Name | Status| Tested | Authentication level|
 |:----|-------|-------|------|
 | register | :white_check_mark: | :white_check_mark: | public |
 | verify_account |:white_check_mark:| :white_check_mark:| public |
