@@ -1,10 +1,9 @@
 from django.contrib import admin
-from emissions.models import User, WorkingGroup, BusinessTrip, Heating, Electricity, Institution, Commuting, \
-    CommutingGroup, BusinessTripGroup
 from django.apps import apps
+from emissions.models import CustomUser, WorkingGroup, Institution, Heating, Electricity, Commuting, CommutingGroup, BusinessTrip, BusinessTripGroup
 
 # Register your models here.
-admin.site.register(User)
+admin.site.register(CustomUser)
 admin.site.register(WorkingGroup)
 admin.site.register(Institution)
 admin.site.register(Heating)
