@@ -2,12 +2,12 @@
 
 ## GraphQL
 
-1.[Endpoint overview](./graphql/endpoint_overview.md)
-2.[GraphDoc documentation of API](./graphdoc/index.html)
-3.[Authentication requests](./graphql/authentication.md)
-4.[Data mutations](./graphql/data_mutations.md)
-5.[Data queries](./graphql/data_queries.md)
-6.[Errors](./graphql/errors.md)
+1.[Endpoint overview](./graphql/endpoint_overview.md)  
+2.[GraphDoc documentation of API](./graphdoc/index.html)  
+3.[Authentication requests](./graphql/authentication.md)  
+4.[Data mutations](./graphql/data_mutations.md)  
+5.[Data queries](./graphql/data_queries.md)  
+6.[Errors](./graphql/errors.md)  
 
 It might also be useful to look at the [GraphQL API tests](../src/emissions/tests.py) to see how the requests work.
 
