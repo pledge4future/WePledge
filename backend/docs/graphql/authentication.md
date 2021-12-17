@@ -97,8 +97,13 @@ Required info from user:
 
 * email
 * password
+* JWT Token in Header
 
-#### request
+#### Request
+
+```
+header = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+```
 
 ```
 mutation {

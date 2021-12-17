@@ -198,3 +198,25 @@ query {
    }
 }
 ```
+
+##### Query dropdown options for `fuel_type` and `unit` attribute
+
+For example
+
+**Query**
+
+```
+{ __type(name: "HeatingFuelType") {
+  enumValues {
+    name
+    description
+  }
+}
+}
+```
+
+**Response**
+
+```
+{'data': {'__type': {'enumValues': [{'name': 'GERMAN_ENERGY_MIX', 'description': 'German energy mix'}, {'name': 'SOLAR', 'description': 'Solar'}]}}}
+```
