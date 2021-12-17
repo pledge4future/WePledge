@@ -111,9 +111,8 @@ class HeatingAggregatedType(ObjectType):
 
     class Meta:
         """Assign django model"""
-
         name = "HeatingAggregated"
-        filter_fields = ["group_id"]
+        filter_fields = ["id"]
 
 
 class ElectricityAggregatedType(ObjectType):
@@ -170,28 +169,28 @@ class Query(UserQuery, MeQuery, ObjectType):
     # Aggregated data
     heating_aggregated = graphene.List(
         HeatingAggregatedType,
-        group_id=graphene.UUID(),
-        inst_id=graphene.UUID(),
+        group_id=graphene.ID(),
+        inst_id=graphene.ID(),
         time_interval=graphene.String(),
     )
     electricity_aggregated = graphene.List(
         ElectricityAggregatedType,
-        group_id=graphene.UUID(),
-        inst_id=graphene.UUID(),
+        group_id=graphene.ID(),
+        inst_id=graphene.ID(),
         time_interval=graphene.String(),
     )
     businesstrip_aggregated = graphene.List(
         BusinessTripAggregatedType,
         username=graphene.String(),
-        group_id=graphene.UUID(),
-        inst_id=graphene.UUID(),
+        group_id=graphene.ID(),
+        inst_id=graphene.ID(),
         time_interval=graphene.String(),
     )
     commuting_aggregated = graphene.List(
         CommutingAggregatedType,
         username=graphene.String(),
-        group_id=graphene.UUID(),
-        inst_id=graphene.UUID(),
+        group_id=graphene.ID(),
+        inst_id=graphene.ID(),
         time_interval=graphene.String(),
     )
 
@@ -232,16 +231,16 @@ class Query(UserQuery, MeQuery, ObjectType):
         Yields monthly co2e emissions (per capita) of heating consumption
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
-        param: group_id: UUID id of WorkingGroup model (str)
-        param: inst_id: UUID id of Institute model (str)
+        param: group_id:  id of WorkingGroup model (str)
+        param: inst_id:  id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         # Get relevant data entries
         if group_id:
-            entries = Heating.objects.filter(working_group__group_id=group_id)
+            entries = Heating.objects.filter(working_group__id=group_id)
         elif inst_id:
             entries = Heating.objects.filter(
-                working_group__institution__inst_id=inst_id
+                working_group__institution__id=inst_id
             )
         else:
             entries = Heating.objects.all()
@@ -280,15 +279,15 @@ class Query(UserQuery, MeQuery, ObjectType):
         Yields monthly co2e emissions of electricity consumption
         - for a group (if group_id is given),
         - for an institutions (if inst_id is given)
-        param: group_id: UUID id of WorkingGroup model (str)
-        param: inst_id: UUID id of Institute model (str)
+        param: group_id: id of WorkingGroup model (str)
+        param: inst_id: id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         if group_id:
-            entries = Electricity.objects.filter(working_group__group_id=group_id)
+            entries = Electricity.objects.filter(working_group__id=group_id)
         elif inst_id:
             entries = Electricity.objects.filter(
-                working_group__institution__inst_id=inst_id
+                working_group__institution__id=inst_id
             )
         else:
             entries = Electricity.objects.all()
@@ -325,17 +324,17 @@ class Query(UserQuery, MeQuery, ObjectType):
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
         param: username: username of user model (str)
-        param: group_id: UUID id of WorkingGroup model (str)
-        param: inst_id: UUID id of Institute model (str)
+        param: group_id: id of WorkingGroup model (str)
+        param: inst_id: id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         if username:
             entries = BusinessTrip.objects.filter(user__username=username)
         elif group_id:
-            entries = BusinessTripGroup.objects.filter(working_group__group_id=group_id)
+            entries = BusinessTripGroup.objects.filter(working_group__id=group_id)
         elif inst_id:
             entries = BusinessTripGroup.objects.filter(
-                working_group__institution__inst_id=inst_id
+                working_group__institution__id=inst_id
             )
         else:
             entries = BusinessTrip.objects.all()
@@ -380,8 +379,8 @@ class Query(UserQuery, MeQuery, ObjectType):
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
         param: username: username of user model (str)
-        param: group_id: UUID id of WorkingGroup model (str)
-        param: inst_id: UUID id of Institute model (str)
+        param: group_id: id of WorkingGroup model (str)
+        param: inst_id: id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         metrics = {
@@ -392,10 +391,10 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = Commuting.objects.filter(user__username=username)
             metrics.pop("co2e_cap")
         elif group_id:
-            entries = CommutingGroup.objects.filter(working_group__group_id=group_id)
+            entries = CommutingGroup.objects.filter(working_group__id=group_id)
         elif inst_id:
             entries = CommutingGroup.objects.filter(
-                working_group__institution__inst_id=inst_id
+                working_group__institution__id=inst_id
             )
         else:
             entries = Commuting.objects.all()
@@ -444,7 +443,7 @@ class BusinessTripInput(graphene.InputObjectType):
 
     id = graphene.ID()
     username = graphene.String(required=True)
-    group_id = graphene.UUID(required=True)
+    group_id = graphene.ID(required=True)
     timestamp = graphene.Date(required=True)
     transportation_mode = graphene.String(required=True)
     start = graphene.String()
@@ -462,7 +461,7 @@ class ElectricityInput(graphene.InputObjectType):
     """GraphQL Input type for electricity"""
 
     id = graphene.ID()
-    group_id = graphene.UUID()
+    group_id = graphene.ID(reqired=True)
     timestamp = graphene.Date(required=True)
     consumption = graphene.Float()
     fuel_type = graphene.String(required=True)
@@ -474,25 +473,13 @@ class HeatingInput(graphene.InputObjectType):
     """GraphQL Input type for heating"""
 
     id = graphene.ID()
-    group_id = graphene.UUID()
+    group_id = graphene.ID(reqired=True)
     timestamp = graphene.Date(required=True)
     consumption = graphene.Float(required=True)
     unit = graphene.String(required=True)
     fuel_type = graphene.String(required=True)
     building = graphene.String(required=True)
     group_share = graphene.Float(required=True)
-
-
-class UserInput(graphene.InputObjectType):
-    """GraphQL Input type for users"""
-
-    id = graphene.ID()
-    workinggroupid = graphene.Int()
-    email = graphene.String()
-    username = graphene.String()
-    first_name = graphene.String()
-    last_name = graphene.String()
-    is_representative = graphene.Boolean()
 
 
 # --------------- Mutations ------------------------------------
@@ -539,8 +526,7 @@ class CreateElectricity(graphene.Mutation):
     """GraphQL mutation for electricity"""
 
     class Arguments:
-        """Assigne input type"""
-
+        """Assign input type"""
         input = ElectricityInput(required=True)
 
     ok = graphene.Boolean()
@@ -551,7 +537,7 @@ class CreateElectricity(graphene.Mutation):
     def mutate(root, info, input=None):
         """Process incoming data"""
         ok = True
-        matches = WorkingGroup.objects.filter(group_id=input.group_id)
+        matches = WorkingGroup.objects.filter(id=input.group_id)
         if len(matches) == 0:
             raise GraphQLError(
                 f"Permission denied: Could add electricity data, because user '{input.username}' "
@@ -593,7 +579,7 @@ class CreateHeating(graphene.Mutation):
     def mutate(root, info, input=None):
         """Process incoming data"""
         ok = True
-        matches = WorkingGroup.objects.filter(group_id=input.group_id)
+        matches = WorkingGroup.objects.filter(id=input.group_id)
         if len(matches) == 0:
             raise GraphQLError(
                 f"Permission denied: Could add electricity data, because user '{input.username}' "

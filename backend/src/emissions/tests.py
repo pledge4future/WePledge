@@ -5,10 +5,10 @@
 
 import os
 import requests
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-load_dotenv()
+load_dotenv(find_dotenv())
 
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 TEST_USERNAME = os.environ.get("TEST_USERNAME")
@@ -60,6 +60,7 @@ def test_verify():
                 }
             }
     """
+    # when test fails, paste the token from the email/command output
     token_from_email = "eyJlbWFpbCI6InRlc3RAcGxlZGdlNGZ1dHVyZS5vcmciLCJhY3Rpb24iOiJhY3RpdmF0aW9uIn0:1mxwDA:vf9qO0ZVpLU7PMs1aZ4s2dittneWLixlwzahka-qUwk"
     variables = {"token": token_from_email}
     response = requests.post(
@@ -127,7 +128,7 @@ def test_me_query():
             username,
             verified
             workingGroup {
-                groupId
+                id
                 name
             }
           }
@@ -148,7 +149,6 @@ def test_update_query():
         updateAccount (
             firstName: "Louise"
             isRepresentative: "False"
-            workingGroup: "30e8d77e-9861-4e0e-8eaa-98ba8cad24ae"
       ) {
         success
         errors
@@ -218,7 +218,7 @@ def test_groups():
         query {
             workingGroups {
               name
-              groupId
+              id
             }
         }
      """
@@ -247,3 +247,34 @@ def test_list_users():
     assert response.status_code == 200
     data = response.json()
     assert len(data["data"]["users"]["edges"]) > 1
+
+
+def test_query_dropdown_options():
+    """Test if querying dropdown options"""
+    query = """
+    { __type(name: "ElectricityFuelType") {
+          enumValues {
+            name
+            description
+          }
+        }
+    }
+    """
+    response = requests.post(GRAPHQL_URL, json={"query": query})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["data"]["__type"]["enumValues"][0]["name"] == 'GERMAN_ENERGY_MIX'
+
+    query = """
+    {__type(name: "Unit") {
+        enumValues
+    {
+        name
+    description
+    }
+    }
+    }
+    """
+    response = requests.post(GRAPHQL_URL, json={"query": query})
+    assert response.status_code == 200
+    response.json()

@@ -34,10 +34,10 @@ from co2calculator.co2calculator import (
     HeatingFuel,
     ElectricityFuel,
 )
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-load_dotenv()
+load_dotenv(find_dotenv())
 
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
@@ -63,7 +63,7 @@ class Command(BaseCommand):
         # Create super user
         try:
             CustomUser.objects.create_superuser(
-                ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD
+                username=ADMIN_USERNAME, email=ADMIN_EMAIL, password=ADMIN_PASSWORD
             )
         except IntegrityError:
             pass

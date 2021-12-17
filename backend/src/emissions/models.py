@@ -51,8 +51,8 @@ class Institution(models.Model):
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100, null=False, blank=False)
-    inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    readonly_fields = ("inst_id",)
+    #inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #readonly_fields = ("inst_id",)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -68,11 +68,11 @@ class WorkingGroup(models.Model):
 
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
-    representative = models.ForeignKey(CustomUser, on_delete=models.PROTECT, null=True)
+    representative = models.OneToOneField(CustomUser, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
-    group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    readonly_fields = ("group_id",)
+    #group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #readonly_fields = ("group_id",)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -86,7 +86,7 @@ class WorkingGroup(models.Model):
             self.representative.working_group is not None
         ):
             raise ValidationError(
-                _("New representative is not a member of this working group."),
+                _("This user cannot become the group representative, since they are not a member of this working group."),
                 code="invalid",
             )
         super().clean(*args, **kwargs)
@@ -140,55 +140,7 @@ class Commuting(models.Model):
     def __str__(self):
         return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
 
-class Heating(models.Model):
-    """
-    Heating consumption per year
-    """
-    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
-    timestamp = models.DateField(null=False)
 
-    PUMPAIR = 'PUMPAIR'
-    PUMPGROUND = 'PUMPGROUND'
-    PUMPWATER = 'PUMPWATER'
-    LIQUID = 'LIQUID'
-    OIL = 'OIL'
-    PELLETS = 'PELLETS'
-    SOLAR = 'SOLAR'
-    WOODCHIPS = 'WOODCHIPS'
-    ELECTRICITY = 'ELECTRICITY'
-    GAS = 'GAS'
-    fuel_type_choices = [(PUMPAIR, 'Pump air'), (PUMPGROUND, 'Pump ground'), (PUMPWATER, 'Pump water'),
-                         (LIQUID, 'Liquid'), (OIL, 'Oil'), (PELLETS, 'Pellets'), (SOLAR, 'Solar'),
-                         (WOODCHIPS, 'Woodchips'),
-                         (ELECTRICITY, 'Electricity'), (GAS, 'Gas')]
-    fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    co2e = models.DecimalField(max_digits=10, decimal_places=1)
-
-    def __str__(self):
-        return f"{self.working_group.name}, {self.timestamp}"
-
-
-class Electricity(models.Model):
-    """
-    Electricity consumption per year
-    """
-    working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE)
-    consumption_kwh = models.FloatField(null=False)
-    timestamp = models.DateField(null=False)
-
-    GERMAN_ELECTRICITY_MIX = 'german energy mix' # must be same as in data of co2calculator
-    #GREEN_ENERGY = 'GREEN_ENERGY'
-    SOLAR = 'solar'
-    fuel_type_choices = [(GERMAN_ELECTRICITY_MIX, 'German Energy Mix'),
-                         #(GREEN_ENERGY, 'Green energy'),
-                         (SOLAR, 'Solar')]
-    fuel_type = models.CharField(max_length=30, choices=fuel_type_choices, blank=False)
-
-    co2e = models.DecimalField(max_digits=10, decimal_places=1)
-
-    def __str__(self):
-        return f"{self.working_group.name}, {self.timestamp}"
 
 
 class BusinessTripGroup(models.Model):
@@ -369,7 +321,6 @@ class Electricity(models.Model):
 
     class Meta:
         """Specifies which attributes must be unique together"""
-
         unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):
