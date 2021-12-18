@@ -11,6 +11,13 @@
 
 It might also be useful to look at the [GraphQL API tests](../src/emissions/tests.py) to see how the requests work.
 
+### User account verification
+
+During development the verification token can be either printed in the console of the backend container or be sent via email. This setting can be changed by editing `EMAIL_BACKEND` in [./backend/src/pledge4future/settings.py](https://github.com/pledge4future/WePledge/blob/dev-backend/backend/src/pledge4future/settings.py). 
+
+`EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"`: Verification token printed in console  
+`EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`: Verification through sending email 
+
 ## Django
 
 ### Visualization of database
