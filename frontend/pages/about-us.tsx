@@ -13,6 +13,7 @@ import Container from "@material-ui/core/Container";
 import PageContainer from "../src/components/PageContainer";
 import Typography from '../src/components/Typography';
 import withRoot from "../src/withRoot";
+import { Box } from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -66,10 +67,10 @@ function AboutUs() {
         Who we are...
       </Typography>
       <br />
-      <Grid container justify="center" spacing={3}>
+      <Grid container justifyContent="center" spacing={3}>
         {(members).map((image) => (
           <Grid key={image.title} item xs={12} sm={3} container direction="column"
-            justify="flex-start"
+            justifyContent="flex-start"
             alignItems="center"
             wrap="nowrap"
 
@@ -107,14 +108,15 @@ function AboutUs() {
       <br />
 
       {/* Our story */}
-      <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
+      <Grid container spacing={3} justifyContent={matches ? "center" : "flex-start"} alignItems="center">
         <Grid item lg={2}>
           <MuiTypography variant="h5" component='div' align="center">
             Our story
           </MuiTypography>
         </Grid>
         <Grid item lg>
-          <MuiTypography variant="body1" component='div' >
+        <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
+          <MuiTypography variant="body1" component='div' align="justify" >
             In October 2020 some of us, working as researchers or student assistants at the
             geography department of Heidelberg University, formed an internal sustainability
             group. In order to create synergies we joined forces with  <Link href="https://scientists4future-heidelberg.de/en/">Scientists4Future (S4F)Heidelberg</Link>.
@@ -126,61 +128,92 @@ function AboutUs() {
             the winners of the hackathon, got funded by Goethe Institute, and since then, we
             voluntarily developed our tool.
           </MuiTypography>
+          </Box>
         </Grid>
       </Grid>
       <br />
       <br />
 
       {/* Our motivation */}
-      <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
+      <Grid container spacing={3} justifyContent={matches ? "center" : "flex-start"} alignItems="center">
         {matches ? null : (
+          <>
           <Grid item lg={2}>
-            <MuiTypography variant="h5" component='div' align="center">
-              Our motivation
-         </MuiTypography>
+              <MuiTypography variant="h5" component='div' align="center">
+                  Our motivation
+              </MuiTypography>
           </Grid>
+          <Grid item lg>
+          <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
+            <MuiTypography variant="body1" component='div' align="justify" >
+              Mainly active in the field of geography, we know the manifold impacts of climate
+              change on physical, biological and human systems. Climate change leads to mass
+              extinction, to migration, to the destruction of ecosystems.
+              <br />
+              <br />
+              We want to contribute to fight this crisis. We believe that humankind is able to stop
+              climate change. This means that we urgently have to become climate-neutral in
+              every area of life.
+              <br />
+              <br />
+              With our work and actions we want to deliver solutions instead of contributing to
+              global warming. However, in research, greenhouse gas emissions are still
+              excessively high. But how high are the emissions of your working group? And
+              where are the highest potentials to reduce them? Answers to these questions are
+              essential to support effective mitigation decisions and policies. Therefore, we
+              developed this tool to enable working groups around the globe to easily compute
+              and on the long term reduce their emissions.
+            </MuiTypography>
+            </Box>
+          </Grid>
+          </>
         )}
-        <Grid item lg>
-          <MuiTypography variant="body1" component='div' >
-            Mainly active in the field of geography, we know the manifold impacts of climate
-            change on physical, biological and human systems. Climate change leads to mass
-            extinction, to migration, to the destruction of ecosystems.
-            <br />
-            <br />
-            We want to contribute to fight this crisis. We believe that humankind is able to stop
-            climate change. This means that we urgently have to become climate-neutral in
-            every area of life.
-            <br />
-            <br />
-            With our work and actions we want to deliver solutions instead of contributing to
-            global warming. However, in research, greenhouse gas emissions are still
-            excessively high. But how high are the emissions of your working group? And
-            where are the highest potentials to reduce them? Answers to these questions are
-            essential to support effective mitigation decisions and policies. Therefore, we
-            developed this tool to enable working groups around the globe to easily compute
-            and on the long term reduce their emissions.
-          </MuiTypography>
-        </Grid>
         {!matches ? null : (
+          <>
+                    <Grid item lg>
+          <Box borderRight={4} borderColor={theme.palette.primary.main} sx={{paddingRight: '20px', marginRight: '-20px'}}>
+            <MuiTypography variant="body1" component='div' align="justify" >
+              Mainly active in the field of geography, we know the manifold impacts of climate
+              change on physical, biological and human systems. Climate change leads to mass
+              extinction, to migration, to the destruction of ecosystems.
+              <br />
+              <br />
+              We want to contribute to fight this crisis. We believe that humankind is able to stop
+              climate change. This means that we urgently have to become climate-neutral in
+              every area of life.
+              <br />
+              <br />
+              With our work and actions we want to deliver solutions instead of contributing to
+              global warming. However, in research, greenhouse gas emissions are still
+              excessively high. But how high are the emissions of your working group? And
+              where are the highest potentials to reduce them? Answers to these questions are
+              essential to support effective mitigation decisions and policies. Therefore, we
+              developed this tool to enable working groups around the globe to easily compute
+              and on the long term reduce their emissions.
+            </MuiTypography>
+            </Box>
+          </Grid>
           <Grid item lg={2}>
             <MuiTypography variant="h5" component='div' align="center">
               Our motivation
            </MuiTypography>
           </Grid>
+          </>
         )}
       </Grid>
       <br />
       <br />
 
       {/* Our approach */}
-      <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
+      <Grid container spacing={3} justifyContent={matches ? "center" : "flex-start"} alignItems="center">
         <Grid item lg={2}>
           <MuiTypography variant="h5" component='div' align="center">
             Our approach
           </MuiTypography>
         </Grid>
         <Grid item lg>
-          <MuiTypography variant="body1" component='div' >
+        <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
+          <MuiTypography variant="body1" component='div' align="justify" >
             Many people want to protect our climate. However, it can be difficult to start
             significant transformations alone - in everyday-life, in politics, in our working
             environment. We believe that we have to create synergies and collaborate when it
@@ -201,6 +234,7 @@ function AboutUs() {
               3) tackle it by means of scientifically sound methods.
             </Typography>
           </MuiTypography>
+          </Box>
         </Grid>
       </Grid>
       <br />
@@ -208,31 +242,50 @@ function AboutUs() {
 
 
       {/* Our logo & goal */}
-      <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
+      <Grid container spacing={3} justifyContent={matches ? "center" : "flex-start"} alignItems="center">
         {matches ? null : (
+          <>
           <Grid item lg={2}>
             <MuiTypography variant="h5" component='div' align="center">
               Our logo & goal
          </MuiTypography>
           </Grid>
+          <Grid item lg>
+          <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
+            <MuiTypography variant="body1" component='div' align="justify" >
+              Our logo symbolizes our goal. It embodies a compass that can point to different
+              colors, symbolizing the different climate scenarios that we could reach tomorrow,
+              based on the actions that we take today. The needle in the middle indicates to the
+              light blue - a scenario without catastrophic climatic changes. You can also see four
+              magnifying glasses representing the scientific and community approach of our
+              project. We all have to examine our own footprints and altogether take action to
+              solve this global crisis.
+            </MuiTypography>
+            </Box>
+          </Grid>
+          </>
         )}
-        <Grid item lg>
-          <MuiTypography variant="body1" component='div' >
-            Our logo symbolizes our goal. It embodies a compass that can point to different
-            colors, symbolizing the different climate scenarios that we could reach tomorrow,
-            based on the actions that we take today. The needle in the middle indicates to the
-            light blue - a scenario without catastrophic climatic changes. You can also see four
-            magnifying glasses representing the scientific and community approach of our
-            project. We all have to examine our own footprints and altogether take action to
-            solve this global crisis.
-          </MuiTypography>
-        </Grid>
         {!matches ? null : (
+          <>
+        <Grid item lg>
+          <Box borderRight={4} borderColor={theme.palette.primary.main} sx={{paddingRight: '20px', marginRight: '-20px'}}>
+            <MuiTypography variant="body1" component='div' align="justify" >
+              Our logo symbolizes our goal. It embodies a compass that can point to different
+              colors, symbolizing the different climate scenarios that we could reach tomorrow,
+              based on the actions that we take today. The needle in the middle indicates to the
+              light blue - a scenario without catastrophic climatic changes. You can also see four
+              magnifying glasses representing the scientific and community approach of our
+              project. We all have to examine our own footprints and altogether take action to
+              solve this global crisis.
+            </MuiTypography>
+            </Box>
+          </Grid>
           <Grid item lg={2}>
             <MuiTypography variant="h5" component='div' align="center">
               Our logo &amp; goal
            </MuiTypography>
           </Grid>
+          </>
         )}
       </Grid>
       <br />
