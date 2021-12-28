@@ -31,7 +31,7 @@ const validationSchema = yup.object({
 
 function confirmEmail(){
 
-  const [verifyAccount, response] = useMutation(VERIFY_ACCOUNT)
+  const [verifyAccount] = useMutation(VERIFY_ACCOUNT)
 
 
   const formik = useFormik({

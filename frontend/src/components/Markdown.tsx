@@ -38,7 +38,7 @@ const styles = (theme: Theme) => {
   });
 };
 
-function MarkdownTable(props) {
+function MarkdownTable(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return (
     <TableContainer component={Paper}>
       <Table size="small" aria-label="a dense table">
@@ -48,7 +48,7 @@ function MarkdownTable(props) {
   );
 }
 
-function MarkdownTableCell(props) {
+function MarkdownTableCell(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return (
     <TableCell>
       <Typography>{props.children}</Typography>
@@ -56,15 +56,15 @@ function MarkdownTableCell(props) {
   );
 }
 
-function MarkdownTableRow(props) {
+function MarkdownTableRow(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return <TableRow>{props.children}</TableRow>;
 }
 
-function MarkdownTableBody(props) {
+function MarkdownTableBody(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return <TableBody>{props.children}</TableBody>;
 }
 
-function MarkdownTableHead(props) {
+function MarkdownTableHead(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return <TableHead>{props.children}</TableHead>;
 }
 

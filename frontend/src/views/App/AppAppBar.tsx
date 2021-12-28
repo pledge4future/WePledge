@@ -1,6 +1,5 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState} from "react";
 import { useRouter } from "next/router";
-
 import {
   AppBarProps,
   WithStyles,
@@ -10,9 +9,8 @@ import {
   ListItem,
   ListItemText,
   IconButton,
-  Button,
-  ListItemIcon,
-  MenuItem,
+  Menu,
+  ListItemIcon
 } from "@material-ui/core";
 import { withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
@@ -25,7 +23,6 @@ import MenuIcon from "@material-ui/icons/Menu";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
-import Menu from '@material-ui/core/Menu';
 import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
 
 import { routes, Route } from "../../data/routes";
@@ -127,7 +124,9 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   }
 
   function logoutUser(){
-    authContext.logout();
+    if(authContext){
+      authContext?.logout();
+    }
     router.push('/');
   }
 
@@ -309,7 +308,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
         <img
           className={classes.logo}
           width="128"
-          src={"/static/images/logos/logo.svg"}
+          src={"./static/images/logos/logo.svg"}
           alt="Cube.js"
         />
       </Link>
