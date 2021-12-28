@@ -41,6 +41,7 @@ function ProductHero(props: WithStyles<typeof styles>) {
   const { classes } = props;
 
   return (
+    <>
     <ProductHeroLayout backgroundClassName={classes.background}>
       {/* Increase the network loading priority of the background image. */}
       <img
@@ -71,6 +72,7 @@ function ProductHero(props: WithStyles<typeof styles>) {
         Check my pledge
       </Typography>
     </ProductHeroLayout>
+    </>
   );
 }
 

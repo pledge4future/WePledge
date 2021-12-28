@@ -38,6 +38,13 @@ const useStyles = makeStyles((theme: Theme) => ({
     more: {
       marginTop: theme.spacing(2),
     },
+    imageLicense: {
+      textAlign: 'right',
+      verticalAlign: 'bottom',
+      marginTop: '250px',
+      marginLeft: '250px',
+      width: '100%'
+    }
   }));
 
 function Index() {
@@ -84,6 +91,9 @@ function Index() {
       >
         Subscribe for Updates
       </Button>
+     {/*  <div className={classes.imageLicense}>
+        <small>photo by NASA Goddard Space Flight Center, used and modified under CC BY</small>
+      </div> */}
       </ProductHeroLayout>
       <AppFooter />
     </React.Fragment>
