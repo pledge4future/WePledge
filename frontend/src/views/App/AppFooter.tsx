@@ -64,7 +64,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
-    margin: theme.spacing(1)
+    margin: '10px'
   },
   list: {
     margin: 0,
@@ -89,13 +89,13 @@ const LANGUAGES = [
 ];
 
 const SUPPORTED_BY = [{
-  tooltip: 'Goethe Institut', src: './static/images/logos/GI_logo.png', link: 'https://www.goethe.de/de/index.html'
+  tooltip: 'Goethe Institut', src: './static/images/logos/GI_logo.png', link: 'https://www.goethe.de/de/index.html', width: 70, height: 50
 },
 {
-  tooltip: 'GIScience', src: './static/images/logos/GIS_logo.png', link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html'
+  tooltip: 'GIScience', src: './static/images/logos/GIS_logo.svg', link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html', width: 50, height: 50
 },
 {
-  tooltip: 'Scientists4Future', src: './static/images/logos/S4F_logo.png', link: 'https://scientists4future.org/'
+  tooltip: 'Scientists4Future', src: './static/images/logos/S4F_logo.png', link: 'https://scientists4future.org/', width: 50, height: 50
 }]
 
 export default function AppFooter() {
@@ -181,7 +181,7 @@ export default function AppFooter() {
                   SUPPORTED_BY.map((item) => {
                     return (
                       <a href={item.link} className={classes.supporterLogo}>
-                        <img src={item.src} title={item.tooltip}/>
+                        <img src={item.src} title={item.tooltip} width={item.width} height={item.height}/>
                       </a>
                     )
                   })
