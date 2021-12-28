@@ -14,11 +14,11 @@ services:
       - PGDATA=/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  redis_db:
-    container_name: cube-redis
-    image: redis
-    ports:
-      - "6379"
+#  redis_db:
+#    container_name: cube-redis
+#    image: redis
+#    ports:
+#      - "6379"
   pgadmin:
     image: dpage/pgadmin4
     restart: always
@@ -41,6 +41,7 @@ services:
       - ./backend/assets:/home/python/app/assets
       - backend_env:/home/python/.local
       - backend_extensions:/home/python/.vscode-server
+      - ./.env:/home/python/app/src/.env
     ports:
       - "8000:8000"
     depends_on:

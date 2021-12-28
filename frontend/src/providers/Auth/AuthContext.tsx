@@ -18,7 +18,7 @@ export const defaultState: AuthContextType = {
   isAuthenticated: false,
   permissions: [],
   token: null,
-  refresh: (isAuthenticated: boolean) => {},
+  refresh: () => {},
   refreshToken: () => {}
 };
 

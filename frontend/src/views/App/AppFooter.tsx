@@ -6,8 +6,8 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Container from '@material-ui/core/Container';
 import InstagramIcon from '@material-ui/icons/Instagram';
-import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 // Components
 import Typography from '../../components/Typography';
@@ -18,7 +18,7 @@ function Copyright() {
   return (
     <React.Fragment>
       {'© '}
-      <Link color="inherit" href="https://material-ui.com/">
+      <Link color="inherit" href="/about-us">
         Pledge4Future
       </Link>{' '}
       {new Date().getFullYear()}
@@ -74,10 +74,6 @@ const LANGUAGES = [
   {
     code: 'en-US',
     name: 'English',
-  },
-  {
-    code: 'de-DE',
-    name: 'Deutsch',
   }
 ];
 
@@ -97,14 +93,14 @@ export default function AppFooter() {
               spacing={2}
             >
               <Grid item className={classes.icons}>
-                <a href="https://twitter.com/MaterialUI" className={classes.icon}>
-                  <InstagramIcon alt="Instagram" />
+                <a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
+                  <InstagramIcon />
                 </a>
-                <a href="https://twitter.com/" className={classes.icon}>
-                  <FacebookIcon alt="Facebook" />
+                <a href="https://twitter.com/pledge4futurede" className={classes.icon}>
+                  <TwitterIcon />
                 </a>
-                <a href="https://twitter.com/" className={classes.icon}>
-                  <TwitterIcon alt="Twitter" />
+                <a href="https://github.com/pledge4future/WePledge" className={classes.icon}>
+                  <GitHubIcon />
                 </a>
               </Grid>
             </Grid>

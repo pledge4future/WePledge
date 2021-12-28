@@ -1,6 +1,5 @@
-import { ApolloClient, InMemoryCache } from "@apollo/client";
-import { HttpLink } from "apollo-link-http";
-import { setContext } from "apollo-link-context";
+import { ApolloClient, InMemoryCache, HttpLink} from "@apollo/client";
+import {setContext} from '@apollo/client/link/context';
 import { getCookie } from "../utils/commons";
 
 
@@ -16,7 +15,7 @@ const headerLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      "authorization": `JWT ${token}`
+      authorization: token ? `JWT ${token}` : ''
       //   "Accept-Language": `${localStorage.i18nextLng}`,
     },
   };
@@ -26,6 +25,7 @@ const httpLink = new HttpLink({
   uri: `http://localhost:8000/graphql/`,
   credentials: "include",
 });
+
 
 
 const client = new ApolloClient({

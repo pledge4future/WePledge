@@ -1,4 +1,7 @@
 import * as React from "react";
+import { useState, useEffect } from 'react';
+
+import { gql, useMutation } from '@apollo/client';
 
 import withRoot from "../src/withRoot";
 
@@ -12,29 +15,85 @@ import Container from "@material-ui/core/Container";
 import PageContainer from "../src/components/PageContainer";
 import Typography from "../src/components/Typography";
 
-// TODO: remove fake scenerio and add formik validation
+
+
+const REGISTER_USER = gql `
+    mutation register($username: String!, $email: String!, $password1: String!, $password2: String!) {
+      register(username: $username, email: $email, password1: $password1, password2: $password2){
+        success
+        errors
+        token
+        refreshToken
+      }
+    }
+`
+
+
+
+
+const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
 
 function SignUp() {
-  const Schools = [
-    {
-      code: "uni-heidelberg",
-      name: "Heidelberg University",
-    },
-  ];
 
-  const Institutes = [
-    { name: "The Faculty of Behavioural Sciences and Empirical Cultural Sciences" },
-    { name: "The Faculty of Biosciences" },
-    { name: "The Faculty of Chemistry and Earth Sciences" },
-    { name: "The Faculty of Law" },
-    { name: "The Faculty of Mathematics and Computer Science" },
-    { name: "The Faculty of Medicine" },
-    { name: "The Faculty of Medicine in Mannheim" },
-    { name: "The Faculty of Modern Languages" },
-    { name: "The Faculty of Philosophy and History" },
-    { name: "The Faculty of Physics and Astronomy" },
-    { name: "The Faculty of Theology" },
-  ];
+  // mutation to register user
+  const [register] = useMutation(REGISTER_USER);
+
+
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [repeatedPassword, setRepeatedPassword] = useState('');
+  const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [errorText] = useState('')
+
+  function handleRepeatedPasswordChange(e: any){
+    setRepeatedPassword(e?.target?.value)
+  }
+  function handleUsernameChange(e: any){
+    setUsername(e?.target?.value);
+  }
+  function handleEmailChange(e: any){
+    setEmail(e?.target?.value);
+  }
+  function handlePasswordChange(e: any){
+    setPassword(e?.target?.value);
+  }
+
+  function checkPasswordError(){
+    if(password != repeatedPassword){
+      //setErrorText("Passwords don't seem to match");
+      return true;
+    }
+    else{
+      return false;
+    }
+
+  }
+
+  function checkEmailError(){
+    if (email && !emailRegexp.test(email)){
+      //setErrorText("eMail address seems to be invalid!")
+      return true
+    }
+    else{
+      return false
+    }
+  }
+
+  function sendRegistration(e: any){
+    register({variables: {username: username, email: email, password1: password, password2: repeatedPassword}});
+    console.log(e);
+  }
+
+  useEffect(() => {
+    if (username && email && password && repeatedPassword && !checkPasswordError() && !checkEmailError()){
+      setButtonDisabled(false);
+    }
+    else{
+      setButtonDisabled(true);
+    }
+  }, [username, email, password, repeatedPassword])
 
   return (
     <React.Fragment>
@@ -46,9 +105,10 @@ function SignUp() {
                 Already have an account?
               </Link>
             </Typography>
+            <form>
             <TextField
               id="outlined-full-width"
-              label="First name"
+              label="Username"
               style={{ margin: 8 }}
               required
               fullWidth
@@ -57,53 +117,9 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
+              value={username}
+              onChange={handleUsernameChange}
             />
-            <TextField
-              id="outlined-full-width"
-              label="Last name"
-              style={{ margin: 8 }}
-              required
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-            />
-
-            <TextField
-              size="medium"
-              select
-              SelectProps={{
-                native: true,
-              }}
-              style={{ margin: 8 }}
-              fullWidth
-              variant="outlined"
-            >
-              {Schools.map((School) => (
-                <option value={School.name} key={School.name}>
-                  {School.name}
-                </option>
-              ))}
-            </TextField>
-            <TextField
-              size="medium"
-              select
-              SelectProps={{
-                native: true,
-              }}
-              style={{ margin: 8 }}
-              fullWidth
-              variant="outlined"
-            >
-              {Institutes.map((Institute) => (
-                <option value={Institute.name} key={Institute.name}>
-                  {Institute.name}
-                </option>
-              ))}
-            </TextField>
-
             <TextField
               id="outlined-full-width"
               label="Email"
@@ -115,6 +131,9 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
+              value={email}
+              onChange={handleEmailChange}
+              error = {checkEmailError()}
             />
             <TextField
               id="outlined-full-width"
@@ -128,6 +147,26 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
+              value={password}
+              onChange={handlePasswordChange}
+              error={checkPasswordError()}
+            />
+            <TextField
+              id="outlined-full-width"
+              label="Repeat Password"
+              type="password"
+              style={{ margin: 8 }}
+              required
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              value={repeatedPassword}
+              onChange={handleRepeatedPasswordChange}
+              error={checkPasswordError()}
+              helperText={errorText}
             />
             <Button
               variant="contained"
@@ -136,10 +175,13 @@ function SignUp() {
               color="primary"
               size="large"
               style={{ margin: 8 }}
-              href="/sign-in"
+              href="/confirm-email"
+              disabled={buttonDisabled}
+              onClick={sendRegistration}
             >
               Sign UP
             </Button>
+            </form>
           </Container>
         </div>
       </PageContainer>

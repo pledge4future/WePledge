@@ -30,17 +30,18 @@ function AboutUs() {
   const classes = useStyles();
 
   const members = [
-    { title: "Aimée C. Chen", desc: "website developer", url: "/static/images/avatars/1.jpg", width: '20%' },
-    { title: "Hannah Weiser", desc: "Geography student", url: "/static/images/avatars/2.jpeg", width: '20%' },
-    { title: "Sarah Lohr", desc: "researcher (Geoinformatics)", url: "/static/images/avatars/3.png", width: '20%' },
-    { title: "Nina Krašovec", desc: "Geography student", url: "/static/images/avatars/4.jpg", width: '20%' },
-    { title: "Christina Ludwig", desc: "researcher (Geoinformatics)", url: "/static/images/avatars/5.jpg", width: '20%' },
-    { title: "Veit Ulrich", desc: "Geography student", url: "/static/images/avatars/6.jpg", width: '20%' },
-    { title: "Guillermo Lozano Onrubia", desc: "Chemistry student", url: "/static/images/avatars/7.jpg", width: '20%' },
+    { title: "Hannah Weiser", desc: "Geography student", url: "./static/images/avatars/2.jpeg", width: '20%' },
+    { title: "Sarah Lohr", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/3.png", width: '20%' },
+    { title: "Nina Krašovec", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/4.jpg", width: '20%' },
+    { title: "Christina Ludwig", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/5.jpg", width: '20%' },
+    { title: "Veit Ulrich", desc: "Geography student", url: "./static/images/avatars/6.jpg", width: '20%' },
+    { title: "Guillermo Lozano Onrubia", desc: "Chemistry student", url: "./static/images/avatars/7.jpg", width: '20%' },
+    { title: "Fabian Kneissl", desc: "Computer- and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'}
   ];
 
   return (
     <PageContainer title="About Us">
+      <React.Fragment>
       <br />
       <Typography variant="h4" gutterBottom align="left">
         We believe...
@@ -108,7 +109,7 @@ function AboutUs() {
       {/* Our story */}
       <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
         <Grid item lg={2}>
-          <MuiTypography variant="h5" component='div' align="center" justify="center">
+          <MuiTypography variant="h5" component='div' align="center">
             Our story
           </MuiTypography>
         </Grid>
@@ -134,7 +135,7 @@ function AboutUs() {
       <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
         {matches ? null : (
           <Grid item lg={2}>
-            <MuiTypography variant="h5" component='div' align="center" justify="center">
+            <MuiTypography variant="h5" component='div' align="center">
               Our motivation
          </MuiTypography>
           </Grid>
@@ -162,7 +163,7 @@ function AboutUs() {
         </Grid>
         {!matches ? null : (
           <Grid item lg={2}>
-            <MuiTypography variant="h5" component='div' align="center" justify="center">
+            <MuiTypography variant="h5" component='div' align="center">
               Our motivation
            </MuiTypography>
           </Grid>
@@ -174,7 +175,7 @@ function AboutUs() {
       {/* Our approach */}
       <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
         <Grid item lg={2}>
-          <MuiTypography variant="h5" component='div' align="center" justify="center">
+          <MuiTypography variant="h5" component='div' align="center">
             Our approach
           </MuiTypography>
         </Grid>
@@ -210,7 +211,7 @@ function AboutUs() {
       <Grid container spacing={3} justify={matches ? "center" : "flex-start"} alignItems="center">
         {matches ? null : (
           <Grid item lg={2}>
-            <MuiTypography variant="h5" component='div' align="center" justify="center">
+            <MuiTypography variant="h5" component='div' align="center">
               Our logo & goal
          </MuiTypography>
           </Grid>
@@ -228,7 +229,7 @@ function AboutUs() {
         </Grid>
         {!matches ? null : (
           <Grid item lg={2}>
-            <MuiTypography variant="h5" component='div' align="center" justify="center">
+            <MuiTypography variant="h5" component='div' align="center">
               Our logo &amp; goal
            </MuiTypography>
           </Grid>
@@ -236,6 +237,7 @@ function AboutUs() {
       </Grid>
       <br />
       <br />
+      </React.Fragment>
     </PageContainer>
   );
 }
