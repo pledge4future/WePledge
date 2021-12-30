@@ -80,7 +80,7 @@
             })
     }
 
-    /**
+    /** 
      * @var {ItemList} items
      * @var {HTMLInputElement} input
      */

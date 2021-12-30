@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="./styles/graphdoc.css" />
-    <title>UUID</title>
+    <title>TotalEmission</title>
     <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700" rel="stylesheet"><link type="text/css" rel="stylesheet" href="./assets/code.css" /><link type="text/css" rel="stylesheet" href="./assets/require-by.css" />
 </head>
 <body class="slds-scrollable--y">
@@ -83,11 +83,6 @@
         <li  title="String">
             <a href="string.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 String
-            </a>
-        </li>
-        <li class="slds-is-active" title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
             </a>
         </li>
     </ul>
@@ -280,6 +275,11 @@
                 SwapEmails
             </a>
         </li>
+        <li class="slds-is-active" title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
+            </a>
+        </li>
         <li  title="UpdateAccount">
             <a href="updateaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 UpdateAccount
@@ -410,10 +410,9 @@
         </div>
     </div>
     <div class="container">
-        <p class="slds-text-title--caps slds-text-color--weak">SCALAR</p>
-        <h1 class="slds-text-heading--large">UUID</h1>
-        <div class="slds-text-body--regular"><p>Leverages the internal Python implmeentation of UUID (uuid.UUID) to provide native UUID objects
-in fields, resolvers and input.</p>
+        <p class="slds-text-title--caps slds-text-color--weak">OBJECT</p>
+        <h1 class="slds-text-heading--large">TotalEmission</h1>
+        <div class="slds-text-body--regular"><p>GraphQL total emissions </p>
 </div>
     </div>
 </section>
@@ -425,7 +424,7 @@ in fields, resolvers and input.</p>
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:28px"><li><span class="keyword operator ts">scalar</span> <span class="identifier">UUID</span></li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">TotalEmission</span> {</li><li></li><li><span class="tab"><span class="comment line">#   Name of the working group</span></span></li><li><span class="tab"><span class="meta">workingGroupName</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="comment line">#   Name of the institution the working group belongs to</span></span></li><li><span class="tab"><span class="meta">workingGroupInstitution</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="comment line">#   Total CO2e emissions [tco2e]</span></span></li><li><span class="tab"><span class="meta">co2e</span>: <a class="support type" href="float.doc.html">Float</a> </span></li><li></li><li><span class="tab"><span class="comment line">#   CO2e emissions per capita [tco2e]</span></span></li><li><span class="tab"><span class="meta">co2eCap</span>: <a class="support type" href="float.doc.html">Float</a> </span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>
@@ -436,7 +435,7 @@ in fields, resolvers and input.</p>
             </a>
             Require by
         </h2>
-        <ul class="require-by"><li><a href="businesstripinput.doc.html" title="BusinessTripInput - GraphQL Input type for Business trips">BusinessTripInput<em>GraphQL Input type for Business trips</em></a><li><li><a href="electricityinput.doc.html" title="ElectricityInput - GraphQL Input type for electricity">ElectricityInput<em>GraphQL Input type for electricity</em></a><li><li><a href="heatinginput.doc.html" title="HeatingInput - GraphQL Input type for heating">HeatingInput<em>GraphQL Input type for heating</em></a><li><li><a href="institutiontype.doc.html" title="InstitutionType - GraphQL Institution">InstitutionType<em>GraphQL Institution</em></a><li><li><a href="query.doc.html" title="Query - GraphQL Queries">Query<em>GraphQL Queries</em></a><li><li><a href="workinggrouptype.doc.html" title="WorkingGroupType - GraphQL Working Group Type">WorkingGroupType<em>GraphQL Working Group Type</em></a><li></ul>
+        <ul class="require-by"><li><a href="query.doc.html" title="Query - GraphQL Queries">Query<em>GraphQL Queries</em></a><li></ul>
     </div>
 </section>
 <footer>

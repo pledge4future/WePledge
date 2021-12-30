@@ -85,11 +85,6 @@
                 String
             </a>
         </li>
-        <li  title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
-            </a>
-        </li>
     </ul>
 </div>
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
@@ -280,6 +275,11 @@
                 SwapEmails
             </a>
         </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
+            </a>
+        </li>
         <li  title="UpdateAccount">
             <a href="updateaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 UpdateAccount
@@ -424,7 +424,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">InstitutionType</span> {</li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">city</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">state</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="meta">country</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">instId</span>: <a class="support type" href="uuid.doc.html">UUID</a>! </span></li><li></li><li><span class="tab"><span class="meta">workinggroupSet</span>: [<a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a>!]! </span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">InstitutionType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">city</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">state</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="meta">country</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">workinggroupSet</span>: [<a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a>!]! </span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>
@@ -435,7 +435,7 @@
             </a>
             Require by
         </h2>
-        <ul class="require-by"><li><a href="workinggrouptype.doc.html" title="WorkingGroupType - GraphQL Working Group Type">WorkingGroupType<em>GraphQL Working Group Type</em></a><li></ul>
+        <ul class="require-by"><li><a href="workinggrouptype.doc.html" title="WorkingGroupType - Working group">WorkingGroupType<em>Working group</em></a><li></ul>
     </div>
 </section>
 <footer>

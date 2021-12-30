@@ -6,7 +6,7 @@
   font-family: 'Ubuntu Mono';
   cursor: text;
   list-style-type: decimal;
-  border-radius: 0.25rem;
+  border-radius: 0.25rem; 
 }
 
 .code .gutter {

@@ -85,11 +85,6 @@
                 String
             </a>
         </li>
-        <li  title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
-            </a>
-        </li>
     </ul>
 </div>
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
@@ -280,6 +275,11 @@
                 SwapEmails
             </a>
         </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
+            </a>
+        </li>
         <li  title="UpdateAccount">
             <a href="updateaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 UpdateAccount
@@ -412,7 +412,7 @@
     <div class="container">
         <p class="slds-text-title--caps slds-text-color--weak">OBJECT</p>
         <h1 class="slds-text-heading--large">WorkingGroupType</h1>
-        <div class="slds-text-body--regular"><p>GraphQL Working Group Type</p>
+        <div class="slds-text-body--regular"><p>Working group</p>
 </div>
     </div>
 </section>
@@ -424,7 +424,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">WorkingGroupType</span> {</li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">institution</span>: <a class="support type" href="institutiontype.doc.html">InstitutionType</a> </span></li><li></li><li><span class="tab"><span class="meta">representative</span>: <a class="support type" href="usertype.doc.html">UserType</a> </span></li><li></li><li><span class="tab"><span class="meta">nEmployees</span>: <a class="support type" href="int.doc.html">Int</a> </span></li><li></li><li><span class="tab"><span class="meta">researchField</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="meta">groupId</span>: <a class="support type" href="uuid.doc.html">UUID</a>! </span></li><li></li><li><span class="tab"><span class="meta">customuserSet</span>: [<a class="support type" href="usertype.doc.html">UserType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">heatingSet</span>: [<a class="support type" href="heatingtype.doc.html">HeatingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">electricitySet</span>: [<a class="support type" href="electricitytype.doc.html">ElectricityType</a>!]! </span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">WorkingGroupType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">institution</span>: <a class="support type" href="institutiontype.doc.html">InstitutionType</a> </span></li><li></li><li><span class="tab"><span class="meta">representative</span>: <a class="support type" href="usertype.doc.html">UserType</a> </span></li><li></li><li><span class="tab"><span class="meta">nEmployees</span>: <a class="support type" href="int.doc.html">Int</a> </span></li><li></li><li><span class="tab"><span class="meta">researchField</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="meta">customuserSet</span>: [<a class="support type" href="usertype.doc.html">UserType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">heatingSet</span>: [<a class="support type" href="heatingtype.doc.html">HeatingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">electricitySet</span>: [<a class="support type" href="electricitytype.doc.html">ElectricityType</a>!]! </span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>

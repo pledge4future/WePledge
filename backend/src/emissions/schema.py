@@ -6,6 +6,8 @@ __email__ = "infopledge4future.org"
 
 
 import graphene
+import datetime as dt
+import pandas as pd
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
@@ -53,7 +55,6 @@ class WorkingGroupType(DjangoObjectType):
 
     class Meta:
         """Assign django model"""
-
         model = WorkingGroup
 
 
@@ -105,9 +106,9 @@ class HeatingType(DjangoObjectType):
 class HeatingAggregatedType(ObjectType):
     """GraphQL Heating aggregated by month or year"""
 
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
+    date = graphene.String(description="Date")
+    co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
+    co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
 
     class Meta:
         """Assign django model"""
@@ -118,9 +119,9 @@ class HeatingAggregatedType(ObjectType):
 class ElectricityAggregatedType(ObjectType):
     """GraphQL Electricity aggregated by month or year"""
 
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
+    date = graphene.String(description="Date")
+    co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
+    co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
 
     class Meta:
         """Assign django model"""
@@ -131,9 +132,9 @@ class ElectricityAggregatedType(ObjectType):
 class BusinessTripAggregatedType(ObjectType):
     """GraphQL Business Trips aggregated by month or year"""
 
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
+    date = graphene.String(description="Date")
+    co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
+    co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
 
     class Meta:
         """Assign django model"""
@@ -144,14 +145,27 @@ class BusinessTripAggregatedType(ObjectType):
 class CommutingAggregatedType(ObjectType):
     """GraphQL Commuting aggregated by month or year"""
 
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
+    date = graphene.String(description="Date")
+    co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
+    co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
 
     class Meta:
         """Assign django model"""
 
         name = "CommutingAggregated"
+
+
+class TotalEmissionType(ObjectType):
+    """GraphQL total emissions """
+
+    working_group_name = graphene.String(description="Name of the working group")
+    working_group_institution = graphene.String(description="Name of the institution the working group belongs to")
+    co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
+    co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
+
+    class Meta:
+        """Assign django model"""
+        name = "TotalEmission"
 
 
 # -------------------- Query types -----------------
@@ -169,29 +183,34 @@ class Query(UserQuery, MeQuery, ObjectType):
     # Aggregated data
     heating_aggregated = graphene.List(
         HeatingAggregatedType,
-        group_id=graphene.ID(),
-        inst_id=graphene.ID(),
-        time_interval=graphene.String(),
+        group_id=graphene.ID(description="ID of the working group"),
+        inst_id=graphene.ID(description="ID of the institution"),
+        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     electricity_aggregated = graphene.List(
         ElectricityAggregatedType,
-        group_id=graphene.ID(),
-        inst_id=graphene.ID(),
-        time_interval=graphene.String(),
+        group_id=graphene.ID(description="ID of the working group"),
+        inst_id=graphene.ID(description="ID of the institution"),
+        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     businesstrip_aggregated = graphene.List(
         BusinessTripAggregatedType,
-        username=graphene.String(),
-        group_id=graphene.ID(),
-        inst_id=graphene.ID(),
-        time_interval=graphene.String(),
+        username=graphene.String(description="Username"),
+        group_id=graphene.ID(description="ID of the working group"),
+        inst_id=graphene.ID(description="ID of the institution"),
+        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     commuting_aggregated = graphene.List(
         CommutingAggregatedType,
-        username=graphene.String(),
-        group_id=graphene.ID(),
-        inst_id=graphene.ID(),
-        time_interval=graphene.String(),
+        username=graphene.String(description="User name"),
+        group_id=graphene.ID(description="ID of the working group"),
+        inst_id=graphene.ID(description="ID of the institution"),
+        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
+    )
+    total_emission = graphene.List(
+        TotalEmissionType,
+        start=graphene.Date(description="Start date for calculation of total emissions"),
+        end=graphene.Date(description="End date for calculation of total emissions")
     )
 
     def resolve_businesstrips(self, info, **kwargs):
@@ -419,6 +438,56 @@ class Query(UserQuery, MeQuery, ObjectType):
             )
 
 
+    def resolve_total_emission(self, info, start=None, end=None, **kwargs):
+        """
+        Yields total emissions on monthly or yearly basis
+        param: start: Start date for calculation of total emissions. If none is given, the last 12 months will be used.
+        param: end: end date for calculation of total emission If none is given, the last 12 months will be used.
+        """
+        metrics = {
+            'co2e': Sum('co2e'),
+            'co2e_cap': Sum('co2e_cap'),
+        }
+
+        if not end and not start:
+            end = dt.datetime(day=1, month=dt.datetime.today().month - 1, year=dt.datetime.today().year)
+            start = dt.datetime(day=1, month=dt.datetime.today().month, year=dt.datetime.today().year - 1)
+
+        heating_emissions = Heating.objects.filter(timestamp__gte=start, timestamp__lte=end)\
+            .values("working_group__name", "working_group__institution__name")\
+            .annotate(**metrics)
+        heating_df = pd.DataFrame(list(heating_emissions))
+
+        electricity_emissions = Electricity.objects.filter(timestamp__gte=start, timestamp__lte=end)\
+            .values("working_group__name", "working_group__institution__name")\
+            .annotate(**metrics)
+        electricity_df = pd.DataFrame(list(electricity_emissions))
+
+        businesstrips_emissions = BusinessTripGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)\
+            .values("working_group__name", "working_group__institution__name")\
+            .annotate(**metrics)
+        businesstrips_df = pd.DataFrame(list(businesstrips_emissions))
+
+        commuting_emissions = CommutingGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)\
+            .values("working_group__name", "working_group__institution__name")\
+            .annotate(**metrics)
+        commuting_df = pd.DataFrame(list(commuting_emissions))
+
+        total_emissions = pd.concat([heating_df, electricity_df, commuting_df, businesstrips_df])\
+            .groupby(["working_group__name", "working_group__institution__name"]).sum()
+        total_emissions.reset_index(inplace=True)
+
+        # Create a new Section object for each item and append it to list
+        emissions_for_groups = []
+        for i, row in total_emissions.iterrows(): # Use sections.iteritems() in Python2
+            section = TotalEmissionType(row["working_group__name"],
+                                         row["working_group__institution__name"],
+                                        row["co2e"],
+                                         row["co2e_cap"])
+            emissions_for_groups.append(section)
+        return emissions_for_groups
+
+
 # -------------- Input Object Types --------------------------
 
 
@@ -426,60 +495,60 @@ class CommutingInput(graphene.InputObjectType):
     """GraphQL Input type for commuting"""
 
     id = graphene.ID()
-    username = graphene.String(required=True)
-    from_timestamp = graphene.Date(required=True)
-    to_timestamp = graphene.Date(required=True)
-    transportation_mode = graphene.String(required=True)
-    workweeks = graphene.Int()
-    distance = graphene.Float()
-    size = graphene.String()
-    fuel_type = graphene.String()
-    occupancy = graphene.Float()
-    passengers = graphene.Int()
+    username = graphene.String(required=True, description="Username")
+    from_timestamp = graphene.Date(required=True, description="Start date")
+    to_timestamp = graphene.Date(required=True, description="End date")
+    transportation_mode = graphene.String(required=True, description="Transportation mode")
+    workweeks = graphene.Int(description="Number of work weeks")
+    distance = graphene.Float(description="Distance [meter]")
+    size = graphene.String(description="Size of the vehicle")
+    fuel_type = graphene.String(description="Fuel type of the vehicle")
+    occupancy = graphene.Float(description="Occupancy of the vehicle")
+    passengers = graphene.Int(description="Number of passengers in the vehicle")
 
 
 class BusinessTripInput(graphene.InputObjectType):
     """GraphQL Input type for Business trips"""
 
     id = graphene.ID()
-    username = graphene.String(required=True)
-    group_id = graphene.ID(required=True)
-    timestamp = graphene.Date(required=True)
-    transportation_mode = graphene.String(required=True)
-    start = graphene.String()
-    destination = graphene.String()
-    distance = graphene.Float()
-    size = graphene.String()
-    fuel_type = graphene.String()
-    occupancy = graphene.Float()
-    seating_class = graphene.Int()
-    passengers = graphene.Int()
-    roundtrip = graphene.Boolean()
+    username = graphene.String(required=True, description="User name")
+    group_id = graphene.ID(required=True, description="ID of the working group")
+    timestamp = graphene.Date(required=True, description="Date")
+    transportation_mode = graphene.String(required=True, description="Transportation mode")
+    start = graphene.String(description="Start address")
+    destination = graphene.String(description="Destination address")
+    distance = graphene.Float(description="Distance [meter]")
+    size = graphene.String(description="Size of the vehicle")
+    fuel_type = graphene.String(description="Fuel type of the vehicle")
+    occupancy = graphene.Float(description="Occupancy")
+    seating_class = graphene.Int(description="Seating class in plane")
+    passengers = graphene.Int(description="Number of passengers")
+    roundtrip = graphene.Boolean(description="Roundtrip [True/False]")
 
 
 class ElectricityInput(graphene.InputObjectType):
     """GraphQL Input type for electricity"""
 
     id = graphene.ID()
-    group_id = graphene.ID(reqired=True)
-    timestamp = graphene.Date(required=True)
-    consumption = graphene.Float()
-    fuel_type = graphene.String(required=True)
-    building = graphene.String(required=True)
-    group_share = graphene.Float(required=True)
+    group_id = graphene.ID(reqired=True, description="ID of the working group")
+    timestamp = graphene.Date(required=True, description="Date")
+    consumption = graphene.Float(description="Consumption")
+    fuel_type = graphene.String(required=True, description="Fuel type")
+    building = graphene.String(required=True, description="Number of Building if there are several ones")
+    group_share = graphene.Float(required=True, description="Share of the building beloning to the working group")
 
 
 class HeatingInput(graphene.InputObjectType):
     """GraphQL Input type for heating"""
 
     id = graphene.ID()
-    group_id = graphene.ID(reqired=True)
-    timestamp = graphene.Date(required=True)
-    consumption = graphene.Float(required=True)
-    unit = graphene.String(required=True)
-    fuel_type = graphene.String(required=True)
-    building = graphene.String(required=True)
-    group_share = graphene.Float(required=True)
+    group_id = graphene.ID(reqired=True, description="ID of the working group")
+    timestamp = graphene.Date(required=True, description="Date")
+    consumption = graphene.Float(required=True, description="Consumption")
+    unit = graphene.String(required=True, description="Unit of fuel type")
+    fuel_type = graphene.String(required=True, description="Fuel type")
+    building = graphene.String(required=True, description="Number of Building if there are several ones")
+    group_share = graphene.Float(required=True, description="Share of the building beloning to the working group")
 
 
 # --------------- Mutations ------------------------------------

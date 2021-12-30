@@ -85,11 +85,6 @@
                 String
             </a>
         </li>
-        <li  title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
-            </a>
-        </li>
     </ul>
 </div>
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
@@ -280,6 +275,11 @@
                 SwapEmails
             </a>
         </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
+            </a>
+        </li>
         <li  title="UpdateAccount">
             <a href="updateaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 UpdateAccount
@@ -424,7 +424,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:28px"><li><span class="keyword operator ts">input</span> <span class="identifier">ElectricityInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">groupId</span>: <a class="support type" href="uuid.doc.html">UUID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">timestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">consumption</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">building</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">groupShare</span>: <a class="support type" href="float.doc.html">Float</a>!</span></li></span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">input</span> <span class="identifier">ElectricityInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   ID of the working group</span></span></li><li><span class="tab"><span class="meta">groupId</span>: <a class="support type" href="id.doc.html">ID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Date</span></span></li><li><span class="tab"><span class="meta">timestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Consumption</span></span></li><li><span class="tab"><span class="meta">consumption</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Fuel type</span></span></li><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of Building if there are several ones</span></span></li><li><span class="tab"><span class="meta">building</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Share of the building beloning to the working group</span></span></li><li><span class="tab"><span class="meta">groupShare</span>: <a class="support type" href="float.doc.html">Float</a>!</span></li></span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>

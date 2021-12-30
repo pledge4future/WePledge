@@ -13,10 +13,10 @@ It might also be useful to look at the [GraphQL API tests](../src/emissions/test
 
 ### User account verification
 
-During development the verification token can be either printed in the console of the backend container or be sent via email. This setting can be changed by editing `EMAIL_BACKEND` in [./backend/src/pledge4future/settings.py](https://github.com/pledge4future/WePledge/blob/dev-backend/backend/src/pledge4future/settings.py). 
+During development the verification token can be either printed in the console of the backend container or be sent via email. This setting can be changed by editing `EMAIL_BACKEND` in [./backend/src/pledge4future/settings.py](https://github.com/pledge4future/WePledge/blob/dev-backend/backend/src/pledge4future/settings.py).
 
 `EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"`: Verification token printed in console  
-`EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`: Verification through sending email 
+`EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'`: Verification through sending email
 
 ## Django
 
@@ -34,5 +34,6 @@ $ python manage.py graph_models emissions -a -o ../docs/database_structure.png -
 Generate a [GraphDoc documentation](./graphdoc/index.html) of the current API while the API is running on docker. This requires installing [GraphDoc](https://2fd.github.io/graphdoc/).
 
 ```
+cd ./backend/
 graphdoc -e http://localhost:8000/graphql/ -o ./docs/graphdoc --force
 ```
