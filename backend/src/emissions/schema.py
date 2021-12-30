@@ -9,6 +9,8 @@ import graphene
 import datetime as dt
 import pandas as pd
 from django.db.models import Sum
+import numpy as np
+
 from django.db.models.functions import TruncMonth, TruncYear
 from graphene_django.types import DjangoObjectType, ObjectType
 from graphql import GraphQLError
@@ -31,11 +33,9 @@ from co2calculator.co2calculator.calculate import (
     calc_co2_businesstrip,
     calc_co2_commuting,
 )
-
-import numpy as np
+from graphql_jwt.decorators import login_required
 
 # -------------- GraphQL Types -------------------
-from graphql_jwt.decorators import login_required
 
 WEEKS_PER_MONTH = 4.34524
 WEEKS_PER_YEAR = 52.1429
@@ -63,7 +63,6 @@ class InstitutionType(DjangoObjectType):
 
     class Meta:
         """Assign django model"""
-
         model = Institution
 
 
@@ -168,6 +167,32 @@ class TotalEmissionType(ObjectType):
         name = "TotalEmission"
 
 
+class ElectricityAggregatedType(ObjectType):
+    date = graphene.String()
+    co2e = graphene.Float()
+    co2e_cap = graphene.Float()
+
+    class Meta:
+        name = "ElectricityAggregated"
+
+
+class BusinessTripAggregatedType(ObjectType):
+    date = graphene.String()
+    co2e = graphene.Float()
+    co2e_cap = graphene.Float()
+
+    class Meta:
+        name = "BusinessTripAggregated"
+
+
+class CommutingAggregatedType(ObjectType):
+    date = graphene.String()
+    co2e = graphene.Float()
+    co2e_cap = graphene.Float()
+
+    class Meta:
+        name = "CommutingAggregated"
+
 # -------------------- Query types -----------------
 
 # Create a Query type
@@ -266,14 +291,6 @@ class Query(UserQuery, MeQuery, ObjectType):
 
         metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
-        # Annotate based on groupby
-        # if groupby == "total":
-        #    return not entries.annotate(date=Value('total', output_field=CharField()))\
-        #        .values('date')\
-        #        .annotate(co2e=Sum("co2e"))\
-        #        .order_by('date')
-        #        #.annotate(co2e_cap=Sum("co2e_cap"))\
-        #       #.order_by('date')
         if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))

@@ -4,8 +4,6 @@
 
 __email__ = "infopledge4future.org"
 
-
-import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -51,8 +49,6 @@ class Institution(models.Model):
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100, null=False, blank=False)
-    #inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    #readonly_fields = ("inst_id",)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -71,8 +67,6 @@ class WorkingGroup(models.Model):
     representative = models.OneToOneField(CustomUser, on_delete=models.PROTECT, null=True)
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
-    #group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    #readonly_fields = ("group_id",)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -139,8 +133,6 @@ class Commuting(models.Model):
 
     def __str__(self):
         return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
-
-
 
 
 class BusinessTripGroup(models.Model):
@@ -276,7 +268,7 @@ class BusinessTrip(models.Model):
             ).save()
 
     def __str__(self):
-        return f"{self.user.username}, {self.timestamp}"
+        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
 
 
 class Heating(models.Model):
@@ -321,6 +313,7 @@ class Electricity(models.Model):
 
     class Meta:
         """Specifies which attributes must be unique together"""
+
         unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):

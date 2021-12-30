@@ -23,6 +23,7 @@ from co2calculator.co2calculator import (
     calc_co2_commuting,
     calc_co2_businesstrip,
 )
+
 import numpy as np
 import pandas as pd
 import os
@@ -46,7 +47,6 @@ ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
 logger = logging.basicConfig()
 
 script_path = os.path.dirname(os.path.realpath(__file__))
-
 
 class Command(BaseCommand):
     """Base Command to populate data"""
@@ -391,3 +391,4 @@ class Command(BaseCommand):
                             distance=group_data["distance"],
                         )
                         commuting_group_instance.save()
+
