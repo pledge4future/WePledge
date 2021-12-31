@@ -86,6 +86,20 @@ class Command(BaseCommand):
                 break
         del grid
 
+        # Create user for unit tests -----------------------------------------------------
+        new_user = CustomUser(
+            username="testuser",
+            first_name="test",
+            last_name="user",
+            email="test2@pledge4future.org",
+        )
+        new_user.set_password("test_password")
+        new_user.save()
+        status = new_user.status
+        setattr(status, "verified", True)
+        status.save(update_fields=["verified"])
+        new_user.save()
+
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
         user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
@@ -100,8 +114,9 @@ class Command(BaseCommand):
                 new_user.set_password("test_password")
                 new_user.save()
                 status = new_user.status
-                status.verified = True
+                setattr(status, "verified", True)
                 status.save(update_fields=["verified"])
+                new_user.save()
             except IntegrityError:
                 print("Users already exist.")
                 break

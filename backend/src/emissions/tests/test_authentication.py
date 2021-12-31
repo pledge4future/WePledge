@@ -61,7 +61,7 @@ def test_verify():
             }
     """
     # when test fails, paste the token from the email/command output
-    token_from_email = "eyJlbWFpbCI6InRlc3RAcGxlZGdlNGZ1dHVyZS5vcmciLCJhY3Rpb24iOiJhY3RpdmF0aW9uIn0:1mxwDA:vf9qO0ZVpLU7PMs1aZ4s2dittneWLixlwzahka-qUwk"
+    token_from_email = "eyJlbWFpbCI6InRlc3RAcGxlZGdlNGZ1dHVyZS5vcmciLCJhY3Rpb24iOiJhY3RpdmF0aW9uIn0:1n32oh:XYzXouRztx5nXbk8rqlqpVVBP22RFNW0x8CR7jdffdk"
     variables = {"token": token_from_email}
     response = requests.post(
         GRAPHQL_URL, json={"query": verify_query, "variables": variables}
