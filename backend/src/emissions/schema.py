@@ -8,6 +8,7 @@ __email__ = "infopledge4future.org"
 import graphene
 import datetime as dt
 import pandas as pd
+from django.core.exceptions import ValidationError
 from django.db.models import Sum
 import numpy as np
 
@@ -167,32 +168,6 @@ class TotalEmissionType(ObjectType):
         name = "TotalEmission"
 
 
-class ElectricityAggregatedType(ObjectType):
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
-
-    class Meta:
-        name = "ElectricityAggregated"
-
-
-class BusinessTripAggregatedType(ObjectType):
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
-
-    class Meta:
-        name = "BusinessTripAggregated"
-
-
-class CommutingAggregatedType(ObjectType):
-    date = graphene.String()
-    co2e = graphene.Float()
-    co2e_cap = graphene.Float()
-
-    class Meta:
-        name = "CommutingAggregated"
-
 # -------------------- Query types -----------------
 
 # Create a Query type
@@ -208,8 +183,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     # Aggregated data
     heating_aggregated = graphene.List(
         HeatingAggregatedType,
-        group_id=graphene.ID(description="ID of the working group"),
-        inst_id=graphene.ID(description="ID of the institution"),
+        level=graphene.String(description="Aggregation level: personal, group or institution. Default: personal"),
         time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     electricity_aggregated = graphene.List(
@@ -270,7 +244,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         return WorkingGroup.objects.all()
 
     def resolve_heating_aggregated(
-        self, info, group_id=None, inst_id=None, time_interval="month", **kwargs
+        self, info, level="group", time_interval="month", **kwargs
     ):
         """
         Yields monthly co2e emissions (per capita) of heating consumption
@@ -280,15 +254,18 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: inst_id:  id of Institute model (str)
         param: time_interval: Aggregate co2e per "month" or "year"
         """
+        if not info.context.user.is_authenticated:
+            raise GraphQLError(f"User is not authenticated.")
+
         # Get relevant data entries
-        if group_id:
-            entries = Heating.objects.filter(working_group__id=group_id)
-        elif inst_id:
+        if level == "group":
+            entries = Heating.objects.filter(working_group__id=info.context.user.working_group.id)
+        elif level == "institution":
             entries = Heating.objects.filter(
-                working_group__institution__id=inst_id
+                working_group__institution__id=info.context.user.working_group.institution.id
             )
         else:
-            entries = Heating.objects.all()
+            raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
         metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
@@ -582,6 +559,15 @@ class HeatingInput(graphene.InputObjectType):
     group_share = graphene.Float(required=True, description="Share of the building beloning to the working group")
 
 
+class WorkingGroupInput(graphene.InputObjectType):
+    """GraphQL Input type for setting working group"""
+
+    name = graphene.String(reqired=True, description="Name of the working group")
+    institution = graphene.String(required=True, description="Name of institution of working group")
+    city = graphene.String(required=True, description="City of working group")
+    country = graphene.String(required=True, description="Country of working group")
+
+
 # --------------- Mutations ------------------------------------
 
 
@@ -614,12 +600,38 @@ class SetWorkingGroup(graphene.Mutation):
 
     class Arguments:
         """Assign input type"""
+        input = WorkingGroupInput()
 
-        pass
+    ok = graphene.Boolean()
+    user = graphene.Field(UserType)
 
+    @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
-        pass
+        user = info.context.user
+        ok = True
+        # Search matching working groups
+        matching_working_groups = WorkingGroup.objects.filter(name=input.name,
+                                                              institution__name=input.institution,
+                                                              institution__city=input.city,
+                                                              institution__country=input.country)
+        if len(matching_working_groups) > 1:
+            raise GraphQLError("There are more than one matching working groups. Please further specify.")
+        elif len(matching_working_groups) == 0:
+            raise GraphQLError("Working group not found.")
+        else:
+            working_group = matching_working_groups[0]
+
+        setattr(user, "working_group", working_group)
+        user.save()
+
+        try:
+            user.full_clean()
+            user.save()
+            return SetWorkingGroup(user=user, ok=ok)
+        except ValidationError as e:
+            return SetWorkingGroup(user=user, ok=ok)
 
 
 class CreateElectricity(graphene.Mutation):
@@ -835,6 +847,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_electricity = CreateElectricity.Field()
     create_heating = CreateHeating.Field()
     create_commuting = CreateCommuting.Field()
+    set_working_group = SetWorkingGroup.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

@@ -9,7 +9,7 @@
 5.[Data queries](./graphql/data_queries.md)  
 6.[Errors](./graphql/errors.md)  
 
-It might also be useful to look at the [GraphQL API tests](../src/emissions/tests.py) to see how the requests work.
+It might also be useful to look at the [GraphQL API tests](../src/emissions/tests/test_authentication.py) to see how the requests work.
 
 ### User account verification
 
