@@ -262,8 +262,8 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                if usr.working_group is None:
-                    continue
+                #if usr.working_group is None:
+                #    continue
 
                 for d in dates:
                     co2e = co2e_cap = float(np.random.randint(50, 1000, 1))
@@ -296,8 +296,8 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                if usr.working_group is None:
-                    continue
+                #if usr.working_group is None:
+                #    continue
 
                 distance = np.random.randint(0, 20, 1)
                 transportation_mode = "bicycle"
@@ -331,6 +331,9 @@ class Command(BaseCommand):
                         )
                         commuting_instance.save()
 
+                        if usr.working_group is None:
+                            continue
+
                         # Update emissions of working group for date and transportation mode
                         entries = Commuting.objects.filter(
                             working_group=usr.working_group,
@@ -339,6 +342,7 @@ class Command(BaseCommand):
                         )
                         metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
                         group_data = entries.aggregate(**metrics)
+
 
                         co2e_cap = group_data["co2e"] / usr.working_group.n_employees
                         commuting_group_instance = CommutingGroup(
@@ -385,6 +389,9 @@ class Command(BaseCommand):
                             working_group=usr.working_group,
                         )
                         commuting_instance.save()
+
+                        if usr.working_group is None:
+                            continue
 
                         # Update emissions of working group for date and transportation mode
                         entries = Commuting.objects.filter(
