@@ -234,34 +234,33 @@ class Query(UserQuery, MeQuery, ObjectType):
         ),
     )
 
+    @login_required
     def resolve_businesstrips(self, info, **kwargs):
         """Yields all heating consumption objects"""
-        # if not info.context.user.is_authenticated:
-        #    return None
-        return BusinessTrip.objects.all()
+        user = info.context.user
+        return BusinessTrip.objects.all(user__id=user.id)
 
+    @login_required
     def resolve_electricities(self, info, **kwargs):
         """Yields all heating consumption objects"""
-        # if not info.context.user.is_authenticated:
-        #    return None
-        return Electricity.objects.all()
+        user = info.context.user
+        return Electricity.objects.all(working_group__id=user.working_group.id)
 
+    @login_required
     def resolve_heatings(self, info, **kwargs):
         """Yields all heating consumption objects"""
-        # if not info.context.user.is_authenticated:
-        #    return None
-        return Heating.objects.all()
+        user = info.context.user
+        return Heating.objects.all(working_group__id=user.working_group.id)
 
-    def resolve_commutingss(self, info, **kwargs):
+    @login_required
+    def resolve_commutings(self, info, **kwargs):
         """Yields all heating consumption objects"""
-        # if not info.context.user.is_authenticated:
-        #    return None
-        return Commuting.objects.all()
+        user = info.context.user
+        return Commuting.objects.all(user__id=user.id)
 
+    @login_required
     def resolve_working_groups(self, info, **kwargs):
         """Yields all working group objects"""
-        # if not info.context.user.is_authenticated:
-        #    return None
         return WorkingGroup.objects.all()
 
     @login_required
@@ -713,16 +712,16 @@ class CreateElectricity(graphene.Mutation):
     ok = graphene.Boolean()
     electricity = graphene.Field(ElectricityType)
 
-    # @login_required
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
+        user = info.context.user
         ok = True
         matches = WorkingGroup.objects.filter(id=input.group_id)
-        if len(matches) == 0:
+        if not user.is_representative:
             raise GraphQLError(
-                f"Permission denied: Could add electricity data, because user '{input.username}' "
-                f"is not a group representative."
+                "Could add electricity data, because you are not the group representative."
             )
         else:
             working_group = matches[0]
