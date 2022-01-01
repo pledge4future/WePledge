@@ -17,7 +17,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-#load_dotenv("../../.env", verbose=True)
+# load_dotenv("../../.env", verbose=True)
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -86,12 +86,12 @@ WSGI_APPLICATION = "pledge4future.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 # local database for development
-#DATABASES = {
+# DATABASES = {
 #    "default": {
 #        "ENGINE": "django.db.backends.sqlite3",
 #        "NAME": os.path.join(BASE_DIR, "db.sqlitedb"),
 #    }
-#}
+# }
 
 DATABASES = {
     "default": {
@@ -100,8 +100,8 @@ DATABASES = {
         "USER": "postgres",
         "HOST": "db",
         "PORT": 5432,
-        }
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -163,7 +163,7 @@ GRAPHQL_AUTH = {
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "is_representative"
+        "is_representative",
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,

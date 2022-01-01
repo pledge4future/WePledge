@@ -56,6 +56,7 @@ class WorkingGroupType(DjangoObjectType):
 
     class Meta:
         """Assign django model"""
+
         model = WorkingGroup
 
 
@@ -64,6 +65,7 @@ class InstitutionType(DjangoObjectType):
 
     class Meta:
         """Assign django model"""
+
         model = Institution
 
 
@@ -112,6 +114,7 @@ class HeatingAggregatedType(ObjectType):
 
     class Meta:
         """Assign django model"""
+
         name = "HeatingAggregated"
         filter_fields = ["id"]
 
@@ -156,15 +159,18 @@ class CommutingAggregatedType(ObjectType):
 
 
 class TotalEmissionType(ObjectType):
-    """GraphQL total emissions """
+    """GraphQL total emissions"""
 
     working_group_name = graphene.String(description="Name of the working group")
-    working_group_institution_name = graphene.String(description="Name of the institution the working group belongs to")
+    working_group_institution_name = graphene.String(
+        description="Name of the institution the working group belongs to"
+    )
     co2e = graphene.Float(description="Total CO2e emissions [tco2e]")
     co2e_cap = graphene.Float(description="CO2e emissions per capita [tco2e]")
 
     class Meta:
         """Assign django model"""
+
         name = "TotalEmission"
 
 
@@ -183,29 +189,49 @@ class Query(UserQuery, MeQuery, ObjectType):
     # Aggregated data
     heating_aggregated = graphene.List(
         HeatingAggregatedType,
-        level=graphene.String(description="Aggregation level: group or institution. Default: group"),
-        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
+        level=graphene.String(
+            description="Aggregation level: group or institution. Default: group"
+        ),
+        time_interval=graphene.String(
+            description="Time interval for aggregation (month or year)"
+        ),
     )
     electricity_aggregated = graphene.List(
         ElectricityAggregatedType,
-        level=graphene.String(description="Aggregation level: group or institution. Default: group"),
-        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
+        level=graphene.String(
+            description="Aggregation level: group or institution. Default: group"
+        ),
+        time_interval=graphene.String(
+            description="Time interval for aggregation (month or year)"
+        ),
     )
     businesstrip_aggregated = graphene.List(
         BusinessTripAggregatedType,
-        level=graphene.String(description="Aggregation level: personal, group or institution. Default: group"),
-        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
+        level=graphene.String(
+            description="Aggregation level: personal, group or institution. Default: group"
+        ),
+        time_interval=graphene.String(
+            description="Time interval for aggregation (month or year)"
+        ),
     )
     commuting_aggregated = graphene.List(
         CommutingAggregatedType,
-        level=graphene.String(description="Aggregation level: personal, group or institution. Default: group"),
-        time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
+        level=graphene.String(
+            description="Aggregation level: personal, group or institution. Default: group"
+        ),
+        time_interval=graphene.String(
+            description="Time interval for aggregation (month or year)"
+        ),
     )
     total_emission = graphene.List(
         TotalEmissionType,
-        start=graphene.Date(description="Start date for calculation of total emissions"),
+        start=graphene.Date(
+            description="Start date for calculation of total emissions"
+        ),
         end=graphene.Date(description="End date for calculation of total emissions"),
-        level=graphene.String(description="Aggregate by 'group' or 'institution'. Default: 'group')")
+        level=graphene.String(
+            description="Aggregate by 'group' or 'institution'. Default: 'group')"
+        ),
     )
 
     def resolve_businesstrips(self, info, **kwargs):
@@ -250,11 +276,13 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         if not info.context.user.is_authenticated:
-            raise GraphQLError(f"User is not authenticated.")
+            raise GraphQLError("User is not authenticated.")
 
         # Get relevant data entries
         if level == "group":
-            entries = Heating.objects.filter(working_group__id=info.context.user.working_group.id)
+            entries = Heating.objects.filter(
+                working_group__id=info.context.user.working_group.id
+            )
         elif level == "institution":
             entries = Heating.objects.filter(
                 working_group__institution__id=info.context.user.working_group.institution.id
@@ -344,7 +372,9 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = BusinessTrip.objects.filter(user__username=user.username)
             entries = entries.annotate(co2e_cap=F("co2e"))
         elif level == "group":
-            entries = BusinessTripGroup.objects.filter(working_group__id=user.working_group.id)
+            entries = BusinessTripGroup.objects.filter(
+                working_group__id=user.working_group.id
+            )
         elif level == "institution":
             entries = BusinessTripGroup.objects.filter(
                 working_group__institution__id=user.working_group.institution.id
@@ -352,22 +382,21 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
-        metrics = {"co2e": Sum("co2e"),
-                   "co2e_cap": Sum("co2e_cap")}
+        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))
-                    .values("date")
-                    .annotate(**metrics)
-                    .order_by("date")
+                .values("date")
+                .annotate(**metrics)
+                .order_by("date")
             )
         elif time_interval == "year":
             return (
                 entries.annotate(date=TruncYear("timestamp"))
-                    .values("date")
-                    .annotate(**metrics)
-                    .order_by("date")
+                .values("date")
+                .annotate(**metrics)
+                .order_by("date")
             )
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
@@ -394,7 +423,9 @@ class Query(UserQuery, MeQuery, ObjectType):
             entries = Commuting.objects.filter(user__username=user.username)
             entries = entries.annotate(co2e_cap=F("co2e"))
         elif level == "group":
-            entries = CommutingGroup.objects.filter(working_group__id=user.working_group.id)
+            entries = CommutingGroup.objects.filter(
+                working_group__id=user.working_group.id
+            )
         elif level == "institution":
             entries = CommutingGroup.objects.filter(
                 working_group__institution__id=user.working_group.institution.id
@@ -402,41 +433,49 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
-        metrics = {"co2e": Sum("co2e"),
-                   "co2e_cap": Sum("co2e_cap")}
+        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))
-                    .values("date")
-                    .annotate(**metrics)
-                    .order_by("date")
+                .values("date")
+                .annotate(**metrics)
+                .order_by("date")
             )
         elif time_interval == "year":
             return (
                 entries.annotate(date=TruncYear("timestamp"))
-                    .values("date")
-                    .annotate(**metrics)
-                    .order_by("date")
+                .values("date")
+                .annotate(**metrics)
+                .order_by("date")
             )
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
-
-    def resolve_total_emission(self, info, start=None, end=None, level="group", **kwargs):
+    def resolve_total_emission(
+        self, info, start=None, end=None, level="group", **kwargs
+    ):
         """
         Yields total emissions on monthly or yearly basis
         param: start: Start date for calculation of total emissions. If none is given, the last 12 months will be used.
         param: end: end date for calculation of total emission If none is given, the last 12 months will be used.
         """
         metrics = {
-            'co2e': Sum('co2e'),
-            'co2e_cap': Sum('co2e_cap'),
+            "co2e": Sum("co2e"),
+            "co2e_cap": Sum("co2e_cap"),
         }
 
         if not end and not start:
-            end = dt.datetime(day=1, month=dt.datetime.today().month - 1, year=dt.datetime.today().year)
-            start = dt.datetime(day=1, month=dt.datetime.today().month, year=dt.datetime.today().year - 1)
+            end = dt.datetime(
+                day=1,
+                month=dt.datetime.today().month - 1,
+                year=dt.datetime.today().year,
+            )
+            start = dt.datetime(
+                day=1,
+                month=dt.datetime.today().month,
+                year=dt.datetime.today().year - 1,
+            )
 
         if level == "group":
             aggregate_on = ["working_group__name", "working_group__institution__name"]
@@ -445,44 +484,63 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
-        heating_emissions = Heating.objects.filter(timestamp__gte=start, timestamp__lte=end)\
-            .values(*aggregate_on)\
+        heating_emissions = (
+            Heating.objects.filter(timestamp__gte=start, timestamp__lte=end)
+            .values(*aggregate_on)
             .annotate(**metrics)
+        )
         heating_df = pd.DataFrame(list(heating_emissions))
 
-        electricity_emissions = Electricity.objects.filter(timestamp__gte=start, timestamp__lte=end)\
-            .values(*aggregate_on)\
+        electricity_emissions = (
+            Electricity.objects.filter(timestamp__gte=start, timestamp__lte=end)
+            .values(*aggregate_on)
             .annotate(**metrics)
+        )
         electricity_df = pd.DataFrame(list(electricity_emissions))
 
-        businesstrips_emissions = BusinessTripGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)\
-            .values(*aggregate_on)\
+        businesstrips_emissions = (
+            BusinessTripGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)
+            .values(*aggregate_on)
             .annotate(**metrics)
+        )
         businesstrips_df = pd.DataFrame(list(businesstrips_emissions))
 
-        commuting_emissions = CommutingGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)\
-            .values(*aggregate_on)\
+        commuting_emissions = (
+            CommutingGroup.objects.filter(timestamp__gte=start, timestamp__lte=end)
+            .values(*aggregate_on)
             .annotate(**metrics)
+        )
         commuting_df = pd.DataFrame(list(commuting_emissions))
 
-        total_emissions = pd.concat([heating_df, electricity_df, commuting_df, businesstrips_df])\
-            .groupby(aggregate_on).sum()
+        total_emissions = (
+            pd.concat([heating_df, electricity_df, commuting_df, businesstrips_df])
+            .groupby(aggregate_on)
+            .sum()
+        )
         total_emissions.reset_index(inplace=True)
 
         emissions_for_groups = []
         if level == "group":
-            for i, row in total_emissions.iterrows():
-                section = TotalEmissionType(working_group_name=row["working_group__name"],
-                                            working_group_institution_name=row["working_group__institution__name"],
-                                            co2e=row["co2e"],
-                                            co2e_cap=row["co2e_cap"])
+            for _, row in total_emissions.iterrows():
+                section = TotalEmissionType(
+                    working_group_name=row["working_group__name"],
+                    working_group_institution_name=row[
+                        "working_group__institution__name"
+                    ],
+                    co2e=row["co2e"],
+                    co2e_cap=row["co2e_cap"],
+                )
                 emissions_for_groups.append(section)
         elif level == "institution":
-            for i, row in total_emissions.iterrows():
-                section = TotalEmissionType(working_group_name=None,
-                                            working_group_institution_name=row["working_group__institution__name"],
-                                            co2e=row["co2e"],
-                                            co2e_cap=row["co2e_cap"])
+            for _, row in total_emissions.iterrows():
+                section = TotalEmissionType(
+                    working_group_name=None,
+                    working_group_institution_name=row[
+                        "working_group__institution__name"
+                    ],
+                    co2e=row["co2e"],
+                    co2e_cap=row["co2e_cap"],
+                )
                 emissions_for_groups.append(section)
         return emissions_for_groups
 
@@ -497,7 +555,9 @@ class CommutingInput(graphene.InputObjectType):
     username = graphene.String(required=True, description="Username")
     from_timestamp = graphene.Date(required=True, description="Start date")
     to_timestamp = graphene.Date(required=True, description="End date")
-    transportation_mode = graphene.String(required=True, description="Transportation mode")
+    transportation_mode = graphene.String(
+        required=True, description="Transportation mode"
+    )
     workweeks = graphene.Int(description="Number of work weeks")
     distance = graphene.Float(description="Distance [meter]")
     size = graphene.String(description="Size of the vehicle")
@@ -513,7 +573,9 @@ class BusinessTripInput(graphene.InputObjectType):
     username = graphene.String(required=True, description="User name")
     group_id = graphene.ID(required=True, description="ID of the working group")
     timestamp = graphene.Date(required=True, description="Date")
-    transportation_mode = graphene.String(required=True, description="Transportation mode")
+    transportation_mode = graphene.String(
+        required=True, description="Transportation mode"
+    )
     start = graphene.String(description="Start address")
     destination = graphene.String(description="Destination address")
     distance = graphene.Float(description="Distance [meter]")
@@ -533,8 +595,12 @@ class ElectricityInput(graphene.InputObjectType):
     timestamp = graphene.Date(required=True, description="Date")
     consumption = graphene.Float(description="Consumption")
     fuel_type = graphene.String(required=True, description="Fuel type")
-    building = graphene.String(required=True, description="Number of Building if there are several ones")
-    group_share = graphene.Float(required=True, description="Share of the building beloning to the working group")
+    building = graphene.String(
+        required=True, description="Number of Building if there are several ones"
+    )
+    group_share = graphene.Float(
+        required=True, description="Share of the building beloning to the working group"
+    )
 
 
 class HeatingInput(graphene.InputObjectType):
@@ -546,15 +612,21 @@ class HeatingInput(graphene.InputObjectType):
     consumption = graphene.Float(required=True, description="Consumption")
     unit = graphene.String(required=True, description="Unit of fuel type")
     fuel_type = graphene.String(required=True, description="Fuel type")
-    building = graphene.String(required=True, description="Number of Building if there are several ones")
-    group_share = graphene.Float(required=True, description="Share of the building beloning to the working group")
+    building = graphene.String(
+        required=True, description="Number of Building if there are several ones"
+    )
+    group_share = graphene.Float(
+        required=True, description="Share of the building beloning to the working group"
+    )
 
 
 class WorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
     name = graphene.String(reqired=True, description="Name of the working group")
-    institution = graphene.String(required=True, description="Name of institution of working group")
+    institution = graphene.String(
+        required=True, description="Name of institution of working group"
+    )
     city = graphene.String(required=True, description="City of working group")
     country = graphene.String(required=True, description="Country of working group")
 
@@ -591,6 +663,7 @@ class SetWorkingGroup(graphene.Mutation):
 
     class Arguments:
         """Assign input type"""
+
         input = WorkingGroupInput()
 
     ok = graphene.Boolean()
@@ -603,12 +676,16 @@ class SetWorkingGroup(graphene.Mutation):
         user = info.context.user
         ok = True
         # Search matching working groups
-        matching_working_groups = WorkingGroup.objects.filter(name=input.name,
-                                                              institution__name=input.institution,
-                                                              institution__city=input.city,
-                                                              institution__country=input.country)
+        matching_working_groups = WorkingGroup.objects.filter(
+            name=input.name,
+            institution__name=input.institution,
+            institution__city=input.city,
+            institution__country=input.country,
+        )
         if len(matching_working_groups) > 1:
-            raise GraphQLError("There are more than one matching working groups. Please further specify.")
+            raise GraphQLError(
+                "There are more than one matching working groups. Please further specify."
+            )
         elif len(matching_working_groups) == 0:
             raise GraphQLError("Working group not found.")
         else:
@@ -622,7 +699,7 @@ class SetWorkingGroup(graphene.Mutation):
             user.save()
             return SetWorkingGroup(user=user, ok=ok)
         except ValidationError as e:
-            return SetWorkingGroup(user=user, ok=ok)
+            return SetWorkingGroup(user=user, ok=ok, errors=e)
 
 
 class CreateElectricity(graphene.Mutation):
@@ -630,6 +707,7 @@ class CreateElectricity(graphene.Mutation):
 
     class Arguments:
         """Assign input type"""
+
         input = ElectricityInput(required=True)
 
     ok = graphene.Boolean()

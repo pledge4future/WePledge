@@ -162,7 +162,6 @@ def test_update_query():
     assert data["data"]["updateAccount"]["success"]
 
 
-
 def test_refresh_token():
     """Test whether new token can be queried"""
     refresh_token_query = """
@@ -189,27 +188,28 @@ def test_refresh_token():
 
 
 def test_delete_account():
-    """Test whether account is deleted"""
+    """Test whether account is deleted (not applied atm)"""
+    pass
     # Archive account
-    delete_query = """mutation ($password: String!)
-    {
-        deleteAccount(
-            password: $password,
-    ) {
-        success,
-        errors
-    }
-    }"""
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
-    variables = {"password": TEST_PASSWORD}
-    #response = requests.post(
+    # delete_query = """mutation ($password: String!)
+    # {
+    #    deleteAccount(
+    #        password: $password,
+    # ) {
+    #    success,
+    #    errors
+    # }
+    # }"""
+    # headers = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+    # variables = {"password": TEST_PASSWORD}
+    # response = requests.post(
     #    GRAPHQL_URL,
     #    json={"query": delete_query, "variables": variables},
     #    headers=headers,
-    #)
-    #assert response.status_code == 200
-    #data = response.json()
-    #assert data["data"]["deleteAccount"]["success"]
+    # )
+    # assert response.status_code == 200
+    # data = response.json()
+    # assert data["data"]["deleteAccount"]["success"]
 
 
 def test_groups():
@@ -264,7 +264,7 @@ def test_query_dropdown_options():
     response = requests.post(GRAPHQL_URL, json={"query": query})
     assert response.status_code == 200
     data = response.json()
-    assert data["data"]["__type"]["enumValues"][0]["name"] == 'GERMAN_ENERGY_MIX'
+    assert data["data"]["__type"]["enumValues"][0]["name"] == "GERMAN_ENERGY_MIX"
 
     query = """
     {__type(name: "Unit") {

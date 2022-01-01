@@ -1,5 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+"""apps"""
+
 from django.apps import AppConfig
 
 
 class EmissionsConfig(AppConfig):
-    name = 'emissions'
+    """Config"""
+
+    name = "emissions"

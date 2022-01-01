@@ -28,7 +28,7 @@ def test_set_workinggroup(test_user_token):
               city: $city
               country: $country
             }
-          ) { 
+          ) {
             ok
             user {
                 username
@@ -39,18 +39,27 @@ def test_set_workinggroup(test_user_token):
             }
         }
     """
-    variables = {"name": "Environmental Research Group",
-                 "institution": "Heidelberg University",
-                 "city": "Heidelberg",
-                 "country": "Germany"
-                 }
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
-    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers)
+    variables = {
+        "name": "Environmental Research Group",
+        "institution": "Heidelberg University",
+        "city": "Heidelberg",
+        "country": "Germany",
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
+    response = requests.post(
+        GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+    )
     assert response.status_code == 200
     data = response.json()
     logger.info(data["data"])
     assert data["data"]["setWorkingGroup"]["ok"]
-    assert data["data"]["setWorkingGroup"]["user"]["workingGroup"]["name"] == variables["name"]
+    assert (
+        data["data"]["setWorkingGroup"]["user"]["workingGroup"]["name"]
+        == variables["name"]
+    )
 
 
 def test_query_heating_aggregated(test_user_token):
@@ -65,7 +74,10 @@ def test_query_heating_aggregated(test_user_token):
     }
     """
     variables = {"level": "group"}
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
     )
@@ -74,7 +86,6 @@ def test_query_heating_aggregated(test_user_token):
     assert isinstance(data["data"]["heatingAggregated"][0]["date"], str)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2e"], float)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
-
 
 
 def test_query_electricity_aggregated_institution(test_user_token):
@@ -89,7 +100,10 @@ def test_query_electricity_aggregated_institution(test_user_token):
     }
     """
     variables = {"level": "institution"}
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
     )
@@ -112,7 +126,10 @@ def test_query_businesstrip_aggregated_personal(test_user_token):
     }
     """
     variables = {"level": "personal"}
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
     )
@@ -136,7 +153,10 @@ def test_query_commuting_aggregated_group(test_user_token):
     }
     """
     variables = {"level": "group"}
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
     )
@@ -160,11 +180,16 @@ def test_query_electricity_aggregated_with_invalid_token(test_user_token):
     }
     """
     variables = {"level": "institution"}
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT invalid_token"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": "JWT invalid_token",
+    }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
     )
     assert response.status_code == 200
     data = response.json()
-    assert data["errors"][0]["message"] == 'You do not have permission to perform this action'
-
+    assert (
+        data["errors"][0]["message"]
+        == "You do not have permission to perform this action"
+    )

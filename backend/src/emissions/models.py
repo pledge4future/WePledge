@@ -64,7 +64,9 @@ class WorkingGroup(models.Model):
 
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
-    representative = models.OneToOneField(CustomUser, on_delete=models.PROTECT, null=True)
+    representative = models.OneToOneField(
+        CustomUser, on_delete=models.PROTECT, null=True
+    )
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
 
@@ -80,7 +82,9 @@ class WorkingGroup(models.Model):
             self.representative.working_group is not None
         ):
             raise ValidationError(
-                _("This user cannot become the group representative, since they are not a member of this working group."),
+                _(
+                    "This user cannot become the group representative, since they are not a member of this working group."
+                ),
                 code="invalid",
             )
         super().clean(*args, **kwargs)

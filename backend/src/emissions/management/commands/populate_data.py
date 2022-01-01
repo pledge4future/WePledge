@@ -48,6 +48,7 @@ logger = logging.basicConfig()
 
 script_path = os.path.dirname(os.path.realpath(__file__))
 
+
 class Command(BaseCommand):
     """Base Command to populate data"""
 
@@ -262,7 +263,7 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                #if usr.working_group is None:
+                # if usr.working_group is None:
                 #    continue
 
                 for d in dates:
@@ -296,7 +297,7 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                #if usr.working_group is None:
+                # if usr.working_group is None:
                 #    continue
 
                 distance = np.random.randint(0, 20, 1)
@@ -342,7 +343,6 @@ class Command(BaseCommand):
                         )
                         metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
                         group_data = entries.aggregate(**metrics)
-
 
                         co2e_cap = group_data["co2e"] / usr.working_group.n_employees
                         commuting_group_instance = CommutingGroup(
@@ -413,4 +413,3 @@ class Command(BaseCommand):
                             distance=group_data["distance"],
                         )
                         commuting_group_instance.save()
-
