@@ -9,7 +9,7 @@ import graphene
 import datetime as dt
 import pandas as pd
 from django.core.exceptions import ValidationError
-from django.db.models import Sum
+from django.db.models import Sum, F
 import numpy as np
 
 from django.db.models.functions import TruncMonth, TruncYear
@@ -183,27 +183,22 @@ class Query(UserQuery, MeQuery, ObjectType):
     # Aggregated data
     heating_aggregated = graphene.List(
         HeatingAggregatedType,
-        level=graphene.String(description="Aggregation level: personal, group or institution. Default: personal"),
+        level=graphene.String(description="Aggregation level: group or institution. Default: group"),
         time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     electricity_aggregated = graphene.List(
         ElectricityAggregatedType,
-        group_id=graphene.ID(description="ID of the working group"),
-        inst_id=graphene.ID(description="ID of the institution"),
+        level=graphene.String(description="Aggregation level: group or institution. Default: group"),
         time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     businesstrip_aggregated = graphene.List(
         BusinessTripAggregatedType,
-        username=graphene.String(description="Username"),
-        group_id=graphene.ID(description="ID of the working group"),
-        inst_id=graphene.ID(description="ID of the institution"),
+        level=graphene.String(description="Aggregation level: personal, group or institution. Default: group"),
         time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     commuting_aggregated = graphene.List(
         CommutingAggregatedType,
-        username=graphene.String(description="User name"),
-        group_id=graphene.ID(description="ID of the working group"),
-        inst_id=graphene.ID(description="ID of the institution"),
+        level=graphene.String(description="Aggregation level: personal, group or institution. Default: group"),
         time_interval=graphene.String(description="Time interval for aggregation (month or year)"),
     )
     total_emission = graphene.List(
@@ -243,6 +238,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         #    return None
         return WorkingGroup.objects.all()
 
+    @login_required
     def resolve_heating_aggregated(
         self, info, level="group", time_interval="month", **kwargs
     ):
@@ -250,8 +246,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         Yields monthly co2e emissions (per capita) of heating consumption
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
-        param: group_id:  id of WorkingGroup model (str)
-        param: inst_id:  id of Institute model (str)
+        param: level: Aggregation level: group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         if not info.context.user.is_authenticated:
@@ -286,26 +281,30 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
+    @login_required
     def resolve_electricity_aggregated(
-        self, info, group_id=None, inst_id=None, time_interval="month", **kwargs
+        self, info, level="group", time_interval="month", **kwargs
     ):
         """
         Yields monthly co2e emissions of electricity consumption
         - for a group (if group_id is given),
         - for an institutions (if inst_id is given)
-        param: group_id: id of WorkingGroup model (str)
-        param: inst_id: id of Institute model (str)
+        param: level: Aggregation level: group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        if group_id:
-            entries = Electricity.objects.filter(working_group__id=group_id)
-        elif inst_id:
-            entries = Electricity.objects.filter(
-                working_group__institution__id=inst_id
+        user = info.context.user
+        # Get relevant data entries
+        if level == "group":
+            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+        elif level == "institution":
+            entries = Heating.objects.filter(
+                working_group__institution__id=user.working_group.institution.id
             )
         else:
-            entries = Electricity.objects.all()
+            raise GraphQLError(f"Invalid value for parameter 'level': {level}")
+
         metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
+
         if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))
@@ -323,13 +322,12 @@ class Query(UserQuery, MeQuery, ObjectType):
         else:
             raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
+    @login_required
     def resolve_businesstrip_aggregated(
         self,
         info,
-        username=None,
-        group_id=None,
-        inst_id=None,
-        time_interval="monthly",
+        level="group",
+        time_interval="month",
         **kwargs,
     ):
         """
@@ -337,54 +335,49 @@ class Query(UserQuery, MeQuery, ObjectType):
         - for a user (if username is given),
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
-        param: username: username of user model (str)
-        param: group_id: id of WorkingGroup model (str)
-        param: inst_id: id of Institute model (str)
+        param: level: Aggregation level: personal, group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        if username:
-            entries = BusinessTrip.objects.filter(user__username=username)
-        elif group_id:
-            entries = BusinessTripGroup.objects.filter(working_group__id=group_id)
-        elif inst_id:
+        user = info.context.user
+        # Get relevant data entries
+        if level == "personal":
+            entries = BusinessTrip.objects.filter(user__username=user.username)
+            entries = entries.annotate(co2e_cap=F("co2e"))
+        elif level == "group":
+            entries = BusinessTripGroup.objects.filter(working_group__id=user.working_group.id)
+        elif level == "institution":
             entries = BusinessTripGroup.objects.filter(
-                working_group__institution__id=inst_id
+                working_group__institution__id=user.working_group.institution.id
             )
         else:
-            entries = BusinessTrip.objects.all()
+            raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
-        metrics = {
-            "co2e": Sum("co2e"),
-        }
-        if not username:
-            metrics["co2e_cap"] = Sum("co2e_cap")
+        metrics = {"co2e": Sum("co2e"),
+                   "co2e_cap": Sum("co2e_cap")}
 
-        if time_interval.lower() == "month":
+        if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))
-                .values("date")
-                .annotate(**metrics)
-                .order_by("date")
+                    .values("date")
+                    .annotate(**metrics)
+                    .order_by("date")
             )
-        elif time_interval.lower() == "year":
+        elif time_interval == "year":
             return (
                 entries.annotate(date=TruncYear("timestamp"))
-                .values("date")
-                .annotate(**metrics)
-                .order_by("date")
+                    .values("date")
+                    .annotate(**metrics)
+                    .order_by("date")
             )
         else:
-            raise GraphQLError(
-                f"'{time_interval}' is not a valid option for parameter 'time_interval'."
-            )
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
 
+    @login_required
     def resolve_commuting_aggregated(
         self,
         info,
-        username=None,
-        group_id=None,
-        inst_id=None,
-        time_interval="monthly",
+        level="group",
+        time_interval="month",
         **kwargs,
     ):
         """
@@ -392,45 +385,43 @@ class Query(UserQuery, MeQuery, ObjectType):
         - for a user (if username is given),
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
-        param: username: username of user model (str)
-        param: group_id: id of WorkingGroup model (str)
-        param: inst_id: id of Institute model (str)
+        param: level: Aggregation level: group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        metrics = {
-            "co2e": Sum("co2e"),
-            "co2e_cap": Sum("co2e_cap"),
-        }
-        if username:
-            entries = Commuting.objects.filter(user__username=username)
-            metrics.pop("co2e_cap")
-        elif group_id:
-            entries = CommutingGroup.objects.filter(working_group__id=group_id)
-        elif inst_id:
+        user = info.context.user
+        # Get relevant data entries
+        if level == "personal":
+            entries = Commuting.objects.filter(user__username=user.username)
+            entries = entries.annotate(co2e_cap=F("co2e"))
+        elif level == "group":
+            entries = CommutingGroup.objects.filter(working_group__id=user.working_group.id)
+        elif level == "institution":
             entries = CommutingGroup.objects.filter(
-                working_group__institution__id=inst_id
+                working_group__institution__id=user.working_group.institution.id
             )
         else:
-            entries = Commuting.objects.all()
+            raise GraphQLError(f"Invalid value for parameter 'level': {level}")
 
-        if time_interval.lower() == "month":
+        metrics = {"co2e": Sum("co2e"),
+                   "co2e_cap": Sum("co2e_cap")}
+
+        if time_interval == "month":
             return (
                 entries.annotate(date=TruncMonth("timestamp"))
-                .values("date")
-                .annotate(**metrics)
-                .order_by("date")
+                    .values("date")
+                    .annotate(**metrics)
+                    .order_by("date")
             )
-        elif time_interval.lower() == "year":
+        elif time_interval == "year":
             return (
                 entries.annotate(date=TruncYear("timestamp"))
-                .values("date")
-                .annotate(**metrics)
-                .order_by("date")
+                    .values("date")
+                    .annotate(**metrics)
+                    .order_by("date")
             )
         else:
-            raise GraphQLError(
-                f"'{time_interval}' is not a valid option for parameter 'time_interval'."
-            )
+            raise GraphQLError(f"Invalid option {time_interval} for 'time_interval'.")
+
 
     def resolve_total_emission(self, info, start=None, end=None, level="group", **kwargs):
         """
