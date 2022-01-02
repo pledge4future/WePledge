@@ -1,5 +1,16 @@
 # Documentation
 
+## Installation
+
+Run docker compose to create the docker images and start the containers
+
+```
+docker compose up
+```
+
+If the required dependencies listed in [../assets/requirements.txt](../assets/requirements.txt) or [../src/co2calculator/requirements.txt](../src/co2calculator/requirements.txt) have changed since the last build, delete all containers, images and the associated docker volumes and run `docker compose up --build`.
+
+
 ## GraphQL
 
 1.[Endpoint overview](./graphql/endpoint_overview.md)

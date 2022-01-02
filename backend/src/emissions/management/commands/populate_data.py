@@ -101,6 +101,20 @@ class Command(BaseCommand):
         status.save(update_fields=["verified"])
         new_user.save()
 
+        testuser_representative = CustomUser(
+            username="testuser_representative",
+            first_name="test",
+            last_name="user",
+            email="test3@pledge4future.org",
+        )
+        testuser_representative.set_password("test_password")
+        # setattr(new_user, "is_representative", True)
+        testuser_representative.save()
+        status = testuser_representative.status
+        setattr(status, "verified", True)
+        status.save(update_fields=["verified"])
+        testuser_representative.save()
+
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
         user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
@@ -136,6 +150,7 @@ class Command(BaseCommand):
                 n_employees=20,
             )
             wg_environmental.save()
+
         else:
             wg_environmental = environmental_search[0]
 
@@ -146,10 +161,15 @@ class Command(BaseCommand):
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
                 )[0],
-                representative=CustomUser.objects.get(username="KarenAnderson"),
+                representative=CustomUser.objects.get(
+                    username="testuser_representative"
+                ),
                 n_employees=15,
             )
             wg_biomed.save()
+            testuser_representative.is_representative = True
+            testuser_representative.working_group = wg_biomed
+            testuser_representative.save()
         else:
             wg_biomed = biomed_search[0]
 
@@ -193,7 +213,9 @@ class Command(BaseCommand):
                 "int"
             )
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_electricity(c, "german_energy_mix")
+                co2e = calc_co2_electricity(
+                    consumption=c, fuel_type="german_energy_mix"
+                )
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_electricity = Electricity(
                     working_group=wg_environmental,
@@ -231,7 +253,9 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "l", "oil", area_share=1)
+                co2e = calc_co2_heating(
+                    consumption=c, unit="l", fuel_type="oil", area_share=1
+                )
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(
                     working_group=wg_environmental,

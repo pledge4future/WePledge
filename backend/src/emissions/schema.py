@@ -589,8 +589,6 @@ class BusinessTripInput(graphene.InputObjectType):
 class ElectricityInput(graphene.InputObjectType):
     """GraphQL Input type for electricity"""
 
-    id = graphene.ID()
-    group_id = graphene.ID(reqired=True, description="ID of the working group")
     timestamp = graphene.Date(required=True, description="Date")
     consumption = graphene.Float(description="Consumption")
     fuel_type = graphene.String(required=True, description="Fuel type")
@@ -605,7 +603,6 @@ class ElectricityInput(graphene.InputObjectType):
 class HeatingInput(graphene.InputObjectType):
     """GraphQL Input type for heating"""
 
-    id = graphene.ID()
     group_id = graphene.ID(reqired=True, description="ID of the working group")
     timestamp = graphene.Date(required=True, description="Date")
     consumption = graphene.Float(required=True, description="Consumption")
@@ -718,26 +715,29 @@ class CreateElectricity(graphene.Mutation):
         """Process incoming data"""
         user = info.context.user
         ok = True
-        matches = WorkingGroup.objects.filter(id=input.group_id)
         if not user.is_representative:
             raise GraphQLError(
-                "Could add electricity data, because you are not the group representative."
+                "Electricity data was not added, since you are not the representative of your working group."
             )
-        else:
-            working_group = matches[0]
 
         # Calculate co2
         co2e = calc_co2_electricity(
-            input.consumption, input.fuel_type, input.group_share
+            input.consumption,
+            input.fuel_type.lower().replace(" ", "_"),
+            input.group_share,
         )
+        co2e_cap = co2e / user.working_group.n_employees
+
+        # Store in database
         new_electricity = Electricity(
-            working_group=working_group,
+            working_group=user.working_group,
             timestamp=input.timestamp,
             consumption=input.consumption,
             fuel_type=input.fuel_type,
             group_share=input.group_share,
             building=input.building,
             co2e=round(co2e, 1),
+            co2e_cap=round(co2e_cap, 1),
         )
         new_electricity.save()
         return CreateElectricity(ok=ok, electricity=new_electricity)
@@ -754,32 +754,37 @@ class CreateHeating(graphene.Mutation):
     ok = graphene.Boolean()
     heating = graphene.Field(HeatingType)
 
-    # @login_required
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         ok = True
-        matches = WorkingGroup.objects.filter(id=input.group_id)
-        if len(matches) == 0:
+        user = info.context.user
+        if not user.is_representative:
             raise GraphQLError(
-                f"Permission denied: Could add electricity data, because user '{input.username}' "
-                f"is not a group representative."
+                "Heating data was not added, since you are not the representative of your working group."
             )
-        else:
-            working_group = matches[0]
 
-        # calculate co2
+        # Calculate co2e
         co2e = calc_co2_heating(
-            input.consumption, input.unit, input.fuel_type, input.group_share
+            consumption=input.consumption,
+            unit=input.unit,
+            fuel_type=input.fuel_type.lower().replace(" ", "_"),
+            area_share=input.group_share,
         )
+        co2e_cap = co2e / user.working_group.n_employees
+
+        # Store in database
         new_heating = Heating(
-            working_group=working_group,
+            working_group=user.working_group,
             timestamp=input.timestamp,
             consumption=input.consumption,
             fuel_type=input.fuel_type,
+            unit=input.unit,
             building=input.building,
             group_share=input.group_share,
             co2e=round(co2e, 1),
+            co2e_cap=round(co2e_cap, 1),
         )
         new_heating.save()
         return CreateHeating(ok=ok, heating=new_heating)

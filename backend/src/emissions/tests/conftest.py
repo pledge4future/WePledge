@@ -44,3 +44,29 @@ def test_user_token():
     assert data["data"]["tokenAuth"]["success"]
 
     yield data["data"]["tokenAuth"]["token"]
+
+
+@pytest.fixture(scope="session")
+def test_user_representative_token():
+    """Log in test user representative and yield token"""
+
+    query = """
+            mutation ($email: String!, $password: String!){
+            tokenAuth (
+            email: $email
+            password: $password
+          ) {
+             success
+            errors
+            token
+            refreshToken
+          }
+        }
+    """
+    variables = {"email": "test3@pledge4future.org", "password": "test_password"}
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["data"]["tokenAuth"]["success"]
+
+    yield data["data"]["tokenAuth"]["token"]
