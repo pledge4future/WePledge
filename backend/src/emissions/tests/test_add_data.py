@@ -60,7 +60,7 @@ def test_add_electricity_data(test_user_representative_token):
           createElectricity (input: {
             timestamp: "2020-12-01"
             consumption: 3000
-            fuelType: "SOLAR"
+            fuelType: "Solar"
             building: "348"
             groupShare: 1
           }) {
@@ -96,7 +96,7 @@ def test_add_heating_data(test_user_representative_token):
             timestamp: "2022-10-01"
             consumption: 3000
             unit: "l"
-            fuelType: "OIL"
+            fuelType: "Oil"
             groupShare: 1
           }) {
             ok
@@ -118,5 +118,68 @@ def test_add_heating_data(test_user_representative_token):
     assert response.status_code == 200
     data = response.json()
     # logger.warning(data)
-    assert data["createHeating"]["ok"]
-    assert data["createheating"]["heating"]["consumption"] == 3000.0
+    assert data["data"]["createHeating"]["ok"]
+    assert data["data"]["createHeating"]["heating"]["consumption"] == 3000.0
+
+
+def test_add_businesstrip_data(test_user_token):
+    """Add businesstrip data by authenticated user"""
+    query = """
+        mutation createBusinesstrip {
+            createBusinesstrip (input: {
+              timestamp: "2020-01-01"
+              transportationMode: "Car"
+              distance: 200
+              size: "Medium"
+              fuelType: "Gasoline"
+              passengers: 1
+              roundtrip: false
+            }) {
+                ok
+                businesstrip {
+                    distance
+                }
+              }
+        }
+    """
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
+    response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
+    logger.warning(response.content)
+    assert response.status_code == 200
+    data = response.json()
+    logger.warning(data)
+    assert data["data"]["createBusinesstrip"]["ok"]
+    assert data["data"]["createBusinesstrip"]["businesstrip"]["distance"] == 200.0
+
+
+def test_add_commuting_data(test_user_token):
+    """Add commuting data by authenticated user"""
+    query = """
+        mutation createCommuting {
+          createCommuting (input: {
+            transportationMode: "Car"
+            distance: 30
+            fromTimestamp: "2017-01-01"
+            toTimestamp: "2017-06-01"
+            fuelType: "Gasoline"
+            size: "Medium"
+            passengers: 1
+            workweeks: 40
+          }) {
+            ok
+          }
+        }
+    """
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token}",
+    }
+    response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
+    logger.warning(response.content)
+    assert response.status_code == 200
+    data = response.json()
+    logger.warning(data)
+    assert data["data"]["createCommuting"]["ok"]

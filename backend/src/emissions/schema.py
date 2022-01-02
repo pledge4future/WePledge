@@ -34,6 +34,8 @@ from co2calculator.co2calculator.calculate import (
     calc_co2_businesstrip,
     calc_co2_commuting,
 )
+from co2calculator.co2calculator.constants import ElectricityFuel
+
 from graphql_jwt.decorators import login_required
 
 # -------------- GraphQL Types -------------------
@@ -550,8 +552,6 @@ class Query(UserQuery, MeQuery, ObjectType):
 class CommutingInput(graphene.InputObjectType):
     """GraphQL Input type for commuting"""
 
-    id = graphene.ID()
-    username = graphene.String(required=True, description="Username")
     from_timestamp = graphene.Date(required=True, description="Start date")
     to_timestamp = graphene.Date(required=True, description="End date")
     transportation_mode = graphene.String(
@@ -568,9 +568,6 @@ class CommutingInput(graphene.InputObjectType):
 class BusinessTripInput(graphene.InputObjectType):
     """GraphQL Input type for Business trips"""
 
-    id = graphene.ID()
-    username = graphene.String(required=True, description="User name")
-    group_id = graphene.ID(required=True, description="ID of the working group")
     timestamp = graphene.Date(required=True, description="Date")
     transportation_mode = graphene.String(
         required=True, description="Transportation mode"
@@ -603,7 +600,6 @@ class ElectricityInput(graphene.InputObjectType):
 class HeatingInput(graphene.InputObjectType):
     """GraphQL Input type for heating"""
 
-    group_id = graphene.ID(reqired=True, description="ID of the working group")
     timestamp = graphene.Date(required=True, description="Date")
     consumption = graphene.Float(required=True, description="Consumption")
     unit = graphene.String(required=True, description="Unit of fuel type")
@@ -719,11 +715,12 @@ class CreateElectricity(graphene.Mutation):
             raise GraphQLError(
                 "Electricity data was not added, since you are not the representative of your working group."
             )
-
+        if input.fuel_type:
+            input.fuel_type = input.fuel_type.lower().replace(" ", "_")
         # Calculate co2
         co2e = calc_co2_electricity(
             input.consumption,
-            input.fuel_type.lower().replace(" ", "_"),
+            input.fuel_type,
             input.group_share,
         )
         co2e_cap = co2e / user.working_group.n_employees
@@ -733,7 +730,7 @@ class CreateElectricity(graphene.Mutation):
             working_group=user.working_group,
             timestamp=input.timestamp,
             consumption=input.consumption,
-            fuel_type=input.fuel_type,
+            fuel_type=ElectricityFuel[input.fuel_type.upper()].name,
             group_share=input.group_share,
             building=input.building,
             co2e=round(co2e, 1),
@@ -768,7 +765,7 @@ class CreateHeating(graphene.Mutation):
         # Calculate co2e
         co2e = calc_co2_heating(
             consumption=input.consumption,
-            unit=input.unit,
+            unit=input.unit.lower().replace(" ", "_"),
             fuel_type=input.fuel_type.lower().replace(" ", "_"),
             area_share=input.group_share,
         )
@@ -779,8 +776,8 @@ class CreateHeating(graphene.Mutation):
             working_group=user.working_group,
             timestamp=input.timestamp,
             consumption=input.consumption,
-            fuel_type=input.fuel_type,
-            unit=input.unit,
+            fuel_type=input.fuel_type.upper().replace(" ", "_"),
+            unit=input.unit.lower().replace(" ", "_"),
             building=input.building,
             group_share=input.group_share,
             co2e=round(co2e, 1),
@@ -799,17 +796,24 @@ class CreateBusinessTrip(graphene.Mutation):
         input = BusinessTripInput(required=True)
 
     ok = graphene.Boolean()
-    # businesstrip = graphene.Field(BusinessTripType)
+    businesstrip = graphene.Field(BusinessTripType)
 
-    # @login_required
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         ok = True
-        user = CustomUser.objects.filter(username=input.username)
-        if len(user) == 0:
-            print(f"{input.username} user not found")
-
+        user = info.context.user
+        if input.seating_class:
+            input.seating_class = input.seating_class.lower().replace(" ", "_")
+        if input.fuel_type:
+            input.fuel_type = input.fuel_type.lower().replace(" ", "_")
+        if input.size:
+            input.size = input.size.lower().replace(" ", "_")
+        if input.transportation_mode:
+            input.transportation_mode = input.transportation_mode.lower().replace(
+                " ", "_"
+            )
         co2e, distance, range_category, _ = calc_co2_businesstrip(
             start=input.start,
             destination=input.destination,
@@ -828,12 +832,12 @@ class CreateBusinessTrip(graphene.Mutation):
             range_category=range_category,
             transportation_mode=input.transportation_mode,
             co2e=co2e,
-            user=user[0],
-            working_group=user[0].working_group,
+            user=user,
+            working_group=user.working_group,
         )
         businesstrip_instance.save()
 
-        return CreateBusinessTrip(ok=ok)
+        return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
 
 
 class CreateCommuting(graphene.Mutation):
@@ -847,19 +851,23 @@ class CreateCommuting(graphene.Mutation):
     ok = graphene.Boolean()
     # commute = graphene.Field(CommutingType)
 
-    # @login_required
     @staticmethod
+    @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         ok = True
-        user = CustomUser.objects.filter(username=input.username)
-        if len(user) == 0:
-            raise GraphQLError(f"{input.username} user not found")
-        user = user[0]
+        user = info.context.user
         if input.workweeks is None:
             input.workweeks = WEEKS_PER_YEAR
-
-        # calculate co2
+        if input.transportation_mode:
+            input.transportation_mode = input.transportation_mode.lower().replace(
+                " ", "_"
+            )
+        if input.fuel_type:
+            input.fuel_type = input.fuel_type.lower().replace(" ", "_")
+        if input.size:
+            input.size = input.size.lower().replace(" ", "_")
+        # Calculate co2
         weekly_co2e = calc_co2_commuting(
             transportation_mode=input.transportation_mode,
             weekly_distance=input.distance,
@@ -890,6 +898,9 @@ class CreateCommuting(graphene.Mutation):
             commuting_instance.save()
 
             # Update emissions of working group for date and transportation mode
+            if user.working_group is None:
+                continue
+
             entries = Commuting.objects.filter(
                 working_group=user.working_group,
                 transportation_mode=input.transportation_mode,

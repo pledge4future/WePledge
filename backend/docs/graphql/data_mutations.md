@@ -26,10 +26,9 @@ Electricity data should be entered for each month.
 ```
 mutation createElectricity {
   createElectricity (input: {
-    group_id: ""
-    timestamp: "2020-10-01"
+    timestamp: "2020-12-01"
     consumption: 3000
-    fuelType: "solar"
+    fuelType: "Solar"
     building: "348"
     groupShare: 1
   }) {
@@ -66,18 +65,17 @@ mutation createElectricity {
 ```
 mutation createHeating{
   createHeating (input: {
-    group_id: ""
     building: "348"
     timestamp: "2022-10-01"
     consumption: 3000
     unit: "l"
-    fuelType: "oil"
+    fuelType: "Oil"
     groupShare: 1
   }) {
     ok
     heating {
       timestamp
-      consumptionKwh
+      consumption
       fuelType
       co2e
     }
@@ -110,17 +108,18 @@ mutation createHeating{
 ```
 mutation createBusinesstrip {
     createBusinesstrip (input: {
-      username: "KarenAnderson"
-      groupId: "573b7bec-e9fe-4505-bb41-2bf9a2769a80"
       timestamp: "2020-01-01"
-      transportationMode: "car"
+      transportationMode: "Car"
       distance: 200
-      size: "medium"
-      fuelType: "gasoline"
+      size: "Medium"
+      fuelType: "Gasoline"
       passengers: 1
       roundtrip: false
     }) {
         ok
+        businesstrip {
+            distance
+        }
       }
 }
 ```
@@ -147,13 +146,12 @@ mutation createBusinesstrip {
 ```
 mutation createCommuting {
   createCommuting (input: {
-    username: "KlausMayer"
-    transportationMode: "car"
+    transportationMode: "Car"
     distance: 30
     fromTimestamp: "2017-01-01"
     toTimestamp: "2017-06-01"
-    fuelType: "gasoline"
-    size: "medium"
+    fuelType: "Gasoline"
+    size: "Medium"
     passengers: 1
     workweeks: 40
   }) {

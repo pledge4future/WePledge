@@ -201,7 +201,7 @@ class Command(BaseCommand):
                     working_group=wg_biomed,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -221,7 +221,7 @@ class Command(BaseCommand):
                     working_group=wg_environmental,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -243,7 +243,7 @@ class Command(BaseCommand):
                     working_group=wg_biomed,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=HeatingFuel.OIL,
+                    fuel_type=HeatingFuel.OIL.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -261,7 +261,7 @@ class Command(BaseCommand):
                     working_group=wg_environmental,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=HeatingFuel.OIL,
+                    fuel_type=HeatingFuel.OIL.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -321,8 +321,8 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                # if usr.working_group is None:
-                #    continue
+                if usr.username == "admin":
+                    continue
 
                 distance = np.random.randint(0, 20, 1)
                 transportation_mode = "bicycle"

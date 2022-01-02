@@ -135,6 +135,11 @@ class Commuting(models.Model):
         blank=False,
     )
 
+    class Meta:
+        """Specifies which attributes must be unique together"""
+
+        unique_together = ("user", "timestamp", "transportation_mode")
+
     def __str__(self):
         return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
 
