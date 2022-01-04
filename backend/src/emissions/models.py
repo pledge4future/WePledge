@@ -42,6 +42,21 @@ class CustomUser(AbstractUser):
         return self.username
 
 
+class ResearchField(models.Model):
+    """Research field"""
+
+    field = models.CharField(max_length=100, null=False, blank=False)
+    subfield = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        """Specifies which attributes must be unique together"""
+
+        unique_together = ("field", "subfield")
+
+    def __str__(self):
+        return f"{self.field} - {self.subfield}"
+
+
 class Institution(models.Model):
     """Research institution"""
 
@@ -69,6 +84,15 @@ class WorkingGroup(models.Model):
     )
     n_employees = models.IntegerField(null=True, blank=True)
     research_field = models.CharField(null=True, blank=True, max_length=200)
+
+    field_choices = [(x.name, x.value) for x in CommutingTransportationMode]
+    transportation_mode = models.CharField(
+        max_length=15,
+        choices=field_choices,
+        blank=False,
+    )
+
+    research_subfield = models.CharField(null=True, blank=True, max_length=200)
 
     class Meta:
         """Specifies which attributes must be unique together"""

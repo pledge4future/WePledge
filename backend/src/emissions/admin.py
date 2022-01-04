@@ -15,6 +15,7 @@ from emissions.models import (
     CommutingGroup,
     BusinessTrip,
     BusinessTripGroup,
+    ResearchField,
 )
 
 # Register your models here.
@@ -27,6 +28,7 @@ admin.site.register(Commuting)
 admin.site.register(CommutingGroup)
 admin.site.register(BusinessTrip)
 admin.site.register(BusinessTripGroup)
+admin.site.register(ResearchField)
 
 app = apps.get_app_config("graphql_auth")
 
