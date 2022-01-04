@@ -8,6 +8,7 @@ Authentication levels:
 
 
 ## User management
+ These mutations were implemneted using the [graphql-auth](https://django-graphql-auth.readthedocs.io/en/latest/quickstart/) packages. So they should be working.
 
 |Name | Status| Tested | Authentication level|
 |:----|-------|-------|------|
@@ -29,19 +30,18 @@ Authentication levels:
 | verify_token | :white_check_mark: || public |
 | refresh_token  | :white_check_mark: || public |
 | revoke_token | :white_check_mark: || public |
-| users ||| log_in_representative (wg)|
+
 
 ## Working group management
 
 |Name | Status| Tested | Authentication level|
 |:----|-------|-------|------|
-| create_working_group ||| log_in_user |
-| update_working_group ||| log_in_representative |
+| create_working_group | :white_check_mark: | :white_check_mark: | log_in_user |
+| update_working_group | || log_in_representative |
 | set_working_group | :white_check_mark: | :white_check_mark: | log_in_user |
-| set_representative ||| log_in_representative |
-| institutions ||| log_in_user |
-| institution_options ||| log_in_user |
-| working_groups ||| log_in_user |
+| institutions | :white_check_mark: | :white_check_mark:| log_in_user |
+| working_groups | :white_check_mark: | :white_check_mark:| log_in_user |
+| researchfields | :white_check_mark: | :white_check_mark:| log_in_user |
 
 ## Emissions
 

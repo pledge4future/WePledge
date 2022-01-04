@@ -27,6 +27,7 @@ from emissions.models import (
     Commuting,
     CommutingGroup,
     BusinessTripGroup,
+    ResearchField,
 )
 from co2calculator.co2calculator.calculate import (
     calc_co2_electricity,
@@ -69,6 +70,15 @@ class InstitutionType(DjangoObjectType):
         """Assign django model"""
 
         model = Institution
+
+
+class ResearchFieldType(DjangoObjectType):
+    """GraphQL Research Field"""
+
+    class Meta:
+        """Assign django model"""
+
+        model = ResearchField
 
 
 class BusinessTripType(DjangoObjectType):
@@ -186,7 +196,9 @@ class Query(UserQuery, MeQuery, ObjectType):
     electricities = graphene.List(ElectricityType)
     heatings = graphene.List(HeatingType)
     commutings = graphene.List(CommutingType)
-    working_groups = graphene.List(WorkingGroupType)
+    workinggroups = graphene.List(WorkingGroupType)
+    researchfields = graphene.List(ResearchFieldType)
+    institutions = graphene.List(InstitutionType)
 
     # Aggregated data
     heating_aggregated = graphene.List(
@@ -237,6 +249,19 @@ class Query(UserQuery, MeQuery, ObjectType):
     )
 
     @login_required
+    def resolve_workinggroups(self, info, **kwargs):
+        """Yields all working group objects"""
+        return WorkingGroup.objects.all()
+
+    def resolve_institutions(self, info, **kwargs):
+        """Yields all institution objects"""
+        return Institution.objects.all()
+
+    def resolve_researchfields(self, info, **kwargs):
+        """Yields all reseach field objects"""
+        return ResearchField.objects.all()
+
+    @login_required
     def resolve_businesstrips(self, info, **kwargs):
         """Yields all heating consumption objects"""
         user = info.context.user
@@ -259,11 +284,6 @@ class Query(UserQuery, MeQuery, ObjectType):
         """Yields all heating consumption objects"""
         user = info.context.user
         return Commuting.objects.all(user__id=user.id)
-
-    @login_required
-    def resolve_working_groups(self, info, **kwargs):
-        """Yields all working group objects"""
-        return WorkingGroup.objects.all()
 
     @login_required
     def resolve_heating_aggregated(
@@ -612,6 +632,30 @@ class HeatingInput(graphene.InputObjectType):
     )
 
 
+class CreateWorkingGroupInput(graphene.InputObjectType):
+    """GraphQL Input type for creating a new working group"""
+
+    name = graphene.String(reqired=True, description="Name of the working group")
+    institution = graphene.String(
+        required=True, description="Name of institution the working group belongs to"
+    )
+    city = graphene.String(
+        required=True, description="City of institution the working group belongs to"
+    )
+    country = graphene.String(
+        required=True, description="Country of institution the working group belongs to"
+    )
+    field = graphene.String(
+        required=True, description="Research field of working group"
+    )
+    subfield = graphene.String(
+        required=True, description="Research subfield of working group"
+    )
+    n_employees = graphene.Int(
+        required=True, description="Number of employees of working group"
+    )
+
+
 class WorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
@@ -648,6 +692,69 @@ class AuthMutation(graphene.ObjectType):
     verify_token = mutations.VerifyToken.Field()
     refresh_token = mutations.RefreshToken.Field()
     revoke_token = mutations.RevokeToken.Field()
+
+
+class CreateWorkingGroup(graphene.Mutation):
+    """Mutation to create a new working group"""
+
+    class Arguments:
+        """Assing input type"""
+
+        input = CreateWorkingGroupInput()
+
+    ok = graphene.Boolean()
+    workinggroup = graphene.Field(WorkingGroupType)
+
+    @staticmethod
+    @login_required
+    def mutate(root, info, input=None):
+        """Process incoming data"""
+        user = info.context.user
+        ok = True
+
+        institution_found = Institution.objects.filter(
+            name=input.institution, city=input.city, country=input.country
+        )
+        if len(institution_found) == 0:
+            raise GraphQLError("Institution not found.")
+        elif len(institution_found) > 1:
+            raise GraphQLError("Multiple institutions found.")
+        else:
+            institution = institution_found[0]
+
+        field_found = ResearchField.objects.filter(
+            field=input.field, subfield=input.subfield
+        )
+        if len(field_found) == 0:
+            raise GraphQLError("Field not found.")
+        elif len(field_found) > 1:
+            raise GraphQLError("Multiple fields found.")
+        else:
+            field = field_found[0]
+
+        # Check if working group already exists
+        exists = WorkingGroup.objects.filter(name=input.name, institution=institution)
+        if len(exists) > 0:
+            raise GraphQLError(
+                "This working group cannot be created, because it already exists."
+            )
+        elif user.is_representative is True:
+            raise GraphQLError(
+                "This user cannot create a new working group, since they are already the representative of another working group."
+            )
+        new_workinggroup = WorkingGroup(
+            name=input.name,
+            institution=institution,
+            representative=user,
+            field=field,
+            n_employees=input.n_employees,
+        )
+        new_workinggroup.save()
+
+        user.is_representative = True
+        user.save()
+
+        return CreateWorkingGroup(ok=ok, workinggroup=new_workinggroup)
 
 
 class SetWorkingGroup(graphene.Mutation):
@@ -932,6 +1039,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_heating = CreateHeating.Field()
     create_commuting = CreateCommuting.Field()
     set_working_group = SetWorkingGroup.Field()
+    create_working_group = CreateWorkingGroup.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

@@ -10,6 +10,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+import datetime as dt
 
 from co2calculator.co2calculator import (
     CommutingTransportationMode,
@@ -209,8 +210,8 @@ class BusinessTrip(models.Model):
         if self.working_group is None:
             return
 
-        year = self.timestamp[:4]
-        month = self.timestamp[5:7]
+        year = self.timestamp.year
+        month = self.timestamp.month
         entries = BusinessTrip.objects.filter(
             working_group=self.working_group,
             timestamp__year=year,

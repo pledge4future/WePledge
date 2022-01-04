@@ -21,7 +21,7 @@ logger.info(GRAPHQL_URL)
 def test_add_electricity_data_not_representative(test_user_token):
     """Add electricity data by authenticated user"""
     query = """
-        mutation createElectricity {
+        mutation {
           createElectricity (input: {
             timestamp: "2020-10-01"
             consumption: 3000
@@ -56,7 +56,7 @@ def test_add_electricity_data_not_representative(test_user_token):
 def test_add_electricity_data(test_user_representative_token):
     """Add electricity data by authenticated group representative"""
     query = """
-        mutation createElectricity {
+        mutation {
           createElectricity (input: {
             timestamp: "2020-12-01"
             consumption: 3000
@@ -125,7 +125,7 @@ def test_add_heating_data(test_user_representative_token):
 def test_add_businesstrip_data(test_user_token):
     """Add businesstrip data by authenticated user"""
     query = """
-        mutation createBusinesstrip {
+        mutation {
             createBusinesstrip (input: {
               timestamp: "2020-01-01"
               transportationMode: "Car"
