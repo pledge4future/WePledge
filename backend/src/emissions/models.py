@@ -83,16 +83,7 @@ class WorkingGroup(models.Model):
         CustomUser, on_delete=models.PROTECT, null=True
     )
     n_employees = models.IntegerField(null=True, blank=True)
-    research_field = models.CharField(null=True, blank=True, max_length=200)
-
-    field_choices = [(x.name, x.value) for x in CommutingTransportationMode]
-    transportation_mode = models.CharField(
-        max_length=15,
-        choices=field_choices,
-        blank=False,
-    )
-
-    research_subfield = models.CharField(null=True, blank=True, max_length=200)
+    field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""

@@ -16,6 +16,7 @@ from emissions.models import (
     Institution,
     Commuting,
     CommutingGroup,
+    ResearchField,
 )
 from co2calculator.co2calculator import (
     calc_co2_heating,
@@ -148,6 +149,10 @@ class Command(BaseCommand):
                 )[0],
                 representative=CustomUser.objects.get(username="LarsWiese"),
                 n_employees=20,
+                field=ResearchField.objects.filter(
+                    field="Natural Sciences",
+                    subfield="Earth and related environmental sciences",
+                )[0],
             )
             wg_environmental.save()
 
@@ -165,6 +170,9 @@ class Command(BaseCommand):
                     username="testuser_representative"
                 ),
                 n_employees=15,
+                field=ResearchField.objects.filter(
+                    field="Natural Sciences", subfield="Biological sciences"
+                )[0],
             )
             wg_biomed.save()
             testuser_representative.is_representative = True
