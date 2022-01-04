@@ -7,6 +7,8 @@ Authentication levels:
 - **log_in_representative**: User must be authenticated and be the representative of their group.
 
 
+## User management
+
 |Name | Status| Tested | Authentication level|
 |:----|-------|-------|------|
 | register | :white_check_mark: | :white_check_mark: | public |
@@ -27,30 +29,41 @@ Authentication levels:
 | verify_token | :white_check_mark: || public |
 | refresh_token  | :white_check_mark: || public |
 | revoke_token | :white_check_mark: || public |
+| users ||| log_in_representative (wg)|
+
+## Working group management
+
+|Name | Status| Tested | Authentication level|
+|:----|-------|-------|------|
 | create_working_group ||| log_in_user |
 | update_working_group ||| log_in_representative |
 | set_working_group | :white_check_mark: | :white_check_mark: | log_in_user |
-| change_representative ||| log_in_representative |
+| set_representative ||| log_in_representative |
 | institutions ||| log_in_user |
 | institution_options ||| log_in_user |
 | working_groups ||| log_in_user |
-| users ||| log_in_representative (wg)|
-| create_heating | :white_check_mark: ||log_in_representative |
-| create_electricity | :white_check_mark: ||log_in_representative |
-| create_businesstrip | :white_check_mark: || log_in_user |
-| create_commuting | :white_check_mark: || log_in_user |
-| resolve_businesstrips| :white_check_mark: || log_in_user (own)|
-| resolve_electricities| :white_check_mark: || log_in_user (group)|
-| resolve_heatings| :white_check_mark: || log_in_user (group)|
-| resolve_commutings| :white_check_mark: || log_in_user (own)|
-| resolve_heating_aggregated| :white_check_mark: | :white_check_mark: | log_in_user (group)|
-| resolve_electricity_aggregated|:white_check_mark: | :white_check_mark: | log_in_user (group)|
-| resolve_businesstrip_aggregated|:white_check_mark: | :white_check_mark:| log_in_user (group)|
-| resolve_commuting_aggregated| :white_check_mark:| :white_check_mark:| log_in_user (group)|
+
+## Emissions
+
+|Name | Status| Tested | Authentication level|
+|:----|-------|-------|------|
+| create_heating | :white_check_mark: | :white_check_mark: |log_in_representative |
+| create_electricity | :white_check_mark: | :white_check_mark: |log_in_representative |
+| create_businesstrip | :white_check_mark: | :white_check_mark: | log_in_user |
+| create_commuting | :white_check_mark: | :white_check_mark: | log_in_user |
+| resolve_businesstrips| :white_check_mark: || log_in_user |
+| resolve_electricities| :white_check_mark: || log_in_user |
+| resolve_heatings| :white_check_mark: || log_in_user |
+| resolve_commutings| :white_check_mark: || log_in_user |
+| resolve_heating_aggregated| :white_check_mark: | :white_check_mark: | log_in_user |
+| resolve_electricity_aggregated|:white_check_mark: | :white_check_mark: | log_in_user |
+| resolve_businesstrip_aggregated|:white_check_mark: | :white_check_mark:| log_in_user|
+| resolve_commuting_aggregated| :white_check_mark:| :white_check_mark:| log_in_user |
 | total_emissions | :white_check_mark:| :white_check_mark:| public |
 
 
 ## Optional additional endpoints
+
 |Name | Status| Tested | Authentication level|
 |:----|-------|-------|------|
 | delete_heating |  | |log_in_representative |
