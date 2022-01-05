@@ -46,6 +46,22 @@ export default function MyApp(props: AppProps) {
     }
   }, [router.events])
 
+  //used for matomo
+  useEffect(() => {
+    const handleRouteChange = (url: any) => {
+        if (window && window._paq) {
+            //@ts-ignore
+            _paq.push(['setCustomUrl', url]);
+            //@ts-ignore
+            _paq.push(['setDocumentTitle', document.title]);
+            //@ts-ignore
+            _paq.push(['trackPageView']);
+        }
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+}, [])
+
   React.useEffect(() => {
     // Remove the server-side injected CSS.
     const jssStyles = document.querySelector("#jss-server-side");
