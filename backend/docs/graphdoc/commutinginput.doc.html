@@ -110,6 +110,11 @@
                 HeatingFuelType
             </a>
         </li>
+        <li  title="HeatingUnit">
+            <a href="heatingunit.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingUnit
+            </a>
+        </li>
         <li  title="__DirectiveLocation">
             <a href="directivelocation.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 __DirectiveLocation
@@ -180,6 +185,11 @@
                 CreateHeating
             </a>
         </li>
+        <li  title="CreateWorkingGroup">
+            <a href="createworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroup
+            </a>
+        </li>
         <li  title="DeleteAccount">
             <a href="deleteaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 DeleteAccount
@@ -248,6 +258,11 @@
         <li  title="RemoveSecondaryEmail">
             <a href="removesecondaryemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 RemoveSecondaryEmail
+            </a>
+        </li>
+        <li  title="ResearchFieldType">
+            <a href="researchfieldtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResearchFieldType
             </a>
         </li>
         <li  title="ResendActivationEmail">
@@ -375,6 +390,11 @@
                 CommutingInput
             </a>
         </li>
+        <li  title="CreateWorkingGroupInput">
+            <a href="createworkinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroupInput
+            </a>
+        </li>
         <li  title="ElectricityInput">
             <a href="electricityinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ElectricityInput
@@ -434,7 +454,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">input</span> <span class="identifier">CommutingInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Username</span></span></li><li><span class="tab"><span class="meta">username</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Start date</span></span></li><li><span class="tab"><span class="meta">fromTimestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   End date</span></span></li><li><span class="tab"><span class="meta">toTimestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Transportation mode</span></span></li><li><span class="tab"><span class="meta">transportationMode</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of work weeks</span></span></li><li><span class="tab"><span class="meta">workweeks</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Distance [meter]</span></span></li><li><span class="tab"><span class="meta">distance</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Size of the vehicle</span></span></li><li><span class="tab"><span class="meta">size</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Fuel type of the vehicle</span></span></li><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Occupancy of the vehicle</span></span></li><li><span class="tab"><span class="meta">occupancy</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of passengers in the vehicle</span></span></li><li><span class="tab"><span class="meta">passengers</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">input</span> <span class="identifier">CommutingInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Start date</span></span></li><li><span class="tab"><span class="meta">fromTimestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   End date</span></span></li><li><span class="tab"><span class="meta">toTimestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Transportation mode</span></span></li><li><span class="tab"><span class="meta">transportationMode</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of work weeks</span></span></li><li><span class="tab"><span class="meta">workweeks</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Distance [meter]</span></span></li><li><span class="tab"><span class="meta">distance</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Size of the vehicle</span></span></li><li><span class="tab"><span class="meta">size</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Fuel type of the vehicle</span></span></li><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Occupancy of the vehicle</span></span></li><li><span class="tab"><span class="meta">occupancy</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of passengers in the vehicle</span></span></li><li><span class="tab"><span class="meta">passengers</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>

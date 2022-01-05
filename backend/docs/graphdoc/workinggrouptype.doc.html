@@ -110,6 +110,11 @@
                 HeatingFuelType
             </a>
         </li>
+        <li  title="HeatingUnit">
+            <a href="heatingunit.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingUnit
+            </a>
+        </li>
         <li  title="__DirectiveLocation">
             <a href="directivelocation.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 __DirectiveLocation
@@ -180,6 +185,11 @@
                 CreateHeating
             </a>
         </li>
+        <li  title="CreateWorkingGroup">
+            <a href="createworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroup
+            </a>
+        </li>
         <li  title="DeleteAccount">
             <a href="deleteaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 DeleteAccount
@@ -248,6 +258,11 @@
         <li  title="RemoveSecondaryEmail">
             <a href="removesecondaryemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 RemoveSecondaryEmail
+            </a>
+        </li>
+        <li  title="ResearchFieldType">
+            <a href="researchfieldtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResearchFieldType
             </a>
         </li>
         <li  title="ResendActivationEmail">
@@ -375,6 +390,11 @@
                 CommutingInput
             </a>
         </li>
+        <li  title="CreateWorkingGroupInput">
+            <a href="createworkinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroupInput
+            </a>
+        </li>
         <li  title="ElectricityInput">
             <a href="electricityinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ElectricityInput
@@ -434,7 +454,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">WorkingGroupType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">institution</span>: <a class="support type" href="institutiontype.doc.html">InstitutionType</a> </span></li><li></li><li><span class="tab"><span class="meta">representative</span>: <a class="support type" href="usertype.doc.html">UserType</a> </span></li><li></li><li><span class="tab"><span class="meta">nEmployees</span>: <a class="support type" href="int.doc.html">Int</a> </span></li><li></li><li><span class="tab"><span class="meta">researchField</span>: <a class="support type" href="string.doc.html">String</a> </span></li><li></li><li><span class="tab"><span class="meta">customuserSet</span>: [<a class="support type" href="usertype.doc.html">UserType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">heatingSet</span>: [<a class="support type" href="heatingtype.doc.html">HeatingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">electricitySet</span>: [<a class="support type" href="electricitytype.doc.html">ElectricityType</a>!]! </span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">WorkingGroupType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">name</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">institution</span>: <a class="support type" href="institutiontype.doc.html">InstitutionType</a> </span></li><li></li><li><span class="tab"><span class="meta">representative</span>: <a class="support type" href="usertype.doc.html">UserType</a> </span></li><li></li><li><span class="tab"><span class="meta">nEmployees</span>: <a class="support type" href="int.doc.html">Int</a> </span></li><li></li><li><span class="tab"><span class="meta">field</span>: <a class="support type" href="researchfieldtype.doc.html">ResearchFieldType</a>! </span></li><li></li><li><span class="tab"><span class="meta">customuserSet</span>: [<a class="support type" href="usertype.doc.html">UserType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">heatingSet</span>: [<a class="support type" href="heatingtype.doc.html">HeatingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">electricitySet</span>: [<a class="support type" href="electricitytype.doc.html">ElectricityType</a>!]! </span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>
@@ -445,7 +465,7 @@
             </a>
             Require by
         </h2>
-        <ul class="require-by"><li><a href="businesstriptype.doc.html" title="BusinessTripType - GraphQL Business Trip Type">BusinessTripType<em>GraphQL Business Trip Type</em></a><li><li><a href="commutingtype.doc.html" title="CommutingType - GraphQL Commuting Type">CommutingType<em>GraphQL Commuting Type</em></a><li><li><a href="electricitytype.doc.html" title="ElectricityType - GraphQL Electricity Type">ElectricityType<em>GraphQL Electricity Type</em></a><li><li><a href="heatingtype.doc.html" title="HeatingType - GraphQL Heating Type">HeatingType<em>GraphQL Heating Type</em></a><li><li><a href="institutiontype.doc.html" title="InstitutionType - GraphQL Institution">InstitutionType<em>GraphQL Institution</em></a><li><li><a href="query.doc.html" title="Query - GraphQL Queries">Query<em>GraphQL Queries</em></a><li><li><a href="usernode.doc.html" title="UserNode - ">UserNode<em>null</em></a><li><li><a href="usertype.doc.html" title="UserType - GraphQL User Type">UserType<em>GraphQL User Type</em></a><li></ul>
+        <ul class="require-by"><li><a href="businesstriptype.doc.html" title="BusinessTripType - GraphQL Business Trip Type">BusinessTripType<em>GraphQL Business Trip Type</em></a><li><li><a href="commutingtype.doc.html" title="CommutingType - GraphQL Commuting Type">CommutingType<em>GraphQL Commuting Type</em></a><li><li><a href="createworkinggroup.doc.html" title="CreateWorkingGroup - Mutation to create a new working group">CreateWorkingGroup<em>Mutation to create a new working group</em></a><li><li><a href="electricitytype.doc.html" title="ElectricityType - GraphQL Electricity Type">ElectricityType<em>GraphQL Electricity Type</em></a><li><li><a href="heatingtype.doc.html" title="HeatingType - GraphQL Heating Type">HeatingType<em>GraphQL Heating Type</em></a><li><li><a href="institutiontype.doc.html" title="InstitutionType - GraphQL Institution">InstitutionType<em>GraphQL Institution</em></a><li><li><a href="query.doc.html" title="Query - GraphQL Queries">Query<em>GraphQL Queries</em></a><li><li><a href="researchfieldtype.doc.html" title="ResearchFieldType - GraphQL Research Field">ResearchFieldType<em>GraphQL Research Field</em></a><li><li><a href="usernode.doc.html" title="UserNode - ">UserNode<em>null</em></a><li><li><a href="usertype.doc.html" title="UserType - GraphQL User Type">UserType<em>GraphQL User Type</em></a><li></ul>
     </div>
 </section>
 <footer>

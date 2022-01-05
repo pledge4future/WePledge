@@ -1,20 +1,11 @@
 # GraphQL: Data requests
 
-## Queries
+CO2e emission data over time can be queried using the following endpoints, all of which require an **authenticated user** (i.e. valid token in header).
 
-There are three types of queries to request monthly (default) or annual co2e data:
-
-- **heatingAggregated**
-- **electricityAggregated**
-- **businesstripAggregated**
-- **commutingAggregated**
-- **allAggregated** (not implemented yet)
-
-The **aggregation level** can be specified using the arguments
-
-- **username:** co2e on user level (only for businesstrips)
-- **groupId:** co2e on working group level
-- **instId:** co2e on institution level
+- heatingAggregated
+- electricityAggregated
+- businesstripAggregated
+- commutingAggregated
 
 The co2e emission can be returned as
 
@@ -23,51 +14,47 @@ The co2e emission can be returned as
 
 per
 
-- month (`time_interval="month"`)
+- month (`time_interval="month"`) - default
 - year (`time_interval="year"`)
+
+for the levels
+
+- personal (`level="personal"`)
+- group (`level="group"`) - default
+- institution (`level="institution"`)
+
+A user can only query their own data or the data of their respective working group or institution. group ID, institution ID or username do not need to specified explicitly in the request, since this information is derived from the database.
 
 ### Examples:
 
-##### All aggregated (not implemented yet)
-
-```
-  "data": {
-    "businesstripAggregated": [
-      {
-        "co2e": 3229,
-        "date": "2019-01-01"
-      },
-      {
-        "co2e": 3608,
-        "date": "2019-02-01"
-      },
-      {
-        "co2e": 3111,
-        "date": "2019-03-01"
-      },
-    ],
-    "heatingAggregated": [
-        ...
-    ]
-  }
-}
-```
-
 #### Monthly absolute emissions of business trips of a user
-**Request:**
 
-``` json
-query {
-	businessTripAggregated (username:"KimKlaus", time_interval="month") {
-	 co2e
-    date
-  }
+**Request:** (Python example)
+
+``` python
+query = """
+    query ($level: String!) {
+      businesstripAggregated (level: $level) {
+        date
+        co2e
+        co2eCap
+      }
 }
+"""
+variables = {"level": "personal"}
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": f"JWT {test_user_token}",
+}
+response = requests.post(
+    GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+)
 ```
+
 
 **Response:**
 
-```
+``` json
 {
   "data": {
     "businesstripAggregated": [
@@ -90,15 +77,14 @@ query {
 
 #### Monthly absolute emissions of heating consumption of a working group
 
-[How to get all group ids](./authentication.md).
-
 **Request:**
 
 ``` json
-query {
-	heatingAggregated (groupId:"f6c2965c-539e-456c-8e99-41cea9be4168") {
-	 co2e
+query ($level: String!) {
+  heatingAggregated (level: $level) {
     date
+    co2e
+    co2eCap
   }
 }
 ```
@@ -131,13 +117,12 @@ query {
 **Request:**
 
 ``` json
-query {
-	electricityAggregated (groupId:"c7876b21-6166-443b-97e5-f7c5413de520",
-    timeInterval:"month") {
-		co2e
-    	co2eCap
-    	date
-  }
+query ($level: String!) {
+    electricityAggregated (level: $level) {
+      date
+      co2e
+      co2eCap
+    }
 }
 ```
 
@@ -167,13 +152,12 @@ query {
 
 **Request:**
 
-```
-query {
-	commutingAggregated (groupId:"e0ee4c7f-f266-47e5-877f-15dd396d3a57",
-    timeInterval:"year") {
-    	co2eCap
-    	co2e
-    	date
+``` json
+query ($level: String!) {
+  commutingAggregated (level: $level) {
+    date
+    co2e
+    co2eCap
   }
 }
 ```
@@ -198,6 +182,68 @@ query {
    }
 }
 ```
+
+##### Query multiple types of emissions
+
+**Query:**
+
+```
+query {
+  commutingAggregated (level:"group", timeInterval:"month") {
+    co2e
+    co2eCap
+    date
+  }
+  heatingAggregated (level:"group",  timeInterval:"month") {
+    co2e
+    co2eCap
+    date
+  }
+  electricityAggregated (level:"group",  timeInterval:"month") {
+    co2e
+    co2eCap
+    date
+  }
+ businesstripAggregated (level:"group",  timeInterval:"month") {
+    co2e
+    co2eCap
+    date
+  }
+}
+```
+
+**Response:**
+
+
+```
+  "data": {
+    "businesstripAggregated": [
+      {
+        "co2e": 3229,
+        "date": "2019-01-01"
+      },
+      {
+        "co2e": 3608,
+        "date": "2019-02-01"
+      },
+      {
+        "co2e": 3111,
+        "date": "2019-03-01"
+      },
+    ],
+    "heatingAggregated": [
+        ...
+    ],
+    "electricityAggregated": [
+      ...
+    ],
+    "commutingAggregated": [
+      ...
+    ]
+  }
+}
+```
+
 
 ##### Query dropdown options for `fuel_type` and `unit` attribute
 

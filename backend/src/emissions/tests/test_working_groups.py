@@ -18,6 +18,50 @@ GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
 
+def test_set_workinggroup(test_user_token2):
+    """Test whether user data can be updated"""
+    query = """
+        mutation ($name: String!, $institution: String!, $city: String!, $country: String!){
+          setWorkingGroup (input: {
+              name: $name
+              institution: $institution
+              city: $city
+              country: $country
+            }
+          ) {
+            ok
+            user {
+                username
+              workingGroup {
+                name
+              }
+            }
+            }
+        }
+    """
+    variables = {
+        "name": "Biomedical Research Group",
+        "institution": "Heidelberg University",
+        "city": "Heidelberg",
+        "country": "Germany",
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user_token2}",
+    }
+    response = requests.post(
+        GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    logger.info(data["data"])
+    assert data["data"]["setWorkingGroup"]["ok"]
+    assert (
+        data["data"]["setWorkingGroup"]["user"]["workingGroup"]["name"]
+        == variables["name"]
+    )
+
+
 def test_resolve_working_groups(test_user_token):
     """List all working groups"""
     query = """
@@ -111,7 +155,7 @@ def test_create_workinggroup(test_user_token):
     assert response.status_code == 200
     logger.warning(response.content)
     data = response.json()
-    # logger.warning(data)
+    logger.warning(data)
     assert data["data"]["createWorkingGroup"]["ok"]
     assert (
         data["data"]["createWorkingGroup"]["workinggroup"]["representative"]["username"]

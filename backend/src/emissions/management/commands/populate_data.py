@@ -89,32 +89,38 @@ class Command(BaseCommand):
         del grid
 
         # Create user for unit tests -----------------------------------------------------
-        new_user = CustomUser(
-            username="testuser",
-            first_name="test",
-            last_name="user",
-            email="test2@pledge4future.org",
-        )
-        new_user.set_password("test_password")
-        new_user.save()
-        status = new_user.status
-        setattr(status, "verified", True)
-        status.save(update_fields=["verified"])
-        new_user.save()
+        try:
+            new_user = CustomUser(
+                username="testuser",
+                first_name="test",
+                last_name="user",
+                email="test2@pledge4future.org",
+            )
+            new_user.set_password("test_password")
+            new_user.save()
+            status = new_user.status
+            setattr(status, "verified", True)
+            status.save(update_fields=["verified"])
+            new_user.save()
+        except IntegrityError:
+            pass
 
-        testuser_representative = CustomUser(
-            username="testuser_representative",
-            first_name="test",
-            last_name="user",
-            email="test3@pledge4future.org",
-        )
-        testuser_representative.set_password("test_password")
-        # setattr(new_user, "is_representative", True)
-        testuser_representative.save()
-        status = testuser_representative.status
-        setattr(status, "verified", True)
-        status.save(update_fields=["verified"])
-        testuser_representative.save()
+        try:
+            testuser_representative = CustomUser(
+                username="testuser_representative",
+                first_name="test",
+                last_name="user",
+                email="test3@pledge4future.org",
+            )
+            testuser_representative.set_password("test_password")
+            # setattr(new_user, "is_representative", True)
+            testuser_representative.save()
+            status = testuser_representative.status
+            setattr(status, "verified", True)
+            status.save(update_fields=["verified"])
+            testuser_representative.save()
+        except IntegrityError:
+            pass
 
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
@@ -305,7 +311,7 @@ class Command(BaseCommand):
                         working_group=usr.working_group,
                         distance=np.random.randint(100, 10000, 1),
                         co2e=co2e,
-                        timestamp=str(d),
+                        timestamp=d,
                         transportation_mode=np.random.choice(modes, 1)[0].value,
                     )
                     new_trip.save()
@@ -327,6 +333,7 @@ class Command(BaseCommand):
                 np.datetime64("2021-01", "M"),
                 np.timedelta64(1, "M"),
             ).astype("datetime64[D]")
+            print(dates_2019)
 
             for usr in CustomUser.objects.all():
                 if usr.username == "admin":
@@ -336,8 +343,7 @@ class Command(BaseCommand):
                 transportation_mode = "bicycle"
 
                 for d_2019 in range(len(dates_2019) - 1):
-                    from_timestamp = dates_2019[d_2019]
-                    to_timestamp = dates_2019[d_2019 + 1]
+                    timestamp = dates_2019[d_2019]
 
                     # calculate co2
                     weekly_co2e = calc_co2_commuting(
@@ -348,50 +354,45 @@ class Command(BaseCommand):
                     monthly_co2e = (
                         WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
                     )
-                    dates = np.arange(
-                        np.datetime64(from_timestamp, "M"),
-                        np.datetime64(to_timestamp, "M") + np.timedelta64(1, "M"),
-                        np.timedelta64(1, "M"),
-                    ).astype("datetime64[D]")
-                    for d in dates:
-                        commuting_instance = Commuting(
-                            timestamp=str(d),
-                            distance=distance,
-                            transportation_mode=transportation_mode,
-                            co2e=monthly_co2e,
-                            user=usr,
-                            working_group=usr.working_group,
-                        )
-                        commuting_instance.save()
 
-                        if usr.working_group is None:
-                            continue
+                    commuting_instance = Commuting(
+                        timestamp=str(timestamp),
+                        distance=distance,
+                        transportation_mode=transportation_mode,
+                        co2e=monthly_co2e,
+                        user=usr,
+                        working_group=usr.working_group,
+                    )
+                    commuting_instance.save()
 
-                        # Update emissions of working group for date and transportation mode
-                        entries = Commuting.objects.filter(
-                            working_group=usr.working_group,
-                            transportation_mode=transportation_mode,
-                            timestamp=str(d),
-                        )
-                        metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
-                        group_data = entries.aggregate(**metrics)
+                    if usr.working_group is None:
+                        continue
 
-                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
-                        commuting_group_instance = CommutingGroup(
-                            working_group=usr.working_group,
-                            timestamp=str(d),
-                            transportation_mode=transportation_mode,
-                            n_employees=usr.working_group.n_employees,
-                            co2e=group_data["co2e"],
-                            co2e_cap=co2e_cap,
-                            distance=group_data["distance"],
-                        )
-                        commuting_group_instance.save()
+                    # Update emissions of working group for date and transportation mode
+                    entries = Commuting.objects.filter(
+                        working_group=usr.working_group,
+                        transportation_mode=transportation_mode,
+                        timestamp=str(timestamp),
+                    )
+                    metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
+                    group_data = entries.aggregate(**metrics)
+
+                    co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                    commuting_group_instance = CommutingGroup(
+                        working_group=usr.working_group,
+                        timestamp=str(timestamp),
+                        transportation_mode=transportation_mode,
+                        n_employees=usr.working_group.n_employees,
+                        co2e=group_data["co2e"],
+                        co2e_cap=co2e_cap,
+                        distance=group_data["distance"],
+                    )
+                    commuting_group_instance.save()
 
                 transportation_mode = "car"
                 for d_2020 in range(len(dates_2020) - 1):
-                    from_timestamp = dates_2020[d_2020]
-                    to_timestamp = dates_2020[d_2020 + 1]
+                    timestamp = dates_2020[d_2020]
+                    # to_timestamp = dates_2020[d_2020 + 1]
 
                     # calculate co2
                     weekly_co2e = calc_co2_commuting(
@@ -406,42 +407,37 @@ class Command(BaseCommand):
                     monthly_co2e = (
                         WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
                     )
-                    dates = np.arange(
-                        np.datetime64(from_timestamp, "M"),
-                        np.datetime64(to_timestamp, "M") + np.timedelta64(1, "M"),
-                        np.timedelta64(1, "M"),
-                    ).astype("datetime64[D]")
-                    for d in dates:
-                        commuting_instance = Commuting(
-                            timestamp=str(d),
-                            distance=distance,
-                            transportation_mode=transportation_mode,
-                            co2e=monthly_co2e,
-                            user=usr,
-                            working_group=usr.working_group,
-                        )
-                        commuting_instance.save()
 
-                        if usr.working_group is None:
-                            continue
+                    commuting_instance = Commuting(
+                        timestamp=str(timestamp),
+                        distance=distance,
+                        transportation_mode=transportation_mode,
+                        co2e=monthly_co2e,
+                        user=usr,
+                        working_group=usr.working_group,
+                    )
+                    commuting_instance.save()
 
-                        # Update emissions of working group for date and transportation mode
-                        entries = Commuting.objects.filter(
-                            working_group=usr.working_group,
-                            transportation_mode=transportation_mode,
-                            timestamp=str(d),
-                        )
-                        metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
-                        group_data = entries.aggregate(**metrics)
+                    if usr.working_group is None:
+                        continue
 
-                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
-                        commuting_group_instance = CommutingGroup(
-                            working_group=usr.working_group,
-                            timestamp=str(d),
-                            transportation_mode=transportation_mode,
-                            n_employees=usr.working_group.n_employees,
-                            co2e=group_data["co2e"],
-                            co2e_cap=co2e_cap,
-                            distance=group_data["distance"],
-                        )
-                        commuting_group_instance.save()
+                    # Update emissions of working group for date and transportation mode
+                    entries = Commuting.objects.filter(
+                        working_group=usr.working_group,
+                        transportation_mode=transportation_mode,
+                        timestamp=str(timestamp),
+                    )
+                    metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
+                    group_data = entries.aggregate(**metrics)
+
+                    co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                    commuting_group_instance = CommutingGroup(
+                        working_group=usr.working_group,
+                        timestamp=str(timestamp),
+                        transportation_mode=transportation_mode,
+                        n_employees=usr.working_group.n_employees,
+                        co2e=group_data["co2e"],
+                        co2e_cap=co2e_cap,
+                        distance=group_data["distance"],
+                    )
+                    commuting_group_instance.save()
