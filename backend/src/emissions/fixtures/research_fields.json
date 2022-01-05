@@ -1,0 +1,338 @@
+[
+  {
+    "model": "emissions.researchfield",
+    "pk": 1,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Mathematics"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 2,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Computer and information sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 3,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Physical sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 4,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Chemical sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 5,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Earth and related environmental sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 6,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Biological sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 7,
+    "fields": {
+      "field": "Natural Sciences",
+      "subfield": "Other natural sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 8,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Civil engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 9,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Electrical engineering, electronic engineering, information engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 10,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Mechanical engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 11,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Chemical engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 12,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Materials engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 13,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Medical engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 14,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Environmental engineering"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 15,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Environmental biotechnology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 16,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Industrial biotechnology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 17,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Nano-technology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 18,
+    "fields": {
+      "field": "Engineering and Technology",
+      "subfield": "Other engineering and technologies"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 19,
+    "fields": {
+      "field": "Medical and Health Sciences",
+      "subfield": "Basic medicine"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 20,
+    "fields": {
+      "field": "Medical and Health Sciences",
+      "subfield": "Clinical medicine"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 21,
+    "fields": {
+      "field": "Medical and Health Sciences",
+      "subfield": "Health sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 22,
+    "fields": {
+      "field": "Medical and Health Sciences",
+      "subfield": "Health biotechnology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 23,
+    "fields": {
+      "field": "Medical and Health Sciences",
+      "subfield": "Other medical sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 24,
+    "fields": {
+      "field": "Agricultural Sciences",
+      "subfield": "Agriculture, forestry, and fisheries"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 25,
+    "fields": {
+      "field": "Agricultural Sciences",
+      "subfield": "Animal and diary science"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 26,
+    "fields": {
+      "field": "Agricultural Sciences",
+      "subfield": "Veterinary science"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 27,
+    "fields": {
+      "field": "Agricultural Sciences",
+      "subfield": "Agricultural biotechnology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 28,
+    "fields": {
+      "field": "Agricultural Sciences",
+      "subfield": "Other agricultural sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 29,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Psychology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 30,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Economics and business"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 31,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Educational sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 32,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Sociology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 33,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Law"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 34,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Political science"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 35,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Social and economic geography"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 36,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Media and communications"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 37,
+    "fields": {
+      "field": "Social Sciences",
+      "subfield": "Other social sciences"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 38,
+    "fields": {
+      "field": "Humanities",
+      "subfield": "History and archeology"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 39,
+    "fields": {
+      "field": "Humanities",
+      "subfield": "Language and literature"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 40,
+    "fields": {
+      "field": "Humanities",
+      "subfield": "Philosophy, ethics and religion"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 41,
+    "fields": {
+      "field": "Humanities",
+      "subfield": "Art (arts, history of arts, performing arts, music)"
+    }
+  },
+  {
+    "model": "emissions.researchfield",
+    "pk": 42,
+    "fields": {
+      "field": "Humanities",
+      "subfield": "Other humanities"
+    }
+  }
+]
