@@ -85,11 +85,6 @@
                 String
             </a>
         </li>
-        <li  title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
-            </a>
-        </li>
     </ul>
 </div>
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
@@ -113,6 +108,11 @@
         <li  title="HeatingFuelType">
             <a href="heatingfueltype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 HeatingFuelType
+            </a>
+        </li>
+        <li  title="HeatingUnit">
+            <a href="heatingunit.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingUnit
             </a>
         </li>
         <li  title="__DirectiveLocation">
@@ -185,6 +185,11 @@
                 CreateHeating
             </a>
         </li>
+        <li  title="CreateWorkingGroup">
+            <a href="createworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroup
+            </a>
+        </li>
         <li  title="DeleteAccount">
             <a href="deleteaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 DeleteAccount
@@ -255,6 +260,11 @@
                 RemoveSecondaryEmail
             </a>
         </li>
+        <li  title="ResearchFieldType">
+            <a href="researchfieldtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResearchFieldType
+            </a>
+        </li>
         <li  title="ResendActivationEmail">
             <a href="resendactivationemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ResendActivationEmail
@@ -275,9 +285,19 @@
                 SendSecondaryEmailActivation
             </a>
         </li>
+        <li  title="SetWorkingGroup">
+            <a href="setworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SetWorkingGroup
+            </a>
+        </li>
         <li  title="SwapEmails">
             <a href="swapemails.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 SwapEmails
+            </a>
+        </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
             </a>
         </li>
         <li  title="UpdateAccount">
@@ -370,6 +390,11 @@
                 CommutingInput
             </a>
         </li>
+        <li  title="CreateWorkingGroupInput">
+            <a href="createworkinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroupInput
+            </a>
+        </li>
         <li  title="ElectricityInput">
             <a href="electricityinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ElectricityInput
@@ -378,6 +403,11 @@
         <li  title="HeatingInput">
             <a href="heatinginput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 HeatingInput
+            </a>
+        </li>
+        <li  title="WorkingGroupInput">
+            <a href="workinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                WorkingGroupInput
             </a>
         </li>
     </ul>
@@ -424,7 +454,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">input</span> <span class="identifier">BusinessTripInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">username</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">groupId</span>: <a class="support type" href="uuid.doc.html">UUID</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">timestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">transportationMode</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">start</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">destination</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">distance</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">size</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">occupancy</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">seatingClass</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">passengers</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="meta">roundtrip</span>: <a class="support type" href="boolean.doc.html">Boolean</a></span></li></span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">input</span> <span class="identifier">BusinessTripInput</span> {</li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Date</span></span></li><li><span class="tab"><span class="meta">timestamp</span>: <a class="support type" href="date.doc.html">Date</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Transportation mode</span></span></li><li><span class="tab"><span class="meta">transportationMode</span>: <a class="support type" href="string.doc.html">String</a>!</span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Start address</span></span></li><li><span class="tab"><span class="meta">start</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Destination address</span></span></li><li><span class="tab"><span class="meta">destination</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Distance [meter]</span></span></li><li><span class="tab"><span class="meta">distance</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Size of the vehicle</span></span></li><li><span class="tab"><span class="meta">size</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Fuel type of the vehicle</span></span></li><li><span class="tab"><span class="meta">fuelType</span>: <a class="support type" href="string.doc.html">String</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Occupancy</span></span></li><li><span class="tab"><span class="meta">occupancy</span>: <a class="support type" href="float.doc.html">Float</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Seating class in plane</span></span></li><li><span class="tab"><span class="meta">seatingClass</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Number of passengers</span></span></li><li><span class="tab"><span class="meta">passengers</span>: <a class="support type" href="int.doc.html">Int</a></span></li></span></li><li><span class="tab"><li><span class="tab"><span class="comment line">#   Roundtrip [True/False]</span></span></li><li><span class="tab"><span class="meta">roundtrip</span>: <a class="support type" href="boolean.doc.html">Boolean</a></span></li></span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>
