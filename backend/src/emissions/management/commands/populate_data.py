@@ -311,7 +311,7 @@ class Command(BaseCommand):
                         working_group=usr.working_group,
                         distance=np.random.randint(100, 10000, 1),
                         co2e=co2e,
-                        timestamp=d,
+                        timestamp=str(d),
                         transportation_mode=np.random.choice(modes, 1)[0].value,
                     )
                     new_trip.save()
@@ -333,7 +333,7 @@ class Command(BaseCommand):
                 np.datetime64("2021-01", "M"),
                 np.timedelta64(1, "M"),
             ).astype("datetime64[D]")
-            print(dates_2019)
+            #print(dates_2019)
 
             for usr in CustomUser.objects.all():
                 if usr.username == "admin":

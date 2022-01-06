@@ -18,7 +18,7 @@ GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
 
-def test_add_electricity_data_not_representative(test_user_token):
+def test_add_electricity_data_not_representative(test_user_token2):
     """Add electricity data by authenticated user"""
     query = """
         mutation {
@@ -42,11 +42,12 @@ def test_add_electricity_data_not_representative(test_user_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user_token2}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
     data = response.json()
+    logger.warning(data)
     assert (
         data["errors"][0]["message"]
         == "Electricity data was not added, since you are not the representative of your working group."

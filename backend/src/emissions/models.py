@@ -210,8 +210,8 @@ class BusinessTrip(models.Model):
         if self.working_group is None:
             return
 
-        year = self.timestamp.year
-        month = self.timestamp.month
+        year = self.timestamp[:4]#.year
+        month = self.timestamp[5:7]#.month
         entries = BusinessTrip.objects.filter(
             working_group=self.working_group,
             timestamp__year=year,

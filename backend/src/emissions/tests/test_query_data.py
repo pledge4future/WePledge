@@ -18,7 +18,7 @@ GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
 
-def test_query_heating_aggregated(test_user_token):
+def test_query_heating_aggregated(test_user_token2):
     """Query aggregated heating data by authenticated user"""
     query = """
         query ($level: String!) {
@@ -32,7 +32,7 @@ def test_query_heating_aggregated(test_user_token):
     variables = {"level": "group"}
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user_token2}",
     }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
@@ -44,7 +44,7 @@ def test_query_heating_aggregated(test_user_token):
     assert isinstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
 
 
-def test_query_electricity_aggregated_institution(test_user_token):
+def test_query_electricity_aggregated_institution(test_user_token2):
     """Query aggregated electricity data by authenticated user"""
     query = """
         query ($level: String!) {
@@ -58,7 +58,7 @@ def test_query_electricity_aggregated_institution(test_user_token):
     variables = {"level": "institution"}
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user_token2}",
     }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
@@ -70,7 +70,7 @@ def test_query_electricity_aggregated_institution(test_user_token):
     assert isinstance(data["data"]["electricityAggregated"][0]["co2eCap"], float)
 
 
-def test_query_businesstrip_aggregated_personal(test_user_token):
+def test_query_businesstrip_aggregated_personal(test_user_token2):
     """Query aggregated businesstrip data by authenticated user"""
     query = """
         query ($level: String!) {
@@ -84,7 +84,7 @@ def test_query_businesstrip_aggregated_personal(test_user_token):
     variables = {"level": "personal"}
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user_token2}",
     }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
@@ -97,7 +97,7 @@ def test_query_businesstrip_aggregated_personal(test_user_token):
     assert isinstance(data["data"]["businesstripAggregated"][0]["co2eCap"], float)
 
 
-def test_query_commuting_aggregated_group(test_user_token):
+def test_query_commuting_aggregated_group(test_user_token2):
     """Query aggregated commuting data by authenticated user"""
     query = """
         query ($level: String!) {
@@ -111,7 +111,7 @@ def test_query_commuting_aggregated_group(test_user_token):
     variables = {"level": "group"}
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user_token2}",
     }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
@@ -124,7 +124,7 @@ def test_query_commuting_aggregated_group(test_user_token):
     assert isinstance(data["data"]["commutingAggregated"][0]["co2eCap"], float)
 
 
-def test_query_electricity_aggregated_with_invalid_token(test_user_token):
+def test_query_electricity_aggregated_with_invalid_token():
     """Query aggregated electricity data by non authenticated user should return an error message but no data"""
     query = """
         query ($level: String!) {
