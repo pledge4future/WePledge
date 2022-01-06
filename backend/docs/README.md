@@ -1,5 +1,13 @@
 # Backend documentation
 
+## Load submodules 
+
+After cloning the main repo, load the submodule co2calculator. 
+
+```
+git submodule update --init
+```
+
 ## Docker setup
 
 Run docker compose to create the docker images and start the containers
