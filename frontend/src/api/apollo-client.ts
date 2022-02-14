@@ -22,8 +22,7 @@ const headerLink = setContext((_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: `http://localhost:8000/graphql/`,
-  credentials: "include",
+  uri: `http://localhost:8000/graphql/`
 });
 
 

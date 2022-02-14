@@ -62,7 +62,6 @@ export const AuthContextProvider: React.FC<{}> = props => {
 }
 
   useEffect(() => {
-    console.log(getCookie("token"));
     if (getCookie("token")) {
       refreshToken();
     }

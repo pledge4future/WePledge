@@ -67,8 +67,12 @@ function SignIn() {
         router.push('/dashboard')
       }
       else{
+        console.log(data)
         setErrorState(true);
       }
+    },
+    onError(error){
+      console.log(error)
     }
   });
 

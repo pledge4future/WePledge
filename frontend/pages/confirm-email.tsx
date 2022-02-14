@@ -9,6 +9,7 @@ import withRoot from '../src/withRoot';
 import Container from '@material-ui/core/Container';
 
 import { gql, useMutation } from '@apollo/client'
+import { useRouter } from 'next/router';
 
 
 const VERIFY_ACCOUNT = gql `
@@ -31,6 +32,8 @@ const validationSchema = yup.object({
 
 function confirmEmail(){
 
+  const router = useRouter();
+
   const [verifyAccount] = useMutation(VERIFY_ACCOUNT)
 
 
@@ -41,6 +44,7 @@ function confirmEmail(){
     validationSchema: validationSchema,
     onSubmit: (values) => {
       verifyAccount({variables: {token: values.token}})
+      router.push('/sign-in')
     }
   })
 
