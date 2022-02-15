@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="./styles/graphdoc.css" />
+    <title>Float</title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700" rel="stylesheet"><link type="text/css" rel="stylesheet" href="./assets/code.css" /><link type="text/css" rel="stylesheet" href="./assets/require-by.css" />
+</head>
+<body class="slds-scrollable--y">
+    <nav class="slds-grid slds-grid--vertical slds-col--rule-right">
+        <header class="slds-p-around--medium slds-col slds-shrik slds-grow-none">
+            <button class="slds-button slds-button--icon slds-float--right js-toggle-navigation less-than-medium">
+                <i class="material-icons">close</i>
+            </button>
+                <h3 class="slds-text-heading--medium"><a href="./">GraphQL Schema</a></h3>
+            <div class="slds-p-top--small">
+                <input id="type-search" type="text" placeholder="Search a type" autofocus="" class="slds-input" />
+            </div>
+        </header>
+        <div id="navication-scroll" class="slds-scrollable--y slds-col slds-grow">
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Schema</h4>
+    <ul>
+        <li  title="Query">
+            <a href="query.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Query
+            </a>
+        </li>
+        <li  title="Mutation">
+            <a href="mutation.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Mutation
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Scalars</h4>
+    <ul>
+        <li  title="Boolean">
+            <a href="boolean.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Boolean
+            </a>
+        </li>
+        <li  title="Date">
+            <a href="date.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Date
+            </a>
+        </li>
+        <li  title="DateTime">
+            <a href="datetime.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                DateTime
+            </a>
+        </li>
+        <li  title="ExpectedErrorType">
+            <a href="expectederrortype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ExpectedErrorType
+            </a>
+        </li>
+        <li class="slds-is-active" title="Float">
+            <a href="float.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Float
+            </a>
+        </li>
+        <li  title="GenericScalar">
+            <a href="genericscalar.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                GenericScalar
+            </a>
+        </li>
+        <li  title="ID">
+            <a href="id.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ID
+            </a>
+        </li>
+        <li  title="Int">
+            <a href="int.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Int
+            </a>
+        </li>
+        <li  title="String">
+            <a href="string.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                String
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Enums</h4>
+    <ul>
+        <li  title="BusinessTripTransportationMode">
+            <a href="businesstriptransportationmode.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                BusinessTripTransportationMode
+            </a>
+        </li>
+        <li  title="CommutingTransportationMode">
+            <a href="commutingtransportationmode.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CommutingTransportationMode
+            </a>
+        </li>
+        <li  title="ElectricityFuelType">
+            <a href="electricityfueltype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ElectricityFuelType
+            </a>
+        </li>
+        <li  title="HeatingFuelType">
+            <a href="heatingfueltype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingFuelType
+            </a>
+        </li>
+        <li  title="HeatingUnit">
+            <a href="heatingunit.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingUnit
+            </a>
+        </li>
+        <li  title="__DirectiveLocation">
+            <a href="directivelocation.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __DirectiveLocation
+            </a>
+        </li>
+        <li  title="__TypeKind">
+            <a href="typekind.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __TypeKind
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Interfaces</h4>
+    <ul>
+        <li  title="Node">
+            <a href="node.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Node
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Objects</h4>
+    <ul>
+        <li  title="ArchiveAccount">
+            <a href="archiveaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ArchiveAccount
+            </a>
+        </li>
+        <li  title="BusinessTripAggregated">
+            <a href="businesstripaggregated.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                BusinessTripAggregated
+            </a>
+        </li>
+        <li  title="BusinessTripType">
+            <a href="businesstriptype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                BusinessTripType
+            </a>
+        </li>
+        <li  title="CommutingAggregated">
+            <a href="commutingaggregated.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CommutingAggregated
+            </a>
+        </li>
+        <li  title="CommutingType">
+            <a href="commutingtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CommutingType
+            </a>
+        </li>
+        <li  title="CreateBusinessTrip">
+            <a href="createbusinesstrip.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateBusinessTrip
+            </a>
+        </li>
+        <li  title="CreateCommuting">
+            <a href="createcommuting.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateCommuting
+            </a>
+        </li>
+        <li  title="CreateElectricity">
+            <a href="createelectricity.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateElectricity
+            </a>
+        </li>
+        <li  title="CreateHeating">
+            <a href="createheating.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateHeating
+            </a>
+        </li>
+        <li  title="CreateWorkingGroup">
+            <a href="createworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroup
+            </a>
+        </li>
+        <li  title="DeleteAccount">
+            <a href="deleteaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                DeleteAccount
+            </a>
+        </li>
+        <li  title="ElectricityAggregated">
+            <a href="electricityaggregated.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ElectricityAggregated
+            </a>
+        </li>
+        <li  title="ElectricityType">
+            <a href="electricitytype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ElectricityType
+            </a>
+        </li>
+        <li  title="HeatingAggregated">
+            <a href="heatingaggregated.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingAggregated
+            </a>
+        </li>
+        <li  title="HeatingType">
+            <a href="heatingtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingType
+            </a>
+        </li>
+        <li  title="InstitutionType">
+            <a href="institutiontype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                InstitutionType
+            </a>
+        </li>
+        <li  title="ObtainJSONWebToken">
+            <a href="obtainjsonwebtoken.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ObtainJSONWebToken
+            </a>
+        </li>
+        <li  title="PageInfo">
+            <a href="pageinfo.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                PageInfo
+            </a>
+        </li>
+        <li  title="PasswordChange">
+            <a href="passwordchange.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                PasswordChange
+            </a>
+        </li>
+        <li  title="PasswordReset">
+            <a href="passwordreset.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                PasswordReset
+            </a>
+        </li>
+        <li  title="PasswordSet">
+            <a href="passwordset.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                PasswordSet
+            </a>
+        </li>
+        <li  title="RefreshToken">
+            <a href="refreshtoken.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                RefreshToken
+            </a>
+        </li>
+        <li  title="Register">
+            <a href="register.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                Register
+            </a>
+        </li>
+        <li  title="RemoveSecondaryEmail">
+            <a href="removesecondaryemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                RemoveSecondaryEmail
+            </a>
+        </li>
+        <li  title="ResearchFieldType">
+            <a href="researchfieldtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResearchFieldType
+            </a>
+        </li>
+        <li  title="ResendActivationEmail">
+            <a href="resendactivationemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResendActivationEmail
+            </a>
+        </li>
+        <li  title="RevokeToken">
+            <a href="revoketoken.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                RevokeToken
+            </a>
+        </li>
+        <li  title="SendPasswordResetEmail">
+            <a href="sendpasswordresetemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SendPasswordResetEmail
+            </a>
+        </li>
+        <li  title="SendSecondaryEmailActivation">
+            <a href="sendsecondaryemailactivation.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SendSecondaryEmailActivation
+            </a>
+        </li>
+        <li  title="SetWorkingGroup">
+            <a href="setworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SetWorkingGroup
+            </a>
+        </li>
+        <li  title="SwapEmails">
+            <a href="swapemails.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SwapEmails
+            </a>
+        </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
+            </a>
+        </li>
+        <li  title="UpdateAccount">
+            <a href="updateaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                UpdateAccount
+            </a>
+        </li>
+        <li  title="UserNode">
+            <a href="usernode.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                UserNode
+            </a>
+        </li>
+        <li  title="UserNodeConnection">
+            <a href="usernodeconnection.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                UserNodeConnection
+            </a>
+        </li>
+        <li  title="UserNodeEdge">
+            <a href="usernodeedge.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                UserNodeEdge
+            </a>
+        </li>
+        <li  title="UserType">
+            <a href="usertype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                UserType
+            </a>
+        </li>
+        <li  title="VerifyAccount">
+            <a href="verifyaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                VerifyAccount
+            </a>
+        </li>
+        <li  title="VerifySecondaryEmail">
+            <a href="verifysecondaryemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                VerifySecondaryEmail
+            </a>
+        </li>
+        <li  title="VerifyToken">
+            <a href="verifytoken.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                VerifyToken
+            </a>
+        </li>
+        <li  title="WorkingGroupType">
+            <a href="workinggrouptype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                WorkingGroupType
+            </a>
+        </li>
+        <li  title="__Directive">
+            <a href="directive.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __Directive
+            </a>
+        </li>
+        <li  title="__EnumValue">
+            <a href="enumvalue.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __EnumValue
+            </a>
+        </li>
+        <li  title="__Field">
+            <a href="field.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __Field
+            </a>
+        </li>
+        <li  title="__InputValue">
+            <a href="inputvalue.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __InputValue
+            </a>
+        </li>
+        <li  title="__Schema">
+            <a href="schema.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __Schema
+            </a>
+        </li>
+        <li  title="__Type">
+            <a href="type.spec.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                __Type
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Input Objects</h4>
+    <ul>
+        <li  title="BusinessTripInput">
+            <a href="businesstripinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                BusinessTripInput
+            </a>
+        </li>
+        <li  title="CommutingInput">
+            <a href="commutinginput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CommutingInput
+            </a>
+        </li>
+        <li  title="CreateWorkingGroupInput">
+            <a href="createworkinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroupInput
+            </a>
+        </li>
+        <li  title="ElectricityInput">
+            <a href="electricityinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ElectricityInput
+            </a>
+        </li>
+        <li  title="HeatingInput">
+            <a href="heatinginput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingInput
+            </a>
+        </li>
+        <li  title="WorkingGroupInput">
+            <a href="workinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                WorkingGroupInput
+            </a>
+        </li>
+    </ul>
+</div>
+<div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
+    <h4 class="slds-text-title--caps slds-p-around--medium">Directives</h4>
+    <ul>
+        <li  title="include">
+            <a href="include.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                include
+            </a>
+        </li>
+        <li  title="skip">
+            <a href="skip.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                skip
+            </a>
+        </li>
+    </ul>
+</div>
+        </div>
+    </nav>
+    <main><section class="title slds-theme--inverse">
+    <div class="container slds-grid">
+        <div>
+        <button class="slds-button js-toggle-navigation less-than-medium">
+            <i class="material-icons slds-button__icon slds-button__icon--left">menu</i>
+            <span class="slds-text-title--caps">Types<span>
+        </button>
+        </div>
+        </div>
+    </div>
+    <div class="container">
+        <p class="slds-text-title--caps slds-text-color--weak">SCALAR</p>
+        <h1 class="slds-text-heading--large">Float</h1>
+        <div class="slds-text-body--regular"><p>The <code>Float</code> scalar type represents signed double-precision fractional values as specified by <a href="http://en.wikipedia.org/wiki/IEEE_floating_point">IEEE 754</a>. </p>
+</div>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <h2 id="graphql-schema-definition" class="graphdoc-section__title slds-text-heading--medium slds-m-top--small">
+            <a href="#graphql-schema-definition">
+                <i class="material-icons">link</i>
+            </a>
+            GraphQL Schema definition
+        </h2>
+        <code class="highlight"><ul class="code" style="padding-left:28px"><li><span class="keyword operator ts">scalar</span> <span class="identifier">Float</span></li></ul></code>
+    </div>
+</section>
+<section>
+    <div class="container">
+        <h2 id="require-by" class="graphdoc-section__title slds-text-heading--medium slds-m-top--small">
+            <a href="#require-by">
+                <i class="material-icons">link</i>
+            </a>
+            Require by
+        </h2>
+        <ul class="require-by"><li><a href="businesstripaggregated.doc.html" title="BusinessTripAggregated - GraphQL Business Trips aggregated by month or year">BusinessTripAggregated<em>GraphQL Business Trips aggregated by month or year</em></a><li><li><a href="businesstripinput.doc.html" title="BusinessTripInput - GraphQL Input type for Business trips">BusinessTripInput<em>GraphQL Input type for Business trips</em></a><li><li><a href="businesstriptype.doc.html" title="BusinessTripType - GraphQL Business Trip Type">BusinessTripType<em>GraphQL Business Trip Type</em></a><li><li><a href="commutingaggregated.doc.html" title="CommutingAggregated - GraphQL Commuting aggregated by month or year">CommutingAggregated<em>GraphQL Commuting aggregated by month or year</em></a><li><li><a href="commutinginput.doc.html" title="CommutingInput - GraphQL Input type for commuting">CommutingInput<em>GraphQL Input type for commuting</em></a><li><li><a href="commutingtype.doc.html" title="CommutingType - GraphQL Commuting Type">CommutingType<em>GraphQL Commuting Type</em></a><li><li><a href="electricityaggregated.doc.html" title="ElectricityAggregated - GraphQL Electricity aggregated by month or year">ElectricityAggregated<em>GraphQL Electricity aggregated by month or year</em></a><li><li><a href="electricityinput.doc.html" title="ElectricityInput - GraphQL Input type for electricity">ElectricityInput<em>GraphQL Input type for electricity</em></a><li><li><a href="electricitytype.doc.html" title="ElectricityType - GraphQL Electricity Type">ElectricityType<em>GraphQL Electricity Type</em></a><li><li><a href="heatingaggregated.doc.html" title="HeatingAggregated - GraphQL Heating aggregated by month or year">HeatingAggregated<em>GraphQL Heating aggregated by month or year</em></a><li><li><a href="heatinginput.doc.html" title="HeatingInput - GraphQL Input type for heating">HeatingInput<em>GraphQL Input type for heating</em></a><li><li><a href="heatingtype.doc.html" title="HeatingType - GraphQL Heating Type">HeatingType<em>GraphQL Heating Type</em></a><li><li><a href="totalemission.doc.html" title="TotalEmission - GraphQL total emissions">TotalEmission<em>GraphQL total emissions</em></a><li></ul>
+    </div>
+</section>
+<footer>
+<div class="container slds-p-around--large">
+    <p class="slds-text-align--right slds-text-title--caps">
+        Generated with <a href="https://github.com/2fd/graphdoc#readme" target="_blank">graphdoc 2.4.0</a>
+    </p>
+</div>
+</footer>
+</main>
+    <script src="./scripts/focus-active.js"></script>
+    <script src="./scripts/filter-types.js"></script>
+    <script src="./scripts/toggle-navigation.js"></script>
+</body>
