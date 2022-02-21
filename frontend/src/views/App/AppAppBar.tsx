@@ -130,6 +130,10 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
     router.push('/');
   }
 
+  function openUserProfile(){
+    router.push('/user-profile')
+  }
+
 
   const path: Route[] = routes;
 
@@ -175,7 +179,8 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
             horizontal: 'center',
           }}
         >
-          <StyledMenuItem>
+          <StyledMenuItem
+          onClick = {openUserProfile}>
             <ListItemIcon>
               <AccountCircleIcon fontSize="small" />
             </ListItemIcon>

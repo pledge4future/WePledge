@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useContext, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
@@ -7,6 +7,19 @@ import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { Button, Grid } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+
+import { AuthContext }from '../../providers/Auth/AuthContext';
+
+import { gql, useQuery } from "@apollo/client";
+
+const GET_ELE = gql`
+  query GetElectricity($level: String!, $timeInterval: String!) {
+    electricityAggregated (level: $level, timeInterval: $timeInterval) {
+      date
+      co2e
+      co2eCap
+    }
+}`
 
 
 const useStyles = makeStyles({
@@ -37,6 +50,8 @@ const useStyles = makeStyles({
 
 
 export function IndividualDashboard(){
+
+  const authContext = useContext(AuthContext);
 
   const styles = useStyles();
 
@@ -80,17 +95,34 @@ export function IndividualDashboard(){
     return newSums
   }
 
+  function getChartData(isLoggedIn: boolean | undefined){
+    if(isLoggedIn){
+      console.log('logged in');
+      const {loading, error, data} = useQuery(GET_ELE, {
+          variables: { level: 'personal', timeInterval: 'monthly' }
+          });
+      console.log(error);
+      console.log(data)
+      return []
+    }
+    else {
+      const sums = calculateSum(exampleData);
+      return exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
+  }
+
   const renderComposedChart = useCallback(() => {
 
-    const sums = calculateSum(exampleData);
     
-    const chartData = exampleData.map((item, index) => { 
-      let newItem = {
-        total: sums[index],
-        ...item
-      }
-      return newItem
-    });
+    const chartData = useMemo(() => {
+      getChartData(authContext.isAuthenticated);
+    }, [authContext.isAuthenticated])
 
     return (
       <Grid container>
@@ -99,7 +131,7 @@ export function IndividualDashboard(){
       <ComposedChart width={950} height={500} data={chartData}>
         <XAxis dataKey="name">
         </XAxis>
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
           <Label value="tCO2" position="insideLeft" angle={270}/>
         </YAxis>
         <Tooltip />

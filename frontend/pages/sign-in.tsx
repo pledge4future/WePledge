@@ -23,7 +23,7 @@ import { setCookie } from '../src/utils/commons';
 import { useState } from "react";
 
 
-// mutation to sing in user
+// mutation to sign in user
 const TOKEN_AUTH = gql`
   mutation tokenAuth($email: String!, $password: String!) {
     tokenAuth(email: $email, password: $password) {

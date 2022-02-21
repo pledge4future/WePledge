@@ -12,34 +12,41 @@ import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
 
 // GraphQL
-import { useQuery } from "@apollo/client";
-import { user as userQuery } from "../src/api/Queries";
+import { gql, useQuery } from "@apollo/client";
 
-const UserName = () => {
-  const { data, loading, error } = useQuery(userQuery);
-  if (loading) {
-    return <div>Loading...</div>;
+
+
+const ME = gql`
+  query {
+    me {
+    username
+    verified
+    workingGroup {
+      id
+      name
+    }
   }
+}
+`
 
-  if (error) {
-    console.error(error);
-    return null;
-  }
+function getUser(){
+  
+  const { loading, error, data } = useQuery(ME);
 
-  return (
-    <Container maxWidth="lg">
-      <Box mt={7} mb={12}>
-        <Typography variant="h3" gutterBottom marked="center" align="center">
-          {`Hi, ${data?.user?.username}`}
-        </Typography>
-      </Box>
-    </Container>
-  );
-};
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+
+  return data;
+}
+
 
 function UserProfile() {
   const title = "User Profile";
   const siteName = "Pledge4Future";
+
+  const user = getUser();
+
+  console.log(user);
 
   return (
     <React.Fragment>
@@ -47,7 +54,6 @@ function UserProfile() {
         <title>{title ? `${title} | ${siteName}` : siteName}</title>
       </Head>
       <AppAppBar />
-      <UserName />
       <AppFooter />
       <style jsx global>
         {`
