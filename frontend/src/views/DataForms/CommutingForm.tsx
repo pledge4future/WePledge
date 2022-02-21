@@ -3,6 +3,19 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { tooltips } from './FormTooltips';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
+
+
+// mutation to add commuting entry
+const ADD_BUSINESSTRIP = gql`
+  mutation createCommuting($transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $workweeks: Int, $fromTimestamp: Date, $toTimestamp: Date){
+    createCommuting(input: {transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, workweeks: $workweeks, fromTimestamp: $fromTimestamp, toTimestamp: $toTimestamp}){
+      ok
+    }
+  }
+`
 
 
 export interface CommutingFormValues {
@@ -35,6 +48,19 @@ export function CommutingForm(
   }
 ){
 
+  const [errorState, setErrorState] = useState(false);
+
+  const [submitCommutingData] = useMutation(ADD_COMMUTING,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+      onError(error){
+        console.log(error)
+        setErrorState(true);
+      }
+    });
+
   const initialFormValues = {
     startMonth: 0,
     startYear: 0,
@@ -55,6 +81,17 @@ export function CommutingForm(
     onSubmit: (values: CommutingFormValues, formikHelpers: FormikHelpers<CommutingFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        transportationMode: values.transportationMode,
+        fuelType: values.fuelType, 
+        passengers: values.passengers,
+        distance: values.distance,
+        size: values.size,
+        workweeks: values.workWeeks,
+        fromTimestamp: format(new Date(values.startYear, values.startMonth, 1), 'yyyy-MM-dd'),
+        tomTimestamp: format(new Date(values.endYear, values.endMonth, '1'), 'yyyy-MM-dd')
+      }
+      submitCommutingData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     }
   });

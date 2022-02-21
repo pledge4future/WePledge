@@ -3,7 +3,20 @@ import { FormikHelpers, useFormik } from "formik";
 import { tooltips } from './FormTooltips'
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
 
+
+// mutation to add heating entry
+const ADD_HEATING = gql`
+  mutation createHeating($timestamp: Date!, $consumption: Float!, $unit: String!, $fuelType: String!, $building: String!, $groupShare: Float!) {
+    createHeating(input: {timestamp: $timestamp, consumption: $consumption, unit: $unit, fuelType: $fuelType, building: $building, groupShare: $groupShare}){
+      ok
+    }
+  }
+}
+`
 
 export interface HeatingFormValues {
   month: number,
@@ -36,14 +49,37 @@ export function HeatingForm(
     unit: ''
   }
 
+  const [errorState, setErrorState] = useState(false);
+
+  const [submitHeatingData] = useMutation(ADD_HEATING,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+      onError(error){
+        console.log(error)
+        setErrorState(true);
+      }
+    });
+
   const formik = useFormik({
     initialValues: initialFormValues,
     onSubmit: (values: HeatingFormValues, formikHelpers: FormikHelpers<HeatingFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        consumption: values.consumption,
+        fuelType: values.energySource, 
+        building: values. building,
+        groupShare: values.groupShare,
+        unit: values.unit
+      }
+      submitHeatingData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     }
   });
+
 
   
   return (

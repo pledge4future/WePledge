@@ -4,6 +4,19 @@ import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { tooltips } from './FormTooltips';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
+
+
+// mutation to add business trip entry
+const ADD_BUSINESSTRIP = gql`
+  mutation createBusinesstrip($timestamp: Date!, $transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $roundtrip: Boolean){
+    createBusinesstrip(input: {timestamp: $timestamp, transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, roundtrip: $roundtrip}){
+      ok
+    }
+  }
+`
 
 
 export interface BusinessFormValues {
@@ -44,6 +57,19 @@ export function BusinessTripForm(
   }
 ){
 
+  const [errorState, setErrorState] = useState(false);
+
+  const [submitBusinessTripData] = useMutation(ADD_BUSINESSTRIP,
+    {
+      onCompleted: (data) => {
+        console.log(data);
+      },
+      onError(error){
+        console.log(error)
+        setErrorState(true);
+      }
+    });
+
   const initialFormValues = {
     month: 0,
     year: 0,
@@ -68,6 +94,16 @@ export function BusinessTripForm(
     onSubmit: (values: BusinessFormValues, formikHelpers: FormikHelpers<BusinessFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        transportationMode: values.transportationMode,
+        fuelType: values.fuelType, 
+        passengers: values.passengers,
+        roundtrip: values.roundTrip,
+        distance: values.distance,
+        size: values.size
+      }
+      submitBusinessTripData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     },
   });

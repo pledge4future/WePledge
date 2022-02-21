@@ -38,7 +38,7 @@ export function ElectricityForm(
 
   const [errorState, setErrorState] = useState(false);
 
-    // data query
+  // data query
   const [submitData] = useMutation(ADD_ELECTRICITY,
    {
      onCompleted: (data) => {
