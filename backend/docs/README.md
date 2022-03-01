@@ -18,16 +18,19 @@ Run docker compose to create the docker images and start the containers
 docker compose up
 ```
 
-## Trouble shooting 
+### Trouble shooting 
 
-**Error:** standard_init_linux.go:219: exec user process caused: no such file or directory
+#### Error: standard_init_linux.go:219: exec user process caused: no such file or directory
 
 **Solution:** 
 1. Open *./backend/src/entrypoint.sh* and *./frontend/entrypoint.sh* in notepad++
 2. Go to edit -> EOL conversion -> change both from CRLF to LF.
 3. Save the files.
 
-**To rebuild the images and containers after the backend code** has changed, do the following to avoid errors:
+
+#### Rebuild the images and containers after the backend code has changed 
+
+Do the following to build the docker images, containers and volume from scratch to avoid errors: 
 
 1. Delete all files except for the *__init__.py* in the folder *./WePledge/backend/src/emissions/migrations*.
 2. Delete all backend containers (wepledge_pgadmin_1, wepledge_backend_1 and db)
