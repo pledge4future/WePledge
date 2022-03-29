@@ -40,7 +40,7 @@ function SignUp() {
 
   // mutation to register user
   const [register] = useMutation(REGISTER_USER, {
-    onCompleted(data) {
+    onCompleted() {
       router.push("/confirm-email")
     },
     onError(error) {
