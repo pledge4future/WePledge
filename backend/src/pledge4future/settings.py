@@ -34,9 +34,10 @@ DEBUG = os.environ.get("DJANGO_DEBUG")
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
 
-CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
 
-CORS_ORIGIN_WHITELIST = ("http://localhost:3000","https://test-pledge4future.heigit.org")
+CORS_ORIGIN_WHITELIST = ("http://localhost:3000","http://test-pledge4future.heigit.org")
 
 # Application definition
 INSTALLED_APPS = [
@@ -56,14 +57,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "corsheaders.middleware.CorsMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware"
 ]
 
 ROOT_URLCONF = "pledge4future.urls"
