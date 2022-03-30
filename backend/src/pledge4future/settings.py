@@ -36,7 +36,7 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "0.0.0.0"]
 
 CORS_ORIGIN_ALLOW_ALL = False
 
-CORS_ORIGIN_WHITELIST = ("http://localhost:3000",)
+CORS_ORIGIN_WHITELIST = ("http://localhost:3000","https://test-pledge4future.heigit.org")
 
 # Application definition
 INSTALLED_APPS = [
