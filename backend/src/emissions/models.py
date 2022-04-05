@@ -85,6 +85,7 @@ class WorkingGroup(models.Model):
     )
     n_employees = models.IntegerField(null=True, blank=True)
     field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
+    public = models.BooleanField(null=False, default=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""
