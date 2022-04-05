@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -143,6 +144,8 @@ GRAPHQL_JWT = {
     # "JWT_AUTH_HEADER_NAME": "HTTP_Authorization",
     "JWT_AUTH_HEADER_PREFIX": "JWT",
     "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(hours=24),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
