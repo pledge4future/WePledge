@@ -265,25 +265,25 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_businesstrips(self, info, **kwargs):
         """Yields all heating consumption objects"""
         user = info.context.user
-        return BusinessTrip.objects.all(user__id=user.id)
+        return BusinessTrip.objects.filter(user__username=user.username)
 
     @login_required
     def resolve_electricities(self, info, **kwargs):
         """Yields all heating consumption objects"""
         user = info.context.user
-        return Electricity.objects.all(working_group__id=user.working_group.id)
+        return Electricity.objects.filter(working_group__id=user.working_group.id)
 
     @login_required
     def resolve_heatings(self, info, **kwargs):
         """Yields all heating consumption objects"""
         user = info.context.user
-        return Heating.objects.all(working_group__id=user.working_group.id)
+        return Heating.objects.filter(working_group__id=user.working_group.id)
 
     @login_required
     def resolve_commutings(self, info, **kwargs):
         """Yields all heating consumption objects"""
         user = info.context.user
-        return Commuting.objects.all(user__id=user.id)
+        return Commuting.objects.filter(user__username=user.username)
 
     @login_required
     def resolve_heating_aggregated(

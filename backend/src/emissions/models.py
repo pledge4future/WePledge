@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Django models for handling co2 emission data"""
 
-__email__ = "infopledge4future.org"
+__email__ = "info@pledge4future.org"
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
@@ -10,7 +10,6 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-import datetime as dt
 
 from co2calculator.co2calculator import (
     CommutingTransportationMode,
