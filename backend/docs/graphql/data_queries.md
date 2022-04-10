@@ -2,6 +2,10 @@
 
 CO2e emission data over time can be queried using the following endpoints, all of which require an **authenticated user** (i.e. valid token in header).
 
+- busingesstrips
+- commutings
+- heatings
+- electricities
 - heatingAggregated
 - electricityAggregated
 - businesstripAggregated
@@ -244,6 +248,40 @@ query {
 }
 ```
 
+
+##### Query Businesstrip entries for the currently logged in user
+
+**Query:**
+
+```
+query {
+	businesstrips {
+		distance
+    timestamp
+    co2e
+  }
+}
+```
+
+**Response:**
+
+```
+{
+  "data": {
+    "businesstrips": [
+      {
+        "distance": 9122,
+        "timestamp": "2019-01-15",
+        "co2e": 301
+      },
+      {
+        "distance": 5784,
+        "timestamp": "2019-02-14",
+        "co2e": 578
+      }
+  ]}
+}
+```
 
 ##### Query dropdown options for `fuel_type` and `unit` attribute
 
