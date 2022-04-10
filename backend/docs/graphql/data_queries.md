@@ -255,10 +255,10 @@ query {
 
 ```
 query {
-	businesstrips {
-		distance
-    timestamp
-    co2e
+    businesstrips {
+	distance
+        timestamp
+        co2e
   }
 }
 ```
