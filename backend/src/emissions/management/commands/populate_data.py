@@ -26,7 +26,6 @@ from co2calculator.co2calculator import (
 )
 
 import numpy as np
-import pandas as pd
 import os
 import logging
 from django.contrib.auth.management.commands import createsuperuser
@@ -37,6 +36,8 @@ from co2calculator.co2calculator import (
     ElectricityFuel,
 )
 from dotenv import load_dotenv, find_dotenv
+import csv
+
 
 # Load settings from ./.env file
 load_dotenv(find_dotenv())
@@ -72,21 +73,22 @@ class Command(BaseCommand):
 
         # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
         print("Loading institutions ...")
-        grid = pd.read_csv(f"{script_path}/../../data/grid.csv")
-        grid = grid.loc[grid.Country == "Germany"]
-        for inst in grid.iterrows():
-            try:
-                new_institution = Institution(
-                    name=inst[1].Name,
-                    city=inst[1].City,
-                    state=inst[1].State,
-                    country=inst[1].Country,
-                )
-                new_institution.save()
-            except IntegrityError:
-                print("Institutions already loaded.")
-                break
-        del grid
+        #
+        with open(f"{script_path}/../../data/grid.csv") as csvfile:
+            grid = csv.reader(csvfile, delimiter=',')
+            grid.__next__()
+            for row in grid:
+                try:
+                    new_institution = Institution(
+                        name=row[1],
+                        city=row[2],
+                        state=row[3],
+                        country=row[4],
+                    )
+                    new_institution.save()
+                except IntegrityError:
+                    print("Institutions already loaded.")
+                    break
 
         # Create user for unit tests -----------------------------------------------------
         try:
@@ -124,24 +126,27 @@ class Command(BaseCommand):
 
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
-        user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
-        for usr in user_data.iterrows():
-            try:
-                new_user = CustomUser(
-                    username=usr[1].first_name + usr[1].last_name,
-                    first_name=usr[1].first_name,
-                    last_name=usr[1].last_name,
-                    email=f"{usr[1].first_name}.{usr[1].last_name}@uni-hd.de",
-                )
-                new_user.set_password("test_password")
-                new_user.save()
-                status = new_user.status
-                setattr(status, "verified", True)
-                status.save(update_fields=["verified"])
-                new_user.save()
-            except IntegrityError:
-                print("Users already exist.")
-                break
+        #user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
+        with open(f"{script_path}/../../data/users.csv") as csvfile:
+            users = csv.reader(csvfile, delimiter=',')
+            users.__next__()
+            for usr in users:
+                try:
+                    new_user = CustomUser(
+                        username=usr[0] + usr[1],
+                        first_name=usr[0],
+                        last_name=usr[1],
+                        email=f"{usr[0]}.{usr[1]}@uni-hd.de",
+                    )
+                    new_user.set_password("test_password")
+                    new_user.save()
+                    status = new_user.status
+                    setattr(status, "verified", True)
+                    status.save(update_fields=["verified"])
+                    new_user.save()
+                except IntegrityError:
+                    print("Users already exist.")
+                    break
 
         # CREATE WORKING GROUPS --------------------------------------------------------
         environmental_search = WorkingGroup.objects.filter(
@@ -188,14 +193,16 @@ class Command(BaseCommand):
             wg_biomed = biomed_search[0]
 
         # Update working groups of users
-        for usr in user_data.iterrows():
-            user_found = CustomUser.objects.filter(
-                username=usr[1].first_name + usr[1].last_name
-            )[0]
-            wg_search = WorkingGroup.objects.filter(name=usr[1].working_group)
-            user_found.working_group = wg_search[0]
-            user_found.save()
-        del user_data
+        with open(f"{script_path}/../../data/users.csv") as csvfile:
+            users = csv.reader(csvfile, delimiter=',')
+            users.__next__()
+            for usr in users:
+                user_found = CustomUser.objects.filter(
+                    username=usr[0] + usr[1]
+                )[0]
+                wg_search = WorkingGroup.objects.filter(name=usr[2])
+                user_found.working_group = wg_search[0]
+                user_found.save()
 
         # CREATE FAKE DATA
         dates = np.arange(
