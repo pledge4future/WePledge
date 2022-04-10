@@ -2,14 +2,14 @@
 
 CO2e emission data over time can be queried using the following endpoints, all of which require an **authenticated user** (i.e. valid token in header).
 
-- busingesstrips
-- commutings
-- heatings
-- electricities
 - heatingAggregated
 - electricityAggregated
 - businesstripAggregated
 - commutingAggregated
+- [businesstrips](#Query-Businesstrip-entries-for-the-currently-logged-in-user)
+- commutings
+- heatings
+- electricities
 
 The co2e emission can be returned as
 
