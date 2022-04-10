@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "p4f_backend"
+version = "0.0.1"
+description = "Backend of pledge4future app"
+authors = ["pledge4future Team <info@pledge4future.org>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+Django = "^3.1.7"
+django-cors-headers = "^3.7.0"
+django-extensions = "^3.1.1"
+django-filter = "^2.4.0"
+django-graphql-auth = "^0.3.16"
+django-graphql-jwt = "^0.3.0"
+graphene = "^2.1.8"
+graphene-django = "^2.15.0"
+python-dotenv = "^0.17.1"
+
+[tool.poetry.dev-dependencies]
+requests = "^2.25.1"
+urllib3 = "^1.26.4"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
