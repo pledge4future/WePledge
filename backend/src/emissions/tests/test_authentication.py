@@ -69,14 +69,12 @@ def test_verify(test_user_token):
     response = requests.post(
         GRAPHQL_URL, json={"query": verify_query, "variables": variables}
     )
-    logger.info(response)
-    print(response)
     assert response.status_code == 200
     # data = response.json()
-    # assert data["data"]["verifyAccount"]["success"]
+    # assert data["data"]["verifyAccount"]["success"]  ## todo: returns "false" with message "Invalid token"
 
 
-def test_login():
+def test_login(test_user_token):
     """Test user login"""
     query = """
             mutation ($email: String!, $password: String!){
@@ -100,6 +98,7 @@ def test_login():
 
     global TOKEN
     TOKEN = data["data"]["tokenAuth"]["token"]
+    assert TOKEN == test_user_token
     global REFRESH_TOKEN
     REFRESH_TOKEN = data["data"]["tokenAuth"]["refreshToken"]
 
@@ -169,7 +168,6 @@ def test_update_query(test_user_token):
     response = requests.post(GRAPHQL_URL, json={"query": update_query}, headers=headers)
     assert response.status_code == 200
     data = response.json()
-    print(data)
     assert data["data"]["updateAccount"]["success"]
 
     # reset user data
