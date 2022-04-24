@@ -6,11 +6,13 @@
     "email": "test1@pledge4future.org",
     "password": "test_password"
   },
-  "test_user2": {
-    "username": "testuser2",
+  "test_user": {
+    "username": "testuser",
     "first_name": "test",
     "last_name": "user",
-    "email": "test2@pledge4future.org"
+    "email": "test2@pledge4future.org",
+    "password": "test_password",
+    "academic_title": ""
   },
   "test_user_representative": {
     "username": "testuser_representative",

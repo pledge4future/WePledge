@@ -9,6 +9,7 @@ import requests
 import pytest
 import os
 from dotenv import load_dotenv
+import json
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -18,6 +19,9 @@ logger.addHandler(logging.StreamHandler())
 load_dotenv("../../../../.env")
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
+
+with open("config.json") as f:
+    test_data_users = json.load(f)["users"]
 
 
 @pytest.fixture(scope="session")
@@ -37,7 +41,8 @@ def test_user_token():
           }
         }
     """
-    variables = {"email": "test2@pledge4future.org", "password": "test_password"}
+    variables = {"email": test_data_users["test_user"]["email"],
+                 "password": test_data_users["test_user"]["password"]}
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
