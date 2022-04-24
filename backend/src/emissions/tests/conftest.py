@@ -42,7 +42,8 @@ def test_user_token():
         }
     """
     variables = {"email": test_data_users["test_user"]["email"],
-                 "password": test_data_users["test_user"]["password"]}
+                 "password": test_data_users["test_user"]["password"]
+                 }
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
