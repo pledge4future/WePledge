@@ -700,7 +700,7 @@ class CreateWorkingGroup(graphene.Mutation):
     """Mutation to create a new working group"""
 
     class Arguments:
-        """Assing input type"""
+        """Assign input type"""
 
         input = CreateWorkingGroupInput()
 
