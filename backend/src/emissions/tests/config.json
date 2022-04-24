@@ -18,7 +18,8 @@
     "username": "testuser_representative",
     "first_name": "test",
     "last_name": "user",
-    "email": "test3@pledge4future.org"
+    "email": "test3@pledge4future.org",
+    "password": "test_password"
   }
 },
   "working_groups": {

@@ -69,6 +69,7 @@ def test_user_token2():
           }
         }
     """
+    # change to test_user1 (or whatever) in test_data_users
     variables = {"email": "Sebastian.Mueller@uni-hd.de", "password": "test_password"}
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
@@ -95,7 +96,10 @@ def test_user_representative_token():
           }
         }
     """
-    variables = {"email": "test3@pledge4future.org", "password": "test_password"}
+    variables = {
+        "email": test_data_users["testuser_representative"]["email"],
+        "password": test_data_users["testuser_representative"]["password"]
+    }
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
