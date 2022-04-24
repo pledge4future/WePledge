@@ -88,40 +88,6 @@ class Command(BaseCommand):
                 break
         del grid
 
-        # Create user for unit tests -----------------------------------------------------
-        try:
-            new_user = CustomUser(
-                username="testuser",
-                first_name="test",
-                last_name="user",
-                email="test2@pledge4future.org",
-            )
-            new_user.set_password("test_password")
-            new_user.save()
-            status = new_user.status
-            setattr(status, "verified", True)
-            status.save(update_fields=["verified"])
-            new_user.save()
-        except IntegrityError:
-            pass
-
-        try:
-            testuser_representative = CustomUser(
-                username="testuser_representative",
-                first_name="test",
-                last_name="user",
-                email="test3@pledge4future.org",
-            )
-            testuser_representative.set_password("test_password")
-            # setattr(new_user, "is_representative", True)
-            testuser_representative.save()
-            status = testuser_representative.status
-            setattr(status, "verified", True)
-            status.save(update_fields=["verified"])
-            testuser_representative.save()
-        except IntegrityError:
-            pass
-
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
         user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
