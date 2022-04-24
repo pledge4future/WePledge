@@ -1,0 +1,27 @@
+{"users": {
+  "test_user1": {
+    "username": "testuser1",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test1@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user2": {
+    "username": "testuser2",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test2@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user_representative": {
+    "username": "testuser_representative",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test3@pledge4future.org",
+    "password": "test_password"
+  }
+},
+  "working_groups": {
+
+  }
+}
