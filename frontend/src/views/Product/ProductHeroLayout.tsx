@@ -52,6 +52,15 @@ const styles = (theme: Theme) =>
       position: 'absolute',
       bottom: theme.spacing(4),
     },
+    imageLicenseContainer: {
+      textAlign: 'right',
+      verticalAlign: 'bottom',
+      paddingTop: '250px',
+      paddingLeft: '500px'
+    },
+    imageLicense: {
+      color: '#3b3b3b',
+    }
   });
 
 interface ProductHeroLayoutProps {
@@ -71,6 +80,9 @@ function ProductHeroLayout(
         {children}
         <div className={classes.backdrop} />
         <div className={clsx(classes.background, backgroundClassName)} />
+        <div className={classes.imageLicenseContainer}>
+          <small className={classes.imageLicense}>© photo by NASA Goddard Space Flight Center, used and modified under CC BY</small>
+        </div>
       </Container>
     </section>
   );

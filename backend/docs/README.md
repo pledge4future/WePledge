@@ -5,6 +5,8 @@
 After cloning the main repo, load the submodule co2calculator. 
 
 ```
+git clone 
+cd WePledge
 git submodule update --init
 ```
 
@@ -16,7 +18,19 @@ Run docker compose to create the docker images and start the containers
 docker compose up
 ```
 
-**To rebuild the images and containers after the backend code** has changed, do the following to avoid errors:
+### Trouble shooting 
+
+#### Error: standard_init_linux.go:219: exec user process caused: no such file or directory
+
+**Solution:** 
+1. Open *./backend/src/entrypoint.sh* and *./frontend/entrypoint.sh* in notepad++
+2. Go to edit -> EOL conversion -> change both from CRLF to LF.
+3. Save the files.
+
+
+#### Rebuild the images and containers after the backend code has changed 
+
+Do the following to build the docker images, containers and volume from scratch to avoid errors: 
 
 1. Delete all files except for the *__init__.py* in the folder *./WePledge/backend/src/emissions/migrations*.
 2. Delete all backend containers (wepledge_pgadmin_1, wepledge_backend_1 and db)
@@ -38,13 +52,13 @@ During development the verification token can be either printed in the console o
 
 ### GraphQL API
 
-1.[Endpoint overview](./graphql/endpoint_overview.md)
-2.[GraphDoc documentation of API](./graphdoc/index.html)
-3.[User management requests](./graphql/user_management.md)
-4.[Working group management requests](./graphql/working_group_management.md)
-5.[Data mutations](./graphql/data_mutations.md)
-6.[Data queries](./graphql/data_queries.md)
-7.[Common errors](./graphql/errors.md)
+1.[Endpoint overview](./graphql/endpoint_overview.md)  
+2.[GraphDoc documentation of API](./graphdoc/index.html)  
+3.[User management requests](./graphql/user_management.md)  
+4.[Working group management requests](./graphql/working_group_management.md)  
+5.[Data mutations](./graphql/data_mutations.md)  
+6.[Data queries](./graphql/data_queries.md)  
+7.[Common errors](./graphql/errors.md)  
 
 It might also be useful to look at the [GraphQL API tests](../src/emissions/tests/test_authentication.py) to see how the requests work.
 

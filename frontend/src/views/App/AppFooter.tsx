@@ -39,6 +39,9 @@ const useStyles = makeStyles((theme: Theme) => ({
   iconsWrapper: {
     height: 120,
   },
+  logosWrapper: {
+    height: 120
+  },
   icons: {
     display: 'flex',
   },
@@ -54,6 +57,14 @@ const useStyles = makeStyles((theme: Theme) => ({
       backgroundColor: theme.palette.warning.dark,
     },
     color: theme.palette.primary.dark
+  },
+  supporterLogo: {
+    width: 48,
+    height: 48,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: '10px'
   },
   list: {
     margin: 0,
@@ -76,6 +87,16 @@ const LANGUAGES = [
     name: 'English',
   }
 ];
+
+const SUPPORTED_BY = [{
+  tooltip: 'Goethe Institut', src: './static/images/logos/GI_logo.png', link: 'https://www.goethe.de/de/index.html', width: 70, height: 50
+},
+{
+  tooltip: 'GIScience', src: './static/images/logos/GIS_logo.svg', link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html', width: 50, height: 50
+},
+{
+  tooltip: 'Scientists4Future', src: './static/images/logos/S4F_logo.png', link: 'https://scientists4future.org/', width: 50, height: 50
+}]
 
 export default function AppFooter() {
   const classes = useStyles();
@@ -143,6 +164,30 @@ export default function AppFooter() {
                 </option>
               ))}
             </TextField>
+          </Grid>
+          <Grid item xs={2} sm={4} md={3}>
+            <Typography variant="h6" marked="left" gutterBottom>
+              Supported By
+              </Typography>
+              <Grid
+              container
+              direction="row"
+              alignContent="flex-start"
+              className={classes.logosWrapper}
+              spacing={2}
+            >
+              <Grid item className={classes.icons}>
+                {
+                  SUPPORTED_BY.map((item) => {
+                    return (
+                      <a href={item.link} className={classes.supporterLogo}>
+                        <img src={item.src} title={item.tooltip} width={item.width} height={item.height}/>
+                      </a>
+                    )
+                  })
+                }
+              </Grid>
+              </Grid>
           </Grid>
         </Grid>
       </Container>
