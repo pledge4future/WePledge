@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
+import { NoDataComponent } from "../../components/NoDataComponent";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
@@ -95,7 +96,7 @@ export function IndividualDashboard(){
     return newSums
   }
 
-  function getChartData(isLoggedIn: boolean | undefined){
+  function getChartData(isLoggedIn: boolean | undefined): Array<any>{
     if(isLoggedIn){
       console.log('logged in');
       const {loading, error, data} = useQuery(GET_ELE, {
@@ -120,11 +121,11 @@ export function IndividualDashboard(){
   const renderComposedChart = useCallback(() => {
 
     
-    const chartData = useMemo(() => {
-      getChartData(authContext.isAuthenticated);
-    }, [authContext.isAuthenticated])
+    const chartData = getChartData(authContext.isAuthenticated);
 
-    return (
+
+    if(chartData?.length > 0){
+      return (
       <Grid container>
       <Grid item xs={9}>
       <div className={styles.containerDiv}>
@@ -164,6 +165,17 @@ export function IndividualDashboard(){
         </Grid>
       </Grid>
     )
+    } else {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoDataComponent></NoDataComponent>
+              </div>
+            </Grid>
+          </Grid>
+      )
+    }
   }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
   
   return (
