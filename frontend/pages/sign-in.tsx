@@ -20,7 +20,8 @@ import * as yup from 'yup';
 // Backend Queries
 import { gql, useMutation } from '@apollo/client';
 import { setCookie } from '../src/utils/commons';
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../src/providers/Auth/AuthContext";
 
 
 // mutation to sign in user
@@ -56,6 +57,7 @@ const validationSchema = yup.object({
 function SignIn() {
 
   const router = useRouter();
+  const authContext = useContext(AuthContext);
 
   const [errorState, setErrorState] = useState(false)
 
@@ -63,6 +65,7 @@ function SignIn() {
     {
     onCompleted: (data) => {
       if(data.tokenAuth.success){
+        authContext?.refresh(true,data.tokenAuth.token,[])
         setCookie('token', data.tokenAuth.token);
         router.push('/dashboard')
       }
