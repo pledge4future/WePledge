@@ -12,6 +12,7 @@ import AddIcon from '@material-ui/icons/Add';
 import { AuthContext }from '../../providers/Auth/AuthContext';
 
 import { gql, useQuery } from "@apollo/client";
+import { DashboardProps } from "./interfaces/DashboardProps";
 
 const GET_ELE = gql`
   query GetElectricity($level: String!, $timeInterval: String!) {
@@ -49,10 +50,9 @@ const useStyles = makeStyles({
 })
 
 
+export function IndividualDashboard(props: DashboardProps){
 
-export function IndividualDashboard(){
-
-  const authContext = useContext(AuthContext);
+  const { isAuthenticated } = props
 
   const styles = useStyles();
 
@@ -98,12 +98,11 @@ export function IndividualDashboard(){
 
   function getChartData(isLoggedIn: boolean | undefined): Array<any>{
     if(isLoggedIn){
-      console.log('logged in');
-      const {loading, error, data} = useQuery(GET_ELE, {
+      // This will not work because of conditional hook
+      // Fix by using authenticated state as enabled condition in use query and move query to top of component
+      /*const {loading, error, data} = useQuery(GET_ELE, {
           variables: { level: 'personal', timeInterval: 'monthly' }
-          });
-      console.log(error);
-      console.log(data)
+          }); */
       return []
     }
     else {
@@ -120,8 +119,18 @@ export function IndividualDashboard(){
 
   const renderComposedChart = useCallback(() => {
 
-    
-    const chartData = getChartData(authContext.isAuthenticated);
+    let chartData = []
+
+    if(!isAuthenticated){
+      const sums = calculateSum(exampleData);
+      chartData =  exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
 
 
     if(chartData?.length > 0){
@@ -176,7 +185,7 @@ export function IndividualDashboard(){
           </Grid>
       )
     }
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
   
   return (
     <React.Fragment>

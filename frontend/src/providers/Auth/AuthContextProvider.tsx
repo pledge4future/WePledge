@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { AuthContext, defaultState } from "./AuthContext";
 
 import { getCookie, setCookie } from "../../utils/commons";
-import router from "next/router";
 
 export const AuthContextProvider: React.FC<{}> = props => {
   const [state, setState] = useState<Partial<AuthContextType>>(defaultState);
@@ -35,30 +34,8 @@ export const AuthContextProvider: React.FC<{}> = props => {
 
 
   const refreshToken = () => {   
-    /* fetch("http://localhost:8000/api-token-refresh/", {
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({ token: getCookie("token") })
-    })
-      .then(response => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error();
-        }
-      })
-      .then(
-       ( res => {console.log(res)})
-      )
-      // .then(
-      //   (data: { token: string; permissions: string[] }) => {
-      //   refresh(true, data.token, data.permissions);
-      // })
-      .catch(_ => refresh(false));
-  }; */
     let token = getCookie('token');
-    token && token.length > 0 ? setState({isAuthenticated: true, token: token}) : setState({isAuthenticated: false, token: null})
+    token && token.length > 0 ? refresh(true, token) : setState({isAuthenticated: false, token: null})
 }
 
   useEffect(() => {
