@@ -69,6 +69,7 @@ function UserProfile() {
   const [editMode, setEditMode] = useState(false);
   const [showAlert, setShowAlert] = useState(false)
 
+
   const user = getUser();
 
 
@@ -83,8 +84,6 @@ function UserProfile() {
     },
     enableReinitialize: true
   })
-
-  console.log(userForm.values);
 
   return (
     <>
@@ -173,7 +172,7 @@ function UserProfile() {
                 disabled={editMode}>Change Password</Button>
           </Grid>
         </Grid>
-        <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert}></UnderConstructionDialog>
+        <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
       </Container>
     </PageContainer>
     <AppFooter />
