@@ -15,7 +15,6 @@ const ADD_HEATING = gql`
       ok
     }
   }
-}
 `
 
 export interface HeatingFormValues {
