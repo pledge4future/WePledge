@@ -5,12 +5,16 @@ const useStyles = makeStyles({
     titleDiv: {
         alignContent: 'center',
         justifyContent: 'center',
-        verticalAlign: 'center'
+        verticalAlign: 'center',
+        textAlign: 'center',
+        fontSize: '5rem'
     },
     subTitleDiv: {
         alignContent: 'center',
         justifyContent: 'center',
-        verticalAlign: 'center'
+        verticalAlign: 'center',
+        textAlign: 'center',
+        fontSize: '2rem'
     }
 })
 
@@ -23,7 +27,7 @@ export function NoDataComponent(){
     return (
         <div>
             <div className={styles.titleDiv}>
-                <DoDisturbIcon></DoDisturbIcon>
+                <DoDisturbIcon fontSize={'large'}></DoDisturbIcon>
             </div>
             <div className={styles.subTitleDiv}>
                 <span>No Data for your settings!</span>
