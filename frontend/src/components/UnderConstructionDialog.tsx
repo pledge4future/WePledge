@@ -22,9 +22,6 @@ export function UnderConstructionDialog(props: UnderConstructionDialogProps){
 
     const {feature, isOpen} = props
 
-    console.log('rendered')
-    console.log(isOpen);
-
     const [dialogVisible, setDialogVisible] = useState(isOpen)
 
     const handleClose = () => {
