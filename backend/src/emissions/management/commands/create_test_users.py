@@ -32,7 +32,6 @@ class Command(BaseCommand):
 
         # Create test users
         users = config_data["users"]
-
         for user, user_data in users.items():
             try:
                 new_user = CustomUser(
@@ -50,3 +49,36 @@ class Command(BaseCommand):
                 new_user.save()
             except IntegrityError as e:
                 print(e)
+
+
+        # Create working groups
+        working_groups = config_data["workinggroups"]
+        for working_group, workinggroup_data in working_groups.items():
+            try:
+                wg_environmental = WorkingGroup(
+                    name="Environmental Research Group",
+                    institution=Institution.objects.filter(
+                        name="Heidelberg University", city="Heidelberg", country="Germany"
+                    )[0],
+                    representative=CustomUser.objects.get(username="LarsWiese"),
+                    n_employees=20,
+                    field=ResearchField.objects.filter(
+                        field="Natural Sciences",
+                        subfield="Earth and related environmental sciences",
+                    )[0],
+                    public=True
+                )
+                wg_environmental.save()
+                # Set a representative for the group
+
+            except IntegrityError as e:
+                print(e)
+
+
+
+
+
+        # Creat business trips
+
+
+
