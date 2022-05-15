@@ -29,3 +29,20 @@ GRAPHQL_AUTH = {
     'EMAIL_FROM': 'no-reply@pledge4future.org',
 }
 ```
+
+## `Are you trying to mount a directory onto a file`
+
+```
+Error response from daemon: OCI runtime create failed: container_linux.go:380: starting container process caused: process_linux.go:545: container init cau
+sed: rootfs_linux.go:76: mounting "/run/desktop/mnt/host/c/Users/ninak/Documents/pledge4future/git1/WePledge/.env" to rootfs at "/home/python/app/src/.env
+" caused: mount through procfd: not a directory: unknown: Are you trying to mount a directory onto a file (or vice-versa)? Check if the specified host pat
+h exists and is the expected type
+```
+
+
+**Solution:** 
+
+1. Make sure the .env file in `./WePledge` exists. If not create it. 
+2. Delete all folders which were created by docker called `.env` in `./WePledge` and `./WePledge/backend/src`.
+3. Delete all containers, images and volumes and run `docker compose up --build` again.
+
