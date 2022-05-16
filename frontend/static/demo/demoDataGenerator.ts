@@ -14,13 +14,13 @@ function getRandomData(month: string, multiplicator?: number, seasonalParam?: nu
   return {
     "name": month,
     "electricity": data[0],
-    "heating": data[1],
+    "heating": Math.round(data[1]*10)/10,
     "commuting": data[2],
     "business": data[3],
-    "sum": data.reduce((total, current) => total += current),
+    "sum": Math.round(data.reduce((total, current) => total += current)*10)/10,
     "max": 1000,
     "totalMax": 1000*multi,
-    "avg": multiplicator ? data.reduce((total, current) => total += current) / multiplicator : 0
+    "avg": multiplicator ? Math.round((data.reduce((total, current) => total += current) / multiplicator)*10)/10 : 0
   }
 }
 

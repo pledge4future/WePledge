@@ -1,12 +1,27 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useContext, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
+import { NoDataComponent } from "../../components/NoDataComponent";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { Button, Grid } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+
+import { AuthContext }from '../../providers/Auth/AuthContext';
+
+import { gql, useQuery } from "@apollo/client";
+import { DashboardProps } from "./interfaces/DashboardProps";
+
+const GET_ELE = gql`
+  query GetElectricity($level: String!, $timeInterval: String!) {
+    electricityAggregated (level: $level, timeInterval: $timeInterval) {
+      date
+      co2e
+      co2eCap
+    }
+}`
 
 
 const useStyles = makeStyles({
@@ -35,8 +50,9 @@ const useStyles = makeStyles({
 })
 
 
+export function IndividualDashboard(props: DashboardProps){
 
-export function IndividualDashboard(){
+  const { isAuthenticated } = props
 
   const styles = useStyles();
 
@@ -80,26 +96,52 @@ export function IndividualDashboard(){
     return newSums
   }
 
+  function getChartData(isLoggedIn: boolean | undefined): Array<any>{
+    if(isLoggedIn){
+      // This will not work because of conditional hook
+      // Fix by using authenticated state as enabled condition in use query and move query to top of component
+      /*const {loading, error, data} = useQuery(GET_ELE, {
+          variables: { level: 'personal', timeInterval: 'monthly' }
+          }); */
+      return []
+    }
+    else {
+      const sums = calculateSum(exampleData);
+      return exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
+  }
+
   const renderComposedChart = useCallback(() => {
 
-    const sums = calculateSum(exampleData);
-    
-    const chartData = exampleData.map((item, index) => { 
-      let newItem = {
-        total: sums[index],
-        ...item
-      }
-      return newItem
-    });
+    let chartData = []
 
-    return (
+    if(!isAuthenticated){
+      const sums = calculateSum(exampleData);
+      chartData =  exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
+
+
+    if(chartData?.length > 0){
+      return (
       <Grid container>
       <Grid item xs={9}>
       <div className={styles.containerDiv}>
       <ComposedChart width={950} height={500} data={chartData}>
         <XAxis dataKey="name">
         </XAxis>
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
           <Label value="tCO2" position="insideLeft" angle={270}/>
         </YAxis>
         <Tooltip />
@@ -132,7 +174,18 @@ export function IndividualDashboard(){
         </Grid>
       </Grid>
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
+    } else {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoDataComponent></NoDataComponent>
+              </div>
+            </Grid>
+          </Grid>
+      )
+    }
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
   
   return (
     <React.Fragment>

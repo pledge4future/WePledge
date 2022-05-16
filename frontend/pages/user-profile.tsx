@@ -1,0 +1,183 @@
+import * as React from "react";
+import Head from "next/head";
+
+// Material-UI
+import Container from "@material-ui/core/Container";
+import CancelIcon from '@material-ui/icons/Cancel';
+import DoneIcon from '@material-ui/icons/Done'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+import Grid from '@material-ui/core/Grid';
+import Alert from '@mui/material/Alert';
+
+// Components
+import AppAppBar from "../src/views/App/AppAppBar";
+import AppFooter from "../src/views/App/AppFooter";
+import withRoot from "../src/withRoot";
+import Typography from "../src/components/Typography";
+import { UnderConstructionDialog } from "../src/components/UnderConstructionDialog";
+
+// GraphQL
+import { gql, useQuery } from "@apollo/client";
+import { Button, makeStyles, TextField } from "@material-ui/core";
+import { useFormik } from "formik";
+import PageContainer from "../src/components/PageContainer";
+import { useState } from "react";
+import router from "next/router";
+
+
+const useStyles = makeStyles((theme) => ({
+  headline: {
+    borderBottom: '4px',
+    borderColor: 'black',
+    textAlign: 'center',
+    justifyContent: 'center'
+  }
+}));
+
+const ME = gql`
+  query {
+    me {
+    username
+    email
+    verified
+    workingGroup {
+      id
+      name
+    }
+  }
+}
+`
+
+function getUser(){
+  
+  const { loading, error, data } = useQuery(ME);
+
+  if (loading) return 'Loading...';
+  if (error) return `Error! ${error.message}`;
+
+  return data;
+}
+
+
+function UserProfile() {
+  const classes = useStyles();
+  const title = "User Profile";
+  const siteName = "Pledge4Future";
+
+  // used for later when backend point is implemented
+  const [editMode, setEditMode] = useState(false);
+  const [showAlert, setShowAlert] = useState(false)
+
+
+  const user = getUser();
+
+
+  const userForm = useFormik({
+    initialValues: {
+      username: user?.me?.username,
+      email: user?.me?.email ?? 'Email not defined',
+      workingGroup: user?.me?.workingGroup ?? 'No working group defined'
+    },
+    onSubmit: (values) => {
+      console.log(values)
+    },
+    enableReinitialize: true
+  })
+
+  return (
+    <>
+      <Head>
+        <title>{title ? `${title} | ${siteName}` : siteName}</title>
+      </Head>
+      <AppAppBar />
+      <PageContainer title="User Profile">
+        <Container>
+          <Grid container spacing={2}>
+            <Grid item xs={6} direction={'column'}>
+              <Typography className={classes.headline}>
+                User Information
+              </Typography>
+              <form onSubmit={userForm.handleSubmit}>
+                  <TextField
+                    id="outlined-full-width"
+                    label="Username"
+                    style={{ margin: 8 }}
+                    required
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    variant="outlined"
+                    value={userForm.values.username}
+                    onChange={userForm.handleChange}
+                    disabled={!editMode} />
+                  <TextField
+                    id="outlined-full-width"
+                    label="eMail"
+                    style={{ margin: 8 }}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    variant="outlined"
+                    value={userForm.values.email}
+                    onChange={userForm.handleChange}
+                    disabled={!editMode} />
+                  <TextField
+                    id="outlined-full-width"
+                    label="Working Group"
+                    style={{ margin: 8 }}
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{
+                      shrink: true
+                    }}
+                    variant="outlined"
+                    value={userForm.values.workingGroup}
+                    onChange={userForm.handleChange}
+                    disabled={true} />
+                  {editMode && (
+                    <>
+                      <Button
+                        type="submit"
+                        color="success"
+                        size="large"
+                        variant="outlined"
+                        endIcon={<DoneIcon />}
+                        style={{ margin: 8 }}
+                      >
+                        {'Submit Changes'}
+                      </Button>
+                      <Button
+                        size="large"
+                        variant="outlined"
+                        style={{ margin: 8 }}
+                        onClick={() => setEditMode(false)}
+                        endIcon={<CancelIcon />}
+                      >
+                        Abbort Changes
+                      </Button>
+                    </>
+                  )}
+              </form>
+              </Grid>
+          <Grid container item xs={4} direction={'column'} alignItems={'center'}>
+            <Typography className={classes.headline}>Interactions</Typography>
+                <Button size="medium" variant="outlined" endIcon={<AccountCircleIcon />} style={{margin: 8}} onClick={() => setShowAlert(true)}
+                disabled={editMode}>Change User Information</Button>
+                <Button size="medium" variant="outlined" endIcon={<EnhancedEncryptionIcon />}style={{margin: 8}} onClick={() => router.push("change-password")}
+                disabled={editMode}>Change Password</Button>
+          </Grid>
+        </Grid>
+        <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
+      </Container>
+    </PageContainer>
+    <AppFooter />
+    </>
+  );
+}
+
+export default withRoot(UserProfile);

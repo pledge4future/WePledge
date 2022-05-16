@@ -85,11 +85,6 @@
                 String
             </a>
         </li>
-        <li  title="UUID">
-            <a href="uuid.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
-                UUID
-            </a>
-        </li>
     </ul>
 </div>
 <div class="slds-grid slds-grid--vertical slds-navigation-list--vertical">
@@ -113,6 +108,11 @@
         <li  title="HeatingFuelType">
             <a href="heatingfueltype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 HeatingFuelType
+            </a>
+        </li>
+        <li  title="HeatingUnit">
+            <a href="heatingunit.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                HeatingUnit
             </a>
         </li>
         <li  title="__DirectiveLocation">
@@ -185,6 +185,11 @@
                 CreateHeating
             </a>
         </li>
+        <li  title="CreateWorkingGroup">
+            <a href="createworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroup
+            </a>
+        </li>
         <li  title="DeleteAccount">
             <a href="deleteaccount.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 DeleteAccount
@@ -255,6 +260,11 @@
                 RemoveSecondaryEmail
             </a>
         </li>
+        <li  title="ResearchFieldType">
+            <a href="researchfieldtype.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                ResearchFieldType
+            </a>
+        </li>
         <li  title="ResendActivationEmail">
             <a href="resendactivationemail.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ResendActivationEmail
@@ -275,9 +285,19 @@
                 SendSecondaryEmailActivation
             </a>
         </li>
+        <li  title="SetWorkingGroup">
+            <a href="setworkinggroup.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                SetWorkingGroup
+            </a>
+        </li>
         <li  title="SwapEmails">
             <a href="swapemails.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 SwapEmails
+            </a>
+        </li>
+        <li  title="TotalEmission">
+            <a href="totalemission.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                TotalEmission
             </a>
         </li>
         <li  title="UpdateAccount">
@@ -370,6 +390,11 @@
                 CommutingInput
             </a>
         </li>
+        <li  title="CreateWorkingGroupInput">
+            <a href="createworkinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                CreateWorkingGroupInput
+            </a>
+        </li>
         <li  title="ElectricityInput">
             <a href="electricityinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 ElectricityInput
@@ -378,6 +403,11 @@
         <li  title="HeatingInput">
             <a href="heatinginput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
                 HeatingInput
+            </a>
+        </li>
+        <li  title="WorkingGroupInput">
+            <a href="workinggroupinput.doc.html" class="slds-navigation-list--vertical__action slds-text-link--reset slds-truncate">
+                WorkingGroupInput
             </a>
         </li>
     </ul>
@@ -424,7 +454,7 @@
             </a>
             GraphQL Schema definition
         </h2>
-        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">UserType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">lastLogin</span>: <a class="support type" href="datetime.doc.html">DateTime</a> </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates whether the user can log into this admin site.</span></span></li><li><span class="tab"><span class="meta">isStaff</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates whether this user should be treated as active. Unselect this instead </span></span></li><li><span class="tab"><span class="comment line">#   of deleting accounts.</span></span></li><li><span class="tab"><span class="meta">isActive</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="meta">dateJoined</span>: <a class="support type" href="datetime.doc.html">DateTime</a>! </span></li><li></li><li><span class="tab"><span class="meta">email</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">username</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">firstName</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">lastName</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">workingGroup</span>: <a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a> </span></li><li></li><li><span class="tab"><span class="meta">isRepresentative</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="meta">workinggroupSet</span>: [<a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">password</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates that this user has all permissions without explicitly assigning them.</span></span></li><li><span class="tab"><span class="meta">isSuperuser</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li>}</li></ul></code>
+        <code class="highlight"><ul class="code" style="padding-left:42px"><li><span class="keyword operator ts">type</span> <span class="identifier">UserType</span> {</li><li></li><li><span class="tab"><span class="meta">id</span>: <a class="support type" href="id.doc.html">ID</a>! </span></li><li></li><li><span class="tab"><span class="meta">lastLogin</span>: <a class="support type" href="datetime.doc.html">DateTime</a> </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates whether the user can log into this admin site.</span></span></li><li><span class="tab"><span class="meta">isStaff</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates whether this user should be treated as active. Unselect this instead </span></span></li><li><span class="tab"><span class="comment line">#   of deleting accounts.</span></span></li><li><span class="tab"><span class="meta">isActive</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="meta">dateJoined</span>: <a class="support type" href="datetime.doc.html">DateTime</a>! </span></li><li></li><li><span class="tab"><span class="meta">email</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">username</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">firstName</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">lastName</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="meta">workingGroup</span>: <a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a> </span></li><li></li><li><span class="tab"><span class="meta">isRepresentative</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li></li><li><span class="tab"><span class="meta">workinggroup</span>: <a class="support type" href="workinggrouptype.doc.html">WorkingGroupType</a> </span></li><li></li><li><span class="tab"><span class="meta">commutingSet</span>: [<a class="support type" href="commutingtype.doc.html">CommutingType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">businesstripSet</span>: [<a class="support type" href="businesstriptype.doc.html">BusinessTripType</a>!]! </span></li><li></li><li><span class="tab"><span class="meta">password</span>: <a class="support type" href="string.doc.html">String</a>! </span></li><li></li><li><span class="tab"><span class="comment line">#   Designates that this user has all permissions without explicitly assigning them.</span></span></li><li><span class="tab"><span class="meta">isSuperuser</span>: <a class="support type" href="boolean.doc.html">Boolean</a>! </span></li><li>}</li></ul></code>
     </div>
 </section>
 <section>
@@ -435,7 +465,7 @@
             </a>
             Require by
         </h2>
-        <ul class="require-by"><li><a href="businesstriptype.doc.html" title="BusinessTripType - GraphQL Business Trip Type">BusinessTripType<em>GraphQL Business Trip Type</em></a><li><li><a href="commutingtype.doc.html" title="CommutingType - GraphQL Commuting Type">CommutingType<em>GraphQL Commuting Type</em></a><li><li><a href="workinggrouptype.doc.html" title="WorkingGroupType - GraphQL Working Group Type">WorkingGroupType<em>GraphQL Working Group Type</em></a><li></ul>
+        <ul class="require-by"><li><a href="businesstriptype.doc.html" title="BusinessTripType - GraphQL Business Trip Type">BusinessTripType<em>GraphQL Business Trip Type</em></a><li><li><a href="commutingtype.doc.html" title="CommutingType - GraphQL Commuting Type">CommutingType<em>GraphQL Commuting Type</em></a><li><li><a href="setworkinggroup.doc.html" title="SetWorkingGroup - GraphQL mutation to set working group of user">SetWorkingGroup<em>GraphQL mutation to set working group of user</em></a><li><li><a href="workinggrouptype.doc.html" title="WorkingGroupType - GraphQL Working Group Type">WorkingGroupType<em>GraphQL Working Group Type</em></a><li></ul>
     </div>
 </section>
 <footer>

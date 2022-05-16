@@ -30,21 +30,21 @@ export default function MyApp(props: AppProps) {
 
   const router = useRouter()
 
-  // used for google analytics
+  //used for matomo
   useEffect(() => {
     const handleRouteChange = (url: any) => {
-      ga.pageview(url)
+        if (window && window._paq) {
+            //@ts-ignore
+            _paq.push(['setCustomUrl', url]);
+            //@ts-ignore
+            _paq.push(['setDocumentTitle', document.title]);
+            //@ts-ignore
+            _paq.push(['trackPageView']);
+        }
     }
-    //When the component is mounted, subscribe to router changes
-    //and log those page views
-    router.events.on('routeChangeComplete', handleRouteChange)
 
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
+    router.events.on('routeChangeStart', handleRouteChange)
+}, [])
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.

@@ -12,6 +12,7 @@ import PageContainer from "../src/components/PageContainer";
 import Typography from "../src/components/Typography";
 import { TextField, Button } from "@material-ui/core";
 
+
 // Form Validation
 import { useFormik } from 'formik';
 import * as yup from 'yup';
@@ -19,9 +20,11 @@ import * as yup from 'yup';
 // Backend Queries
 import { gql, useMutation } from '@apollo/client';
 import { setCookie } from '../src/utils/commons';
+import { useState, useContext } from "react";
+import { AuthContext } from "../src/providers/Auth/AuthContext";
 
 
-// mutation to sing in user
+// mutation to sign in user
 const TOKEN_AUTH = gql`
   mutation tokenAuth($email: String!, $password: String!) {
     tokenAuth(email: $email, password: $password) {
@@ -54,8 +57,27 @@ const validationSchema = yup.object({
 function SignIn() {
 
   const router = useRouter();
+  const authContext = useContext(AuthContext);
 
-  const [signIn] = useMutation(TOKEN_AUTH)
+  const [errorState, setErrorState] = useState(false)
+
+  const [signIn] = useMutation(TOKEN_AUTH,
+    {
+    onCompleted: (data) => {
+      if(data.tokenAuth.success){
+        authContext?.refresh(true,data.tokenAuth.token,[])
+        setCookie('token', data.tokenAuth.token);
+        router.push('/dashboard')
+      }
+      else{
+        console.log(data)
+        setErrorState(true);
+      }
+    },
+    onError(error){
+      console.log(error)
+    }
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -64,18 +86,13 @@ function SignIn() {
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      alert('logging in');
       signIn(
         {
           variables: 
             {
               email: values.email,
               password: values.password
-            },
-          onCompleted: ( { signIn }) => {
-            setCookie('token', signIn.token);
-            router.push('/')
-          }
+            }
     }
     )
     }
@@ -136,6 +153,14 @@ function SignIn() {
             Sign in
           </Button>
         </form>
+          <Typography variant="body2" align="center">
+            <div>
+              { // TODO: Style this!
+              errorState && (
+                <p>Please add valid credentials!</p>
+              )}
+            </div>
+          </Typography>
           <Typography variant="body2" align="center">
             <Link href="/sign-up/" align="center" underline="always">
               Forgot password?

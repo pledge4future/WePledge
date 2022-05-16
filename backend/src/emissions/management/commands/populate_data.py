@@ -16,6 +16,7 @@ from emissions.models import (
     Institution,
     Commuting,
     CommutingGroup,
+    ResearchField,
 )
 from co2calculator.co2calculator import (
     calc_co2_heating,
@@ -23,6 +24,7 @@ from co2calculator.co2calculator import (
     calc_co2_commuting,
     calc_co2_businesstrip,
 )
+
 import numpy as np
 import pandas as pd
 import os
@@ -86,6 +88,40 @@ class Command(BaseCommand):
                 break
         del grid
 
+        # Create user for unit tests -----------------------------------------------------
+        try:
+            new_user = CustomUser(
+                username="testuser",
+                first_name="test",
+                last_name="user",
+                email="test2@pledge4future.org",
+            )
+            new_user.set_password("test_password")
+            new_user.save()
+            status = new_user.status
+            setattr(status, "verified", True)
+            status.save(update_fields=["verified"])
+            new_user.save()
+        except IntegrityError:
+            pass
+
+        try:
+            testuser_representative = CustomUser(
+                username="testuser_representative",
+                first_name="test",
+                last_name="user",
+                email="test3@pledge4future.org",
+            )
+            testuser_representative.set_password("test_password")
+            # setattr(new_user, "is_representative", True)
+            testuser_representative.save()
+            status = testuser_representative.status
+            setattr(status, "verified", True)
+            status.save(update_fields=["verified"])
+            testuser_representative.save()
+        except IntegrityError:
+            pass
+
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
         user_data = pd.read_csv(f"{script_path}/../../data/users.csv")
@@ -100,8 +136,9 @@ class Command(BaseCommand):
                 new_user.set_password("test_password")
                 new_user.save()
                 status = new_user.status
-                status.verified = True
+                setattr(status, "verified", True)
                 status.save(update_fields=["verified"])
+                new_user.save()
             except IntegrityError:
                 print("Users already exist.")
                 break
@@ -118,8 +155,13 @@ class Command(BaseCommand):
                 )[0],
                 representative=CustomUser.objects.get(username="LarsWiese"),
                 n_employees=20,
+                field=ResearchField.objects.filter(
+                    field="Natural Sciences",
+                    subfield="Earth and related environmental sciences",
+                )[0],
             )
             wg_environmental.save()
+
         else:
             wg_environmental = environmental_search[0]
 
@@ -130,10 +172,18 @@ class Command(BaseCommand):
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
                 )[0],
-                representative=CustomUser.objects.get(username="KarenAnderson"),
+                representative=CustomUser.objects.get(
+                    username="testuser_representative"
+                ),
                 n_employees=15,
+                field=ResearchField.objects.filter(
+                    field="Natural Sciences", subfield="Biological sciences"
+                )[0],
             )
             wg_biomed.save()
+            testuser_representative.is_representative = True
+            testuser_representative.working_group = wg_biomed
+            testuser_representative.save()
         else:
             wg_biomed = biomed_search[0]
 
@@ -165,7 +215,7 @@ class Command(BaseCommand):
                     working_group=wg_biomed,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -177,13 +227,15 @@ class Command(BaseCommand):
                 "int"
             )
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_electricity(c, "german_energy_mix")
+                co2e = calc_co2_electricity(
+                    consumption=c, fuel_type="german_energy_mix"
+                )
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_electricity = Electricity(
                     working_group=wg_environmental,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX,
+                    fuel_type=ElectricityFuel.GERMAN_ENERGY_MIX.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -205,7 +257,7 @@ class Command(BaseCommand):
                     working_group=wg_biomed,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=HeatingFuel.OIL,
+                    fuel_type=HeatingFuel.OIL.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -215,13 +267,15 @@ class Command(BaseCommand):
 
             consumptions = np.random.uniform(low=1000, high=1500, size=24).astype("int")
             for c, d in zip(consumptions, dates):
-                co2e = calc_co2_heating(c, "l", "oil", area_share=1)
+                co2e = calc_co2_heating(
+                    consumption=c, unit="l", fuel_type="oil", area_share=1
+                )
                 co2e_cap = co2e / wg_environmental.n_employees
                 new_heating = Heating(
                     working_group=wg_environmental,
                     timestamp=str(d),
                     consumption=c,
-                    fuel_type=HeatingFuel.OIL,
+                    fuel_type=HeatingFuel.OIL.name.lower(),
                     building="348",
                     group_share=1,
                     co2e=co2e,
@@ -247,8 +301,8 @@ class Command(BaseCommand):
             ).astype("datetime64[D]")
 
             for usr in CustomUser.objects.all():
-                if usr.working_group is None:
-                    continue
+                # if usr.working_group is None:
+                #    continue
 
                 for d in dates:
                     co2e = co2e_cap = float(np.random.randint(50, 1000, 1))
@@ -279,17 +333,17 @@ class Command(BaseCommand):
                 np.datetime64("2021-01", "M"),
                 np.timedelta64(1, "M"),
             ).astype("datetime64[D]")
+            #print(dates_2019)
 
             for usr in CustomUser.objects.all():
-                if usr.working_group is None:
+                if usr.username == "admin":
                     continue
 
                 distance = np.random.randint(0, 20, 1)
                 transportation_mode = "bicycle"
 
                 for d_2019 in range(len(dates_2019) - 1):
-                    from_timestamp = dates_2019[d_2019]
-                    to_timestamp = dates_2019[d_2019 + 1]
+                    timestamp = dates_2019[d_2019]
 
                     # calculate co2
                     weekly_co2e = calc_co2_commuting(
@@ -300,47 +354,45 @@ class Command(BaseCommand):
                     monthly_co2e = (
                         WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
                     )
-                    dates = np.arange(
-                        np.datetime64(from_timestamp, "M"),
-                        np.datetime64(to_timestamp, "M") + np.timedelta64(1, "M"),
-                        np.timedelta64(1, "M"),
-                    ).astype("datetime64[D]")
-                    for d in dates:
-                        commuting_instance = Commuting(
-                            timestamp=str(d),
-                            distance=distance,
-                            transportation_mode=transportation_mode,
-                            co2e=monthly_co2e,
-                            user=usr,
-                            working_group=usr.working_group,
-                        )
-                        commuting_instance.save()
 
-                        # Update emissions of working group for date and transportation mode
-                        entries = Commuting.objects.filter(
-                            working_group=usr.working_group,
-                            transportation_mode=transportation_mode,
-                            timestamp=str(d),
-                        )
-                        metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
-                        group_data = entries.aggregate(**metrics)
+                    commuting_instance = Commuting(
+                        timestamp=str(timestamp),
+                        distance=distance,
+                        transportation_mode=transportation_mode,
+                        co2e=monthly_co2e,
+                        user=usr,
+                        working_group=usr.working_group,
+                    )
+                    commuting_instance.save()
 
-                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
-                        commuting_group_instance = CommutingGroup(
-                            working_group=usr.working_group,
-                            timestamp=str(d),
-                            transportation_mode=transportation_mode,
-                            n_employees=usr.working_group.n_employees,
-                            co2e=group_data["co2e"],
-                            co2e_cap=co2e_cap,
-                            distance=group_data["distance"],
-                        )
-                        commuting_group_instance.save()
+                    if usr.working_group is None:
+                        continue
+
+                    # Update emissions of working group for date and transportation mode
+                    entries = Commuting.objects.filter(
+                        working_group=usr.working_group,
+                        transportation_mode=transportation_mode,
+                        timestamp=str(timestamp),
+                    )
+                    metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
+                    group_data = entries.aggregate(**metrics)
+
+                    co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                    commuting_group_instance = CommutingGroup(
+                        working_group=usr.working_group,
+                        timestamp=str(timestamp),
+                        transportation_mode=transportation_mode,
+                        n_employees=usr.working_group.n_employees,
+                        co2e=group_data["co2e"],
+                        co2e_cap=co2e_cap,
+                        distance=group_data["distance"],
+                    )
+                    commuting_group_instance.save()
 
                 transportation_mode = "car"
                 for d_2020 in range(len(dates_2020) - 1):
-                    from_timestamp = dates_2020[d_2020]
-                    to_timestamp = dates_2020[d_2020 + 1]
+                    timestamp = dates_2020[d_2020]
+                    # to_timestamp = dates_2020[d_2020 + 1]
 
                     # calculate co2
                     weekly_co2e = calc_co2_commuting(
@@ -355,39 +407,37 @@ class Command(BaseCommand):
                     monthly_co2e = (
                         WEEKS_PER_MONTH * (workweeks / WEEKS_PER_YEAR) * weekly_co2e
                     )
-                    dates = np.arange(
-                        np.datetime64(from_timestamp, "M"),
-                        np.datetime64(to_timestamp, "M") + np.timedelta64(1, "M"),
-                        np.timedelta64(1, "M"),
-                    ).astype("datetime64[D]")
-                    for d in dates:
-                        commuting_instance = Commuting(
-                            timestamp=str(d),
-                            distance=distance,
-                            transportation_mode=transportation_mode,
-                            co2e=monthly_co2e,
-                            user=usr,
-                            working_group=usr.working_group,
-                        )
-                        commuting_instance.save()
 
-                        # Update emissions of working group for date and transportation mode
-                        entries = Commuting.objects.filter(
-                            working_group=usr.working_group,
-                            transportation_mode=transportation_mode,
-                            timestamp=str(d),
-                        )
-                        metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
-                        group_data = entries.aggregate(**metrics)
+                    commuting_instance = Commuting(
+                        timestamp=str(timestamp),
+                        distance=distance,
+                        transportation_mode=transportation_mode,
+                        co2e=monthly_co2e,
+                        user=usr,
+                        working_group=usr.working_group,
+                    )
+                    commuting_instance.save()
 
-                        co2e_cap = group_data["co2e"] / usr.working_group.n_employees
-                        commuting_group_instance = CommutingGroup(
-                            working_group=usr.working_group,
-                            timestamp=str(d),
-                            transportation_mode=transportation_mode,
-                            n_employees=usr.working_group.n_employees,
-                            co2e=group_data["co2e"],
-                            co2e_cap=co2e_cap,
-                            distance=group_data["distance"],
-                        )
-                        commuting_group_instance.save()
+                    if usr.working_group is None:
+                        continue
+
+                    # Update emissions of working group for date and transportation mode
+                    entries = Commuting.objects.filter(
+                        working_group=usr.working_group,
+                        transportation_mode=transportation_mode,
+                        timestamp=str(timestamp),
+                    )
+                    metrics = {"co2e": Sum("co2e"), "distance": Sum("distance")}
+                    group_data = entries.aggregate(**metrics)
+
+                    co2e_cap = group_data["co2e"] / usr.working_group.n_employees
+                    commuting_group_instance = CommutingGroup(
+                        working_group=usr.working_group,
+                        timestamp=str(timestamp),
+                        transportation_mode=transportation_mode,
+                        n_employees=usr.working_group.n_employees,
+                        co2e=group_data["co2e"],
+                        co2e_cap=co2e_cap,
+                        distance=group_data["distance"],
+                    )
+                    commuting_group_instance.save()

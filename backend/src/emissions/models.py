@@ -4,14 +4,13 @@
 
 __email__ = "infopledge4future.org"
 
-
-import uuid
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+import datetime as dt
 
 from co2calculator.co2calculator import (
     CommutingTransportationMode,
@@ -44,6 +43,21 @@ class CustomUser(AbstractUser):
         return self.username
 
 
+class ResearchField(models.Model):
+    """Research field"""
+
+    field = models.CharField(max_length=100, null=False, blank=False)
+    subfield = models.CharField(max_length=100, null=False, blank=False)
+
+    class Meta:
+        """Specifies which attributes must be unique together"""
+
+        unique_together = ("field", "subfield")
+
+    def __str__(self):
+        return f"{self.field} - {self.subfield}"
+
+
 class Institution(models.Model):
     """Research institution"""
 
@@ -51,8 +65,6 @@ class Institution(models.Model):
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
     country = models.CharField(max_length=100, null=False, blank=False)
-    #inst_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    #readonly_fields = ("inst_id",)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -68,11 +80,11 @@ class WorkingGroup(models.Model):
 
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
-    representative = models.OneToOneField(CustomUser, on_delete=models.PROTECT, null=True)
+    representative = models.OneToOneField(
+        CustomUser, on_delete=models.PROTECT, null=True
+    )
     n_employees = models.IntegerField(null=True, blank=True)
-    research_field = models.CharField(null=True, blank=True, max_length=200)
-    #group_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    #readonly_fields = ("group_id",)
+    field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -86,7 +98,9 @@ class WorkingGroup(models.Model):
             self.representative.working_group is not None
         ):
             raise ValidationError(
-                _("This user cannot become the group representative, since they are not a member of this working group."),
+                _(
+                    "This user cannot become the group representative, since they are not a member of this working group."
+                ),
                 code="invalid",
             )
         super().clean(*args, **kwargs)
@@ -137,10 +151,13 @@ class Commuting(models.Model):
         blank=False,
     )
 
+    class Meta:
+        """Specifies which attributes must be unique together"""
+
+        unique_together = ("user", "timestamp", "transportation_mode")
+
     def __str__(self):
         return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
-
-
 
 
 class BusinessTripGroup(models.Model):
@@ -193,8 +210,8 @@ class BusinessTrip(models.Model):
         if self.working_group is None:
             return
 
-        year = self.timestamp[:4]
-        month = self.timestamp[5:7]
+        year = self.timestamp[:4]#.year
+        month = self.timestamp[5:7]#.month
         entries = BusinessTrip.objects.filter(
             working_group=self.working_group,
             timestamp__year=year,
@@ -276,7 +293,7 @@ class BusinessTrip(models.Model):
             ).save()
 
     def __str__(self):
-        return f"{self.user.username}, {self.timestamp}"
+        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
 
 
 class Heating(models.Model):
@@ -291,6 +308,8 @@ class Heating(models.Model):
     )
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
+    unit_choices = [(x.name, x.value) for x in Unit]
+    unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
 
@@ -321,6 +340,7 @@ class Electricity(models.Model):
 
     class Meta:
         """Specifies which attributes must be unique together"""
+
         unique_together = ("working_group", "timestamp", "fuel_type", "building")
 
     def __str__(self):

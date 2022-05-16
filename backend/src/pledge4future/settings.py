@@ -17,7 +17,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-#load_dotenv("../../.env", verbose=True)
+# load_dotenv("../../.env", verbose=True)
 load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -32,11 +32,16 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["*"]
 
+CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_CREDENTIALS = False
+
+CORS_ORIGIN_WHITELIST = ("http://localhost:3000","http://test-pledge4future.heigit.org")
 
 # Application definition
 INSTALLED_APPS = [
+    "corsheaders",
     "emissions",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,13 +57,14 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware"
 ]
 
 ROOT_URLCONF = "pledge4future.urls"
@@ -86,12 +92,12 @@ WSGI_APPLICATION = "pledge4future.wsgi.application"
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 # local database for development
-#DATABASES = {
+# DATABASES = {
 #    "default": {
 #        "ENGINE": "django.db.backends.sqlite3",
 #        "NAME": os.path.join(BASE_DIR, "db.sqlitedb"),
 #    }
-#}
+# }
 
 DATABASES = {
     "default": {
@@ -100,8 +106,8 @@ DATABASES = {
         "USER": "postgres",
         "HOST": "db",
         "PORT": 5432,
-        }
     }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -163,7 +169,7 @@ GRAPHQL_AUTH = {
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "is_representative"
+        "is_representative",
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,
@@ -173,8 +179,8 @@ GRAPHQL_AUTH = {
     + "/activate",
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+#EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_PORT = os.environ.get("EMAIL_PORT")

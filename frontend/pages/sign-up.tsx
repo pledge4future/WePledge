@@ -1,6 +1,8 @@
 import * as React from "react";
 import { useState, useEffect } from 'react';
 
+import { useRouter }from 'next/router';
+
 import { gql, useMutation } from '@apollo/client';
 
 import withRoot from "../src/withRoot";
@@ -22,8 +24,6 @@ const REGISTER_USER = gql `
       register(username: $username, email: $email, password1: $password1, password2: $password2){
         success
         errors
-        token
-        refreshToken
       }
     }
 `
@@ -36,9 +36,17 @@ const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"
 
 function SignUp() {
 
-  // mutation to register user
-  const [register] = useMutation(REGISTER_USER);
+  const router = useRouter();
 
+  // mutation to register user
+  const [register] = useMutation(REGISTER_USER, {
+    onCompleted() {
+      router.push("/confirm-email")
+    },
+    onError(error) {
+      console.log(error)
+    }
+  });
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -83,7 +91,6 @@ function SignUp() {
 
   function sendRegistration(e: any){
     register({variables: {username: username, email: email, password1: password, password2: repeatedPassword}});
-    console.log(e);
   }
 
   useEffect(() => {
@@ -170,12 +177,10 @@ function SignUp() {
             />
             <Button
               variant="contained"
-              type="submit"
               fullWidth
               color="primary"
               size="large"
               style={{ margin: 8 }}
-              href="/confirm-email"
               disabled={buttonDisabled}
               onClick={sendRegistration}
             >
