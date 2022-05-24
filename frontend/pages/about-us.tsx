@@ -31,14 +31,14 @@ function AboutUs() {
   const classes = useStyles();
 
   const members = [
-    { title: "Hannah Weiser", desc: "Geography student", url: "../public/static/images/avatars/2.jpeg", width: '20%' },
+    { title: "Hannah Weiser", desc: "Geography student", url: "./static/images/avatars/2.jpeg", width: '20%' },
     { title: "Sarah Lohr", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/3.png", width: '20%' },
     { title: "Nina Krašovec", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/4.jpg", width: '20%' },
     { title: "Christina Ludwig", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/5.jpg", width: '20%' },
     { title: "Veit Ulrich", desc: "Geography student", url: "./static/images/avatars/6.jpg", width: '20%' },
     { title: "Guillermo Lozano Onrubia", desc: "Chemistry student", url: "./static/images/avatars/7.jpg", width: '20%' },
-    { title: "Fabian Kneissl", desc: "Computer- and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'},
-    { title: "Alex", desc: "To be Filled", url: "./static/images/avatars/9.jpg", width: '20%'},
+    { title: "Fabian Kneissl", desc: "Computer and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'},
+    { title: "Alex Bercik", desc: "To be Filled", url: "./static/images/avatars/9.jpg", width: '20%'},
     { title: "Maria", desc: "To be Filled", url: "./static/images/avatars/10.jpg", width: '20%'},
   ];
 
