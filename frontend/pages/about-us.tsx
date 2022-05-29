@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 
 // Material-UI
 import { makeStyles, createStyles, Theme, useTheme } from '@material-ui/core/styles';
@@ -31,69 +31,54 @@ function AboutUs() {
   const classes = useStyles();
 
   const members = [
-    { title: "Hannah Weiser", desc: "Geography student", url: "./static/images/avatars/2.jpeg", width: '20%' },
-    { title: "Sarah Lohr", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/3.png", width: '20%' },
-    { title: "Nina Krašovec", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/4.jpg", width: '20%' },
-    { title: "Christina Ludwig", desc: "researcher (Geoinformatics)", url: "./static/images/avatars/5.jpg", width: '20%' },
-    { title: "Veit Ulrich", desc: "Geography student", url: "./static/images/avatars/6.jpg", width: '20%' },
-    { title: "Guillermo Lozano Onrubia", desc: "Chemistry student", url: "./static/images/avatars/7.jpg", width: '20%' },
-    { title: "Fabian Kneissl", desc: "Computer- and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'}
+    { title: "Hannah Weiser", desc: "Geography Student", url: "./static/images/avatars/2.jpeg", width: '20%' },
+    { title: "Sarah Lohr", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/3.png", width: '20%' },
+    { title: "Nina Krašovec", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/4.jpg", width: '20%' },
+    { title: "Christina Ludwig", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/5.jpg", width: '20%' },
+    { title: "Veit Ulrich", desc: "Geography Student", url: "./static/images/avatars/6.jpg", width: '20%' },
+    { title: "Guillermo Lozano Onrubia", desc: "Chemistry Student", url: "./static/images/avatars/7.jpg", width: '20%' },
+    { title: "Fabian Kneissl", desc: "Computer and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'},
+    { title: "Maria Fernanda Lozano", desc: "Physics Student", url: "./static/images/avatars/9.jpg", width: '20%'},
+    { title: "Alex Bercik", desc: "Aerospace Engineering Student", url: "./static/images/avatars/10.jpg", width: '20%'},
   ];
 
   return (
     <PageContainer title="About Us">
       <React.Fragment>
-      <br />
+      <br/>
       <Typography variant="h4" gutterBottom align="left">
         We believe...
       </Typography>
-      <br />
+      <br/>
       <Container maxWidth="sm">
         <Typography variant="subtitle1" gutterBottom align="left">
           ...climate change affects all of us.
-      </Typography>
+        </Typography>
         <Typography variant="subtitle1" gutterBottom align="left">
           ...it must be tackled as a community.
-      </Typography>
+        </Typography>
         <Typography variant="subtitle1" gutterBottom align="left">
           ...in transparent scientifically established methods.
-      </Typography>
+        </Typography>
       </Container>
-
-
-      <br />
-      <br />
+      <br/>
+      <br/>
       <Typography variant="h4" gutterBottom align="left">
         Who we are...
       </Typography>
-      <br />
+      <br/>
       <Grid container justifyContent="center" spacing={3}>
         {(members).map((image) => (
-          <Grid key={image.title} item xs={12} sm={3} container direction="column"
-            justifyContent="flex-start"
-            alignItems="center"
-            wrap="nowrap"
-
-          >
-            <Avatar src={image.url} className={classes.avatar} />
-
-            <Typography
-              component="h3"
-              variant="h6"
-              align="center"
-            >
-              {image.title}
-            </Typography>
-            <Typography
-              variant="body2"
-              align="center"
-            >
-              {image.desc}
-            </Typography>
+        <Grid key={image.title} item xs={12} sm={3} container direction="column"
+        justifyContent="flex-start"
+        alignItems="center"
+        wrap="nowrap">
+          <Avatar src={image.url} className={classes.avatar} />
+          <Typography component="h3" variant="h6" align="center">{image.title}</Typography>
+          <Typography variant="body2" align="center">{image.desc}</Typography>
           </Grid>
-        ))}
-      </Grid>
-
+          ))}
+          </Grid>
       <br />
       <Typography variant="body1" gutterBottom align="left">
         Apart from our team members we want to thank Scientists4Future Heidelberg,
