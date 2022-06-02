@@ -654,6 +654,8 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     n_employees = graphene.Int(
         required=True, description="Number of employees of working group"
     )
+    public = graphene.Boolean(required=True,
+                              description="If true, the group will be publicly visible.")
 
 
 class WorkingGroupInput(graphene.InputObjectType):
@@ -698,7 +700,7 @@ class CreateWorkingGroup(graphene.Mutation):
     """Mutation to create a new working group"""
 
     class Arguments:
-        """Assing input type"""
+        """Assign input type"""
 
         input = CreateWorkingGroupInput()
 
@@ -726,9 +728,9 @@ class CreateWorkingGroup(graphene.Mutation):
             field=input.field, subfield=input.subfield
         )
         if len(field_found) == 0:
-            raise GraphQLError("Field not found.")
+            raise GraphQLError("Research field is invalid.")
         elif len(field_found) > 1:
-            raise GraphQLError("Multiple fields found.")
+            raise GraphQLError("Multiple research field were found. Please specify further.")
         else:
             field = field_found[0]
 
@@ -748,6 +750,7 @@ class CreateWorkingGroup(graphene.Mutation):
             representative=user,
             field=field,
             n_employees=input.n_employees,
+            public=input.public
         )
         new_workinggroup.save()
 
