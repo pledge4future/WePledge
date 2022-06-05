@@ -46,16 +46,18 @@ services:
       - "8000:8000"
     depends_on:
       - db
-#  frontend:
-#    container_name: wepledge-frontend
-#    tty: true
-#    build:
-#      context: ./frontend
-#      target: development
-#    volumes:
-#      - ./frontend/:/home/node/app
-#      - frontend_nodemodules:/home/node/app/node_modules
-#      - frontend_extensions:/home/node/.vscode-server
+  frontend:
+    container_name: wepledge-frontend
+    tty: true
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend/:/home/node/app
+      - frontend_nodemodules:/home/node/app/node_modules
+      - frontend_extensions:/home/node/.vscode-server
+    ports:
+      - "3000:3000"
 
 volumes:
   frontend_nodemodules:
