@@ -79,6 +79,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(1),
     width: 150,
   },
+  supportedByLogos: {
+    width: 80,
+    height: 50
+  }
 }));
 
 const LANGUAGES = [
@@ -88,14 +92,28 @@ const LANGUAGES = [
   }
 ];
 
-const SUPPORTED_BY = [{
-  tooltip: 'Goethe Institut', src: '../../static/images/logos/GI_logo.png', link: 'https://www.goethe.de/de/index.html', width: 70, height: 50
-},
-{
-  tooltip: 'GIScience', src: '../../static/images/logos/GIS_logo.svg', link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html', width: 50, height: 50
-},
-{
-  tooltip: 'Scientists4Future', src: '../../static/images/logos/S4F_logo.png', link: 'https://scientists4future.org/', width: 50, height: 50
+const logos_directory = '../../static/images/logos/'
+
+const SUPPORTED_BY = [
+  { 
+    tooltip: 'Goethe Institut',
+    src: logos_directory + 'GI_logo.png',
+    link: 'https://www.goethe.de/de/index.html'
+  },
+  {
+    tooltip: 'GIScience',
+    src: logos_directory + 'GIS_logo.svg',
+    link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html'
+  },
+  {
+    tooltip: 'Scientists4Future',
+    src: logos_directory + 'S4F_logo.png',
+    link: 'https://scientists4future.org/'
+  },
+  {
+  tooltip: 'HEIGIT',
+  src: logos_directory + 'HeiGIT_Logo_compact.png',
+  link: 'https://heigit.org/'
 }]
 
 export default function AppFooter() {
@@ -152,9 +170,7 @@ export default function AppFooter() {
             <TextField
               size="medium"
               select
-              SelectProps={{
-                native: true,
-              }}
+              SelectProps={{native: true,}}
               className={classes.language}
               variant="standard"
             >
@@ -181,7 +197,8 @@ export default function AppFooter() {
                   SUPPORTED_BY.map((item) => {
                     return (
                       <a href={item.link} className={classes.supporterLogo}>
-                        <img src={item.src} title={item.tooltip} width={item.width} height={item.height}/>
+                        <img src={item.src} title={item.tooltip}
+                        className={classes.supportedByLogos}/>
                       </a>
                     )
                   })
