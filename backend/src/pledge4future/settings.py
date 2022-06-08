@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.1/ref/settings/
 """
+from datetime import timedelta
 from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
@@ -22,6 +23,7 @@ load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -72,7 +74,7 @@ ROOT_URLCONF = "pledge4future.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [os.path.join(BASE_DIR, "./templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -149,6 +151,8 @@ GRAPHQL_JWT = {
     # "JWT_AUTH_HEADER_NAME": "HTTP_Authorization",
     "JWT_AUTH_HEADER_PREFIX": "JWT",
     "JWT_VERIFY_EXPIRATION": True,
+    "JWT_EXPIRATION_DELTA": timedelta(hours=24),
+    "JWT_REFRESH_EXPIRATION_DELTA": timedelta(days=7),
     "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
     "JWT_ALLOW_ANY_CLASSES": [
         "graphql_auth.mutations.Register",
@@ -166,10 +170,18 @@ GRAPHQL_JWT = {
 
 GRAPHQL_AUTH = {
     "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "REGISTER_MUTATION_FIELDS": [
+        "email",
+        "first_name",
+        "last_name",
+        "username"
+    ],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "is_representative",
+        "username",
+        "academic_title"
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,

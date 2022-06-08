@@ -30,6 +30,10 @@ class CustomUser(AbstractUser):
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=25, blank=True)
     last_name = models.CharField(max_length=25, blank=True)
+    title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
+    academic_title = models.CharField(max_length=10,
+                                      choices=title_choices,
+                                      blank=True)
     working_group = models.ForeignKey(
         "WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -85,6 +89,7 @@ class WorkingGroup(models.Model):
     )
     n_employees = models.IntegerField(null=True, blank=True)
     field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
+    public = models.BooleanField(null=False, default=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""

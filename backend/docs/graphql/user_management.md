@@ -344,18 +344,30 @@ mutation {
 
 ## Queries
 
-#### Get current user with working group and institution info
+#### Get current user info including info on working group, institution or research field (remove the attribtues which are not needed) 
 
 ```
 query {
 	me {
     username
+    email
+    firstName
+    lastName
+    isRepresentative
+    verified
     workingGroup {
+      id
       name
-      groupId
+      nEmployees
       institution {
-        name
-        instId
+        name 
+        city
+        state
+        country
+      }
+      field {
+        field
+        subfield
       }
     }
   }
