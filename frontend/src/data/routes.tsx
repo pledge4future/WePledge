@@ -9,7 +9,6 @@ export interface Route {
 
 // TODO: add translation
 export const routes: Route[] = [
-  { name: "Welcome", link: "/" },
   { name: "Demo", link: "/dashboard" },
   //{ name: "Overview/Results", link: "/overview-results" },
   { name: "Participate", link: "/participate" },

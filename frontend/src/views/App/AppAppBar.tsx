@@ -94,6 +94,7 @@ const styles = (theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    width: 128
   },
   toolbar: {
     justifyContent: "space-between",
@@ -309,10 +310,9 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   const logo = (
     <div className={matches ? classes.center : classes.left}>
-      <Link href="/" target="_blank">
+      <Link href="/">
         <img
           className={classes.logo}
-          width="128"
           src={"./static/images/logos/logo.svg"}
           alt="Cube.js"
         />
