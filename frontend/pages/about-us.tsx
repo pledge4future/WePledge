@@ -30,16 +30,19 @@ function AboutUs() {
   const matches = useMediaQuery(theme.breakpoints.up("lg"));
   const classes = useStyles();
 
+  const avatarsDir = "./static/images/avatars/";
+
   const members = [
-    { title: "Hannah Weiser", desc: "Geography Student", url: "./static/images/avatars/2.jpeg", width: '20%' },
-    { title: "Sarah Lohr", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/3.png", width: '20%' },
-    { title: "Nina Krašovec", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/4.jpg", width: '20%' },
-    { title: "Christina Ludwig", desc: "Researcher (Geoinformatics)", url: "./static/images/avatars/5.jpg", width: '20%' },
-    { title: "Veit Ulrich", desc: "Geography Student", url: "./static/images/avatars/6.jpg", width: '20%' },
-    { title: "Guillermo Lozano Onrubia", desc: "Chemistry Student", url: "./static/images/avatars/7.jpg", width: '20%' },
-    { title: "Fabian Kneissl", desc: "Computer and Data Science Student", url: "./static/images/avatars/8.jpg", width: '20%'},
-    { title: "Maria Fernanda Lozano", desc: "Physics Student", url: "./static/images/avatars/9.jpg", width: '20%'},
-    { title: "Alex Bercik", desc: "Aerospace Engineering Student", url: "./static/images/avatars/10.jpg", width: '20%'},
+    { title: "Hannah Weiser",            desc: "Geography Student",                 url: avatarsDir + "HannahWeiser.jpeg"},
+    { title: "Sarah Lohr",               desc: "Researcher (Geoinformatics)",       url: avatarsDir + "SarahLohr.jpeg"},
+    { title: "Nina Krašovec",            desc: "Researcher (Geoinformatics)",       url: avatarsDir + "NinaKrasovec.jpeg"},
+    { title: "Christina Ludwig",         desc: "Researcher (Geoinformatics)",       url: avatarsDir + "ChristinaLudwig.jpeg"},
+    { title: "Veit Ulrich",              desc: "Geography Student",                 url: avatarsDir + "VeitUlrich.jpeg"},
+    { title: "Guillermo Lozano Onrubia", desc: "Chemistry Student",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
+    { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
+    { title: "Maria Fernanda Lozano",    desc: "Physics Student",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
+    { title: "Alex Bercik",              desc: "Aerospace Engineering Student",     url: avatarsDir + "AlexBercik.jpeg"},
+    { title: "Alvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
   ];
 
   return (
@@ -70,15 +73,15 @@ function AboutUs() {
       <Grid container justifyContent="center" spacing={3}>
         {(members).map((image) => (
         <Grid key={image.title} item xs={12} sm={3} container direction="column"
-        justifyContent="flex-start"
-        alignItems="center"
-        wrap="nowrap">
+          justifyContent="flex-start"
+          alignItems="center"
+          wrap="nowrap">
           <Avatar src={image.url} className={classes.avatar} />
           <Typography component="h3" variant="h6" align="center">{image.title}</Typography>
           <Typography variant="body2" align="center">{image.desc}</Typography>
-          </Grid>
+        </Grid>
           ))}
-          </Grid>
+      </Grid>
       <br />
       <Typography variant="body1" gutterBottom align="left">
         Apart from our team members we want to thank Scientists4Future Heidelberg,
