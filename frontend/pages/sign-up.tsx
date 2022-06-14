@@ -1,44 +1,59 @@
 import * as React from "react";
 import { useState, useEffect } from 'react';
 
-import { useRouter }from 'next/router';
-
+import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
 
 import withRoot from "../src/withRoot";
-
-// Material-UI
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import Container from "@material-ui/core/Container";
-
-// Components
-import PageContainer from "../src/components/PageContainer";
-import Typography from "../src/components/Typography";
-
-
-
-const REGISTER_USER = gql `
-    mutation register($username: String!, $email: String!, $password1: String!, $password2: String!) {
-      register(username: $username, email: $email, password1: $password1, password2: $password2){
-        success
-        errors
-      }
-    }
-`
-
-
-
-
-const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-
+import { TextField, Button, Link, Container, MenuItem }  from "@material-ui/core";
+import { PageContainer, Typography } from "../src/components";
 
 function SignUp() {
 
+  const availableTitles = [
+    {
+      value: "",
+      label: ""
+    },
+    {
+      value: "Dr.",
+      label: "Dr."
+    },
+    {
+      value: "Prof.",
+      label: "Prof."
+    },
+  ];
+
+  const REGISTER_USER = gql `
+    mutation register(
+      $userTitle: String!,
+      $firstName: String!,
+      $lastName: String!,
+      $username: String!,
+      $email: String!,
+      $password1: String!,
+      $password2: String!
+      ) {
+        register(
+          userTitle: $userTitle,
+          firstName: $firstName,
+          lastName: $lastName,
+          username: $username,
+          email: $email,
+          password1: $password1,
+          password2: $password2
+          )
+          {
+          success
+          errors
+      }
+    }
+`
+  const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+
   const router = useRouter();
 
-  // mutation to register user
   const [register] = useMutation(REGISTER_USER, {
     onCompleted() {
       router.push("/confirm-email")
@@ -48,59 +63,61 @@ function SignUp() {
     }
   });
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatedPassword, setRepeatedPassword] = useState('');
+  const [registrationValues, setRegistrationValues] = useState({
+    userTitle: '',
+    firstName: '',
+    lastName: '',
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  })
+
+  const handleRegistration = (event: any) => {
+    setRegistrationValues({...registrationValues, [event.target.name]: event.target.value})
+  }
+
   const [buttonDisabled, setButtonDisabled] = useState(true);
   const [errorText] = useState('')
 
-  function handleRepeatedPasswordChange(e: any){
-    setRepeatedPassword(e?.target?.value)
-  }
-  function handleUsernameChange(e: any){
-    setUsername(e?.target?.value);
-  }
-  function handleEmailChange(e: any){
-    setEmail(e?.target?.value);
-  }
-  function handlePasswordChange(e: any){
-    setPassword(e?.target?.value);
-  }
-
-  function checkPasswordError(){
-    if(password != repeatedPassword){
-      //setErrorText("Passwords don't seem to match");
-      return true;
-    }
-    else{
-      return false;
-    }
-
-  }
-
   function checkEmailError(){
-    if (email && !emailRegexp.test(email)){
+    if (registrationValues.email && !emailRegexp.test(registrationValues.email)){
       //setErrorText("eMail address seems to be invalid!")
       return true
-    }
-    else{
+    } else {
       return false
     }
   }
 
   function sendRegistration(e: any){
-    register({variables: {username: username, email: email, password1: password, password2: repeatedPassword}});
+    register({variables: {
+      userTitle: registrationValues.userTitle,
+      firstName: registrationValues.firstName,
+      lastName: registrationValues.lastName,
+      username: registrationValues.username,
+      email: registrationValues.email,
+      password: registrationValues.password,
+      confirmPassword: registrationValues.confirmPassword}});
   }
 
   useEffect(() => {
-    if (username && email && password && repeatedPassword && !checkPasswordError() && !checkEmailError()){
-      setButtonDisabled(false);
+    if (registrationValues.username && registrationValues.email &&
+      registrationValues.password && registrationValues.confirmPassword &&
+      !checkPasswordError() && !checkEmailError()){
+        setButtonDisabled(false);
     }
     else{
       setButtonDisabled(true);
     }
-  }, [username, email, password, repeatedPassword])
+  }, [
+    registrationValues.userTitle,
+    registrationValues.firstName,
+    registrationValues.lastName,
+    registrationValues.username,
+    registrationValues.email,
+    registrationValues.password,
+    registrationValues.confirmPassword
+  ])
 
   return (
     <React.Fragment>
@@ -114,7 +131,58 @@ function SignUp() {
             </Typography>
             <form>
             <TextField
+              select
+              name="userTitle"
               id="outlined-full-width"
+              label="Title"
+              style={{ margin: 8 }}
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              value={registrationValues.userTitle}
+              onChange={handleRegistration}
+              > {availableTitles.map((title) => (
+                <MenuItem key={title.value} value={title.value}>
+                  {title.label}
+                </MenuItem>
+            ))}
+            </TextField>
+            <TextField
+              id="outlined-full-width"
+              name="firstName"
+              label="First Name"
+              style={{ margin: 8 }}
+              required
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              value={registrationValues.firstName}
+              onChange={handleRegistration}
+            />
+            <TextField
+              id="outlined-full-width"
+              name="lastName"
+              label="Last Name"
+              style={{ margin: 8 }}
+              required
+              fullWidth
+              margin="normal"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              variant="outlined"
+              value={registrationValues.lastName}
+              onChange={handleRegistration}
+            />
+            <TextField
+              id="outlined-full-width"
+              name="username"
               label="Username"
               style={{ margin: 8 }}
               required
@@ -124,11 +192,12 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
-              value={username}
-              onChange={handleUsernameChange}
+              value={registrationValues.username}
+              onChange={handleRegistration}
             />
             <TextField
               id="outlined-full-width"
+              name="email"
               label="Email"
               style={{ margin: 8 }}
               required
@@ -138,12 +207,13 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
-              value={email}
-              onChange={handleEmailChange}
+              value={registrationValues.email}
+              onChange={handleRegistration}
               error = {checkEmailError()}
             />
             <TextField
               id="outlined-full-width"
+              name="password"
               label="Password"
               type="password"
               style={{ margin: 8 }}
@@ -154,12 +224,13 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
-              value={password}
-              onChange={handlePasswordChange}
+              value={registrationValues.password}
+              onChange={handleRegistration}
               error={checkPasswordError()}
             />
             <TextField
               id="outlined-full-width"
+              name="confirmPassword"
               label="Repeat Password"
               type="password"
               style={{ margin: 8 }}
@@ -170,8 +241,8 @@ function SignUp() {
                 shrink: true,
               }}
               variant="outlined"
-              value={repeatedPassword}
-              onChange={handleRepeatedPasswordChange}
+              value={registrationValues.confirmPassword}
+              onChange={handleRegistration}
               error={checkPasswordError()}
               helperText={errorText}
             />
@@ -192,6 +263,16 @@ function SignUp() {
       </PageContainer>
     </React.Fragment>
   );
+
+  function checkPasswordError(){
+    if(registrationValues.password != registrationValues.confirmPassword){
+      //setErrorText("Passwords don't seem to match");
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
 }
 
 export default withRoot(SignUp);
