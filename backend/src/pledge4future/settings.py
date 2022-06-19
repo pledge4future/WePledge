@@ -23,6 +23,7 @@ load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -67,7 +68,7 @@ ROOT_URLCONF = "pledge4future.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [os.path.join(BASE_DIR, "./templates")],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -163,10 +164,18 @@ GRAPHQL_JWT = {
 
 GRAPHQL_AUTH = {
     "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "REGISTER_MUTATION_FIELDS": [
+        "email",
+        "first_name",
+        "last_name",
+        "username"
+    ],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "is_representative",
+        "username",
+        "academic_title"
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,
