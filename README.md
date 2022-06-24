@@ -18,10 +18,10 @@ docker compose up
 
 This will start the following services:
 
-Frontend: [http://localhost:3000](localhost:3000)  
-Backend: [http://localhost:8000](localhost:8000)  
-Django Admin: [http://localhost:8000/admin](localhost:8000/admin)  
-GraphQL API: [http://localhost:8000/graphql](localhost:8000/graphql)  
+Frontend: [http://localhost:3000](http://localhost:3000)  
+Backend: [http://localhost:8000](http://localhost:8000)  
+Django Admin: [http://localhost:8000/admin](http://localhost:8000/admin)  
+GraphQL API: [http://localhost:8000/graphql](http://localhost:8000/graphql)  
 
 Refer to the [wiki](https://github.com/pledge4future/WePledge/wiki) for detailed instructions on how to run, adapt and debug the app.
 
