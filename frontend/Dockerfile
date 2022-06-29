@@ -1,9 +1,11 @@
 FROM node:12.13-buster-slim AS development
 
+RUN addgroup --gid 1006 developers \
+    && usermod -a -G developers node
 USER node
 RUN mkdir ~/app && mkdir ~/.vscode-server
 WORKDIR /home/node/app
-COPY package.json package-lock.json ./
+COPY package.json ./
 RUN yarn install
 EXPOSE 3000
 
