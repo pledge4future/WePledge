@@ -25,6 +25,9 @@ load_dotenv(find_dotenv())
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
 
+STATIC_ROOT = BASE_DIR.parent / "static"
+MEDIA_ROOT = BASE_DIR.parent / "media"
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
