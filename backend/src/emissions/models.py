@@ -24,19 +24,13 @@ from co2calculator.co2calculator import (
 class CustomUser(AbstractUser):
     """Custom user model"""
 
-    email = models.EmailField(
-        blank=False, max_length=255, verbose_name="email", unique=True
-    )
+    email = models.EmailField(blank=False, max_length=255, verbose_name="email", unique=True)
     username = models.CharField(max_length=100, unique=True)
     first_name = models.CharField(max_length=25, blank=True)
     last_name = models.CharField(max_length=25, blank=True)
     title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
-    academic_title = models.CharField(max_length=10,
-                                      choices=title_choices,
-                                      blank=True)
-    working_group = models.ForeignKey(
-        "WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    academic_title = models.CharField(max_length=10, choices=title_choices, blank=True)
+    working_group = models.ForeignKey("WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
