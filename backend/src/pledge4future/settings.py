@@ -35,14 +35,18 @@ MEDIA_ROOT = BASE_DIR.parent / "media"
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG")
+DEBUG = False #os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["http://localhost", "localhost", "http://api.test-pledge4future.heigit.org"]
 
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://test-pledge4future.heigit.org"]
 
-CORS_ORIGIN_WHITELIST = ("http://localhost:3000","http://test-pledge4future.heigit.org")
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+SECURE_HSTS_SECONDS=30
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 # Application definition
 INSTALLED_APPS = [
@@ -63,8 +67,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
-    "django.middleware.common.CommonMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.middleware.common.CommonMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -175,11 +180,11 @@ GRAPHQL_AUTH = {
     "LOGIN_ALLOWED_FIELDS": ["email", "username"],
     "REGISTER_MUTATION_FIELDS": [
         "email",
-        "first_name",
-        "last_name",
+        #"first_name",
+        #"last_name",
         "username"
     ],
-    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title", "first_name", "last_name"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
