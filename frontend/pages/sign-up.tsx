@@ -6,31 +6,20 @@ import { gql, useMutation } from '@apollo/client';
 
 import withRoot from "../src/withRoot";
 import { TextField, Button, Link, Container, MenuItem }  from "@material-ui/core";
+import Alert from '@mui/material/Alert';
 import { PageContainer, Typography } from "../src/components";
+
+import { Formik } from "formik";
+import * as Yup from 'yup';
 
 function SignUp() {
 
   const availableTitles = [
-    {
-      value: "",
-      label: ""
-    },
-    {
-      value: "DR",
-      label: "DR"
-    },
-    {
-      value: "PROF",
-      label: "PROF"
-    },
+    { value: "", label: ""},
+    { value: "DR", label: "DR"},
+    { value: "PROF", label: "PROF"},
   ];
 
-  const onSubmit = (event) => {
-    event.preventDefault();
-    registerUser();
-  }
-
-  const [errors, setErrors] = useState({});
   const [registrationValues, setRegistrationValues] = useState({
     academicTitle: '',
     firstName: '',
@@ -45,213 +34,187 @@ function SignUp() {
     setRegistrationValues({...registrationValues, [event.target.name]: event.target.value})
   }
 
-  const [registerUser] = useMutation(REGISTER_USER, {
-    onCompleted(result) {
-      // console.log(result)
-      if (result.register.success) router.push("/confirm-email")
-      const myErrors = result.register.errors
-      if (result.register.errors > 0) {
-       
-        setErrors({errors, myErrors})
-      }
-      console.log(errors)
-      console.log(result)
-      // else setErrors(result.data.register.error[0])
-    },
-    onError(error) {
-      // console.log(error)
-      // setErrors(error)
-      // console.log(errors)
-      
-    },
-    variables: registrationValues
-  });
-
-  // const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
+  const [errorState, setErrorState] = useState(false)
 
   const router = useRouter();
 
-  // const [buttonDisabled, setButtonDisabled] = useState(true);
+  const [registerUser] = useMutation(REGISTER_USER, {
+    onCompleted(result) {
+      if (result.register.success) {
+        router.push("/confirm-email")
+      } 
+      else {
+        setErrorState(true);
+      }
+    },
+    /* onError(error) {
+      // Error should ideally be set here but our graphql returns 200 on errors currently 
+      // so this block is never entered
+     },*/
+    variables: registrationValues
+  });
 
-  // function checkEmailError(){
-  //   if (registrationValues.email && !emailRegexp.test(registrationValues.email)){
-  //     return true
-  //   } else {
-  //     return false
-  //   }
-  // }
-
-  // function sendRegistration(e: any){
-  //   registerUser({variables: registrationValues});
-  // }
-
-  // useEffect(() => {
-  //   if (registrationValues.username && registrationValues.email &&
-  //     registrationValues.password1 && registrationValues.password2 &&
-  //     !checkPasswordError() && !checkEmailError()){
-  //       setButtonDisabled(false);
-  //   }
-  //   else{
-  //     setButtonDisabled(true);
-  //   }
-  // }, [
-  //   // registrationValues.userTitle,
-  //   registrationValues.firstName,
-  //   registrationValues.lastName,
-  //   registrationValues.username,
-  //   registrationValues.email,
-  //   registrationValues.password1,
-  //   registrationValues.password2
-  // ])
-
+  const formValidation = Yup.object({
+    firstName: Yup.string()
+      .max(25, 'First name must be less than 25 character')
+      .required('First name is required'),
+    lastName: Yup.string()
+      .max(25, 'Last name must be less than 25 character')
+      .required('Last name is required'),
+    username: Yup.string()
+      .required('Username is required'),
+    email: Yup.string()
+      .email('Email is invalid')
+      .required('Email is required'),
+    password1: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
+    password2: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .oneOf([Yup.ref('password1'), null], 'Passwords must match')
+      .required('Please re-enter your password'),
+  })
 
   return (
     <React.Fragment>
       <PageContainer title="Sign Up">
-        <div style={{ padding: "48px 16px" }}>
+        <div style={{ padding: "48px 16px", margin: 8 }}>
           <Container maxWidth="xs">
             <Typography variant="body2" align="center">
               <Link href="/sign-in/" underline="always">
                 Already have an account?
               </Link>
             </Typography>
-            <form noValidate onSubmit={onSubmit}>
-            <TextField
-              select
-              id="academicTitleField"
-              name="academicTitle"
-              label="Title"
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              value={registrationValues.academicTitle}
-              onChange={handleRegistration}
-              > {availableTitles.map((title) => (
-                <MenuItem key={title.value} value={title.value}>
-                  {title.label}
-                </MenuItem>
-            ))}
-            </TextField>
-            <TextField required
-              id="firstNameField"
-              name="firstName"
-              label="First Name"
-              InputLabelProps={{shrink: true}}
-              value={registrationValues.firstName}
-              onChange={handleRegistration}
-              // error={errors.firstName ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField required
-              id="lastNameField"
-              name="lastName"
-              label="Last Name"
-              InputLabelProps={{shrink: true}}
-              value={registrationValues.lastName}
-              onChange={handleRegistration}
-              // error={errors.lastName ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField required
-              id="userNameField"
-              name="username"
-              label="Username"
-              InputLabelProps={{shrink: true}}
-              value={registrationValues.username}
-              onChange={handleRegistration}
-              // error={errors.username ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField required
-              id="emailField"
-              name="email"
-              label="Email"
-              InputLabelProps={{shrink: true}}
-              value={registrationValues.email}
-              onChange={handleRegistration}
-              // error = {errors.email ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField required
-              id="password1Field"
-              name="password1"
-              type="password"
-              label="Password"
-              InputLabelProps={{shrink: true,}}
-              value={registrationValues.password1}
-              onChange={handleRegistration}
-              // error={errors.password1 ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <TextField required
-              id="password2Field"
-              name="password2"
-              type="password"
-              label="Confirm Password"
-              InputLabelProps={{shrink: true}}
-              value={registrationValues.password2}
-              onChange={handleRegistration}
-              // error={errors.password2 ? true : false}
-              style={{ margin: 8 }}
-              fullWidth
-              margin="normal"
-              variant="outlined"
-            />
-            <Button
-              type="submit"
-              // disabled={buttonDisabled}
-              // onClick={sendRegistration}
-              variant="contained"
-              fullWidth
-              color="primary"
-              size="large"
-              style={{ margin: 8 }}
+            <Formik
+              initialValues = {registrationValues}
+              validationSchema = {formValidation} 
+              onSubmit = { () => registerUser()}
             >
-              Sign UP
-            </Button>
-            </form>
-            {Object.keys(errors).length > 0 && (
-              <div className="ui error message">
-                <ul className="list">
-                  {Object.values(errors).map((value) => (
-                  <li key={value}>{value}</li>
-                ))}
-                </ul>
-              </div>
-            )}
+              { formik =>
+                <form noValidate onSubmit={formik.handleSubmit}>
+                  <TextField
+                    select
+                    id="academicTitleField"
+                    name="academicTitle"
+                    label="Title"
+                    fullWidth
+                    margin="normal"
+                    InputLabelProps={{shrink: true}}
+                    variant="outlined"
+                    value={formik.values.academicTitle}
+                    onChange={formik.handleChange}
+                    >
+                      {availableTitles.map((title) => (
+                        <MenuItem key={title.value} value={title.value}>
+                          {title.label}
+                        </MenuItem>
+                    ))}
+                  </TextField>
+                  <TextField required
+                    id="firstNameField"
+                    name="firstName"
+                    label="First Name"
+                    InputLabelProps={{shrink: true}}
+                    value={formik.values.firstName}
+                    onChange={formik.handleChange}
+                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                    helperText={formik.touched.firstName && formik.errors.firstName}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <TextField required
+                    id="lastNameField"
+                    name="lastName"
+                    label="Last Name"
+                    InputLabelProps={{shrink: true}}
+                    value={formik.values.lastName}
+                    onChange={formik.handleChange}
+                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                    helperText={formik.touched.lastName && formik.errors.lastName}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <TextField required
+                    id="userNameField"
+                    name="username"
+                    label="Username"
+                    InputLabelProps={{shrink: true}}
+                    value={formik.values.username}
+                    onChange={formik.handleChange}
+                    error={formik.touched.username && Boolean(formik.errors.username)}
+                    helperText={formik.touched.username && formik.errors.username}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <TextField required
+                    id="emailField"
+                    name="email"
+                    label="Email"
+                    InputLabelProps={{shrink: true}}
+                    value={formik.values.email}
+                    onChange={formik.handleChange}
+                    error = {formik.touched.email && Boolean(formik.errors.email)}
+                    helperText={formik.touched.email && formik.errors.email}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <TextField required
+                    id="password1Field"
+                    name="password1"
+                    type="password"
+                    label="Password"
+                    InputLabelProps={{shrink: true,}}
+                    value={formik.values.password1}
+                    onChange={formik.handleChange}
+                    error={formik.touched.password1 && Boolean(formik.errors.password1)}
+                    helperText={formik.touched.password1 && formik.errors.password1}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <TextField required
+                    id="password2Field"
+                    name="password2"
+                    type="password"
+                    label="Confirm Password"
+                    InputLabelProps={{shrink: true}}
+                    value={formik.values.password2}
+                    onChange={formik.handleChange}
+                    error={formik.touched.password2 && Boolean(formik.errors.password2)}
+                    helperText={formik.touched.password2 && formik.errors.password2}
+                    fullWidth
+                    margin="normal"
+                    variant="outlined"
+                  />
+                  <Button type="submit"
+                    variant="contained"
+                    fullWidth
+                    color="primary"
+                    size="large"
+                  >
+                    Sign Up
+                  </Button>
+                </form>
+              }
+            </Formik>
+
+            <Typography variant="body2" align="center">
+            <div>
+              { errorState && (
+                <Alert severity="error">Please add valid credentials!</Alert>
+              )}
+            </div>
+          </Typography>
+
           </Container>
         </div>
       </PageContainer>
     </React.Fragment>
   );
-
-  // function checkPasswordError(){
-  //   if(registrationValues.password1 != registrationValues.password2){
-  //     return true;
-  //   }
-  //   else{
-  //     return false;
-  //   }
-  // }
 }
 
 const REGISTER_USER = gql `
