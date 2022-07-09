@@ -9,12 +9,11 @@ import Container from "@material-ui/core/Container";
 import Alert from '@mui/material/Alert';
 
 // Components
-import PageContainer from "../src/components/PageContainer";
-import Typography from "../src/components/Typography";
+import { PageContainer, Typography } from "../src/components";
 import { TextField, Button } from "@material-ui/core";
 
 // Form Validation
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
 // Backend Queries
@@ -28,15 +27,9 @@ function SignIn() {
 
   const router = useRouter();
   const authContext = useContext(AuthContext);
-
   const [errorState, setErrorState] = useState(false)
 
-  const [loginValues] = useState ({
-    email: '',
-    password: ''
-  })
-
-  const [signIn] = useMutation(TOKEN_AUTH,
+  const [signIn] = useMutation(signInMutation,
     {
     onCompleted: (result) => {
       if(result.tokenAuth.success){
@@ -47,22 +40,41 @@ function SignIn() {
       else{
         setErrorState(true);
       }
-    },
+    }
     /**
      * onError(error){
      // Error Should ideally be set here rather than in the above else statement
     }
     **/
-    variables: loginValues
   });
 
-  const formValidation = Yup.object({
+  const validationSchema = Yup.object({
     email: Yup.string()
       .email('Email is invalid')
       .required('Email is required'),
     password: Yup.string()
       .min(8, 'Password must be at least 8 characters')
       .required('Password is required'),
+  })
+
+  const formik = useFormik({
+    initialValues:
+    {
+      email: '',
+      password: ''
+    },
+    validationSchema: validationSchema,
+    onSubmit: (loginValues) => {
+      signIn(
+        {
+          variables: 
+            {
+              email: loginValues.email,
+              password: loginValues.password
+            }
+        }
+      )
+    }
   })
 
   return (
@@ -77,51 +89,38 @@ function SignIn() {
             </Link>
           </Typography>
 
-          <Formik
-            initialValues = {loginValues}
-            validationSchema = {formValidation}
-            onSubmit = { () => { signIn() }}
-          >
-            {formik =>
-              <form noValidate onSubmit={formik.handleSubmit}>
-                <TextField required
-                  id="email"
-                  label="Email"
-                  name="email"
-                  fullWidth
-                  margin="normal"
-                  variant="outlined"
-                  InputLabelProps = {{shrink: true}}
-                  value={formik.values.email}
-                  onChange={formik.handleChange}
-                  error={formik.touched.email && Boolean(formik.errors.email)}
-                  helperText={formik.touched.email && formik.errors.email}
-                />
-                <TextField required
-                  id="password"
-                  type="password"
-                  label="Password"
-                  margin="normal"
-                  fullWidth
-                  InputLabelProps={{shrink: true}}
-                  variant="outlined"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  error={formik.touched.password && Boolean(formik.errors.password)}
-                  helperText={formik.touched.password && formik.errors.password}
-                />
-                <Button type="submit"
+            <form noValidate onSubmit={formik.handleSubmit}>
+              <TextField required
+                id="email"
+                label="Email"
+                name="email"
                 fullWidth
-                color="primary"
-                size="large"
-                variant="contained"
-                >
-                  Sign in
-                </Button>
-              </form>
-            }
-          </Formik>
-          
+                margin="normal"
+                variant="outlined"
+                InputLabelProps = {{shrink: true}}
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+              <TextField required
+                id="password"
+                type="password"
+                label="Password"
+                margin="normal"
+                fullWidth
+                InputLabelProps={{shrink: true}}
+                variant="outlined"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                error={formik.touched.password && Boolean(formik.errors.password)}
+                helperText={formik.touched.password && formik.errors.password}
+              />
+              <Button type="submit" fullWidth color="primary" size="large" variant="contained">
+                Sign in
+              </Button>
+            </form>
+
           <Typography variant="body2" align="center">
             <div>
               { errorState && (
@@ -141,7 +140,7 @@ function SignIn() {
 }
 
 
-const TOKEN_AUTH = gql`
+const signInMutation = gql`
   mutation tokenAuth($email: String!, $password: String!) {
     tokenAuth(email: $email, password: $password) {
       success

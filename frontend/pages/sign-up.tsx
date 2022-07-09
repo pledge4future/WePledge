@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
@@ -9,7 +9,7 @@ import { TextField, Button, Link, Container, MenuItem }  from "@material-ui/core
 import Alert from '@mui/material/Alert';
 import { PageContainer, Typography } from "../src/components";
 
-import { Formik } from "formik";
+import { useFormik} from "formik";
 import * as Yup from 'yup';
 
 function SignUp() {
@@ -20,7 +20,8 @@ function SignUp() {
     { value: "PROF", label: "PROF"},
   ];
 
-  const [registrationValues, setRegistrationValues] = useState({
+  const initialRegistrationValues = 
+  {
     academicTitle: '',
     firstName: '',
     lastName: '',
@@ -28,17 +29,13 @@ function SignUp() {
     email: '',
     password1: '',
     password2: ''
-  })
-
-  const handleRegistration = (event: any) => {
-    setRegistrationValues({...registrationValues, [event.target.name]: event.target.value})
   }
 
   const [errorState, setErrorState] = useState(false)
 
   const router = useRouter();
 
-  const [registerUser] = useMutation(REGISTER_USER, {
+  const [registerUser] = useMutation(REGISTER_USER_MUTATION, {
     onCompleted(result) {
       if (result.register.success) {
         router.push("/confirm-email")
@@ -46,15 +43,14 @@ function SignUp() {
       else {
         setErrorState(true);
       }
-    },
+    }
     /* onError(error) {
       // Error should ideally be set here but our graphql returns 200 on errors currently 
       // so this block is never entered
      },*/
-    variables: registrationValues
   });
 
-  const formValidation = Yup.object({
+  const registrationValidationSchema = Yup.object({
     firstName: Yup.string()
       .max(25, 'First name must be less than 25 character')
       .required('First name is required'),
@@ -75,6 +71,27 @@ function SignUp() {
       .required('Please re-enter your password'),
   })
 
+  const formik = useFormik({
+    initialValues: initialRegistrationValues,
+    validationSchema: registrationValidationSchema,
+    onSubmit: (registrationValues) => {
+      registerUser( 
+        {
+          variables: 
+            {
+              academicTitle: registrationValues.academicTitle,
+              firstName: registrationValues.firstName,
+              lastName: registrationValues.lastName,
+              username: registrationValues.username,
+              email: registrationValues.email,
+              password1: registrationValues.password1,
+              password2: registrationValues.password2
+            }
+        }
+      )
+    }
+  })
+
   return (
     <React.Fragment>
       <PageContainer title="Sign Up">
@@ -85,127 +102,94 @@ function SignUp() {
                 Already have an account?
               </Link>
             </Typography>
-            <Formik
-              initialValues = {registrationValues}
-              validationSchema = {formValidation} 
-              onSubmit = { () => registerUser()}
-            >
-              { formik =>
-                <form noValidate onSubmit={formik.handleSubmit}>
-                  <TextField
-                    select
-                    id="academicTitleField"
-                    name="academicTitle"
-                    label="Title"
-                    fullWidth
-                    margin="normal"
-                    InputLabelProps={{shrink: true}}
-                    variant="outlined"
-                    value={formik.values.academicTitle}
-                    onChange={formik.handleChange}
-                    >
-                      {availableTitles.map((title) => (
-                        <MenuItem key={title.value} value={title.value}>
-                          {title.label}
-                        </MenuItem>
-                    ))}
-                  </TextField>
-                  <TextField required
-                    id="firstNameField"
-                    name="firstName"
-                    label="First Name"
-                    InputLabelProps={{shrink: true}}
-                    value={formik.values.firstName}
-                    onChange={formik.handleChange}
-                    error={formik.touched.firstName && Boolean(formik.errors.firstName)}
-                    helperText={formik.touched.firstName && formik.errors.firstName}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField required
-                    id="lastNameField"
-                    name="lastName"
-                    label="Last Name"
-                    InputLabelProps={{shrink: true}}
-                    value={formik.values.lastName}
-                    onChange={formik.handleChange}
-                    error={formik.touched.lastName && Boolean(formik.errors.lastName)}
-                    helperText={formik.touched.lastName && formik.errors.lastName}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField required
-                    id="userNameField"
-                    name="username"
-                    label="Username"
-                    InputLabelProps={{shrink: true}}
-                    value={formik.values.username}
-                    onChange={formik.handleChange}
-                    error={formik.touched.username && Boolean(formik.errors.username)}
-                    helperText={formik.touched.username && formik.errors.username}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField required
-                    id="emailField"
-                    name="email"
-                    label="Email"
-                    InputLabelProps={{shrink: true}}
-                    value={formik.values.email}
-                    onChange={formik.handleChange}
-                    error = {formik.touched.email && Boolean(formik.errors.email)}
-                    helperText={formik.touched.email && formik.errors.email}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField required
-                    id="password1Field"
-                    name="password1"
-                    type="password"
-                    label="Password"
-                    InputLabelProps={{shrink: true,}}
-                    value={formik.values.password1}
-                    onChange={formik.handleChange}
-                    error={formik.touched.password1 && Boolean(formik.errors.password1)}
-                    helperText={formik.touched.password1 && formik.errors.password1}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField required
-                    id="password2Field"
-                    name="password2"
-                    type="password"
-                    label="Confirm Password"
-                    InputLabelProps={{shrink: true}}
-                    value={formik.values.password2}
-                    onChange={formik.handleChange}
-                    error={formik.touched.password2 && Boolean(formik.errors.password2)}
-                    helperText={formik.touched.password2 && formik.errors.password2}
-                    fullWidth
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <Button type="submit"
-                    variant="contained"
-                    fullWidth
-                    color="primary"
-                    size="large"
+              <form noValidate onSubmit={formik.handleSubmit}>
+                <TextField select fullWidth margin="normal" variant="outlined"
+                  id="academicTitleField"
+                  name="academicTitle"
+                  label="Title"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.academicTitle}
+                  onChange={formik.handleChange}
                   >
-                    Sign Up
-                  </Button>
-                </form>
-              }
-            </Formik>
+                    {availableTitles.map((title) => (
+                      <MenuItem key={title.value} value={title.value}>
+                        {title.label}
+                      </MenuItem>
+                  ))}
+                </TextField>
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="firstNameField"
+                  name="firstName"
+                  label="First Name"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                  helperText={formik.touched.firstName && formik.errors.firstName}
+                />
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="lastNameField"
+                  name="lastName"
+                  label="Last Name"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                  helperText={formik.touched.lastName && formik.errors.lastName}
+                />
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="userNameField"
+                  name="username"
+                  label="Username"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.username}
+                  onChange={formik.handleChange}
+                  error={formik.touched.username && Boolean(formik.errors.username)}
+                  helperText={formik.touched.username && formik.errors.username}
+                />
+                <TextField required fullWidth margin="normal"  variant="outlined"
+                  id="emailField"
+                  name="email"
+                  label="Email"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error = {formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField required fullWidth  margin="normal" variant="outlined"
+                  id="password1Field"
+                  name="password1"
+                  type="password"
+                  label="Password"
+                  InputLabelProps={{shrink: true,}}
+                  value={formik.values.password1}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password1 && Boolean(formik.errors.password1)}
+                  helperText={formik.touched.password1 && formik.errors.password1}
+                />
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="password2Field"
+                  name="password2"
+                  type="password"
+                  label="Confirm Password"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.password2}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password2 && Boolean(formik.errors.password2)}
+                  helperText={formik.touched.password2 && formik.errors.password2}
+                />
+
+                <Button type="submit" variant="contained" fullWidth color="primary" size="large">
+                  Sign Up
+                </Button>
+
+              </form>
 
             <Typography variant="body2" align="center">
             <div>
               { errorState && (
-                <Alert severity="error">Please add valid credentials!</Alert>
+                <Alert severity="error">Username or Email is already in use</Alert>
               )}
             </div>
           </Typography>
@@ -217,7 +201,8 @@ function SignUp() {
   );
 }
 
-const REGISTER_USER = gql `
+const REGISTER_USER_MUTATION = gql
+  `
     mutation register(
       $academicTitle: String!
       $firstName: String!,
@@ -241,6 +226,6 @@ const REGISTER_USER = gql `
          errors
       }
     }
-`;
+  `;
 
 export default withRoot(SignUp);
