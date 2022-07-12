@@ -23,7 +23,6 @@ For testing purposes, requests without authentication can be sent through `local
 Required info from user:
 
 * Email
-* username
 * Password
 * Repeat password
 
@@ -34,7 +33,6 @@ Required info from user:
 mutation {
 	register (
     email: "test@pledge4future.org",
-    username: "lisalou",
     password1: "lisa445566!",
     password2: "lisa445566!"
   ) {
@@ -121,7 +119,6 @@ mutation {
     token
     refreshToken
     user {
-      username
       firstName
       email
       isRepresentative
@@ -141,7 +138,6 @@ mutation {
       "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJlbWFpbCI6Imxpc2Fsb3VAdW5pLWhkLmRlIiwiZXhwIjoxNjI4NDQzNjc2LCJvcmlnSWF0IjoxNjI4NDQzMzc2fQ.SyQFNdccgxPnmMPtTmTKcOsNrhSlcdPVKOkyc-jjcm0",
       "refreshToken": "6a548eb3aacc5886dd366d9e419ee4aad08aa9fc",
       "user": {
-        "username": "lisalou",
         "firstName": "",
         "email": "lisalou@uni-hd.de",
         "isRepresentative": false
@@ -349,7 +345,6 @@ mutation {
 ```
 query {
 	me {
-    username
     email
     firstName
     lastName
@@ -381,7 +376,6 @@ query {
   users {
     edges {
       node {
-        username
         email
       }
     }

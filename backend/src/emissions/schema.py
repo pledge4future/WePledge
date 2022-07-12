@@ -381,7 +381,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     ):
         """
         Yields monthly co2e emissions of businesstrips
-        - for a user (if username is given),
+        - for a user,
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
         param: level: Aggregation level: personal, group or institution. Default: group
@@ -390,7 +390,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         user = info.context.user
         # Get relevant data entries
         if level == "personal":
-            entries = BusinessTrip.objects.filter(user__username=user.username)
+            entries = BusinessTrip.objects.filter(user__id=user.id)
             entries = entries.annotate(co2e_cap=F("co2e"))
         elif level == "group":
             entries = BusinessTripGroup.objects.filter(
@@ -432,7 +432,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     ):
         """
         Yields monthly co2e emissions of businesstrips
-        - for a user (if username is given),
+        - for a user,
         - for a group (if group_id is given),
         - for an institution (if inst_id is given)
         param: level: Aggregation level: group or institution. Default: group
@@ -441,7 +441,7 @@ class Query(UserQuery, MeQuery, ObjectType):
         user = info.context.user
         # Get relevant data entries
         if level == "personal":
-            entries = Commuting.objects.filter(user__username=user.username)
+            entries = Commuting.objects.filter(user__id=user.id)
             entries = entries.annotate(co2e_cap=F("co2e"))
         elif level == "group":
             entries = CommutingGroup.objects.filter(

@@ -24,8 +24,8 @@ from co2calculator.co2calculator import (
 class CustomUser(AbstractUser):
     """Custom user model"""
 
-    email = models.EmailField(blank=False, max_length=255, verbose_name="email", unique=True)
-    username = models.CharField(max_length=100, unique=True)
+    email = models.EmailField(max_length=200, verbose_name="email", unique=True)
+    username = models.CharField(max_length=200, blank=True)
     first_name = models.CharField(max_length=25)
     last_name = models.CharField(max_length=25)
     title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
@@ -35,10 +35,10 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name}"
 
 
 class ResearchField(models.Model):
@@ -156,7 +156,7 @@ class Commuting(models.Model):
         unique_together = ("user", "timestamp", "transportation_mode")
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class BusinessTripGroup(models.Model):
@@ -292,7 +292,7 @@ class BusinessTrip(models.Model):
             ).save()
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class Heating(models.Model):
