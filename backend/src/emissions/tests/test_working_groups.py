@@ -31,7 +31,7 @@ def test_set_workinggroup(test_user_token2):
           ) {
             ok
             user {
-                username
+                email
               workingGroup {
                 name
               }
@@ -136,12 +136,13 @@ def test_create_workinggroup(test_user_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: false
             }) {
                 ok
                 workinggroup {
                     name
                     representative {
-                        username
+                        email
                     }
             }
             }
@@ -158,8 +159,7 @@ def test_create_workinggroup(test_user_token):
     logger.warning(data)
     assert data["data"]["createWorkingGroup"]["ok"]
     assert (
-        data["data"]["createWorkingGroup"]["workinggroup"]["representative"]["username"]
-        == "testuser"
+        data["data"]["createWorkingGroup"]["workinggroup"]["representative"]["email"] is not None
     )
 
 
@@ -175,12 +175,13 @@ def test_create_workinggroup_by_representative(test_user_representative_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: true
             }) {
                 ok
                 workinggroup {
                     name
                     representative {
-                        username
+                        email
                     }
             }
             }
