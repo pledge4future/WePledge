@@ -14,6 +14,33 @@ import * as Yup from 'yup';
 
 function SignUp() {
 
+  const REGISTER_USER_MUTATION = gql
+  `
+    mutation register(
+      $academicTitle: String!
+      $firstName: String!,
+      $lastName: String!,
+      $username: String!,
+      $email: String!,
+      $password1: String!,
+      $password2: String!
+      ) {
+        register(
+          academicTitle: $academicTitle,
+          firstName: $firstName,
+          lastName: $lastName,
+          username: $username,
+          email: $email,
+          password1: $password1,
+          password2: $password2
+        )
+          {
+         success
+         errors
+      }
+    }
+  `
+
   const availableTitles = [
     { value: "", label: ""},
     { value: "DR", label: "DR"},
@@ -200,32 +227,5 @@ function SignUp() {
     </React.Fragment>
   );
 }
-
-const REGISTER_USER_MUTATION = gql
-  `
-    mutation register(
-      $academicTitle: String!
-      $firstName: String!,
-      $lastName: String!,
-      $username: String!,
-      $email: String!,
-      $password1: String!,
-      $password2: String!
-      ) {
-        register(
-          academicTitle: $academicTitle,
-          firstName: $firstName,
-          lastName: $lastName,
-          username: $username,
-          email: $email,
-          password1: $password1,
-          password2: $password2
-        )
-          {
-         success
-         errors
-      }
-    }
-  `;
 
 export default withRoot(SignUp);

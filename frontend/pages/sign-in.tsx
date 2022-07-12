@@ -25,11 +25,29 @@ import { AuthContext } from "../src/providers/Auth/AuthContext";
 
 function SignIn() {
 
+  const SIGN_IN_MUTATION = gql`
+  mutation tokenAuth($email: String!, $password: String!) {
+    tokenAuth(email: $email, password: $password) {
+      success
+      errors
+      token
+      refreshToken
+      user {
+        username
+        firstName
+        email
+        isRepresentative
+      }
+    }
+  }
+`
+
+
   const router = useRouter();
   const authContext = useContext(AuthContext);
   const [errorState, setErrorState] = useState(false)
 
-  const [signIn] = useMutation(signInMutation,
+  const [signIn] = useMutation(SIGN_IN_MUTATION,
     {
     onCompleted: (result) => {
       if(result.tokenAuth.success){
@@ -138,23 +156,5 @@ function SignIn() {
     </PageContainer>
   );
 }
-
-
-const signInMutation = gql`
-  mutation tokenAuth($email: String!, $password: String!) {
-    tokenAuth(email: $email, password: $password) {
-      success
-      errors
-      token
-      refreshToken
-      user {
-        username
-        firstName
-        email
-        isRepresentative
-      }
-    }
-  }
-`
 
 export default withRoot(SignIn);
