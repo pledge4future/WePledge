@@ -20,7 +20,6 @@ function SignUp() {
       $academicTitle: String!
       $firstName: String!,
       $lastName: String!,
-      $username: String!,
       $email: String!,
       $password1: String!,
       $password2: String!
@@ -29,7 +28,6 @@ function SignUp() {
           academicTitle: $academicTitle,
           firstName: $firstName,
           lastName: $lastName,
-          username: $username,
           email: $email,
           password1: $password1,
           password2: $password2
@@ -52,7 +50,6 @@ function SignUp() {
     academicTitle: '',
     firstName: '',
     lastName: '',
-    username: '',
     email: '',
     password1: '',
     password2: ''
@@ -84,8 +81,6 @@ function SignUp() {
     lastName: Yup.string()
       .max(25, 'Last name must be less than 25 character')
       .required('Last name is required'),
-    username: Yup.string()
-      .required('Username is required'),
     email: Yup.string()
       .email('Email is invalid')
       .required('Email is required'),
@@ -109,7 +104,6 @@ function SignUp() {
               academicTitle: registrationValues.academicTitle,
               firstName: registrationValues.firstName,
               lastName: registrationValues.lastName,
-              username: registrationValues.username,
               email: registrationValues.email,
               password1: registrationValues.password1,
               password2: registrationValues.password2
@@ -164,16 +158,6 @@ function SignUp() {
                   error={formik.touched.lastName && Boolean(formik.errors.lastName)}
                   helperText={formik.touched.lastName && formik.errors.lastName}
                 />
-                <TextField required fullWidth margin="normal" variant="outlined"
-                  id="userNameField"
-                  name="username"
-                  label="Username"
-                  InputLabelProps={{shrink: true}}
-                  value={formik.values.username}
-                  onChange={formik.handleChange}
-                  error={formik.touched.username && Boolean(formik.errors.username)}
-                  helperText={formik.touched.username && formik.errors.username}
-                />
                 <TextField required fullWidth margin="normal"  variant="outlined"
                   id="emailField"
                   name="email"
@@ -216,7 +200,7 @@ function SignUp() {
             <Typography variant="body2" align="center">
             <div>
               { errorState && (
-                <Alert severity="error">Username or Email is already in use</Alert>
+                <Alert severity="error">Email is already in use</Alert>
               )}
             </div>
           </Typography>
