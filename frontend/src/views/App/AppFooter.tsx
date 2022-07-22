@@ -151,7 +151,7 @@ export default function AppFooter() {
                 <Link href="/contact">Contact</Link>
               </li>
               <li className={classes.listItem}>
-                <Link href="https://heigit.org/imprint/">Impressum</Link>
+                <Link href="https://heigit.org/imprint/">Imprint</Link>
               </li>
               <li className={classes.listItem}>
                 <Link href="https://heigit.org/legal-notice/">Privacy Policy</Link>
