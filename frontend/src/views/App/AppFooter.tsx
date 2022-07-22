@@ -124,13 +124,8 @@ export default function AppFooter() {
       <Container className={classes.container}>
         <Grid container spacing={5}>
           <Grid item xs={6} sm={4} md={3}>
-            <Grid
-              container
-              direction="column"
-              alignContent="flex-start"
-              className={classes.iconsWrapper}
-              spacing={2}
-            >
+            <Grid container direction="column" alignContent="flex-start"
+              className={classes.iconsWrapper} spacing={2}>
               <Grid item className={classes.icons}>
                 <a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
                   <InstagramIcon />
@@ -156,24 +151,18 @@ export default function AppFooter() {
                 <Link href="/contact">Contact</Link>
               </li>
               <li className={classes.listItem}>
-                <Link href="/impressum">Impressum</Link>
+                <Link href="https://heigit.org/imprint/">Imprint</Link>
               </li>
               <li className={classes.listItem}>
-                <Link href="/privacy-policy">Privacy Policy</Link>
-              </li>              
+                <Link href="https://heigit.org/legal-notice/">Privacy Policy</Link>
+              </li>
             </ul>
           </Grid>
           <Grid item xs={6} sm={8} md={4}>
             <Typography variant="h6" marked="left" gutterBottom>
               Language
             </Typography>
-            <TextField
-              size="medium"
-              select
-              SelectProps={{native: true,}}
-              className={classes.language}
-              variant="standard"
-            >
+            <TextField select size="medium" variant="standard" className={classes.language} SelectProps={{native: true}}>
               {LANGUAGES.map((language) => (
                 <option value={language.code} key={language.code}>
                   {language.name}
@@ -184,27 +173,18 @@ export default function AppFooter() {
           <Grid item xs={2} sm={4} md={3}>
             <Typography variant="h6" marked="left" gutterBottom>
               Supported By
-              </Typography>
-              <Grid
-              container
-              direction="row"
-              alignContent="flex-start"
-              className={classes.logosWrapper}
-              spacing={2}
-            >
+            </Typography>
+            <Grid container direction="row" alignContent="flex-start" spacing={2} className={classes.logosWrapper}>
               <Grid item className={classes.icons}>
-                {
-                  SUPPORTED_BY.map((item) => {
-                    return (
-                      <a href={item.link} className={classes.supporterLogo}>
-                        <img src={item.src} title={item.tooltip}
-                        className={classes.supportedByLogos}/>
-                      </a>
-                    )
-                  })
-                }
+                { SUPPORTED_BY.map((item) => {
+                  return (
+                    <a href={item.link} className={classes.supporterLogo}>
+                      <img src={item.src} title={item.tooltip} className={classes.supportedByLogos}/>
+                    </a>
+                  )
+                })}
               </Grid>
-              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Container>
