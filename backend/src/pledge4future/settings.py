@@ -182,7 +182,6 @@ GRAPHQL_AUTH = {
         "email",
         "first_name",
         "last_name",
-        "username"
     ],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title", "first_name", "last_name"],
     "UPDATE_MUTATION_FIELDS": [
