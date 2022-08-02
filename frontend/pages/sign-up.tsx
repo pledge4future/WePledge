@@ -1,16 +1,16 @@
 import React from "react";
 import { useState } from 'react';
-
 import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
-
-import withRoot from "../src/withRoot";
 import { TextField, Button, Link, Container, MenuItem }  from "@material-ui/core";
 import Alert from '@mui/material/Alert';
-import { PageContainer, Typography } from "../src/components";
-
 import { useFormik} from "formik";
 import * as Yup from 'yup';
+
+import withRoot from "../src/withRoot";
+import { PageContainer, Typography } from "../src/components";
+
+
 
 function SignUp() {
 
@@ -57,21 +57,27 @@ function SignUp() {
 
   const [errorState, setErrorState] = useState(false)
 
+  const errorValues = {
+    academicTitle: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password1: '',
+    password2: ''
+  }
+  const [errorMessage, setErrors] = useState(false);
+
   const router = useRouter();
 
   const [registerUser] = useMutation(REGISTER_USER_MUTATION, {
     onCompleted(result) {
-      if (result.register.success) {
+      if (result.register.success && result.register.success == true) {
         router.push("/confirm-email")
       } 
       else {
         setErrorState(true);
       }
     }
-    /* onError(error) {
-      // Error should ideally be set here but our graphql returns 200 on errors currently 
-      // so this block is never entered
-     },*/
   });
 
   const registrationValidationSchema = Yup.object({
@@ -198,12 +204,12 @@ function SignUp() {
               </form>
 
             <Typography variant="body2" align="center">
-            <div>
-              { errorState && (
-                <Alert severity="error">Email is already in use</Alert>
-              )}
-            </div>
-          </Typography>
+              <div>
+                { errorState && (
+                    <Alert severity="error">Please try a different password or email</Alert>
+                )}
+              </div>
+            </Typography>
 
           </Container>
         </div>
