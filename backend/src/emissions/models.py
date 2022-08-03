@@ -20,6 +20,7 @@ from co2calculator.co2calculator import (
     Unit,
 )
 
+import uuid
 
 class CustomUser(AbstractUser):
     """Custom user model"""
@@ -45,6 +46,12 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+
+
+def random_username(sender, instance, **kwargs):
+    if not instance.username:
+        instance.username = instance.email
+models.signals.pre_save.connect(random_username, sender=CustomUser)
 
 
 class ResearchField(models.Model):

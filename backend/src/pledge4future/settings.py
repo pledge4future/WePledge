@@ -163,30 +163,30 @@ GRAPHQL_JWT = {
 }
 
 GRAPHQL_AUTH = {
-    "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "LOGIN_ALLOWED_FIELDS": ["email"],
     "REGISTER_MUTATION_FIELDS": [
         "email",
         "first_name",
         "last_name",
-        "username"
     ],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "username",
         "academic_title"
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,
     "ALLOW_LOGIN_NOT_VERIFIED": False,
     "EMAIL_FROM": "no-reply@pledge4future.org",
-    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost")
-    + "/activate",
+    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate",
+    "PASSWORD_RESET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-new-password",
+    "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate-secondary",
+    "PASSWORD_SET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-password",
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_PORT = os.environ.get("EMAIL_PORT")
