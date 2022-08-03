@@ -70,7 +70,7 @@ mutation ($name: String!, $institution: String!, $city: String!, $country: Strin
   ) {
     ok
     user {
-        username
+        email
       workingGroup {
         name
       }
@@ -97,7 +97,7 @@ query = """
             workinggroup {
                 name
                 representative {
-                    username
+                    email
                 }
         }
         }

@@ -1,192 +1,216 @@
-import * as React from "react";
-import { useState, useEffect } from 'react';
-
-import { useRouter }from 'next/router';
-
+import React from "react";
+import { useState } from 'react';
+import { useRouter } from 'next/router';
 import { gql, useMutation } from '@apollo/client';
+import { TextField, Button, Link, Container, MenuItem }  from "@material-ui/core";
+import Alert from '@mui/material/Alert';
+import { useFormik} from "formik";
+import * as Yup from 'yup';
 
 import withRoot from "../src/withRoot";
+import { PageContainer, Typography } from "../src/components";
 
-// Material-UI
-import TextField from "@material-ui/core/TextField";
-import Button from "@material-ui/core/Button";
-import Link from "@material-ui/core/Link";
-import Container from "@material-ui/core/Container";
-
-// Components
-import PageContainer from "../src/components/PageContainer";
-import Typography from "../src/components/Typography";
-
-
-
-const REGISTER_USER = gql `
-    mutation register($username: String!, $email: String!, $password1: String!, $password2: String!) {
-      register(username: $username, email: $email, password1: $password1, password2: $password2){
-        success
-        errors
-      }
-    }
-`
-
-
-
-
-const emailRegexp = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
 
 
 function SignUp() {
 
+  const REGISTER_USER_MUTATION = gql
+  `
+    mutation register(
+      $academicTitle: String!
+      $firstName: String!,
+      $lastName: String!,
+      $email: String!,
+      $password1: String!,
+      $password2: String!
+      ) {
+        register(
+          academicTitle: $academicTitle,
+          firstName: $firstName,
+          lastName: $lastName,
+          email: $email,
+          password1: $password1,
+          password2: $password2
+        )
+          {
+         success
+         errors
+      }
+    }
+  `
+
+  const availableTitles = [
+    { value: "", label: ""},
+    { value: "DR", label: "DR"},
+    { value: "PROF", label: "PROF"},
+  ];
+
+  const initialRegistrationValues = 
+  {
+    academicTitle: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password1: '',
+    password2: ''
+  }
+
+  const [errorState, setErrorState] = useState(false)
+
+  const errorValues = {
+    academicTitle: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    password1: '',
+    password2: ''
+  }
+  const [errorMessage, setErrors] = useState(false);
+
   const router = useRouter();
 
-  // mutation to register user
-  const [register] = useMutation(REGISTER_USER, {
-    onCompleted() {
-      router.push("/confirm-email")
-    },
-    onError(error) {
-      console.log(error)
+  const [registerUser] = useMutation(REGISTER_USER_MUTATION, {
+    onCompleted(result) {
+      if (result.register.success && result.register.success == true) {
+        router.push("/confirm-email")
+      } 
+      else {
+        setErrorState(true);
+      }
     }
   });
 
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [repeatedPassword, setRepeatedPassword] = useState('');
-  const [buttonDisabled, setButtonDisabled] = useState(true);
-  const [errorText] = useState('')
+  const registrationValidationSchema = Yup.object({
+    firstName: Yup.string()
+      .max(25, 'First name must be less than 25 character')
+      .required('First name is required'),
+    lastName: Yup.string()
+      .max(25, 'Last name must be less than 25 character')
+      .required('Last name is required'),
+    email: Yup.string()
+      .email('Email is invalid')
+      .required('Email is required'),
+    password1: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .required('Password is required'),
+    password2: Yup.string()
+      .min(8, 'Password must be at least 8 characters')
+      .oneOf([Yup.ref('password1'), null], 'Passwords must match')
+      .required('Please re-enter your password'),
+  })
 
-  function handleRepeatedPasswordChange(e: any){
-    setRepeatedPassword(e?.target?.value)
-  }
-  function handleUsernameChange(e: any){
-    setUsername(e?.target?.value);
-  }
-  function handleEmailChange(e: any){
-    setEmail(e?.target?.value);
-  }
-  function handlePasswordChange(e: any){
-    setPassword(e?.target?.value);
-  }
-
-  function checkPasswordError(){
-    if(password != repeatedPassword){
-      //setErrorText("Passwords don't seem to match");
-      return true;
+  const formik = useFormik({
+    initialValues: initialRegistrationValues,
+    validationSchema: registrationValidationSchema,
+    onSubmit: (registrationValues) => {
+      registerUser( 
+        {
+          variables: 
+            {
+              academicTitle: registrationValues.academicTitle,
+              firstName: registrationValues.firstName,
+              lastName: registrationValues.lastName,
+              email: registrationValues.email,
+              password1: registrationValues.password1,
+              password2: registrationValues.password2
+            }
+        }
+      )
     }
-    else{
-      return false;
-    }
-
-  }
-
-  function checkEmailError(){
-    if (email && !emailRegexp.test(email)){
-      //setErrorText("eMail address seems to be invalid!")
-      return true
-    }
-    else{
-      return false
-    }
-  }
-
-  function sendRegistration(e: any){
-    register({variables: {username: username, email: email, password1: password, password2: repeatedPassword}});
-  }
-
-  useEffect(() => {
-    if (username && email && password && repeatedPassword && !checkPasswordError() && !checkEmailError()){
-      setButtonDisabled(false);
-    }
-    else{
-      setButtonDisabled(true);
-    }
-  }, [username, email, password, repeatedPassword])
+  })
 
   return (
     <React.Fragment>
       <PageContainer title="Sign Up">
-        <div style={{ padding: "48px 16px" }}>
+        <div style={{ padding: "48px 16px", margin: 8 }}>
           <Container maxWidth="xs">
             <Typography variant="body2" align="center">
               <Link href="/sign-in/" underline="always">
                 Already have an account?
               </Link>
             </Typography>
-            <form>
-            <TextField
-              id="outlined-full-width"
-              label="Username"
-              style={{ margin: 8 }}
-              required
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              value={username}
-              onChange={handleUsernameChange}
-            />
-            <TextField
-              id="outlined-full-width"
-              label="Email"
-              style={{ margin: 8 }}
-              required
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              value={email}
-              onChange={handleEmailChange}
-              error = {checkEmailError()}
-            />
-            <TextField
-              id="outlined-full-width"
-              label="Password"
-              type="password"
-              style={{ margin: 8 }}
-              required
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              value={password}
-              onChange={handlePasswordChange}
-              error={checkPasswordError()}
-            />
-            <TextField
-              id="outlined-full-width"
-              label="Repeat Password"
-              type="password"
-              style={{ margin: 8 }}
-              required
-              fullWidth
-              margin="normal"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              variant="outlined"
-              value={repeatedPassword}
-              onChange={handleRepeatedPasswordChange}
-              error={checkPasswordError()}
-              helperText={errorText}
-            />
-            <Button
-              variant="contained"
-              fullWidth
-              color="primary"
-              size="large"
-              style={{ margin: 8 }}
-              disabled={buttonDisabled}
-              onClick={sendRegistration}
-            >
-              Sign UP
-            </Button>
-            </form>
+              <form noValidate onSubmit={formik.handleSubmit}>
+                <TextField select fullWidth margin="normal" variant="outlined"
+                  id="academicTitleField"
+                  name="academicTitle"
+                  label="Title"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.academicTitle}
+                  onChange={formik.handleChange}
+                  >
+                    {availableTitles.map((title) => (
+                      <MenuItem key={title.value} value={title.value}>
+                        {title.label}
+                      </MenuItem>
+                  ))}
+                </TextField>
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="firstNameField"
+                  name="firstName"
+                  label="First Name"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.firstName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.firstName && Boolean(formik.errors.firstName)}
+                  helperText={formik.touched.firstName && formik.errors.firstName}
+                />
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="lastNameField"
+                  name="lastName"
+                  label="Last Name"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.lastName}
+                  onChange={formik.handleChange}
+                  error={formik.touched.lastName && Boolean(formik.errors.lastName)}
+                  helperText={formik.touched.lastName && formik.errors.lastName}
+                />
+                <TextField required fullWidth margin="normal"  variant="outlined"
+                  id="emailField"
+                  name="email"
+                  label="Email"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error = {formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                />
+                <TextField required fullWidth  margin="normal" variant="outlined"
+                  id="password1Field"
+                  name="password1"
+                  type="password"
+                  label="Password"
+                  InputLabelProps={{shrink: true,}}
+                  value={formik.values.password1}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password1 && Boolean(formik.errors.password1)}
+                  helperText={formik.touched.password1 && formik.errors.password1}
+                />
+                <TextField required fullWidth margin="normal" variant="outlined"
+                  id="password2Field"
+                  name="password2"
+                  type="password"
+                  label="Confirm Password"
+                  InputLabelProps={{shrink: true}}
+                  value={formik.values.password2}
+                  onChange={formik.handleChange}
+                  error={formik.touched.password2 && Boolean(formik.errors.password2)}
+                  helperText={formik.touched.password2 && formik.errors.password2}
+                />
+
+                <Button type="submit" variant="contained" fullWidth color="primary" size="large">
+                  Sign Up
+                </Button>
+
+              </form>
+
+            <Typography variant="body2" align="center">
+              <div>
+                { errorState && (
+                    <Alert severity="error">Please try a different password or email</Alert>
+                )}
+              </div>
+            </Typography>
+
           </Container>
         </div>
       </PageContainer>

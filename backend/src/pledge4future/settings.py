@@ -177,18 +177,16 @@ GRAPHQL_JWT = {
 }
 
 GRAPHQL_AUTH = {
-    "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "LOGIN_ALLOWED_FIELDS": ["email"],
     "REGISTER_MUTATION_FIELDS": [
         "email",
-        #"first_name",
-        #"last_name",
-        "username"
+        "first_name",
+        "last_name",
     ],
     "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title", "first_name", "last_name"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "username",
         "academic_title"
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
