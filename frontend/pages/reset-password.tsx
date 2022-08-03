@@ -3,21 +3,24 @@ import TextField from '@material-ui/core/TextField';
 import * as React from 'react';
 import PageContainer from '../src/components/PageContainer';
 import Typography from '../src/components/Typography';
+import Alert from '@mui/material/Alert';
 import { useFormik } from 'formik';
 import * as yup from 'yup'
 import withRoot from '../src/withRoot';
 import Container from '@material-ui/core/Container';
 
+import { useState } from 'react';
+
 import { gql, useMutation } from '@apollo/client'
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
 
 
-const RESET_PASSWORD = gql `
-mutation verifyAccount($token: String!) {
-  verifyAccount(token: $token){
-    success
-    errors
-  }
+const RESET_PASSWORD = gql`
+mutation sendPasswordResetEmail($email: String!) {
+    sendPasswordResetEmail(email: $email)  {
+        success,
+        errors
+    }
 }
 `
 
@@ -32,7 +35,17 @@ function resetPassword(){
 
   const router = useRouter();
 
-  const [verifyAccount] = useMutation(RESET_PASSWORD)
+  const [errorState, setErrorState] = useState(false)
+
+  const [resetPassword] = useMutation(RESET_PASSWORD, {
+    onCompleted(result) {
+      if(result.sendPasswordResetEmail.success === true){
+          router.push('/')
+      } else {
+          setErrorState(true);
+      }
+    }
+  });
 
 
   const formik = useFormik({
@@ -41,7 +54,13 @@ function resetPassword(){
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      console.log(formik.values);
+      resetPassword(
+          {
+            variables: {
+                email: values.email
+            }
+        }
+    )
       //router.push('/sign-in')
     }
   })
@@ -50,7 +69,7 @@ function resetPassword(){
 
   return (
   <React.Fragment>
-  <PageContainer title={'Confirm Email'}>
+  <PageContainer title={'Reset Password'}>
     <div style={{ padding: "48px 16px"}}>
       <Container maxWidth="xs">
       <Typography align="center" vairant="body2">
@@ -83,6 +102,13 @@ function resetPassword(){
         Reset Password
       </Button>
       </form>
+      <Typography variant="body2" align="center">
+              <div style={{marginTop: 20}}>
+                { errorState && (
+                    <Alert severity="error">Something went wrong, please try again and check for typos.</Alert>
+                )}
+              </div>
+            </Typography>
       </Container>
     </div>
   </PageContainer>
