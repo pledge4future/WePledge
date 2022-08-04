@@ -1,5 +1,5 @@
-import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment, Grid } from '@material-ui/core';
-import { FormControlLabel } from '@mui/material';
+import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment, Grid, Typography } from '@material-ui/core';
+import { Alert, FormControlLabel } from '@mui/material';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
@@ -7,6 +7,7 @@ import { tooltips } from './FormTooltips';
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { format } from 'date-fns'
+import Snackbar  from '../../components/Snackbar';
 
 
 // mutation to add business trip entry
@@ -58,17 +59,23 @@ export function BusinessTripForm(
 ){
 
   const [errorState, setErrorState] = useState(false);
+  const [successState, setSuccessState] = useState(false)
 
   const [addressMode, setAddressMode] = useState(false)
 
   const [submitBusinessTripData] = useMutation(ADD_BUSINESSTRIP,
     {
       onCompleted: (data) => {
-        console.log(data);
+        if(data.createBusinesstrip?.success === true){
+          setSuccessState(true)
+          formik.resetForm()
+        }
+        else{
+          setErrorState(true);
+        }
       },
-      onError(error){
-        console.log(error)
-        setErrorState(true);
+      onError: (error) => {
+        setErrorState(true)
       }
     });
 
@@ -331,7 +338,7 @@ export function BusinessTripForm(
               value={formik.values.distance}
               onChange={formik.handleChange}
               error={formik.touched.distance && Boolean(formik.values.distance)}
-              helperText={formik.touched.distance && formik.values.distance}
+              helperText={formik.touched.distance}
             />
         </Grid>
         <Grid item xs={4}>
@@ -530,6 +537,16 @@ export function BusinessTripForm(
         </Button>
         </Grid>
   </form>
+  <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+    <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+      Successfully added entry!
+    </Alert>
+  </Snackbar>
+  <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+    <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+      Failed to add entry!
+    </Alert>
+  </Snackbar>
   </>
   )
 }
