@@ -13,6 +13,7 @@ import { AuthContext }from '../../providers/Auth/AuthContext';
 
 import { gql, useQuery } from "@apollo/client";
 import { DashboardProps } from "./interfaces/DashboardProps";
+import { mapChartData } from "../../factories/ChartDataFactory";
 
 const GET_ELE = gql`
   query GetElectricity($level: String!, $timeInterval: String!) {
@@ -22,6 +23,22 @@ const GET_ELE = gql`
       co2eCap
     }
 }`
+
+const GET_TOTAL_EMISSIONS = gql`
+query getTotalEmissions($level: String!, $timeInterval: String!) {
+  commutingAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+ businesstripAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+}
+`
+
 
 
 const useStyles = makeStyles({
@@ -119,7 +136,14 @@ export function IndividualDashboard(props: DashboardProps){
 
   const renderComposedChart = useCallback(() => {
 
-    let chartData = []
+    let chartData;
+
+    const res = useQuery(GET_TOTAL_EMISSIONS, {
+      variables: {level: "personal", timeInterval: "month"}
+    });
+    if(!res.loading && !res.error) {
+      chartData = mapChartData(res.data);
+    }
 
     if(!isAuthenticated){
       const sums = calculateSum(exampleData);
@@ -131,6 +155,9 @@ export function IndividualDashboard(props: DashboardProps){
         return newItem
       });
     }
+
+    console.log(chartData);
+
 
 
     if(chartData?.length > 0){
