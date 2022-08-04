@@ -10,6 +10,8 @@ import Container from '@material-ui/core/Container';
 
 import { gql, useMutation } from '@apollo/client'
 import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { Alert } from '@mui/material';
 
 
 const VERIFY_ACCOUNT = gql `
@@ -34,7 +36,19 @@ function confirmEmail(){
 
   const router = useRouter();
 
-  const [verifyAccount] = useMutation(VERIFY_ACCOUNT)
+  const [errorState, setErrorState] = useState(false)
+
+  const [verifyAccount] = useMutation(VERIFY_ACCOUNT,{
+    onCompleted: (result) => {
+      if(result.verifyAccount.success === true){
+        setErrorState(false)
+        router.push('/sign-in')
+      }
+      if(result.verifyAccount.success === false){
+        setErrorState(true);
+      }
+    }
+  });
 
 
   const formik = useFormik({
@@ -44,7 +58,6 @@ function confirmEmail(){
     validationSchema: validationSchema,
     onSubmit: (values) => {
       verifyAccount({variables: {token: values.token}})
-      router.push('/sign-in')
     }
   })
 
@@ -85,6 +98,13 @@ function confirmEmail(){
         Confirm eMail Address
       </Button>
       </form>
+      <Typography variant="body2" align="center">
+            <div style={{marginTop: 10}}>
+              { errorState && (
+                <Alert severity="error">The token you try to enter is invalid.</Alert>
+              )}
+            </div>
+          </Typography>
       </Container>
     </div>
   </PageContainer>
