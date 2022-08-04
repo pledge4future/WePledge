@@ -66,7 +66,7 @@ export function BusinessTripForm(
   const [submitBusinessTripData] = useMutation(ADD_BUSINESSTRIP,
     {
       onCompleted: (data) => {
-        if(data.createBusinesstrip?.success === true){
+        if(data.createBusinesstrip?.ok === true){
           setSuccessState(true)
           formik.resetForm()
         }
