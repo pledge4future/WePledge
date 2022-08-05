@@ -28,25 +28,21 @@ export default function DataFormView(){
   }
 
   const onESubmit = (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
-    console.log(values);
     setSubmitting(false);
     //router.push('/dashboard')
   }
 
   const onHSubmit = (values: HeatingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
-    console.log(values)
     setSubmitting(false)
     //router.push('/dashboard')
   }
 
   const onCSubmit = (values: CommutingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
-    console.log(values)
     setSubmitting(false)
     //router.push('/dashboard')
   }
 
   const onBSubmit = (values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
-    console.log(values)
     setSubmitting(false)
     //router.push('/dashboard')
   }
