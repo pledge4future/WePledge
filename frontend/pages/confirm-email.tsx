@@ -44,7 +44,7 @@ function confirmEmail(){
         setErrorState(false)
         router.push('/sign-in')
       }
-      if(result.verifyAccount.success === false){
+      else{
         setErrorState(true);
       }
     }
@@ -95,13 +95,13 @@ function confirmEmail(){
       size="large"
       variant="contained"
       disabled={!formik.dirty || !formik.isValid}>
-        Confirm eMail Address
+        Confirm Email Address
       </Button>
       </form>
       <Typography variant="body2" align="center">
             <div style={{marginTop: 10}}>
               { errorState && (
-                <Alert severity="error">The token you try to enter is invalid.</Alert>
+                <Alert severity="error">The token you tried to enter is invalid.</Alert>
               )}
             </div>
           </Typography>
