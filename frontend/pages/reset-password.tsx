@@ -61,7 +61,6 @@ function resetPassword(){
             }
         }
     )
-      //router.push('/sign-in')
     }
   })
 

@@ -64,7 +64,6 @@ function SetNewPasswordForm() {
       },
       validationSchema: validationSchema,
       onSubmit: (values) => {
-          console.log("submitted")
         resetPassword({
           variables:
           {
@@ -81,7 +80,7 @@ function SetNewPasswordForm() {
 
 
   return (
-    <>
+    <React.Fragment>
       <AppAppBar />
       <PageContainer title="Set New Password">
       <div style={{ padding: "48px 16px" }}>
@@ -151,7 +150,7 @@ function SetNewPasswordForm() {
       </div>
     </PageContainer>
     <AppFooter />
-    </>
+    </React.Fragment>
   );
 }
 
