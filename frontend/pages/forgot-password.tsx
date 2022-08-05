@@ -15,7 +15,7 @@ import { gql, useMutation } from '@apollo/client'
 import { useRouter } from 'next/router'
 
 
-const RESET_PASSWORD = gql`
+const SEND_FORGOT_PWD_EMAIL = gql`
 mutation sendPasswordResetEmail($email: String!) {
     sendPasswordResetEmail(email: $email)  {
         success,
@@ -31,13 +31,13 @@ const validationSchema = yup.object({
     .required()
 });
 
-function resetPassword(){
+function forgotPassword(){
 
   const router = useRouter();
 
   const [errorState, setErrorState] = useState(false)
 
-  const [resetPassword] = useMutation(RESET_PASSWORD, {
+  const [sendForgotPasswordEmail] = useMutation(SEND_FORGOT_PWD_EMAIL, {
     onCompleted(result) {
       if(result.sendPasswordResetEmail.success === true){
           router.push('/')
@@ -54,7 +54,7 @@ function resetPassword(){
     },
     validationSchema: validationSchema,
     onSubmit: (values) => {
-      resetPassword(
+      sendForgotPasswordEmail(
           {
             variables: {
                 email: values.email
@@ -114,4 +114,4 @@ function resetPassword(){
   </React.Fragment>
   )}
 
-export default withRoot(resetPassword);
+export default withRoot(forgotPassword);
