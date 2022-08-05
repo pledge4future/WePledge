@@ -36,8 +36,13 @@ mutation passwordReset ($resetToken: String!, $newPassword: String!, $newPasswor
 
 const validationSchema = yup.object({
   resetToken: yup.string().required(),
-  newPassword: yup.string().required(),
-  newPasswordRepeat: yup.string().required()
+  newPassword: yup.string()
+  .min(8, 'Password must be at least 8 characters')
+  .required('Password is required'),
+  newPasswordRepeat: yup.string()
+  .min(8, 'Password must be at least 8 characters')
+  .oneOf([yup.ref('newPassword'), null], 'Passwords must match')
+  .required('Please re-enter your password')
 })
 
 
