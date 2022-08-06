@@ -14,11 +14,6 @@ services:
       - PGDATA=/var/lib/postgresql/data
     ports:
       - "5432:5432"
-#  redis_db:
-#    container_name: cube-redis
-#    image: redis
-#    ports:
-#      - "6379"
   backend:
     tty: true
     restart: on-failure
@@ -50,23 +45,6 @@ services:
 #    #env_file: ./.env
 #    environment:
 #      HOME: /home/node
-#  cube:
-#    container_name: cube
-#    build:
-#      context: ./cube
-#      target: development
-#    env_file: .env
-#    depends_on:
-#      - db
-#    ports:
-#      - "4000:4000"
-#    volumes:
-#      - ./cube/:/home/node/app/
-#      - cube_nodemodules:/home/node/app/node_modules
-#      - cube_extensions:/home/node/.vscode-server
-#    command: npm run dev
-#    links:
-#      - redis_db
 volumes:
   frontend_nodemodules:
   frontend_extensions:
