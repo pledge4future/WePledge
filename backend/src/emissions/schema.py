@@ -656,7 +656,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     n_employees = graphene.Int(
         required=True, description="Number of employees of working group"
     )
-    public = graphene.Boolean(required=True,
+    is_public = graphene.Boolean(required=True,
                               description="If true, the group will be publicly visible.")
 
 
@@ -751,7 +751,7 @@ class CreateWorkingGroup(graphene.Mutation):
             representative=user,
             field=field,
             n_employees=input.n_employees,
-            public=input.public
+            is_public=input.is_public
         )
         new_workinggroup.save()
 

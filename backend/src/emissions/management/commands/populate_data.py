@@ -159,7 +159,7 @@ class Command(BaseCommand):
                     field="Natural Sciences",
                     subfield="Earth and related environmental sciences",
                 )[0],
-                public=True
+                is_public=True
             )
             wg_environmental.save()
 
