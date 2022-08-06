@@ -29,6 +29,8 @@ from emissions.models import (
     BusinessTripGroup,
     ResearchField,
 )
+from emissions.decorators import representative_required
+
 from co2calculator.co2calculator.calculate import (
     calc_co2_electricity,
     calc_co2_heating,
@@ -817,6 +819,7 @@ class CreateElectricity(graphene.Mutation):
 
     @staticmethod
     @login_required
+    @representative_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         user = info.context.user
@@ -860,6 +863,7 @@ class CreateHeating(graphene.Mutation):
 
     @staticmethod
     @login_required
+    @representative_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         success = True
