@@ -29,7 +29,7 @@ def test_set_workinggroup(test_user_token2):
               country: $country
             }
           ) {
-            ok
+            success
             user {
                 username
               workingGroup {
@@ -55,7 +55,7 @@ def test_set_workinggroup(test_user_token2):
     assert response.status_code == 200
     data = response.json()
     logger.info(data["data"])
-    assert data["data"]["setWorkingGroup"]["ok"]
+    assert data["data"]["setWorkingGroup"]["success"]
     assert (
         data["data"]["setWorkingGroup"]["user"]["workingGroup"]["name"]
         == variables["name"]
@@ -84,7 +84,7 @@ def test_resolve_working_groups(test_user_token):
     assert response.status_code == 200
     data = response.json()
     # logger.warning(data)
-    assert data["data"]["workinggroups"][0]["id"] == "1"
+    assert len(data["data"]["workinggroups"]) > 0
 
 
 def test_resolve_institutions():
@@ -104,7 +104,7 @@ def test_resolve_institutions():
     assert response.status_code == 200
     data = response.json()
     # logger.warning(data)
-    assert data["data"]["institutions"][0]["id"] == "1"
+    assert len(data["data"]["institutions"]) > 0
 
 
 def test_resolve_research_fields():
@@ -136,8 +136,9 @@ def test_create_workinggroup(test_user_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: false
             }) {
-                ok
+                success
                 workinggroup {
                     name
                     representative {
@@ -156,7 +157,7 @@ def test_create_workinggroup(test_user_token):
     logger.warning(response.content)
     data = response.json()
     logger.warning(data)
-    assert data["data"]["createWorkingGroup"]["ok"]
+    assert data["data"]["createWorkingGroup"]["success"]
     assert (
         data["data"]["createWorkingGroup"]["workinggroup"]["representative"]["username"]
         == "testuser"
@@ -175,8 +176,9 @@ def test_create_workinggroup_by_representative(test_user_representative_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: false
             }) {
-                ok
+                success
                 workinggroup {
                     name
                     representative {

@@ -29,7 +29,7 @@ def test_add_electricity_data_not_representative(test_user_token2):
             building: "348"
             groupShare: 1
           }) {
-            ok
+            success
             electricity {
               timestamp
               consumption
@@ -50,7 +50,7 @@ def test_add_electricity_data_not_representative(test_user_token2):
     logger.warning(data)
     assert (
         data["errors"][0]["message"]
-        == "Electricity data was not added, since you are not the representative of your working group."
+        == "Only group representatives have permission to perform this action."
     )
 
 
@@ -65,7 +65,7 @@ def test_add_electricity_data(test_user_representative_token):
             building: "348"
             groupShare: 1
           }) {
-            ok
+            success
             electricity {
               timestamp
               consumption
@@ -84,7 +84,7 @@ def test_add_electricity_data(test_user_representative_token):
     assert response.status_code == 200
     data = response.json()
     logger.warning(data)
-    assert data["data"]["createElectricity"]["ok"]
+    assert data["data"]["createElectricity"]["success"]
     assert data["data"]["createElectricity"]["electricity"]["consumption"] == 3000.0
 
 
@@ -100,7 +100,7 @@ def test_add_heating_data(test_user_representative_token):
             fuelType: "Oil"
             groupShare: 1
           }) {
-            ok
+            success
             heating {
               timestamp
               consumption
@@ -119,7 +119,7 @@ def test_add_heating_data(test_user_representative_token):
     assert response.status_code == 200
     data = response.json()
     # logger.warning(data)
-    assert data["data"]["createHeating"]["ok"]
+    assert data["data"]["createHeating"]["success"]
     assert data["data"]["createHeating"]["heating"]["consumption"] == 3000.0
 
 
@@ -136,7 +136,7 @@ def test_add_businesstrip_data(test_user_token):
               passengers: 1
               roundtrip: false
             }) {
-                ok
+                success
                 businesstrip {
                     distance
                 }
@@ -152,7 +152,7 @@ def test_add_businesstrip_data(test_user_token):
     assert response.status_code == 200
     data = response.json()
     logger.warning(data)
-    assert data["data"]["createBusinesstrip"]["ok"]
+    assert data["data"]["createBusinesstrip"]["success"]
     assert data["data"]["createBusinesstrip"]["businesstrip"]["distance"] == 200.0
 
 
@@ -170,7 +170,7 @@ def test_add_commuting_data(test_user_token):
             passengers: 1
             workweeks: 40
           }) {
-            ok
+            success
           }
         }
     """
@@ -183,4 +183,4 @@ def test_add_commuting_data(test_user_token):
     assert response.status_code == 200
     data = response.json()
     logger.warning(data)
-    assert data["data"]["createCommuting"]["ok"]
+    assert data["data"]["createCommuting"]["success"]
