@@ -45,14 +45,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ["username"]
 
     def __str__(self):
-        return self.username
-
-
-def set_id_as_username(sender, instance, **kwargs):
-    """Sets the id of the user as its username since django.contrib.auth.models.AbstractUser requires one."""
-    if not instance.username:
-        instance.username = instance.id
-models.signals.pre_save.connect(set_id_as_username, sender=CustomUser)
+        return f"{self.first_name} {self.last_name}"
 
 
 class ResearchField(models.Model):
@@ -360,3 +353,5 @@ class Electricity(models.Model):
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}, {self.fuel_type}, {self.building}"
+
+
