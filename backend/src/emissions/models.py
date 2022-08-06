@@ -19,12 +19,13 @@ from co2calculator.co2calculator import (
     ElectricityFuel,
     Unit,
 )
-
 import uuid
+
 
 class CustomUser(AbstractUser):
     """Custom user model"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(
         blank=False, max_length=255, verbose_name="email", unique=True
     )
@@ -48,10 +49,11 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-def random_username(sender, instance, **kwargs):
+def set_id_as_username(sender, instance, **kwargs):
+    """Sets the id of the user as its username since django.contrib.auth.models.AbstractUser requires one."""
     if not instance.username:
-        instance.username = instance.email
-models.signals.pre_save.connect(random_username, sender=CustomUser)
+        instance.username = instance.id
+models.signals.pre_save.connect(set_id_as_username, sender=CustomUser)
 
 
 class ResearchField(models.Model):
@@ -72,6 +74,7 @@ class ResearchField(models.Model):
 class Institution(models.Model):
     """Research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, null=False, blank=False)
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
@@ -89,6 +92,7 @@ class Institution(models.Model):
 class WorkingGroup(models.Model):
     """Working group at a research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.OneToOneField(
