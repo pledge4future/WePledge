@@ -40,7 +40,7 @@ function forgotPassword(){
   const [sendForgotPasswordEmail] = useMutation(SEND_FORGOT_PWD_EMAIL, {
     onCompleted(result) {
       if(result.sendPasswordResetEmail.success === true){
-          router.push('/')
+          router.push('/set-new-password')
       } else {
           setErrorState(true);
       }

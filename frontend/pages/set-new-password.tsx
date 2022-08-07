@@ -111,6 +111,7 @@ function SetNewPasswordForm() {
                     type="password"
                     fullWidth
                     required
+                    error={resetPasswordForm.touched.newPassword && Boolean(resetPasswordForm.errors.newPassword)}
                     value={resetPasswordForm.values.newPassword}
                     onChange={resetPasswordForm.handleChange}
                     InputLabelProps = {{
@@ -125,6 +126,7 @@ function SetNewPasswordForm() {
                     fullWidth
                     required
                     type="password"
+                    error={resetPasswordForm.touched.newPasswordRepeat && Boolean(resetPasswordForm.errors.newPasswordRepeat)}
                     value={resetPasswordForm.values.newPasswordRepeat}
                     onChange={resetPasswordForm.handleChange}
                     InputLabelProps = {{
