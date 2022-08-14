@@ -5,7 +5,7 @@ import Head from "next/head";
 import Container from "@material-ui/core/Container";
 import CancelIcon from '@material-ui/icons/Cancel';
 import DoneIcon from '@material-ui/icons/Done'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import EmailIcon from '@mui/icons-material/Email';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@mui/material/Alert';
@@ -16,6 +16,7 @@ import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
 import { UnderConstructionDialog } from "../src/components/UnderConstructionDialog";
+import { EmailSwapDialog } from '../src/components/EmailSwapDialog'
 
 // GraphQL
 import { gql, useQuery } from "@apollo/client";
@@ -58,7 +59,6 @@ function getUser(){
   return data;
 }
 
-
 function UserProfile() {
   const classes = useStyles();
   const title = "User Profile";
@@ -66,8 +66,8 @@ function UserProfile() {
 
   // used for later when backend point is implemented
   const [editMode, setEditMode] = useState(false);
-  const [showAlert, setShowAlert] = useState(false)
-
+  const [showAlert, setShowAlert] = useState(false);
+  const [emailSwap, setEmailSwap] = useState(false);
 
   const user = getUser();
 
@@ -132,6 +132,8 @@ function UserProfile() {
                         variant="outlined"
                         endIcon={<DoneIcon />}
                         style={{ margin: 8 }}
+                        disabled={!userForm.touched.email}
+                        onClick={() => setEmailSwap(true)}
                       >
                         {'Submit Changes'}
                       </Button>
@@ -150,13 +152,14 @@ function UserProfile() {
               </Grid>
           <Grid container item xs={4} direction={'column'} alignItems={'center'}>
             <Typography className={classes.headline}>Interactions</Typography>
-                <Button size="medium" variant="outlined" endIcon={<AccountCircleIcon />} style={{margin: 8}} onClick={() => setShowAlert(true)}
-                disabled={editMode}>Change User Information</Button>
+                <Button size="medium" variant="outlined" endIcon={<EmailIcon />} style={{margin: 8}} onClick={() => setEmailSwap(true)}
+                disabled={editMode}>Change EMail</Button>
                 <Button size="medium" variant="outlined" endIcon={<EnhancedEncryptionIcon />}style={{margin: 8}} onClick={() => router.push("change-password")}
                 disabled={editMode}>Change Password</Button>
           </Grid>
         </Grid>
         <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
+        <EmailSwapDialog isOpen={emailSwap} handleDialogClose={() => setEmailSwap(false)}></EmailSwapDialog>
       </Container>
     </PageContainer>
     <AppFooter />
