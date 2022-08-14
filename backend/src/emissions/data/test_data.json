@@ -1,0 +1,68 @@
+{"users": {
+  "test_user1": {
+    "username": "testuser1",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test1@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user2": {
+    "username": "testuser2",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test2@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user_representative": {
+    "username": "testuser_representative",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test3@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user_representative2": {
+    "username": "testuser_representative2",
+    "first_name": "test",
+    "last_name": "user",
+    "email": "test4@pledge4future.org",
+    "password": "test_password"
+  }
+},
+"working_groups": {
+  "working_group1": {
+    "name": "testgroup1",
+    "institution": {
+      "name": "Heidelberg University",
+      "city": "Heidelberg",
+      "country": "Germany"
+    },
+    "representative": "testuser_representative",
+    "n_employees": 10,
+    "research_field": {
+      "field": "Natural Sciences",
+      "subfield": "Earth and related environmental sciences"
+    },
+    "public": "True"
+  },
+    "working_group2": {
+    "name": "testgroup2",
+    "institution": {
+      "name": "Heidelberg University",
+      "city": "Heidelberg",
+      "country": "Germany"
+    },
+    "representative": "testuser_representative2",
+    "n_employees": 10,
+    "research_field": {
+      "field": "Natural Sciences",
+      "subfield": "Earth and related environmental sciences"
+    },
+    "public": "False"
+  }
+},
+"business_trips": {
+  "business_trip1": {
+
+  }
+}
+}
