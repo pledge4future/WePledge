@@ -6,11 +6,14 @@ __email__ = "infopledge4future.org"
 
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
-from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
 import datetime as dt
+
+from models.CustomUser import CustomUser
+from models.ResearchField import ResearchField
+from models.Institution import Institution
 
 from co2calculator.co2calculator import (
     CommutingTransportationMode,
@@ -19,58 +22,6 @@ from co2calculator.co2calculator import (
     ElectricityFuel,
     Unit,
 )
-
-
-class CustomUser(AbstractUser):
-    """Custom user model"""
-
-    email = models.EmailField(max_length=200, verbose_name="email", unique=True)
-    username = models.CharField(max_length=200, blank=True)
-    first_name = models.CharField(max_length=25)
-    last_name = models.CharField(max_length=25)
-    title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
-    academic_title = models.CharField(max_length=10, choices=title_choices, blank=True)
-    working_group = models.ForeignKey("WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True)
-    is_representative = models.BooleanField(default=False)
-
-    USERNAME_FIELD = "email"
-    EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = []
-
-    def __str__(self):
-        return f"{self.first_name} {self.last_name}"
-
-
-class ResearchField(models.Model):
-    """Research field"""
-
-    field = models.CharField(max_length=100, null=False, blank=False)
-    subfield = models.CharField(max_length=100, null=False, blank=False)
-
-    class Meta:
-        """Specifies which attributes must be unique together"""
-
-        unique_together = ("field", "subfield")
-
-    def __str__(self):
-        return f"{self.field} - {self.subfield}"
-
-
-class Institution(models.Model):
-    """Research institution"""
-
-    name = models.CharField(max_length=200, null=False, blank=False)
-    city = models.CharField(max_length=100, null=False, blank=False)
-    state = models.CharField(max_length=100, null=True)
-    country = models.CharField(max_length=100, null=False, blank=False)
-
-    class Meta:
-        """Specifies which attributes must be unique together"""
-
-        unique_together = ("name", "city", "country")
-
-    def __str__(self):
-        return f"{self.name}, {self.city}, {self.country}"
 
 
 class WorkingGroup(models.Model):

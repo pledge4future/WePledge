@@ -52,6 +52,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 INSTALLED_APPS = [
     "corsheaders",
     "emissions",
+    "emissions.models",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -143,7 +144,7 @@ USE_TZ = True
 
 STATIC_URL = "/static/"
 
-AUTH_USER_MODEL = "emissions.CustomUser"
+AUTH_USER_MODEL = "emissions.models.CustomUser"
 
 GRAPHENE = {
     "SCHEMA": "emissions.schema.schema",
