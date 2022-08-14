@@ -19,19 +19,19 @@ services:
 #    image: redis
 #    ports:
 #      - "6379"
-#  pgadmin:
-#    image: dpage/pgadmin4
-#    restart: always
-#    environment:
-#      PGADMIN_DEFAULT_EMAIL: user@domain.com
-#      PGADMIN_DEFAULT_PASSWORD: SuperSecret
-#      PGADMIN_LISTEN_PORT: 80
-#    ports:
-#      - "5050:80"
-#    volumes:
-#      - pgadmin-data:/var/lib/pgadmin
-#    links:
-#      - "db:pgsql-server"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: SuperSecret
+      PGADMIN_LISTEN_PORT: 80
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    links:
+      - "db:pgsql-server"
   backend:
     tty: true
     restart: on-failure
@@ -41,11 +41,12 @@ services:
       - ./backend/assets:/home/python/app/assets
       - backend_env:/home/python/.local
       - backend_extensions:/home/python/.vscode-server
+      #- ./.env:/home/python/app/src/.env
+    env_file: ./.env
     ports:
       - "8000:8000"
     depends_on:
       - db
-    env_file: ../.env
 #  frontend:
 #    container_name: wepledge-frontend
 #    tty: true
