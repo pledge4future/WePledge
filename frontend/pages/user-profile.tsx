@@ -38,7 +38,6 @@ const useStyles = makeStyles((theme) => ({
 const ME = gql`
   query {
     me {
-    username
     email
     verified
     workingGroup {
@@ -75,7 +74,6 @@ function UserProfile() {
 
   const userForm = useFormik({
     initialValues: {
-      username: user?.me?.username,
       email: user?.me?.email ?? 'Email not defined',
       workingGroup: user?.me?.workingGroup ?? 'No working group defined'
     },
@@ -99,20 +97,6 @@ function UserProfile() {
                 User Information
               </Typography>
               <form onSubmit={userForm.handleSubmit}>
-                  <TextField
-                    id="outlined-full-width"
-                    label="Username"
-                    style={{ margin: 8 }}
-                    required
-                    fullWidth
-                    margin="normal"
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    variant="outlined"
-                    value={userForm.values.username}
-                    onChange={userForm.handleChange}
-                    disabled={!editMode} />
                   <TextField
                     id="outlined-full-width"
                     label="eMail"
