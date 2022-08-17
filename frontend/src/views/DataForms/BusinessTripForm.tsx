@@ -8,6 +8,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { format } from 'date-fns'
 import Snackbar  from '../../components/Snackbar';
+import { UnderConstructionDialog } from '../../components/UnderConstructionDialog';
 
 
 // mutation to add business trip entry
@@ -194,7 +195,7 @@ export function BusinessTripForm(
       <MenuItem value={2022}>2022</MenuItem>
     </Select>
     </Grid>
-    { addressMode && (
+    { false && ( // make this dependent on address mode state once implemented in the backend
     <>
     <Grid item xs={4}>
     <TextField
@@ -211,7 +212,7 @@ export function BusinessTripForm(
           value={formik.values.startAddress}
           onChange={formik.handleChange}
           error={formik.touched.startAddress && Boolean(formik.values.startAddress)}
-          helperText={formik.touched.startAddress && formik.values.startAddress}
+          helperText={formik.touched.startAddress && formik.errors.startAddress}
         />
       </Grid>
       <Grid item xs={4}>
@@ -229,7 +230,7 @@ export function BusinessTripForm(
           value={formik.values.startCity}
           onChange={formik.handleChange}
           error={formik.touched.startCity && Boolean(formik.values.startCity)}
-          helperText={formik.touched.startCity && formik.values.startCity}
+          helperText={formik.touched.startCity && formik.errors.startCity}
         />
       </Grid>
       <Grid item xs={4}>
@@ -247,7 +248,7 @@ export function BusinessTripForm(
               value={formik.values.startCountry}
               onChange={formik.handleChange}
               error={formik.touched.startCountry && Boolean(formik.values.startCountry)}
-              helperText={formik.touched.startCountry && formik.values.startCountry}
+              helperText={formik.touched.startCountry && formik.errors.startCountry}
             />
         </Grid>
         <Grid item xs={4}>
@@ -265,7 +266,7 @@ export function BusinessTripForm(
           value={formik.values.endAddress}
           onChange={formik.handleChange}
           error={formik.touched.endAddress && Boolean(formik.values.endAddress)}
-          helperText={formik.touched.endAddress && formik.values.endAddress}
+          helperText={formik.touched.endAddress && formik.errors.endAddress}
         />
       </Grid>
       <Grid item xs={4}>
@@ -283,7 +284,7 @@ export function BusinessTripForm(
           value={formik.values.endCity}
           onChange={formik.handleChange}
           error={formik.touched.endCity && Boolean(formik.values.endCity)}
-          helperText={formik.touched.endCity && formik.values.endCity}
+          helperText={formik.touched.endCity && formik.errors.endCity}
           />
       </Grid>
       <Grid item xs={4}>
@@ -301,7 +302,7 @@ export function BusinessTripForm(
           value={formik.values.endCountry}
           onChange={formik.handleChange}
           error={formik.touched.endCountry && Boolean(formik.values.endCountry)}
-          helperText={formik.touched.endCountry && formik.values.endCountry}
+          helperText={formik.touched.endCountry && formik.errors.endCountry}
         />
       </Grid>
         <Button
@@ -316,7 +317,7 @@ export function BusinessTripForm(
         </Button>
         </>
     )}
-      {!addressMode && (
+      {true && (  // make this dependent on adressMode state once implemented in the backend
         <>
       <Grid item xs={8}>
           <TextField
@@ -337,7 +338,7 @@ export function BusinessTripForm(
               value={formik.values.distance}
               onChange={formik.handleChange}
               error={formik.touched.distance && Boolean(formik.values.distance)}
-              helperText={formik.touched.distance}
+              helperText={formik.touched.distance && formik.errors.distance}
             />
         </Grid>
         <Grid item xs={4}>
@@ -514,7 +515,7 @@ export function BusinessTripForm(
           value={formik.values.passengers}
           onChange={formik.handleChange}
           error={formik.touched.passengers && Boolean(formik.values.passengers)}
-          helperText={formik.touched.passengers && formik.values.passengers}
+          helperText={formik.touched.passengers && formik.errors.passengers}
           />
           </Grid>
           <Grid item xs={4}>
@@ -546,6 +547,7 @@ export function BusinessTripForm(
       Failed to add entry!
     </Alert>
   </Snackbar>
+  <UnderConstructionDialog feature="Entering of Addresses"  isOpen={addressMode}  handleDialogClose={()  => setAddressMode(false)}></UnderConstructionDialog>
   </>
   )
 }
