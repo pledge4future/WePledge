@@ -101,7 +101,6 @@ export function BusinessTripForm(
   const formik = useFormik({
     initialValues: initialFormValues,
     onSubmit: (values: BusinessFormValues, formikHelpers: FormikHelpers<BusinessFormValues>)  => {
-      console.log(values)
       const { setSubmitting } = formikHelpers;
       const queryParams = {
         timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
