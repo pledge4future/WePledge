@@ -41,7 +41,8 @@ services:
       - ./backend/assets:/home/python/app/assets
       - backend_env:/home/python/.local
       - backend_extensions:/home/python/.vscode-server
-      - ./.env:/home/python/app/src/.env
+      #- ./.env:/home/python/app/src/.env
+    env_file: ./.env
     ports:
       - "8000:8000"
     depends_on:
