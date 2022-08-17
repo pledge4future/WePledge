@@ -10,16 +10,6 @@ import * as yup from 'yup'
 import router from "next/router";
 import { AuthContext } from "../providers/Auth";
 
-// make the dialog slide in -> implement later
-/* const Transition = React.forwardRef(function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>,
-  ) {
-    return <Slide direction="up" ref={ref} {...props} />;
-  }); */
-
 const SEND_SECONDARY_EMAIL_ACTIVATION = gql`
 mutation sendSecondaryEmailAvtivation($newEmail: String!, $password: String!){
     sendSecondaryEmailActivation (email: $newEmail, password: $password){
@@ -88,12 +78,25 @@ export function EmailSwapDialog(props: UnderConstructionDialogProps){
     const [ confirmationMode, setConfirmationMode ] = useState(false)
     const [ errorState, setErrorState ] = useState(false)
 
+    const [errorMessage, setErrorMessage ] = useState('')
+
     const [sendSecondaryEmailActivation] = useMutation(SEND_SECONDARY_EMAIL_ACTIVATION, {
         onCompleted: (result) => {
             if(result["sendSecondaryEmailActivation"].success){
                 setConfirmationMode(true)
+                setErrorState(false)
             } else {
-                console.log(result)
+                let errorMessage;
+                if(result["sendSecondaryEmailActivation"].errors.email){
+                    errorMessage = result["sendSecondaryEmailActivation"]?.errors?.email[0]?.message;
+                }
+                else if(result["sendSecondaryEmailActivation"].errors.password){
+                    errorMessage = result["sendSecondaryEmailActivation"]?.errors?.password[0]?.message;
+                }
+                else {
+                    errorMessage = "An unexpected error occured."
+                }
+                setErrorMessage(errorMessage)
                 setErrorState(true);
             }
         }
@@ -102,10 +105,18 @@ export function EmailSwapDialog(props: UnderConstructionDialogProps){
     const [confirmEmailChange] = useMutation(CONFIRM_EMAIL_CHANGE, {
         onCompleted: (result) => {
             if(result['verifySecondaryEmail'].success && result["swapEmails"].success && result["removeSecondaryEmail"].success){
+                setErrorState(false)
                 authContext.logout()
                 router.push("/sign-in")
             } else {
+                let errorMessage;
+                if(!result['verifySecondaryEmail'].success){
+                    errorMessage = result['verifySecondaryEmail'].errors.nonFieldErrors[0].message
+                } else {
+                    errorMessage = "An unexpected error occured."
+                }
                 setErrorState(true)
+                setErrorMessage(errorMessage)
             }
         }
     })
@@ -193,9 +204,9 @@ export function EmailSwapDialog(props: UnderConstructionDialogProps){
                     </React.Fragment>
                 )}
                 <Typography variant="body2" align="center">
-                <div>
+                <div style={{marginTop: 20}}>
                 { errorState && (
-                    <Alert severity="error">Please add valid credentials!</Alert>
+                    <Alert severity="error">{errorMessage}</Alert>
                 )}
                 </div>
             </Typography>
