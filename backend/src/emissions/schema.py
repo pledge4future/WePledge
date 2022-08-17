@@ -585,6 +585,24 @@ class CommutingInput(graphene.InputObjectType):
     passengers = graphene.Int(description="Number of passengers in the vehicle")
 
 
+class PlanTripInput(graphene.InputObjectType):
+    """GraphQL Input type for the trip planner"""
+
+    transportation_mode = graphene.String(
+        required=True, description="Transportation mode"
+    )
+    start = graphene.String(description="Start address")
+    destination = graphene.String(description="Destination address")
+    distance = graphene.Float(description="Distance [meter]")
+    size = graphene.String(description="Size of the vehicle")
+    fuel_type = graphene.String(description="Fuel type of the vehicle")
+    occupancy = graphene.Float(description="Occupancy")
+    seating_class = graphene.Int(description="Seating class in plane")
+    passengers = graphene.Int(description="Number of passengers")
+    roundtrip = graphene.Boolean(description="Roundtrip [True/False]")
+
+
+
 class BusinessTripInput(graphene.InputObjectType):
     """GraphQL Input type for Business trips"""
 
@@ -897,6 +915,52 @@ class CreateHeating(graphene.Mutation):
         return CreateHeating(ok=ok, heating=new_heating)
 
 
+class PlanTrip(graphene.Mutation):
+    """GraphQL mutation for business trips"""
+
+    class Arguments:
+        """Assign input type"""
+
+        input = PlanTripInput(required=True)
+
+    success = graphene.Boolean()
+    co2e = graphene.Float()
+    message = graphene.String()
+
+    @staticmethod
+    def mutate(root, info, input=None):
+        """Process incoming data"""
+        success = True
+        if input.seating_class:
+            input.seating_class = input.seating_class.lower().replace(" ", "_")
+        if input.fuel_type:
+            input.fuel_type = input.fuel_type.lower().replace(" ", "_")
+        if input.size:
+            input.size = input.size.lower().replace(" ", "_")
+        if input.transportation_mode:
+            input.transportation_mode = input.transportation_mode.lower().replace(
+                " ", "_"
+            )
+        # CO2e calculation
+        try:
+            co2e, distance, range_category, _ = calc_co2_businesstrip(
+                start=input.start,
+                destination=input.destination,
+                distance=input.distance,
+                transportation_mode=input.transportation_mode,
+                size=input.size,
+                fuel_type=input.fuel_type,
+                occupancy=input.occupancy,
+                seating=input.seating_class,
+                passengers=input.passengers,
+                roundtrip=input.roundtrip,
+            )
+        except Exception as e:
+            return PlanTrip(success=False, message=str(e), co2e=None)
+
+        return PlanTrip(success=success, message="success", co2e=co2e)
+
+
 class CreateBusinessTrip(graphene.Mutation):
     """GraphQL mutation for business trips"""
 
@@ -906,6 +970,7 @@ class CreateBusinessTrip(graphene.Mutation):
         input = BusinessTripInput(required=True)
 
     ok = graphene.Boolean()
+    #co2e = graphene.Float()
     businesstrip = graphene.Field(BusinessTripType)
 
     @staticmethod
@@ -924,6 +989,7 @@ class CreateBusinessTrip(graphene.Mutation):
             input.transportation_mode = input.transportation_mode.lower().replace(
                 " ", "_"
             )
+        # CO2e calculation
         co2e, distance, range_category, _ = calc_co2_businesstrip(
             start=input.start,
             destination=input.destination,
@@ -936,6 +1002,7 @@ class CreateBusinessTrip(graphene.Mutation):
             passengers=input.passengers,
             roundtrip=input.roundtrip,
         )
+        # Write data to database
         businesstrip_instance = BusinessTrip(
             timestamp=input.timestamp,
             distance=distance,
@@ -947,7 +1014,8 @@ class CreateBusinessTrip(graphene.Mutation):
         )
         businesstrip_instance.save()
 
-        return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
+        #return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
+        return CreateBusinessTrip(ok=ok, co2e=co2e)
 
 
 class CreateCommuting(graphene.Mutation):
@@ -1043,6 +1111,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_commuting = CreateCommuting.Field()
     set_working_group = SetWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
+    plan_trip = PlanTrip.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
