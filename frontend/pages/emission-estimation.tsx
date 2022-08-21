@@ -6,7 +6,7 @@ import EmissionEstimation from "../src/views/EmissionEstimation";
 
 function DashboardPage() {
   return (
-    <PageContainer title={"EmissionEstimation"} showTitle={true}>
+    <PageContainer title={"Emission Estimation"} showTitle={true}>
       <EmissionEstimation />
     </PageContainer>
   );
