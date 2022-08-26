@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { TransportationModeForm } from "./TransportationModeForm";
 import { ITransportationMode } from '../../interfaces/ITransportationMode';
 
+import {gql, useMutation} from '@apollo/client';
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -11,6 +12,25 @@ const useStyles = makeStyles(() =>
     }
   })
 );
+
+const PLAN_TRIP = gql`
+  mutation planTrip($option1: PlanTripInput!, $option2: PlanTripInput!, $option3: PlanTripInput!){
+    option1: planTrip(input: $option1) {
+      success
+      message
+      co2e
+    }
+    option2: planTrip(input: $option2) {
+      success
+      message
+      co2e
+    }
+    option3: planTrip(input: $option3) {
+      success
+      message
+      co2e
+    }
+  }`
 
 
 
@@ -23,7 +43,19 @@ export default function EmissionEstimationView(){
   const [secondTransportationMode, setSecondTransportationMode] = useState({} as ITransportationMode)
   const [thirdTransportationMode, setThirdTransportationMode] = useState({} as ITransportationMode)
 
+  const [estimationResult, setEstimationResult] = useState(null);
+
   const classes = useStyles();
+
+  const [estimateEmissions] = useMutation(PLAN_TRIP, {
+    onCompleted: (data) => {
+      console.log(data);
+      setEstimationResult(data);
+    },
+    onError(error){
+      console.log(error);
+    }
+  })
 
 
   const setFormInputToFirstTransportationMode = ((value: any) => {
@@ -52,6 +84,7 @@ export default function EmissionEstimationView(){
     console.log(firstTransportationMode)
     console.log(secondTransportationMode)
     console.log(thirdTransportationMode)
+    estimateEmissions({variables: {option1: {...firstTransportationMode as ITransportationMode}, option2: {...secondTransportationMode as ITransportationMode}, option3: {...thirdTransportationMode as ITransportationMode}}})
   }
 
 
@@ -118,6 +151,9 @@ export default function EmissionEstimationView(){
         Estimate Emissions
       </Button>
     </div>
+    {estimationResult && (
+      <div>This is where the result goes</div>
+    )}
   </React.Fragment>
   );
 }

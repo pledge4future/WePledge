@@ -1,6 +1,6 @@
 export interface ITransportationMode {
     transportationMode: string, 
-    vehicleSize? : string, 
+    size? : string, 
     fuelType?: string, 
     occupancy?: string, 
     seatingClass?: string, 
