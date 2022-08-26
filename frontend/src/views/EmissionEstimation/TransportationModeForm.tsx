@@ -37,8 +37,7 @@ const initialTransportationModeFormValues = {
     fuelType: '',
     occupancy: '',
     seatingClass: '',
-    passengers: 1,
-    roundTrip: false
+    passengers: 1
 }
 
 
@@ -97,7 +96,7 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                         <Select
                         style={{margin: 8}}
                         fullWidth
-                        name="vehicleSize"
+                        name="size"
                         label="Vehicle Size"
                         value={transportationModeForm.values.size}
                         onChange={customOnChange}>
@@ -181,7 +180,6 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                     value={transportationModeForm.values.passengers}
                     onChange={customOnChange} />
                 )}
-                <FormControlLabel control={<Checkbox checked={transportationModeForm.values.roundTrip} name="roundTrip" onChange={customOnChange}/>} label="Round Trip" color="primary"/>
             </form>
         </div>
     )
