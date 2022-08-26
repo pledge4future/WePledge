@@ -31,8 +31,8 @@ import os
 import logging
 from django.contrib.auth.management.commands import createsuperuser
 from co2calculator.co2calculator import (
-    CommutingTransportationMode,
-    BusinessTripTransportationMode,
+    TransportationMode,
+    TransportationMode,
     HeatingFuel,
     ElectricityFuel,
 )
@@ -289,10 +289,10 @@ class Command(BaseCommand):
             print("Loading business trip data ...")
 
             modes = [
-                BusinessTripTransportationMode.PLANE,
-                BusinessTripTransportationMode.CAR,
-                BusinessTripTransportationMode.TRAIN,
-                BusinessTripTransportationMode.BUS,
+                TransportationMode.PLANE,
+                TransportationMode.CAR,
+                TransportationMode.TRAIN,
+                TransportationMode.BUS,
             ]
 
             dates = np.arange(
