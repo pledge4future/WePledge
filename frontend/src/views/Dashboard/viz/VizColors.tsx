@@ -10,5 +10,5 @@ export enum ChartColors{
 }
 
 export enum EmissionEstimationChartColors{
-  emission = '#e0594a'
+  emission = '#ee3823ff'
 }
