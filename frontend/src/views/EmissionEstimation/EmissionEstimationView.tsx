@@ -4,6 +4,7 @@ import { TransportationModeForm } from "./TransportationModeForm";
 import { ITransportationMode } from '../../interfaces/ITransportationMode';
 
 import {gql, useMutation} from '@apollo/client';
+import EmissionEstimationResultView from "./EmissionEstimationResultView";
 
 const useStyles = makeStyles(() =>
   createStyles({
@@ -152,7 +153,8 @@ export default function EmissionEstimationView(){
       </Button>
     </div>
     {estimationResult && (
-      <div>This is where the result goes</div>
+      <EmissionEstimationResultView 
+      options={{option1: firstTransportationMode, option2: secondTransportationMode, option3: thirdTransportationMode}} />
     )}
   </React.Fragment>
   );
