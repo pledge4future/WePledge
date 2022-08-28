@@ -591,8 +591,12 @@ class PlanTripInput(graphene.InputObjectType):
     transportation_mode = graphene.String(
         required=True, description="Transportation mode"
     )
-    start = graphene.String(description="Start address")
-    destination = graphene.String(description="Destination address")
+    start_address = graphene.String(description="Start address")
+    start_city = graphene.String(description="Start city")
+    start_country = graphene.String(description="Start country")
+    destination_address = graphene.String(description="Destination address")
+    destination_city = graphene.String(description="Destination city")
+    destination_country = graphene.String(description="Destination country")
     distance = graphene.Float(description="Distance [meter]")
     size = graphene.String(description="Size of the vehicle")
     fuel_type = graphene.String(description="Fuel type of the vehicle")
@@ -600,7 +604,6 @@ class PlanTripInput(graphene.InputObjectType):
     seating_class = graphene.String(description="Seating class in plane")
     passengers = graphene.Int(description="Number of passengers")
     roundtrip = graphene.Boolean(description="Roundtrip [True/False]")
-
 
 
 class BusinessTripInput(graphene.InputObjectType):
@@ -942,10 +945,17 @@ class PlanTrip(graphene.Mutation):
                 " ", "_"
             )
         # CO2e calculation
+        start_dict = {"address": input.start_address,
+                      "locality": input.start_city,
+                      "country": input.start_country}
+        destination_dict = {"address": input.destination_address,
+                            "locality": input.destination_city,
+                            "country": input.destination_country}
+
         try:
             co2e, distance, range_category, _ = calc_co2_businesstrip(
-                start=input.start,
-                destination=input.destination,
+                start=start_dict,
+                destination=destination_dict,
                 distance=input.distance,
                 transportation_mode=input.transportation_mode,
                 size=input.size,
