@@ -597,7 +597,7 @@ class PlanTripInput(graphene.InputObjectType):
     size = graphene.String(description="Size of the vehicle")
     fuel_type = graphene.String(description="Fuel type of the vehicle")
     occupancy = graphene.Float(description="Occupancy")
-    seating_class = graphene.Int(description="Seating class in plane")
+    seating_class = graphene.String(description="Seating class in plane")
     passengers = graphene.Int(description="Number of passengers")
     roundtrip = graphene.Boolean(description="Roundtrip [True/False]")
 
@@ -616,7 +616,7 @@ class BusinessTripInput(graphene.InputObjectType):
     size = graphene.String(description="Size of the vehicle")
     fuel_type = graphene.String(description="Fuel type of the vehicle")
     occupancy = graphene.Float(description="Occupancy")
-    seating_class = graphene.Int(description="Seating class in plane")
+    seating_class = graphene.String(description="Seating class in plane")
     passengers = graphene.Int(description="Number of passengers")
     roundtrip = graphene.Boolean(description="Roundtrip [True/False]")
 
