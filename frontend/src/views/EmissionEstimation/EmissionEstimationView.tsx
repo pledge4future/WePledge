@@ -82,10 +82,7 @@ export default function EmissionEstimationView(){
   })
 
   const requestEmissionEstimation = () => {
-    console.log(firstTransportationMode)
-    console.log(secondTransportationMode)
-    console.log(thirdTransportationMode)
-    estimateEmissions({variables: {option1: {...firstTransportationMode as ITransportationMode}, option2: {...secondTransportationMode as ITransportationMode}, option3: {...thirdTransportationMode as ITransportationMode}}})
+    estimateEmissions({variables: {option1: {...firstTransportationMode as ITransportationMode, distance}, option2: {...secondTransportationMode as ITransportationMode, distance}, option3: {...thirdTransportationMode as ITransportationMode, distance}}})
   }
 
 
@@ -128,17 +125,17 @@ export default function EmissionEstimationView(){
     <Grid container spacing={3} alignItems="center" justifyContent="center">
       <Grid item xs={4}>
         <TransportationModeForm 
-        title={"Transportation Mode 1"}
+        title={"Transportation Option 1"}
         setTransportationMode={setFormInputToFirstTransportationMode}/>
       </Grid>
       <Grid item xs={4}>
         <TransportationModeForm
-        title={"Transportation Mode 2"} 
+        title={"Transportation Option 2"} 
         setTransportationMode={setFormInputToSecondTransportationMode}/>
       </Grid>
       <Grid item xs={4}>
         <TransportationModeForm 
-        title={"Transportation Mode 3"}
+        title={"Transportation Option 3"}
         setTransportationMode={setFormInputToThirdTransportationMode}/>
       </Grid>
     </Grid>
@@ -154,7 +151,8 @@ export default function EmissionEstimationView(){
     </div>
     {estimationResult && (
       <EmissionEstimationResultView 
-      options={{option1: firstTransportationMode, option2: secondTransportationMode, option3: thirdTransportationMode}} />
+      options={{option1: firstTransportationMode, option2: secondTransportationMode, option3: thirdTransportationMode}}
+      estimationResult={estimationResult}/>
     )}
   </React.Fragment>
   );
