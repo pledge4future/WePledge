@@ -2,10 +2,8 @@ FROM python:3.9
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    postgresql-client \
-    && rm -rf /var/lib/apt/lists/* \ 
-    && addgroup --gid 1006 developers \
-    && adduser --gid 1006 --disabled-password python
+    postgresql-client graphviz \
+    && rm -rf /var/lib/apt/lists/* && adduser --disabled-password python
 USER python
 RUN mkdir ~/app && mkdir ~/.vscode-server
 WORKDIR /home/python/app

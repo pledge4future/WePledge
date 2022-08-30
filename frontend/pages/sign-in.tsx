@@ -147,7 +147,7 @@ function SignIn() {
             </div>
           </Typography>
           <Typography variant="body2" align="center">
-            <Link href="/sign-up/" align="center" underline="always">
+            <Link href="/forgot-password/" align="center" underline="always">
               Forgot password?
             </Link>
           </Typography>
