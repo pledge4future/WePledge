@@ -1,4 +1,5 @@
-import { makeStyles, createStyles, Grid } from "@material-ui/core";
+import { makeStyles, createStyles, Grid, CircularProgress } from "@material-ui/core";
+import React from "react";
 import { useState } from "react";
 import { Bar, Cell, ComposedChart, Label, Legend, Line, Tooltip, XAxis, YAxis } from "recharts";
 import { mapEstimationResultToChartData } from "../../factories/EmissionEstimationChartDataFactory";
@@ -13,28 +14,12 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const mockData = {
-    option1: {
-        success: true, 
-        message: '',
-        co2e: 3000
-    },
-    option2: {
-        success: true, 
-        message: '',
-        co2e: 300
-    },
-    option3: {
-        success: true, 
-        message: '',
-        co2e: 120
-    }
-}
 
 
 interface IEmissionEstimationResultViewProps {
     estimationResult?: any,
     options: any;
+    loading: boolean;
 }
 
 
@@ -43,7 +28,9 @@ interface IEmissionEstimationResultViewProps {
 
 export default function EmissionEstimationResultView(props: IEmissionEstimationResultViewProps){
 
-    const {estimationResult, options} = props;
+    const {estimationResult, options, loading} = props;
+
+    console.log(loading)
 
     const classes = useStyles();
 
@@ -53,7 +40,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
         {label: 'CO2-Budget', color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
     ]
 
-    const displayData = mapEstimationResultToChartData(estimationResult ?? mockData, options)
+    const displayData = estimationResult ? mapEstimationResultToChartData(estimationResult, options) : []
 
     const getDynamicOpacity = (co2e: number) => {
         const maxCo2Emission = Math.max.apply(Math, displayData.map(data => data.co2e))
@@ -64,6 +51,12 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
     return (
         <div className={classes.resultsContainer}>
             <Grid container spacing={2} alignItems="center" justifyContent="center">
+                {loading && (
+                    <React.Fragment>
+                        <CircularProgress color="primary"/>
+                    </React.Fragment>
+                )}
+                {!loading && displayData && (
                 <Grid item xs={12}>
                 <ComposedChart height={500} width={1200} data={displayData}>
                     <XAxis dataKey="name" />
@@ -85,6 +78,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
                 </ComposedChart>
                 <CustomLegend items = {legendData} column={false} />
                 </Grid>
+                )}
             </Grid>
         </div>
     )
