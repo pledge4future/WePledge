@@ -1,7 +1,9 @@
 import { Button, createStyles, Grid, InputAdornment, makeStyles, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { TransportationModeForm } from "./TransportationModeForm";
+import { AddressInputForm } from "./AddressInputForm";
 import { ITransportationMode } from '../../interfaces/ITransportationMode';
+import { IAddress } from '../../interfaces/IAddress';
 
 import {gql, useMutation} from '@apollo/client';
 import EmissionEstimationResultView from "./EmissionEstimationResultView";
@@ -9,7 +11,7 @@ import EmissionEstimationResultView from "./EmissionEstimationResultView";
 const useStyles = makeStyles(() =>
   createStyles({
     screenContainer: {
-        marginTop: 20,
+        marginTop: 10,
     }
   })
 );
@@ -38,6 +40,8 @@ const PLAN_TRIP = gql`
 export default function EmissionEstimationView(){
 
   const [distance, setDistance] = useState(0);
+  const [startAddress, setStartAddress] = useState({} as IAddress)
+  const [endAddress, setEndAddress] = useState({} as IAddress)
   const [addressMode, setAddressMode] = useState(false)
 
   const [firstTransportationMode, setFirstTransportationMode] = useState({} as ITransportationMode)
@@ -48,9 +52,8 @@ export default function EmissionEstimationView(){
 
   const classes = useStyles();
 
-  const [estimateEmissions] = useMutation(PLAN_TRIP, {
+  const [estimateEmissions, {loading}] = useMutation(PLAN_TRIP, {
     onCompleted: (data) => {
-      console.log(data);
       setEstimationResult(data);
     },
     onError(error){
@@ -77,12 +80,31 @@ export default function EmissionEstimationView(){
       setThirdTransportationMode(newTransportationMode)
   });
 
+  const setFormInputToStartAddress = ((value: any) => {
+    const newAddress = {...startAddress}
+    newAddress[value.name] = value.value
+    setStartAddress(newAddress)
+  })
+
+  const setFormInputToEndAddress = ((value: any) => {
+    const newAddress = {...endAddress}
+    newAddress[value.name] = value.value
+    setEndAddress(newAddress)
+  })
+
   const handleDistanceChange = ((event: any) => {
     setDistance(event.target.value);
   })
 
   const requestEmissionEstimation = () => {
-    estimateEmissions({variables: {option1: {...firstTransportationMode as ITransportationMode, distance}, option2: {...secondTransportationMode as ITransportationMode, distance}, option3: {...thirdTransportationMode as ITransportationMode, distance}}})
+
+    estimateEmissions({variables: 
+      {
+        option1: {...firstTransportationMode as ITransportationMode, distance, startAddress: startAddress.address, startCity: startAddress.city, startCountry: startAddress.country, destinationAddress: endAddress.address, destinationCity: endAddress.city, destinationCountry: endAddress.country},
+        option2: {...secondTransportationMode as ITransportationMode, distance, startAddress: startAddress.address, startCity: startAddress.city, startCountry: startAddress.country, destinationAddress: endAddress.address, destinationCity: endAddress.city, destinationCountry: endAddress.country},
+        option3: {...thirdTransportationMode as ITransportationMode, distance, startAddress: startAddress.address, startCity: startAddress.city, startCountry: startAddress.country, destinationAddress: endAddress.address, destinationCity: endAddress.city, destinationCountry: endAddress.country}
+      }
+    });
   }
 
 
@@ -90,6 +112,7 @@ export default function EmissionEstimationView(){
   <React.Fragment>
       <Grid container spacing={2} alignItems="center" justifyContent="center">
         <Grid item xs={8}>
+        {!addressMode && (
         <TextField
               fullWidth
               style={{ margin: 8 }}
@@ -108,6 +131,19 @@ export default function EmissionEstimationView(){
               value={distance}
               onChange={handleDistanceChange}
             />
+        )}
+        {addressMode && (
+          <React.Fragment>
+            <AddressInputForm
+              title={'Start Address'}
+              setAddress={setFormInputToStartAddress}
+            />
+            <AddressInputForm
+            title={'End Address'}
+            setAddress={setFormInputToEndAddress}
+            />
+          </React.Fragment>
+        )}
         </Grid>
         <Grid item  xs={4}>
           <Button 
@@ -116,9 +152,9 @@ export default function EmissionEstimationView(){
             variant="outlined"
             color="secondary"
             size="large"
-            onClick={() => setAddressMode(true)}
+            onClick={() => setAddressMode(!addressMode)}
           >
-            Enter address instead
+            {!addressMode ? 'Enter address instead' : 'Enter distance instead'}
           </Button>
         </Grid>
     </Grid>
@@ -145,14 +181,16 @@ export default function EmissionEstimationView(){
       variant="contained"
       color="primary"
       onClick={requestEmissionEstimation}
+      disabled={loading}
       >
         Estimate Emissions
       </Button>
     </div>
-    {estimationResult && (
+    {estimationResult || loading && (
       <EmissionEstimationResultView 
       options={{option1: firstTransportationMode, option2: secondTransportationMode, option3: thirdTransportationMode}}
-      estimationResult={estimationResult}/>
+      estimationResult={estimationResult}
+      loading={loading}/>
     )}
   </React.Fragment>
   );
