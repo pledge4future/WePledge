@@ -55,7 +55,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
 
     const displayData = mapEstimationResultToChartData(estimationResult ?? mockData, options)
 
-    const getDynamicOpacity = (co2e) => {
+    const getDynamicOpacity = (co2e: number) => {
         const maxCo2Emission = Math.max.apply(Math, displayData.map(data => data.co2e))
         const relation = (co2e / maxCo2Emission) + 0.2
         return relation
@@ -64,8 +64,8 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
     return (
         <div className={classes.resultsContainer}>
             <Grid container spacing={2} alignItems="center" justifyContent="center">
-                <Grid item xs={10}>
-                <ComposedChart height={500} width={950} data={displayData}>
+                <Grid item xs={12}>
+                <ComposedChart height={500} width={1200} data={displayData}>
                     <XAxis dataKey="name" />
                     <YAxis domain={[0, Math.ceil((Math.max.apply(Math, displayData.map((item) => { return item.co2e}))+100)/100)*100]}>
                         <Label value="tCO2" position="insideLeft" angle={270} />
@@ -83,9 +83,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
                         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} name="Maximum monthly emission per person" />
                     })
                 </ComposedChart>
-                </Grid>
-                <Grid item xs={2}>
-                    <CustomLegend items = {legendData} column={true} />
+                <CustomLegend items = {legendData} column={false} />
                 </Grid>
             </Grid>
         </div>
