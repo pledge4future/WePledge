@@ -25,6 +25,7 @@ import { useFormik } from "formik";
 import PageContainer from "../src/components/PageContainer";
 import { useState } from "react";
 import router from "next/router";
+import { NoAuthorizationComponent } from "../src/components/NoAuthorizationComponent";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -54,7 +55,7 @@ function getUser(){
   const { loading, error, data } = useQuery(getUserProfile);
 
   if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
+  if (error) return `Error!`;
 
   return data;
 }
@@ -70,6 +71,7 @@ function UserProfile() {
   const [emailSwap, setEmailSwap] = useState(false);
 
   const user = getUser();
+  console.log(user);
 
 
   const userForm = useFormik({
@@ -91,6 +93,7 @@ function UserProfile() {
       <AppAppBar />
       <PageContainer title="User Profile">
         <Container>
+          {user.me && (
           <Grid container spacing={2}>
             <Grid item xs={6} direction={'column'}>
               <Typography className={classes.headline}>
@@ -158,11 +161,16 @@ function UserProfile() {
                 disabled={editMode}>Change Password</Button>
           </Grid>
         </Grid>
+        )}
+        {(user.me === null || user.me === undefined) && (
+          <React.Fragment>
+            <NoAuthorizationComponent />
+          </React.Fragment>
+        )}
         <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
         <EmailSwapDialog isOpen={emailSwap} handleDialogClose={() => setEmailSwap(false)}></EmailSwapDialog>
       </Container>
     </PageContainer>
-    <AppFooter />
     </>
   );
 }
