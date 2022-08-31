@@ -1,5 +1,5 @@
 
-import { Checkbox, createStyles, FormControlLabel, makeStyles, MenuItem, Select } from "@material-ui/core";
+import { createStyles, makeStyles, MenuItem, Select } from "@material-ui/core";
 import { useFormik } from "formik";
 import React from "react";
 import { Typography } from "../../components";
@@ -55,7 +55,6 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
     })
 
     const customOnChange = ((e: any) => {
-        console.log(e);
         transportationModeForm.handleChange(e);
         setTransportationMode(e.target);
     })
