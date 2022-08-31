@@ -30,8 +30,6 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
 
     const {estimationResult, options, loading} = props;
 
-    console.log(loading)
-
     const classes = useStyles();
 
     const [showPerCapita, setShowPerCapita] = useState(false);
