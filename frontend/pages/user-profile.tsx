@@ -144,7 +144,7 @@ function UserProfile() {
                         onClick={() => setEditMode(false)}
                         endIcon={<CancelIcon />}
                       >
-                        Abbort Changes
+                        Cancel
                       </Button>
                     </>
                   )}

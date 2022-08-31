@@ -241,7 +241,7 @@ export function EmailSwapDialog(props: UnderConstructionDialogProps){
                             autoFocus
                             onClick={handleDialogClose}
                             endIcon={<CloseIcon />}>
-                                Abbort
+                                Cancel
                         </Button>
             </DialogActions>
         </Dialog>
