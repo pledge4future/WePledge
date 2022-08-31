@@ -36,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ME = gql`
+const getUserProfile = gql`
   query {
     me {
     email
@@ -51,7 +51,7 @@ const ME = gql`
 
 function getUser(){
   
-  const { loading, error, data } = useQuery(ME);
+  const { loading, error, data } = useQuery(getUserProfile);
 
   if (loading) return 'Loading...';
   if (error) return `Error! ${error.message}`;
