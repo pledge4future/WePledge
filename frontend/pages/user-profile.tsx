@@ -5,7 +5,7 @@ import Head from "next/head";
 import Container from "@material-ui/core/Container";
 import CancelIcon from '@material-ui/icons/Cancel';
 import DoneIcon from '@material-ui/icons/Done'
-import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import EmailIcon from '@mui/icons-material/Email';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import Grid from '@material-ui/core/Grid';
 import Alert from '@mui/material/Alert';
@@ -16,6 +16,7 @@ import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
 import { UnderConstructionDialog } from "../src/components/UnderConstructionDialog";
+import { EmailSwapDialog } from '../src/components/EmailSwapDialog'
 
 // GraphQL
 import { gql, useQuery } from "@apollo/client";
@@ -24,6 +25,7 @@ import { useFormik } from "formik";
 import PageContainer from "../src/components/PageContainer";
 import { useState } from "react";
 import router from "next/router";
+import { NoAuthorizationComponent } from "../src/components/NoAuthorizationComponent";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -35,10 +37,9 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-const ME = gql`
+const getUserProfile = gql`
   query {
     me {
-    username
     email
     verified
     workingGroup {
@@ -51,14 +52,13 @@ const ME = gql`
 
 function getUser(){
   
-  const { loading, error, data } = useQuery(ME);
+  const { loading, error, data } = useQuery(getUserProfile);
 
   if (loading) return 'Loading...';
-  if (error) return `Error! ${error.message}`;
+  if (error) return `Error!`;
 
   return data;
 }
-
 
 function UserProfile() {
   const classes = useStyles();
@@ -67,15 +67,15 @@ function UserProfile() {
 
   // used for later when backend point is implemented
   const [editMode, setEditMode] = useState(false);
-  const [showAlert, setShowAlert] = useState(false)
-
+  const [showAlert, setShowAlert] = useState(false);
+  const [emailSwap, setEmailSwap] = useState(false);
 
   const user = getUser();
+  console.log(user);
 
 
   const userForm = useFormik({
     initialValues: {
-      username: user?.me?.username,
       email: user?.me?.email ?? 'Email not defined',
       workingGroup: user?.me?.workingGroup ?? 'No working group defined'
     },
@@ -93,26 +93,13 @@ function UserProfile() {
       <AppAppBar />
       <PageContainer title="User Profile">
         <Container>
+          {user.me && (
           <Grid container spacing={2}>
             <Grid item xs={6} direction={'column'}>
               <Typography className={classes.headline}>
                 User Information
               </Typography>
               <form onSubmit={userForm.handleSubmit}>
-                  <TextField
-                    id="outlined-full-width"
-                    label="Username"
-                    style={{ margin: 8 }}
-                    required
-                    fullWidth
-                    margin="normal"
-                    InputLabelProps={{
-                      shrink: true
-                    }}
-                    variant="outlined"
-                    value={userForm.values.username}
-                    onChange={userForm.handleChange}
-                    disabled={!editMode} />
                   <TextField
                     id="outlined-full-width"
                     label="eMail"
@@ -148,6 +135,8 @@ function UserProfile() {
                         variant="outlined"
                         endIcon={<DoneIcon />}
                         style={{ margin: 8 }}
+                        disabled={!userForm.touched.email}
+                        onClick={() => setEmailSwap(true)}
                       >
                         {'Submit Changes'}
                       </Button>
@@ -158,7 +147,7 @@ function UserProfile() {
                         onClick={() => setEditMode(false)}
                         endIcon={<CancelIcon />}
                       >
-                        Abbort Changes
+                        Cancel
                       </Button>
                     </>
                   )}
@@ -166,16 +155,22 @@ function UserProfile() {
               </Grid>
           <Grid container item xs={4} direction={'column'} alignItems={'center'}>
             <Typography className={classes.headline}>Interactions</Typography>
-                <Button size="medium" variant="outlined" endIcon={<AccountCircleIcon />} style={{margin: 8}} onClick={() => setShowAlert(true)}
-                disabled={editMode}>Change User Information</Button>
+                <Button size="medium" variant="outlined" endIcon={<EmailIcon />} style={{margin: 8}} onClick={() => setEmailSwap(true)}
+                disabled={editMode}>Change EMail</Button>
                 <Button size="medium" variant="outlined" endIcon={<EnhancedEncryptionIcon />}style={{margin: 8}} onClick={() => router.push("change-password")}
                 disabled={editMode}>Change Password</Button>
           </Grid>
         </Grid>
+        )}
+        {(user.me === null || user.me === undefined) && (
+          <React.Fragment>
+            <NoAuthorizationComponent />
+          </React.Fragment>
+        )}
         <UnderConstructionDialog feature='User Profile Editing Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
+        <EmailSwapDialog isOpen={emailSwap} handleDialogClose={() => setEmailSwap(false)}></EmailSwapDialog>
       </Container>
     </PageContainer>
-    <AppFooter />
     </>
   );
 }
