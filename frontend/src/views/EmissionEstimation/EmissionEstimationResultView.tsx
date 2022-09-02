@@ -1,4 +1,5 @@
-import { makeStyles, createStyles, Grid } from "@material-ui/core";
+import { makeStyles, createStyles, Grid, CircularProgress } from "@material-ui/core";
+import React from "react";
 import { useState } from "react";
 import { Bar, Cell, ComposedChart, Label, Legend, Line, Tooltip, XAxis, YAxis } from "recharts";
 import { mapEstimationResultToChartData } from "../../factories/EmissionEstimationChartDataFactory";
@@ -13,28 +14,12 @@ const useStyles = makeStyles(() =>
   })
 );
 
-const mockData = {
-    option1: {
-        success: true, 
-        message: '',
-        co2e: 3000
-    },
-    option2: {
-        success: true, 
-        message: '',
-        co2e: 300
-    },
-    option3: {
-        success: true, 
-        message: '',
-        co2e: 120
-    }
-}
 
 
 interface IEmissionEstimationResultViewProps {
     estimationResult?: any,
     options: any;
+    loading: boolean;
 }
 
 
@@ -43,7 +28,7 @@ interface IEmissionEstimationResultViewProps {
 
 export default function EmissionEstimationResultView(props: IEmissionEstimationResultViewProps){
 
-    const {estimationResult, options} = props;
+    const {estimationResult, options, loading} = props;
 
     const classes = useStyles();
 
@@ -53,9 +38,9 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
         {label: 'CO2-Budget', color: ChartColors.perCapitaLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
     ]
 
-    const displayData = mapEstimationResultToChartData(estimationResult ?? mockData, options)
+    const displayData = estimationResult ? mapEstimationResultToChartData(estimationResult, options) : []
 
-    const getDynamicOpacity = (co2e) => {
+    const getDynamicOpacity = (co2e: number) => {
         const maxCo2Emission = Math.max.apply(Math, displayData.map(data => data.co2e))
         const relation = (co2e / maxCo2Emission) + 0.2
         return relation
@@ -64,8 +49,14 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
     return (
         <div className={classes.resultsContainer}>
             <Grid container spacing={2} alignItems="center" justifyContent="center">
-                <Grid item xs={10}>
-                <ComposedChart height={500} width={950} data={displayData}>
+                {loading && (
+                    <React.Fragment>
+                        <CircularProgress color="primary"/>
+                    </React.Fragment>
+                )}
+                {!loading && displayData && (
+                <Grid item xs={12}>
+                <ComposedChart height={500} width={1200} data={displayData}>
                     <XAxis dataKey="name" />
                     <YAxis domain={[0, Math.ceil((Math.max.apply(Math, displayData.map((item) => { return item.co2e}))+100)/100)*100]}>
                         <Label value="tCO2" position="insideLeft" angle={270} />
@@ -83,10 +74,9 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
                         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} name="Maximum monthly emission per person" />
                     })
                 </ComposedChart>
+                <CustomLegend items = {legendData} column={false} />
                 </Grid>
-                <Grid item xs={2}>
-                    <CustomLegend items = {legendData} column={true} />
-                </Grid>
+                )}
             </Grid>
         </div>
     )
