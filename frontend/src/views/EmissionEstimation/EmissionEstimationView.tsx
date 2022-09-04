@@ -97,7 +97,6 @@ export default function EmissionEstimationView(){
   })
 
   const requestEmissionEstimation = () => {
-
     estimateEmissions({variables: 
       {
         option1: {...firstTransportationMode as ITransportationMode, distance, startAddress: startAddress.address, startCity: startAddress.city, startCountry: startAddress.country, destinationAddress: endAddress.address, destinationCity: endAddress.city, destinationCountry: endAddress.country},
@@ -186,7 +185,7 @@ export default function EmissionEstimationView(){
         Estimate Emissions
       </Button>
     </div>
-    {estimationResult || loading && (
+    {(estimationResult || loading) && (
       <EmissionEstimationResultView 
       options={{option1: firstTransportationMode, option2: secondTransportationMode, option3: thirdTransportationMode}}
       estimationResult={estimationResult}
