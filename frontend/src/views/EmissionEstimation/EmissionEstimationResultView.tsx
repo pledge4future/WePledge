@@ -23,6 +23,36 @@ interface IEmissionEstimationResultViewProps {
 }
 
 
+function getUpperDomainLimit(displayData: any){
+    let roundingFactor;
+    const dataMaxPoint = Math.ceil(Math.max.apply(Math, displayData.map((item: any) => { return item.co2e})));
+    switch (dataMaxPoint.toString().length ) {
+        case 1:
+            roundingFactor = 10
+            break;
+        case 2:
+            roundingFactor = 10
+            break;
+        case 3:
+            roundingFactor = 10
+            break;
+        case 4:
+            roundingFactor = 100
+            break;
+        case 5:
+            roundingFactor = 100
+            break;
+        case 6:
+            roundingFactor = 1000
+            break;
+        default:
+            roundingFactor =  100
+
+    }
+
+    return Math.ceil((Math.max.apply(Math, displayData.map((item) => { return item.co2e}))+roundingFactor)/roundingFactor)*roundingFactor
+}
+
 
 
 
@@ -58,7 +88,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
                 <Grid item xs={12}>
                 <ComposedChart height={500} width={1200} data={displayData}>
                     <XAxis dataKey="name" />
-                    <YAxis domain={[0, Math.ceil((Math.max.apply(Math, displayData.map((item) => { return item.co2e}))+100)/100)*100]}>
+                    <YAxis domain={[0, getUpperDomainLimit(displayData)]}>
                         <Label value="tCO2" position="insideLeft" angle={270} />
                     </YAxis>
                     <Tooltip />
