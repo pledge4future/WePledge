@@ -303,7 +303,7 @@ class Command(BaseCommand):
                         distance=np.random.randint(100, 10000, 1),
                         co2e=co2e,
                         timestamp=str(d),
-                        transportation_mode=np.random.choice(modes, 1)[0].value,
+                        transportation_mode=np.random.choice(modes, 1)[0],
                     )
                     new_trip.save()
 

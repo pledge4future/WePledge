@@ -22,6 +22,8 @@ GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
 # See pytest parameterization: https://docs.pytest.org/en/7.1.x/example/parametrize.html#different-options-for-test-ids
+# Todo: add all combinations of parameters. Should be possible to do this automatially by defining all options
+#  in separate lists and then combine them using some python function
 test_data = [
     ("Car", "Medium", "gasoline", True),
     ("Car", "Large", "gasoline", True)

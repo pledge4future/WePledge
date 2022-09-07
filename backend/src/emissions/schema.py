@@ -4,6 +4,7 @@
 
 __email__ = "infopledge4future.org"
 
+import traceback
 
 import graphene
 import datetime as dt
@@ -38,6 +39,9 @@ from co2calculator.co2calculator.calculate import (
 from co2calculator.co2calculator.constants import ElectricityFuel
 
 from graphql_jwt.decorators import login_required
+import warnings
+
+warnings.filterwarnings("error")
 
 # -------------- GraphQL Types -------------------
 
@@ -934,6 +938,7 @@ class PlanTrip(graphene.Mutation):
     def mutate(root, info, input=None):
         """Process incoming data"""
         success = True
+        message = "success"
         if input.seating_class:
             input.seating_class = input.seating_class.lower().replace(" ", "_")
         if input.fuel_type:
@@ -965,10 +970,13 @@ class PlanTrip(graphene.Mutation):
                 passengers=input.passengers,
                 roundtrip=input.roundtrip,
             )
+            print(co2e, distance, range_category, _)
         except Exception as e:
+            traceback.print_exc()
             return PlanTrip(success=False, message=str(e), co2e=None)
-
-        return PlanTrip(success=success, message="success", co2e=co2e)
+        except RuntimeWarning as e:
+            message = e
+        return PlanTrip(success=success, message=message, co2e=co2e)
 
 
 class CreateBusinessTrip(graphene.Mutation):
