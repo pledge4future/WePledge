@@ -1,5 +1,5 @@
 
-import { createStyles, makeStyles, MenuItem, Select } from "@material-ui/core";
+import { createStyles, InputLabel, makeStyles, MenuItem, Select } from "@material-ui/core";
 import { useFormik } from "formik";
 import React from "react";
 import { Typography } from "../../components";
@@ -55,6 +55,10 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
     })
 
     const customOnChange = ((e: any) => {
+        // if transportation mode was changed, reset all form values before changing
+        if(e.target.name === "transportationMode"){
+            transportationModeForm.resetForm();
+        }
         transportationModeForm.handleChange(e);
         setTransportationMode(e.target);
     })
@@ -73,10 +77,12 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
               {title}
             </Typography>
             <form>
+                <InputLabel id="selectTransportationModeLabel">Transportation Mode</InputLabel>
                 <Select
                 style={{margin:8}}
                 fullWidth
                 name="transportationMode"
+                labelId="selectTransportationModeLabel"
                 label="Transportation Mode"
                 value={transportationModeForm.values.transportationMode}
                 onChange={customOnChange}
@@ -92,10 +98,12 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                 (transportationModeForm.values.transportationMode === 'Car' || transportationModeForm.values.transportationMode  === 'Bus')
                 && (
                     <React.Fragment>
+                        <InputLabel id="selectSizeLabel">Vehicle Size</InputLabel>
                         <Select
                         style={{margin: 8}}
                         fullWidth
                         name="size"
+                        labelId="selectSizeLabel"
                         label="Vehicle Size"
                         value={transportationModeForm.values.size}
                         onChange={customOnChange}>
@@ -108,6 +116,7 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                 {transportationModeForm.values.transportationMode &&
                 ['Train', 'Bus', 'Car'].includes(transportationModeForm.values.transportationMode) &&  (
                     <React.Fragment>
+                        <InputLabel id="selectFuelTypeLabel">Fuel Type</InputLabel>
                         <Select
                         style={{
                             margin: 8
@@ -115,6 +124,7 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                         fullWidth
                         name="fuelType"
                         label="fuel type"
+                        labelId="selectFuelTypeLabel"
                         value={transportationModeForm.values.fuelType}
                         onChange={customOnChange}>
                             {renderFuelTypes(transportationModeForm.values.transportationMode)}
@@ -124,12 +134,14 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                 {transportationModeForm.values.transportationMode &&
                 transportationModeForm.values.transportationMode === "Bus" && (
                     <React.Fragment>
+                        <InputLabel id="selectOccupancyLabel">Occupancy</InputLabel>
                         <Select
                         style={{
                             margin: 8
                         }}
                         fullWidth
                         name="occupancy"
+                        labelId='selectOccupancyLabel'
                         label="Occupancy"
                         endAdornment =  { <InputFieldTooltip position={"start"} text={tooltips.occupancy} style={{marginRight: '5px'}}/>}
                         value={transportationModeForm.values.occupancy}
@@ -143,10 +155,12 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                 {transportationModeForm.values.transportationMode && 
                 transportationModeForm.values.transportationMode === "Plane" && (
                     <React.Fragment>
+                        <InputLabel id="selectSeatingClassLabel">Seating Class</InputLabel>
                         <Select
                         style={{margin:8}}
                         fullWidth
                         name="seatingClass"
+                        labelId='selectSeatingClassLabel'
                         label="Seating Class"
                         value={transportationModeForm.values.seatingClass}
                         onChange={customOnChange}>
