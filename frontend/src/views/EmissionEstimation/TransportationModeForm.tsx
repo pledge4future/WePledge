@@ -22,13 +22,13 @@ const useStyles = makeStyles(() =>
 );
 
 const transportationModes = ['Car','Train','Plane','Bus','Ferry']
-const vehicleSizes = ['small','medium','large','average']
+const vehicleSizes = ['Small','Medium','Large','Average']
 const fuelTypes = {
-  car: ['Diesel','Gasoline','CNG','Electricity','hybrid','Plug_In Hybrid','Average'],
+  car: ['Diesel','Gasoline','CNG','Electric','hybrid','Plug_In Hybrid','Average'],
   bus: ['Diesel'],
-  train: ['Diesel','Electricity','Average']
+  train: ['Diesel','Electric','Average']
 }
-const seatingClasses = ['average','economy class','premium economy class','business class','first class']
+const seatingClasses = ['average','economy class','business class','first class']
 const occupancies = [20,50,80,100]
 
 const initialTransportationModeFormValues = {
