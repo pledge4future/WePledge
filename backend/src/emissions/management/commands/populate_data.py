@@ -30,8 +30,7 @@ import pandas as pd
 import os
 import logging
 from django.contrib.auth.management.commands import createsuperuser
-from co2calculator.co2calculator import (
-    TransportationMode,
+from co2calculator.co2calculator.constants import (
     TransportationMode,
     HeatingFuel,
     ElectricityFuel,

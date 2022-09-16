@@ -41,11 +41,11 @@ services:
       - ./backend/assets:/home/python/app/assets
       - backend_env:/home/python/.local
       - backend_extensions:/home/python/.vscode-server
-      - ./.env:/home/python/app/src/.env
     ports:
       - "8000:8000"
     depends_on:
       - db
+    env_file: ./.env
 #  frontend:
 #    container_name: wepledge-frontend
 #    tty: true
