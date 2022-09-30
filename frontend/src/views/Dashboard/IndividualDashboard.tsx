@@ -13,15 +13,25 @@ import { AuthContext }from '../../providers/Auth/AuthContext';
 
 import { gql, useQuery } from "@apollo/client";
 import { DashboardProps } from "./interfaces/DashboardProps";
+import { mapChartData } from "../../factories/ChartDataFactory";
+import { IChartDataEntry } from "../../interfaces/ChartData";
 
-const GET_ELE = gql`
-  query GetElectricity($level: String!, $timeInterval: String!) {
-    electricityAggregated (level: $level, timeInterval: $timeInterval) {
-      date
-      co2e
-      co2eCap
-    }
-}`
+
+const GET_TOTAL_EMISSIONS = gql`
+query getTotalEmissions($level: String!, $timeInterval: String!) {
+  commutingAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+ businesstripAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+}
+`
+
 
 
 const useStyles = makeStyles({
@@ -96,30 +106,16 @@ export function IndividualDashboard(props: DashboardProps){
     return newSums
   }
 
-  function getChartData(isLoggedIn: boolean | undefined): Array<any>{
-    if(isLoggedIn){
-      // This will not work because of conditional hook
-      // Fix by using authenticated state as enabled condition in use query and move query to top of component
-      /*const {loading, error, data} = useQuery(GET_ELE, {
-          variables: { level: 'personal', timeInterval: 'monthly' }
-          }); */
-      return []
-    }
-    else {
-      const sums = calculateSum(exampleData);
-      return exampleData.map((item, index) => { 
-        let newItem = {
-          total: sums[index],
-          ...item
-        }
-        return newItem
-      });
-    }
-  }
-
   const renderComposedChart = useCallback(() => {
 
-    let chartData = []
+    let chartData: IChartDataEntry[] = [];
+
+    const res = useQuery(GET_TOTAL_EMISSIONS, {
+      variables: {level: "personal", timeInterval: "month"}
+    });
+    if(!res.loading && !res.error) {
+      chartData = mapChartData(res.data);
+    }
 
     if(!isAuthenticated){
       const sums = calculateSum(exampleData);
@@ -131,6 +127,7 @@ export function IndividualDashboard(props: DashboardProps){
         return newItem
       });
     }
+
 
 
     if(chartData?.length > 0){

@@ -10,7 +10,7 @@ import { format } from 'date-fns'
 
 // mutation to add commuting entry
 const ADD_COMMUTING = gql`
-  mutation createCommuting($transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $workweeks: Int, $fromTimestamp: Date, $toTimestamp: Date){
+  mutation createCommuting($transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $workweeks: Int, $fromTimestamp: Date!, $toTimestamp: Date!){
     createCommuting(input: {transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, workweeks: $workweeks, fromTimestamp: $fromTimestamp, toTimestamp: $toTimestamp}){
       ok
     }
@@ -89,7 +89,7 @@ export function CommutingForm(
         size: values.size,
         workweeks: values.workWeeks,
         fromTimestamp: format(new Date(values.startYear, values.startMonth, 1), 'yyyy-MM-dd'),
-        tomTimestamp: format(new Date(values.endYear, values.endMonth, '1'), 'yyyy-MM-dd')
+        toTimestamp: format(new Date(values.endYear, values.endMonth, 1), 'yyyy-MM-dd')
       }
       submitCommutingData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
