@@ -39,7 +39,7 @@ from co2calculator.co2calculator import (
 from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-load_dotenv(find_dotenv())
+#load_dotenv(find_dotenv())
 
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
@@ -159,7 +159,7 @@ class Command(BaseCommand):
                     field="Natural Sciences",
                     subfield="Earth and related environmental sciences",
                 )[0],
-                public=True
+                is_public=True
             )
             wg_environmental.save()
 

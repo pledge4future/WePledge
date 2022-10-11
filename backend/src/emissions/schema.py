@@ -29,6 +29,8 @@ from emissions.models import (
     BusinessTripGroup,
     ResearchField,
 )
+from emissions.decorators import representative_required
+
 from co2calculator.co2calculator.calculate import (
     calc_co2_electricity,
     calc_co2_heating,
@@ -654,7 +656,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     n_employees = graphene.Int(
         required=True, description="Number of employees of working group"
     )
-    public = graphene.Boolean(required=True,
+    is_public = graphene.Boolean(required=True,
                               description="If true, the group will be publicly visible.")
 
 
@@ -701,10 +703,9 @@ class CreateWorkingGroup(graphene.Mutation):
 
     class Arguments:
         """Assign input type"""
-
         input = CreateWorkingGroupInput()
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     workinggroup = graphene.Field(WorkingGroupType)
 
     @staticmethod
@@ -712,7 +713,7 @@ class CreateWorkingGroup(graphene.Mutation):
     def mutate(root, info, input=None):
         """Process incoming data"""
         user = info.context.user
-        ok = True
+        success = True
 
         institution_found = Institution.objects.filter(
             name=input.institution, city=input.city, country=input.country
@@ -750,14 +751,14 @@ class CreateWorkingGroup(graphene.Mutation):
             representative=user,
             field=field,
             n_employees=input.n_employees,
-            public=input.public
+            is_public=input.is_public
         )
         new_workinggroup.save()
 
         user.is_representative = True
         user.save()
 
-        return CreateWorkingGroup(ok=ok, workinggroup=new_workinggroup)
+        return CreateWorkingGroup(success=success, workinggroup=new_workinggroup)
 
 
 class SetWorkingGroup(graphene.Mutation):
@@ -768,7 +769,7 @@ class SetWorkingGroup(graphene.Mutation):
 
         input = WorkingGroupInput()
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     user = graphene.Field(UserType)
 
     @staticmethod
@@ -776,7 +777,8 @@ class SetWorkingGroup(graphene.Mutation):
     def mutate(root, info, input=None):
         """Process incoming data"""
         user = info.context.user
-        ok = True
+        success = True
+
         # Search matching working groups
         matching_working_groups = WorkingGroup.objects.filter(
             name=input.name,
@@ -799,9 +801,9 @@ class SetWorkingGroup(graphene.Mutation):
         try:
             user.full_clean()
             user.save()
-            return SetWorkingGroup(user=user, ok=ok)
+            return SetWorkingGroup(user=user, success=success)
         except ValidationError as e:
-            return SetWorkingGroup(user=user, ok=ok, errors=e)
+            return SetWorkingGroup(user=user, success=success, errors=e)
 
 
 class CreateElectricity(graphene.Mutation):
@@ -812,19 +814,17 @@ class CreateElectricity(graphene.Mutation):
 
         input = ElectricityInput(required=True)
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     electricity = graphene.Field(ElectricityType)
 
     @staticmethod
     @login_required
+    @representative_required
     def mutate(root, info, input=None):
         """Process incoming data"""
         user = info.context.user
-        ok = True
-        if not user.is_representative:
-            raise GraphQLError(
-                "Electricity data was not added, since you are not the representative of your working group."
-            )
+        success = True
+
         if input.fuel_type:
             input.fuel_type = input.fuel_type.lower().replace(" ", "_")
         # Calculate co2
@@ -847,7 +847,7 @@ class CreateElectricity(graphene.Mutation):
             co2e_cap=round(co2e_cap, 1),
         )
         new_electricity.save()
-        return CreateElectricity(ok=ok, electricity=new_electricity)
+        return CreateElectricity(success=success, electricity=new_electricity)
 
 
 class CreateHeating(graphene.Mutation):
@@ -858,19 +858,16 @@ class CreateHeating(graphene.Mutation):
 
         input = HeatingInput(required=True)
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     heating = graphene.Field(HeatingType)
 
     @staticmethod
     @login_required
+    @representative_required
     def mutate(root, info, input=None):
         """Process incoming data"""
-        ok = True
+        success = True
         user = info.context.user
-        if not user.is_representative:
-            raise GraphQLError(
-                "Heating data was not added, since you are not the representative of your working group."
-            )
 
         # Calculate co2e
         co2e = calc_co2_heating(
@@ -894,7 +891,7 @@ class CreateHeating(graphene.Mutation):
             co2e_cap=round(co2e_cap, 1),
         )
         new_heating.save()
-        return CreateHeating(ok=ok, heating=new_heating)
+        return CreateHeating(success=success, heating=new_heating)
 
 
 class CreateBusinessTrip(graphene.Mutation):
@@ -905,14 +902,14 @@ class CreateBusinessTrip(graphene.Mutation):
 
         input = BusinessTripInput(required=True)
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     businesstrip = graphene.Field(BusinessTripType)
 
     @staticmethod
     @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
-        ok = True
+        success = True
         user = info.context.user
         if input.seating_class:
             input.seating_class = input.seating_class.lower().replace(" ", "_")
@@ -947,7 +944,7 @@ class CreateBusinessTrip(graphene.Mutation):
         )
         businesstrip_instance.save()
 
-        return CreateBusinessTrip(ok=ok, businesstrip=businesstrip_instance)
+        return CreateBusinessTrip(success=success, businesstrip=businesstrip_instance)
 
 
 class CreateCommuting(graphene.Mutation):
@@ -958,14 +955,14 @@ class CreateCommuting(graphene.Mutation):
 
         input = CommutingInput(required=True)
 
-    ok = graphene.Boolean()
+    success = graphene.Boolean()
     # commute = graphene.Field(CommutingType)
 
     @staticmethod
     @login_required
     def mutate(root, info, input=None):
         """Process incoming data"""
-        ok = True
+        success = True
         user = info.context.user
         if input.workweeks is None:
             input.workweeks = WEEKS_PER_YEAR
@@ -1031,7 +1028,7 @@ class CreateCommuting(graphene.Mutation):
             )
             commuting_group_instance.save()
 
-        return CreateCommuting(ok=ok)
+        return CreateCommuting(success=success)
 
 
 class Mutation(AuthMutation, graphene.ObjectType):
