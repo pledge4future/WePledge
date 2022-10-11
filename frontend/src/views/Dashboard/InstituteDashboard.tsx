@@ -5,6 +5,8 @@ import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts
 
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
+import { DashboardProps } from "./interfaces/DashboardProps";
+import { NoDataComponent } from "../../components/NoDataComponent";
 
 const useStyles = makeStyles({
   horizontalLegendContainer: {
@@ -19,12 +21,17 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     paddingLeft: '100px',
     paddingTop: '100px'
+  },
+  containerDiv: {
+    padding: '20px'
   }
 })
 
 
 
-export function InstituteDashboard(){
+export function InstituteDashboard(props: DashboardProps){
+
+  const { isAuthenticated } = props;
 
   const styles = useStyles();
 
@@ -75,14 +82,18 @@ export function InstituteDashboard(){
 
     const sums = calculateSum(exampleData);
     
-    const chartData = exampleData.map((item, index) => { 
+    let chartData = []
+    if(!isAuthenticated){
+      chartData = exampleData.map((item, index) => { 
       let newItem = {
         total: sums[index],
         ...item
       }
       return newItem
     });
+    }
 
+    if(chartData.length > 0){
     return (
       <Grid container>
         <Grid item  xs ={12} md={9}>
@@ -121,9 +132,18 @@ export function InstituteDashboard(){
             </div>
           </Grid>
           </Grid>
-
-    )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
+      )
+    } else {
+      return(
+      <Grid container>
+      <Grid item xs={9}>
+        <div className={styles.containerDiv}>
+          <NoDataComponent></NoDataComponent>
+          </div>
+        </Grid>
+      </Grid>
+      )}
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
   
   return (
     <React.Fragment>

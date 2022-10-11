@@ -3,6 +3,19 @@ import {InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { FormikHelpers, useFormik } from "formik";
 import {tooltips } from './FormTooltips';
 import React from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
+
+
+// mutation to add electricity entry
+const ADD_ELECTRICITY = gql`
+  mutation createElectricity($timestamp: Date!, $consumption: Float!, $fuelType: String!, $building: String!, $groupShare: Float!) {
+    createElectricity(input: {timestamp: $timestamp, consumption: $consumption, fuelType: $fuelType, building: $building, groupShare: $groupShare}) {
+      ok
+    }
+  }
+`
 
 
 export interface ElectricityFormValues {
@@ -16,13 +29,26 @@ export interface ElectricityFormValues {
 
 const energySources = ['Germany energy mix','Solar']
 
-
 export function ElectricityForm(
   props: {
     error?: boolean,
     onSubmit: (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
+
+  const [errorState, setErrorState] = useState(false);
+
+  // data query
+  const [submitData] = useMutation(ADD_ELECTRICITY,
+   {
+     onCompleted: (data) => {
+       console.log(data);
+     },
+     onError(error){
+       console.log(error)
+       setErrorState(true);
+     }
+   });
 
   const initialFormValues = {
     month: 0,
@@ -38,9 +64,18 @@ export function ElectricityForm(
     onSubmit: (values: ElectricityFormValues, formikHelpers: FormikHelpers<ElectricityFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        consumption: values.consumption,
+        fuelType: values.energySource, 
+        building: values. building,
+        groupShare: values.groupShare
+      }
+      submitData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     }
   });
+
 
   
   return (

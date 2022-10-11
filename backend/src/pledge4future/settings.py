@@ -17,13 +17,12 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
 
-# Load settings from ./.env file
-# load_dotenv("../../.env", verbose=True)
-load_dotenv(find_dotenv())
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
+
+STATIC_ROOT = BASE_DIR.parent / "static"
+MEDIA_ROOT = BASE_DIR.parent / "media"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -32,13 +31,22 @@ print(BASE_DIR)
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG")
+DEBUG = False #os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["http://localhost", "localhost", "http://api.test-pledge4future.heigit.org"]
 
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://test-pledge4future.heigit.org"]
+
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+SECURE_HSTS_SECONDS=30
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 # Application definition
 INSTALLED_APPS = [
+    "corsheaders",
     "emissions",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -54,13 +62,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware"
 ]
 
 ROOT_URLCONF = "pledge4future.urls"
@@ -163,30 +173,30 @@ GRAPHQL_JWT = {
 }
 
 GRAPHQL_AUTH = {
-    "LOGIN_ALLOWED_FIELDS": ["email", "username"],
+    "LOGIN_ALLOWED_FIELDS": ["email"],
     "REGISTER_MUTATION_FIELDS": [
         "email",
         "first_name",
         "last_name",
-        "username"
     ],
-    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title", "first_name", "last_name"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
-        "username",
         "academic_title"
     ],  # "is_representative", "working_group" - make separate mutation
     "ALLOW_DELETE_ACCOUNT": True,
     "SEND_ACTIVATION_EMAIL": True,
     "ALLOW_LOGIN_NOT_VERIFIED": False,
     "EMAIL_FROM": "no-reply@pledge4future.org",
-    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost")
-    + "/activate",
+    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate",
+    "PASSWORD_RESET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-new-password",
+    "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate-secondary",
+    "PASSWORD_SET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-password",
 }
 
-EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_PORT = os.environ.get("EMAIL_PORT")

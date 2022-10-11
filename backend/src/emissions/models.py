@@ -10,41 +10,38 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-import datetime as dt
 
-from co2calculator.co2calculator import (
-    CommutingTransportationMode,
-    BusinessTripTransportationMode,
+from co2calculator.co2calculator.constants import (
+    TransportationMode,
     HeatingFuel,
     ElectricityFuel,
-    Unit,
 )
 
 
 class CustomUser(AbstractUser):
     """Custom user model"""
 
-    email = models.EmailField(
-        blank=False, max_length=255, verbose_name="email", unique=True
-    )
-    username = models.CharField(max_length=100, unique=True)
-    first_name = models.CharField(max_length=25, blank=True)
-    last_name = models.CharField(max_length=25, blank=True)
+    email = models.EmailField(max_length=200, verbose_name="email", unique=True)
+    username = models.CharField(max_length=200, blank=True)
+    first_name = models.CharField(max_length=25)
+    last_name = models.CharField(max_length=25)
     title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
-    academic_title = models.CharField(max_length=10,
-                                      choices=title_choices,
-                                      blank=True)
-    working_group = models.ForeignKey(
-        "WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    academic_title = models.CharField(max_length=10, choices=title_choices, blank=True)
+    working_group = models.ForeignKey("WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.username
+        return f"{self.first_name} {self.last_name}"
+
+
+def random_username(sender, instance, **kwargs):
+    if not instance.username:
+        instance.username = instance.email
+models.signals.pre_save.connect(random_username, sender=CustomUser)
 
 
 class ResearchField(models.Model):
@@ -149,7 +146,7 @@ class Commuting(models.Model):
     timestamp = models.DateField(null=False)
     co2e = models.FloatField()
     distance = models.FloatField()
-    transportation_choices = [(x.name, x.value) for x in CommutingTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=15,
         choices=transportation_choices,
@@ -162,7 +159,7 @@ class Commuting(models.Model):
         unique_together = ("user", "timestamp", "transportation_mode")
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class BusinessTripGroup(models.Model):
@@ -171,7 +168,7 @@ class BusinessTripGroup(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     n_employees = models.IntegerField(null=False)
-    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=10,
         choices=transportation_choices,
@@ -200,7 +197,7 @@ class BusinessTrip(models.Model):
     timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
-    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=10,
         choices=transportation_choices,
@@ -298,7 +295,7 @@ class BusinessTrip(models.Model):
             ).save()
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class Heating(models.Model):
@@ -313,7 +310,7 @@ class Heating(models.Model):
     )
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    unit_choices = [(x.name, x.value) for x in Unit]
+    unit_choices = [(x, x) for x in ["kWh", "l", "kg", "m^3"]]
     unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()

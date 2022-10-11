@@ -27,7 +27,7 @@ for the levels
 - group (`level="group"`) - default
 - institution (`level="institution"`)
 
-A user can only query their own data or the data of their respective working group or institution. group ID, institution ID or username do not need to specified explicitly in the request, since this information is derived from the database.
+A user can only query their own data or the data of their respective working group or institution. group ID, institution ID do not need to specified explicitly in the request, since this information is derived from the database.
 
 ### Examples:
 
