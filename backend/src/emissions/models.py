@@ -10,17 +10,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-import datetime as dt
 
-from co2calculator.co2calculator import (
-    CommutingTransportationMode,
-    BusinessTripTransportationMode,
+from co2calculator.co2calculator.constants import (
+    TransportationMode,
     HeatingFuel,
     ElectricityFuel,
-    Unit,
 )
 
-import uuid
 
 class CustomUser(AbstractUser):
     """Custom user model"""
@@ -150,7 +146,7 @@ class Commuting(models.Model):
     timestamp = models.DateField(null=False)
     co2e = models.FloatField()
     distance = models.FloatField()
-    transportation_choices = [(x.name, x.value) for x in CommutingTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=15,
         choices=transportation_choices,
@@ -172,7 +168,7 @@ class BusinessTripGroup(models.Model):
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=True)
     timestamp = models.DateField(null=False)
     n_employees = models.IntegerField(null=False)
-    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=10,
         choices=transportation_choices,
@@ -201,7 +197,7 @@ class BusinessTrip(models.Model):
     timestamp = models.DateField(null=False)
     distance = models.FloatField()
     co2e = models.FloatField()
-    transportation_choices = [(x.name, x.value) for x in BusinessTripTransportationMode]
+    transportation_choices = [(x.name, x.value) for x in TransportationMode]
     transportation_mode = models.CharField(
         max_length=10,
         choices=transportation_choices,
@@ -314,7 +310,7 @@ class Heating(models.Model):
     )
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    unit_choices = [(x.name, x.value) for x in Unit]
+    unit_choices = [(x, x) for x in ["kWh", "l", "kg", "m^3"]]
     unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()

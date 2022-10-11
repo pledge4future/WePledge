@@ -18,7 +18,7 @@ from emissions.models import (
     CommutingGroup,
     ResearchField,
 )
-from co2calculator.co2calculator import (
+from co2calculator.co2calculator.calculate import (
     calc_co2_heating,
     calc_co2_electricity,
     calc_co2_commuting,
@@ -29,17 +29,11 @@ import numpy as np
 import pandas as pd
 import os
 import logging
-from django.contrib.auth.management.commands import createsuperuser
-from co2calculator.co2calculator import (
-    CommutingTransportationMode,
-    BusinessTripTransportationMode,
+from co2calculator.co2calculator.constants import (
+    TransportationMode,
     HeatingFuel,
     ElectricityFuel,
 )
-from dotenv import load_dotenv, find_dotenv
-
-# Load settings from ./.env file
-load_dotenv(find_dotenv())
 
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
@@ -285,10 +279,10 @@ class Command(BaseCommand):
             print("Loading business trip data ...")
 
             modes = [
-                BusinessTripTransportationMode.PLANE,
-                BusinessTripTransportationMode.CAR,
-                BusinessTripTransportationMode.TRAIN,
-                BusinessTripTransportationMode.BUS,
+                TransportationMode.PLANE,
+                TransportationMode.CAR,
+                TransportationMode.TRAIN,
+                TransportationMode.BUS,
             ]
 
             dates = np.arange(
@@ -309,7 +303,7 @@ class Command(BaseCommand):
                         distance=np.random.randint(100, 10000, 1),
                         co2e=co2e,
                         timestamp=str(d),
-                        transportation_mode=np.random.choice(modes, 1)[0].value,
+                        transportation_mode=np.random.choice(modes, 1)[0],
                     )
                     new_trip.save()
 

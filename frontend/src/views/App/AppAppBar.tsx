@@ -25,7 +25,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
 
-import { routes, Route } from "../../data/routes";
+import { routes, Route, authenticatedRoutes } from "../../data/routes";
 
 import { AuthContext } from "../../providers/Auth/AuthContext";
 import LogoutContainer from "../Authentication/LogoutContainer";
@@ -137,12 +137,25 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
 
   const path: Route[] = routes;
+  const authenticatedPaths: Route[] = authenticatedRoutes
 
 
 
   const tabs = (
     <div className={classes.right}>
-      {path.map(({ name, link }) => (
+      {!authContext.isAuthenticated ? path.map(({ name, link }) => (
+        <Link
+          key={link}
+          color="inherit"
+          variant="h6"
+          underline="none"
+          className={classes.rightLink}
+          href={link}
+        >
+          {name}
+        </Link>
+      )) : 
+      authenticatedPaths.map(({ name, link }) => (
         <Link
           key={link}
           color="inherit"

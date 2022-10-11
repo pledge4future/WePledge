@@ -8,3 +8,7 @@ export enum ChartColors{
   trendLine = '#000000',
   averageLine = '#fcbe03'
 }
+
+export enum EmissionEstimationChartColors{
+  emission = '#ee3823ff'
+}
