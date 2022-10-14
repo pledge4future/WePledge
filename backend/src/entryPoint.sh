@@ -1,4 +1,5 @@
 #!/bin/bash
+rm emissions/migrations/00*.py
 python manage.py makemigrations emissions
 python manage.py migrate
 python manage.py create_groups

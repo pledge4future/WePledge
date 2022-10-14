@@ -17,6 +17,10 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
 
+# Load settings from ./.env file
+# load_dotenv("../../.env", verbose=True)
+#load_dotenv(find_dotenv())
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
@@ -46,8 +50,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 # Application definition
 INSTALLED_APPS = [
-    "corsheaders",
-    "emissions",
+    'emissions.apps.EmissionsConfig',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -214,4 +217,18 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 GRAPH_MODELS = {
     "all_applications": True,
     "group_models": True,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
 }
