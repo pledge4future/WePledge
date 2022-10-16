@@ -6,6 +6,13 @@ export interface Route {
   link: string;
 }
 
+export const prodRoutes: Route[] = [
+  { name: "Demo", link: "/dashboard" },
+  { name: "Participate", link: "/participate" },
+  { name: "Methodology", link: "/methodology" },
+  { name: "About Us", link: "/about-us" }
+]
+
 
 // TODO: add translation
 export const routes: Route[] = [
@@ -15,6 +22,7 @@ export const routes: Route[] = [
   { name: "Participate", link: "/participate" },
   { name: "Methodology", link: "/methodology" },
   { name: "About Us", link: "/about-us" },
+  { name: "Sign In", link: "/sign-in"}
   // { name: "Contact", link: "/contact" },
   // { name: "Impressum", link: "/impressum" },
   // { name: "Privacy Policy", link: "/privacy-policy" }
