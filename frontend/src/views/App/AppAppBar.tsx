@@ -136,7 +136,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   }
 
 
-  const path: Route[] = process.env.NEXT_PUBLIC_DEV ? routes : prodRoutes;
+  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV) ? routes : prodRoutes;
   const authenticatedPaths: Route[] = authenticatedRoutes
 
 
