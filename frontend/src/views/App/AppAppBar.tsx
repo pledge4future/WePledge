@@ -136,7 +136,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   }
 
 
-  const path: Route[] = process.env.DEV ? routes : prodRoutes;
+  const path: Route[] = process.env.NEXT_PUBLIC_DEV ? routes : prodRoutes;
   const authenticatedPaths: Route[] = authenticatedRoutes
 
 
@@ -285,7 +285,10 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
             <ListItemText disableTypography>
               <Link onClick={openUserProfile}>
                 <Typography
-                style={{color: "rgb(107 107 107)"}}>
+                style={{
+                  color: router.pathname === '/user-profile' ? theme.palette.primary.main : "rgb(107 107 107)",
+                  fontWeight: router.pathname === '/user-profile' ? "bold" : undefined
+                }}>
                   {"User Profile"}
                 </Typography>
               </Link>
