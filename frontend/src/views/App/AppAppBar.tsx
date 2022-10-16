@@ -274,6 +274,23 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
             </ListItem>
           ))}
           {authContext.isAuthenticated && (
+          <>
+            <ListItem
+            divider
+            button
+            onClick={() => {
+              setOpenDrawer(false);
+            }}
+          >
+            <ListItemText disableTypography>
+              <Link onClick={openUserProfile}>
+                <Typography
+                style={{color: "rgb(107 107 107)"}}>
+                  {"User Profile"}
+                </Typography>
+              </Link>
+            </ListItemText>
+          </ListItem>
             <ListItem
               divider
               button
@@ -282,21 +299,15 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
               }}
             >
               <ListItemText disableTypography>
-                <Link onClick={() => <LogoutContainer />}>
+                <Link onClick={logoutUser}>
                   <Typography
-                    style={{
-                      color:
-                        router.pathname === "/sign-in"
-                          ? theme.palette.primary.main
-                          : "rgb(107 107 107)",
-                      fontWeight: router.pathname === "/sign-in" ? "bold" : undefined,
-                    }}
-                  >
-                    {"SignOut"}
+                  style={{color: "rgb(107 107 107)"}}>
+                    {"Log Out"}
                   </Typography>
                 </Link>
               </ListItemText>
             </ListItem>
+            </>
           )}
         </List>
       </SwipeableDrawer>
