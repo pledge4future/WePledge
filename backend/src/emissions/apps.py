@@ -9,3 +9,6 @@ class EmissionsConfig(AppConfig):
     """Config"""
 
     name = "emissions"
+
+    def ready(self):
+        import emissions.signals

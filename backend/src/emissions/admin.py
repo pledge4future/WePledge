@@ -18,8 +18,15 @@ from emissions.models import (
     ResearchField,
 )
 
-# Register your models here.
-admin.site.register(CustomUser)
+# Admin Models: Configure how information is displayed on Django Admin page
+
+class CustomUserAdmin(admin.ModelAdmin):
+    """Configures how CustomUser info is displayed"""
+    readonly_fields = ('is_representative', 'username', )
+
+
+# Register your models here
+admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(WorkingGroup)
 admin.site.register(Institution)
 admin.site.register(Heating)
@@ -30,6 +37,7 @@ admin.site.register(BusinessTrip)
 admin.site.register(BusinessTripGroup)
 admin.site.register(ResearchField)
 
+# GraphQL
 app = apps.get_app_config("graphql_auth")
 
 for _, model in app.models.items():
