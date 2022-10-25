@@ -10,21 +10,24 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-
 from co2calculator.co2calculator.constants import (
     TransportationMode,
-    HeatingFuel,
     ElectricityFuel,
+    HeatingFuel
 )
+import uuid
 
 
 class CustomUser(AbstractUser):
     """Custom user model"""
 
-    email = models.EmailField(max_length=200, verbose_name="email", unique=True)
-    username = models.CharField(max_length=200, blank=True)
-    first_name = models.CharField(max_length=25)
-    last_name = models.CharField(max_length=25)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    email = models.EmailField(
+        blank=False, max_length=255, verbose_name="email", unique=True
+    )
+    username = models.CharField(max_length=100, unique=True)
+    first_name = models.CharField(max_length=25, blank=True)
+    last_name = models.CharField(max_length=25, blank=True)
     title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
     academic_title = models.CharField(max_length=10, choices=title_choices, blank=True)
     working_group = models.ForeignKey("WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True)
@@ -36,12 +39,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
-
-def random_username(sender, instance, **kwargs):
-    if not instance.username:
-        instance.username = instance.email
-models.signals.pre_save.connect(random_username, sender=CustomUser)
 
 
 class ResearchField(models.Model):
@@ -62,6 +59,7 @@ class ResearchField(models.Model):
 class Institution(models.Model):
     """Research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, null=False, blank=False)
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
@@ -79,6 +77,7 @@ class Institution(models.Model):
 class WorkingGroup(models.Model):
     """Working group at a research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.OneToOneField(
@@ -86,7 +85,7 @@ class WorkingGroup(models.Model):
     )
     n_employees = models.IntegerField(null=True, blank=True)
     field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
-    public = models.BooleanField(null=False, default=False)
+    is_public = models.BooleanField(null=False, default=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -347,3 +346,5 @@ class Electricity(models.Model):
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}, {self.fuel_type}, {self.building}"
+
+
