@@ -196,7 +196,22 @@ This comprehensive set of [conversion factors](https://www.gov.uk/government/pub
 
 <br/>
 
-## 7 References
+## 7 Calculation of remaining carbon budget
+
+In the plots of your emissions dashboard, your remaining carbon budget is visible as a green line. This is meant as a coarse figure that you can compare your emissions to. “The term ‘carbon budget’ refers to the maximum amount of cumulative net global anthropogenic CO2 emissions that would result in limiting global warming to a given level with a given probability, taking into account the effect of other anthropogenic climate forcers. This is referred to as the total carbon budget when expressed starting from the pre-industrial period, and as the remaining carbon budget when expressed from a recent specified date (Glossary). The remaining carbon budget indicates how much CO2 could still be emitted while keeping warming below a specific temperature level" ([IPCC 2021, p. 28](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_SPM.pdf)).
+
+To calculate the remaining carbon budget, we followed an equal-per-capita approach. This means that the remaining global carbon budget is distributed equally among the world's population. First, we divide the amount of CO2 that can still be emitted worldwide by the world' population. For example, to reach the 1.5° goal, we can still emit 300 billion tons of CO2. We need to take into account that the population of the world is growing, so we do not divide the amount of CO2 by the current population of the world, but instead we divide it by the mean between the current population and the population projected for 2050. 2050 is when most of the countries plan to be carbon neutral. Finally, we divide the remaining carbon budget per person by the number of years left until carbon neutrality should be reached. The calculation of the carbon budget is summed up in the following table. Since Germany has pledged to be carbon neutral already by 2045, the remaining time is shorter and therefore the remaining carbon budget per person and year is a bit higher.
+
+You can view this remaining carbon budget per person and year as the average amount of carbon that you can still emit per year until 2050 (or 2045). Probably, your emissions will decrease gradually until you become carbon-neutral. So it is ok if you are still emitting more than your yearly budget at the moment, as long as your annual emissions will sink below your annual budget soon enough.
+
+Goal (°C) | Total carbon budget [t] | Carbon budget per person (2020-2050) [t] | Carbon budget per person and year in Germany (2020-2045) [t] | Carbon budget per person and year (2020-2050) [t]
+------------ | ------------- | ------------- | ------------ | -------------
+1.5 | 3 billion | 34.0 | 1.4 | 1.1
+2 | 9 billion | 101.9 | 4.1 | 3.4
+
+<br/>
+
+## 8 References
 
 - Department for Business, Energy & Industrial Strategy, (2020). Greenhouse gas reporting: conversion factors 2020. https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020
 
