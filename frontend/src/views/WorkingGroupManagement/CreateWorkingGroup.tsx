@@ -1,8 +1,11 @@
 import { Button, Checkbox, FormControlLabel, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
-import { useFormik } from 'formik';
+import { useFormik, yupToFormErrors } from 'formik';
 import * as Yup from 'yup';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
+import { getInstitutions, getResearchFields } from '../../api/Queries/working-groups';
+import { useQuery } from '@apollo/client';
+import { mapResearchFieldQueryResultToFormData } from '../../factories/ResearchFieldFactory';
 
 export interface CreateWorkingGroupValues {
     name: string, 
@@ -18,7 +21,12 @@ export interface CreateWorkingGroupValues {
 
 const newWorkingGroupValidationSchema = Yup.object({
     name: Yup.string().required('Working group name is required.'),
-    institue: Yup.string().required('Please select an to which the working group belongs.')
+    institue: Yup.string().required('Please select an to which the working group belongs.'),
+    city: Yup.string().required('Please insert a value'),
+    country: Yup.string().required('Please insert a value'),
+    field: Yup.string().required('Please insert a value'),
+    subField: Yup.string().required('Please insert a value'),
+    nEmployees: Yup.number().required('Please insert a value > 1'),
 })
 
 export default function CreateWorkingGroupView(){
@@ -26,7 +34,7 @@ export default function CreateWorkingGroupView(){
     const workingGroupForm = useFormik({
         initialValues: {
             name: '',
-            institute: '',
+            institute: 'mockInstitute',
             city: '',
             country: '',
             field: '',
@@ -34,57 +42,23 @@ export default function CreateWorkingGroupView(){
             nEmployees: 0,
             is_public: false
         },
-        validationSchema: newWorkingGroupValidationSchema, 
+        //validationSchema: newWorkingGroupValidationSchema, 
         onSubmit: (newWorkingGroupValues: CreateWorkingGroupValues) => {
             console.log('clicked')
             console.log(newWorkingGroupValues)
         }
     })
 
-    const instituteData = [
-        {
-            id: 'institute',
-            label: 'institute1'
-        },
-        {
-            id: 'institute2',
-            label: 'institute2'
-        },
-        {
-            id: 'institute3',
-            label: 'institute3'
-        }
+    const {data: researchFieldQueryData, error, loading} = useQuery(getResearchFields);
+
+    const {mainResearchFields: researchFieldData, fieldSubfieldStore: researchSubfieldStore} = mapResearchFieldQueryResultToFormData(researchFieldQueryData);
+
+    const {data: instituteData} = useQuery(getInstitutions);
+
+    const instituteMockData = [
+        'mockInstitute1', 'mockInstitute2'
     ]
 
-    const researchFieldData = [
-        {
-            id: 'field',
-            label: 'field1'
-        },
-        {
-            id: 'field2',
-            label: 'field2'
-        },
-        {
-            id: 'field3',
-            label: 'field3'
-        }
-    ]
-
-    const researchSubFieldData = [
-        {
-            id: 'subField',
-            label: 'subField1'
-        },
-        {
-            id: 'subField2',
-            label: 'subField2'
-        },
-        {
-            id: 'subField3',
-            label: 'subField3'
-        }
-    ]
 
     return (
         <form onSubmit={workingGroupForm.handleSubmit}>
@@ -108,6 +82,7 @@ export default function CreateWorkingGroupView(){
             <Grid item xs={6}>
                 <InputLabel id="form-field-institute">Institute</InputLabel>
                 <Select
+                    required
                     labelId="form-field-institute"
                     name="institute"
                     fullWidth
@@ -116,9 +91,9 @@ export default function CreateWorkingGroupView(){
                     onChange={workingGroupForm.handleChange}
                     error={workingGroupForm.touched.institute && Boolean(workingGroupForm.errors.institute)}
                     >
-                    {instituteData.map(item => {
+                    {instituteMockData?.map(item => {
                         return (
-                            <MenuItem value={item.id}>{item.label}</MenuItem>
+                            <MenuItem value={item}>{item}</MenuItem>
                         )
                     })}
                 </Select>
@@ -175,10 +150,14 @@ export default function CreateWorkingGroupView(){
             </Grid>
             <Grid item xs={3}>
                 <FormControlLabel 
+                style={{
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                }}
                 control={
                     <Checkbox 
                         checked={workingGroupForm.values.is_public}
-                        name="_isPublic" onChange={workingGroupForm.handleChange} 
+                        name="is_public" onChange={workingGroupForm.handleChange} 
                     />
                 }
                 label="Public Working Group"
@@ -187,6 +166,7 @@ export default function CreateWorkingGroupView(){
             <Grid item xs={6}>
                 <InputLabel id="form-field-researchField">Research Field</InputLabel>
                 <Select
+                required
                 labelId="form-field-researchField"
                 name="field"
                 fullWidth
@@ -195,9 +175,9 @@ export default function CreateWorkingGroupView(){
                 onChange={workingGroupForm.handleChange}
                 error={workingGroupForm.touched.field && Boolean(workingGroupForm.errors.field)}
                 >
-                    {researchFieldData.map(item => {
+                    {researchFieldData?.map(item => {
                         return (
-                            <MenuItem value={item.id}>{item.label}</MenuItem>
+                            <MenuItem value={item}>{item}</MenuItem>
                         )
                     })}
                 </Select>
@@ -205,6 +185,7 @@ export default function CreateWorkingGroupView(){
             <Grid item xs={6}>
                 <InputLabel id="form-field-researchSubField">Research Sub-Field</InputLabel>
                 <Select
+                required
                 labelId="form-field-researchSubField"
                 name="subField"
                 fullWidth
@@ -213,16 +194,16 @@ export default function CreateWorkingGroupView(){
                 onChange={workingGroupForm.handleChange}
                 error={workingGroupForm.touched.subField && Boolean(workingGroupForm.errors.subField)}
                 >
-                    {researchSubFieldData.map(item => {
+                    {researchSubfieldStore[workingGroupForm.values.field]?.map(item => {
                         return (
-                            <MenuItem value={item.id}>{item.label}</MenuItem>
+                            <MenuItem value={item}>{item}</MenuItem>
                         )
                     })}
                 </Select>
 
             </Grid>
             <Grid item xs={12}>
-                <Button type="submit" color="primary" size="large" variant="contained">
+                <Button type="submit" color="primary" size="large" variant="contained" disabled={!workingGroupForm.dirty || !workingGroupForm.isValid}>
                     create working group <AddIcon />
                 </Button>
             </Grid>
