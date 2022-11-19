@@ -85,7 +85,7 @@ def test_login():
           }
         }
     """
-    variables = {"email": TEST_EMAIL, "password": TEST_PASSWORD}
+    variables = {"email": "test3@pledge4future.org", "password": "test_password"}
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
