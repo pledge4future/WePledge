@@ -17,6 +17,11 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv, find_dotenv
 
+import django
+from django.utils.encoding import force_str
+django.utils.encoding.force_text = force_str
+
+
 # Load settings from ./.env file
 # load_dotenv("../../.env", verbose=True)
 #load_dotenv(find_dotenv())

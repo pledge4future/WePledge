@@ -30,9 +30,8 @@ def update_representatives(sender, instance, **kwargs):
         logger.info("Group does not exist yet")
 
     # Update new representative
-    representative = instance.representative
-    representative.is_representative = True
-    representative.working_group = instance
-    representative.save()
+    new_representative = instance.representative
+    new_representative.is_representative = True
+    new_representative.save()
 
 

@@ -29,6 +29,7 @@ import numpy as np
 import pandas as pd
 import os
 import logging
+from django.contrib.auth.management.commands import createsuperuser
 from co2calculator.co2calculator.constants import (
     TransportationMode,
     HeatingFuel,
@@ -307,7 +308,7 @@ class Command(BaseCommand):
                         distance=np.random.randint(100, 10000, 1),
                         co2e=co2e,
                         timestamp=str(d),
-                        transportation_mode=np.random.choice(modes, 1)[0],
+                        transportation_mode=np.random.choice(modes, 1),
                     )
                     new_trip.save()
 
