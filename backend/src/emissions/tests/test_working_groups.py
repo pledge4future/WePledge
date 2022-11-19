@@ -136,6 +136,7 @@ def test_create_workinggroup(test_user_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: false
             }) {
                 ok
                 workinggroup {
@@ -175,6 +176,7 @@ def test_create_workinggroup_by_representative(test_user_representative_token):
                 field: "Natural Sciences"
                 subfield: "Earth and related environmental sciences"
                 nEmployees: 5
+                public: true
             }) {
                 ok
                 workinggroup {
