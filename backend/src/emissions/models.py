@@ -15,10 +15,10 @@ import datetime as dt
 from co2calculator.co2calculator.constants import (
     TransportationMode,
     HeatingFuel,
-    ElectricityFuel
+    ElectricityFuel,
+    Unit
 )
 
-import uuid
 
 class CustomUser(AbstractUser):
     """Custom user model"""
@@ -318,8 +318,8 @@ class Heating(models.Model):
     )
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    # unit_choices = [(x.name, x.value) for x in Unit]
-    # unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
+    unit_choices = [(x.name, x.value) for x in Unit]
+    unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
 
