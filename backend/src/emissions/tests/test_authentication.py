@@ -11,7 +11,6 @@ from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv())
 
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
-TEST_USERNAME = os.environ.get("TEST_USERNAME")
 TEST_EMAIL = os.environ.get("TEST_EMAIL")
 TEST_PASSWORD = os.environ.get("TEST_PASSWORD")
 TOKEN = ""
@@ -22,10 +21,9 @@ def test_register():
     """Test user registration"""
 
     register_query = """
-            mutation ($email: String!, $username: String!, $password1: String! $password2: String!) {
+            mutation ($email: String!,  $password1: String! $password2: String!) {
             register (
             email: $email,
-            username: $username,
             password1: $password1,
             password2: $password2
           ) {
@@ -35,7 +33,6 @@ def test_register():
         }
         """
     variables = {
-        "username": TEST_USERNAME,
         "email": TEST_EMAIL,
         "password1": TEST_PASSWORD,
         "password2": TEST_PASSWORD,
@@ -127,7 +124,6 @@ def test_me_query():
     me_query = """
         query {
           me {
-            username,
             verified
             workingGroup {
                 id
@@ -140,7 +136,7 @@ def test_me_query():
     response = requests.post(GRAPHQL_URL, json={"query": me_query}, headers=headers)
     assert response.status_code == 200
     data = response.json()
-    assert data["data"]["me"]["username"] == TEST_USERNAME
+    assert data["data"]["me"]["email"] == TEST_EMAIL
     assert data["data"]["me"]["verified"]
 
 
@@ -221,7 +217,6 @@ def test_list_users():
       users {
         edges {
           node {
-            username
             email
           }
         }

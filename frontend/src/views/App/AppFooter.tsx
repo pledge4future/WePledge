@@ -79,6 +79,10 @@ const useStyles = makeStyles((theme: Theme) => ({
     marginTop: theme.spacing(1),
     width: 150,
   },
+  supportedByLogos: {
+    width: 80,
+    height: 50
+  }
 }));
 
 const LANGUAGES = [
@@ -88,14 +92,28 @@ const LANGUAGES = [
   }
 ];
 
-const SUPPORTED_BY = [{
-  tooltip: 'Goethe Institut', src: './static/images/logos/GI_logo.png', link: 'https://www.goethe.de/de/index.html', width: 70, height: 50
-},
-{
-  tooltip: 'GIScience', src: './static/images/logos/GIS_logo.svg', link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html', width: 50, height: 50
-},
-{
-  tooltip: 'Scientists4Future', src: './static/images/logos/S4F_logo.png', link: 'https://scientists4future.org/', width: 50, height: 50
+const logos_directory = '../../static/images/logos/'
+
+const SUPPORTED_BY = [
+  { 
+    tooltip: 'Goethe Institut',
+    src: logos_directory + 'GI_logo.png',
+    link: 'https://www.goethe.de/de/index.html'
+  },
+  {
+    tooltip: 'GIScience',
+    src: logos_directory + 'GIS_logo.svg',
+    link: 'https://www.geog.uni-heidelberg.de/gis/index_en.html'
+  },
+  {
+    tooltip: 'Scientists4Future',
+    src: logos_directory + 'S4F_logo.png',
+    link: 'https://scientists4future.org/'
+  },
+  {
+  tooltip: 'HEIGIT',
+  src: logos_directory + 'HeiGIT_Logo_compact.png',
+  link: 'https://heigit.org/'
 }]
 
 export default function AppFooter() {
@@ -106,13 +124,8 @@ export default function AppFooter() {
       <Container className={classes.container}>
         <Grid container spacing={5}>
           <Grid item xs={6} sm={4} md={3}>
-            <Grid
-              container
-              direction="column"
-              alignContent="flex-start"
-              className={classes.iconsWrapper}
-              spacing={2}
-            >
+            <Grid container direction="column" alignContent="flex-start"
+              className={classes.iconsWrapper} spacing={2}>
               <Grid item className={classes.icons}>
                 <a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
                   <InstagramIcon />
@@ -138,26 +151,18 @@ export default function AppFooter() {
                 <Link href="/contact">Contact</Link>
               </li>
               <li className={classes.listItem}>
-                <Link href="/impressum">Impressum</Link>
+                <Link href="https://heigit.org/imprint/">Imprint</Link>
               </li>
               <li className={classes.listItem}>
-                <Link href="/privacy-policy">Privacy Policy</Link>
-              </li>              
+                <Link href="https://heigit.org/legal-notice/">Privacy Policy</Link>
+              </li>
             </ul>
           </Grid>
           <Grid item xs={6} sm={8} md={4}>
             <Typography variant="h6" marked="left" gutterBottom>
               Language
             </Typography>
-            <TextField
-              size="medium"
-              select
-              SelectProps={{
-                native: true,
-              }}
-              className={classes.language}
-              variant="standard"
-            >
+            <TextField select size="medium" variant="standard" className={classes.language} SelectProps={{native: true}}>
               {LANGUAGES.map((language) => (
                 <option value={language.code} key={language.code}>
                   {language.name}
@@ -168,26 +173,18 @@ export default function AppFooter() {
           <Grid item xs={2} sm={4} md={3}>
             <Typography variant="h6" marked="left" gutterBottom>
               Supported By
-              </Typography>
-              <Grid
-              container
-              direction="row"
-              alignContent="flex-start"
-              className={classes.logosWrapper}
-              spacing={2}
-            >
+            </Typography>
+            <Grid container direction="row" alignContent="flex-start" spacing={2} className={classes.logosWrapper}>
               <Grid item className={classes.icons}>
-                {
-                  SUPPORTED_BY.map((item) => {
-                    return (
-                      <a href={item.link} className={classes.supporterLogo}>
-                        <img src={item.src} title={item.tooltip} width={item.width} height={item.height}/>
-                      </a>
-                    )
-                  })
-                }
+                { SUPPORTED_BY.map((item) => {
+                  return (
+                    <a href={item.link} className={classes.supporterLogo}>
+                      <img src={item.src} title={item.tooltip} className={classes.supportedByLogos}/>
+                    </a>
+                  )
+                })}
               </Grid>
-              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Container>

@@ -19,11 +19,14 @@ from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
 # load_dotenv("../../.env", verbose=True)
-load_dotenv(find_dotenv())
+#load_dotenv(find_dotenv())
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 print(BASE_DIR)
+
+STATIC_ROOT = BASE_DIR.parent / "static"
+MEDIA_ROOT = BASE_DIR.parent / "media"
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -32,14 +35,22 @@ print(BASE_DIR)
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DJANGO_DEBUG")
+DEBUG = False #os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1", "0.0.0.0"]
+ALLOWED_HOSTS = ["http://localhost", "localhost", "http://api.test-pledge4future.heigit.org"]
 
+CORS_ALLOW_ALL_ORIGINS = False
+CORS_ALLOW_CREDENTIALS = False
+CORS_ALLOWED_ORIGINS = ["http://localhost:3000","https://test-pledge4future.heigit.org"]
+
+CSRF_COOKIE_SECURE=True
+SESSION_COOKIE_SECURE=True
+SECURE_HSTS_SECONDS=30
+SECURE_HSTS_INCLUDE_SUBDOMAINS=True
 
 # Application definition
 INSTALLED_APPS = [
-    "emissions",
+    'emissions.apps.EmissionsConfig',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -54,13 +65,15 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware"
 ]
 
 ROOT_URLCONF = "pledge4future.urls"
@@ -169,7 +182,7 @@ GRAPHQL_AUTH = {
         "first_name",
         "last_name",
     ],
-    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title"],
+    "REGISTER_MUTATION_FIELDS_OPTIONAL": ["academic_title", "first_name", "last_name"],
     "UPDATE_MUTATION_FIELDS": [
         "first_name",
         "last_name",
@@ -204,4 +217,18 @@ EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD")
 GRAPH_MODELS = {
     "all_applications": True,
     "group_models": True,
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
 }

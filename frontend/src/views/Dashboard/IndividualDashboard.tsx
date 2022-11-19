@@ -1,12 +1,37 @@
-import React, { useCallback, useMemo, useState } from "react"
+import React, { useCallback, useContext, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
+import { NoDataComponent } from "../../components/NoDataComponent";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { Button, Grid } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+
+import { AuthContext }from '../../providers/Auth/AuthContext';
+
+import { gql, useQuery } from "@apollo/client";
+import { DashboardProps } from "./interfaces/DashboardProps";
+import { mapChartData } from "../../factories/ChartDataFactory";
+import { IChartDataEntry } from "../../interfaces/ChartData";
+
+
+const GET_TOTAL_EMISSIONS = gql`
+query getTotalEmissions($level: String!, $timeInterval: String!) {
+  commutingAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+ businesstripAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+}
+`
+
 
 
 const useStyles = makeStyles({
@@ -35,8 +60,9 @@ const useStyles = makeStyles({
 })
 
 
+export function IndividualDashboard(props: DashboardProps){
 
-export function IndividualDashboard(){
+  const { isAuthenticated } = props
 
   const styles = useStyles();
 
@@ -82,24 +108,37 @@ export function IndividualDashboard(){
 
   const renderComposedChart = useCallback(() => {
 
-    const sums = calculateSum(exampleData);
-    
-    const chartData = exampleData.map((item, index) => { 
-      let newItem = {
-        total: sums[index],
-        ...item
-      }
-      return newItem
-    });
+    let chartData: IChartDataEntry[] = [];
 
-    return (
+    const res = useQuery(GET_TOTAL_EMISSIONS, {
+      variables: {level: "personal", timeInterval: "month"}
+    });
+    if(!res.loading && !res.error) {
+      chartData = mapChartData(res.data);
+    }
+
+    if(!isAuthenticated){
+      const sums = calculateSum(exampleData);
+      chartData =  exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
+
+
+
+    if(chartData?.length > 0){
+      return (
       <Grid container>
       <Grid item xs={9}>
       <div className={styles.containerDiv}>
       <ComposedChart width={950} height={500} data={chartData}>
         <XAxis dataKey="name">
         </XAxis>
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
           <Label value="tCO2" position="insideLeft" angle={270}/>
         </YAxis>
         <Tooltip />
@@ -132,7 +171,18 @@ export function IndividualDashboard(){
         </Grid>
       </Grid>
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
+    } else {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoDataComponent></NoDataComponent>
+              </div>
+            </Grid>
+          </Grid>
+      )
+    }
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
   
   return (
     <React.Fragment>

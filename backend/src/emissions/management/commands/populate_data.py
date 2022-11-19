@@ -18,7 +18,7 @@ from emissions.models import (
     CommutingGroup,
     ResearchField,
 )
-from co2calculator.co2calculator import (
+from co2calculator.co2calculator.calculate import (
     calc_co2_heating,
     calc_co2_electricity,
     calc_co2_commuting,
@@ -38,7 +38,7 @@ from co2calculator.co2calculator.constants import (
 from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
-load_dotenv(find_dotenv())
+#load_dotenv(find_dotenv())
 
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
 ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
@@ -63,8 +63,8 @@ class Command(BaseCommand):
 
         # Create super user
         try:
-            CustomUser.objects.create_superuser(
-                username=ADMIN_USERNAME, email=ADMIN_EMAIL, password=ADMIN_PASSWORD
+            CustomUser.objects.create_superuser(username=ADMIN_USERNAME,
+                email=ADMIN_EMAIL, password=ADMIN_PASSWORD
             )
         except IntegrityError:
             pass
@@ -90,7 +90,6 @@ class Command(BaseCommand):
         # Create user for unit tests -----------------------------------------------------
         try:
             new_user = CustomUser(
-                username="testuser",
                 first_name="test",
                 last_name="user",
                 email="test2@pledge4future.org",
@@ -106,7 +105,6 @@ class Command(BaseCommand):
 
         try:
             testuser_representative = CustomUser(
-                username="testuser_representative",
                 first_name="test",
                 last_name="user",
                 email="test3@pledge4future.org",
@@ -127,7 +125,6 @@ class Command(BaseCommand):
         for usr in user_data.iterrows():
             try:
                 new_user = CustomUser(
-                    username=usr[1].first_name + usr[1].last_name,
                     first_name=usr[1].first_name,
                     last_name=usr[1].last_name,
                     email=f"{usr[1].first_name}.{usr[1].last_name}@uni-hd.de",
@@ -152,13 +149,13 @@ class Command(BaseCommand):
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
                 )[0],
-                representative=CustomUser.objects.get(username="LarsWiese"),
+                representative=CustomUser.objects.get(email="Lars.Wiese@uni-hd.de"),
                 n_employees=20,
                 field=ResearchField.objects.filter(
                     field="Natural Sciences",
                     subfield="Earth and related environmental sciences",
                 )[0],
-                public=True
+                is_public=True
             )
             wg_environmental.save()
 
@@ -167,14 +164,13 @@ class Command(BaseCommand):
 
         biomed_search = WorkingGroup.objects.filter(name="Biomedical Research Group")
         if len(biomed_search) == 0:
+            testuser_representative = CustomUser.objects.get(email="test3@pledge4future.org")
             wg_biomed = WorkingGroup(
                 name="Biomedical Research Group",
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
                 )[0],
-                representative=CustomUser.objects.get(
-                    username="testuser_representative"
-                ),
+                representative=testuser_representative,
                 n_employees=15,
                 field=ResearchField.objects.filter(
                     field="Natural Sciences", subfield="Biological sciences"
@@ -190,7 +186,7 @@ class Command(BaseCommand):
         # Update working groups of users
         for usr in user_data.iterrows():
             user_found = CustomUser.objects.filter(
-                username=usr[1].first_name + usr[1].last_name
+                first_name=usr[1].first_name, last_name=usr[1].last_name
             )[0]
             wg_search = WorkingGroup.objects.filter(name=usr[1].working_group)
             user_found.working_group = wg_search[0]
@@ -336,7 +332,7 @@ class Command(BaseCommand):
             #print(dates_2019)
 
             for usr in CustomUser.objects.all():
-                if usr.username == "admin":
+                if usr.is_superuser:
                     continue
 
                 distance = np.random.randint(0, 20, 1)

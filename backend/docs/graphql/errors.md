@@ -24,7 +24,7 @@ When registering a new user, sending the activation email fails.
 
 ```
 GRAPHQL_AUTH = {
-    'LOGIN_ALLOWED_FIELDS': ['email', 'username'],
+    'LOGIN_ALLOWED_FIELDS': ['email'],
     'SEND_ACTIVATION_EMAIL': True,
     'EMAIL_FROM': 'no-reply@pledge4future.org',
 }

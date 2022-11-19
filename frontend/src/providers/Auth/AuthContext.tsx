@@ -11,6 +11,7 @@ declare global {
       token?: string,
       permissions?: string[]
     ) => void;
+    logout: () => void;
   }
 }
 
@@ -18,8 +19,9 @@ export const defaultState: AuthContextType = {
   isAuthenticated: false,
   permissions: [],
   token: null,
-  refresh: () => {},
-  refreshToken: () => {}
+  refresh: (isAuthenticated: boolean) => {},
+  refreshToken: () => {},
+  logout: () => {}
 };
 
 export const AuthContext = React.createContext<Partial<AuthContextType>>(

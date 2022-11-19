@@ -18,11 +18,13 @@ from co2calculator.co2calculator.constants import (
     ElectricityFuel,
     Unit
 )
+import uuid
 
 
 class CustomUser(AbstractUser):
     """Custom user model"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField(
         blank=False, max_length=255, verbose_name="email", unique=True
     )
@@ -30,26 +32,16 @@ class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=25, blank=True)
     last_name = models.CharField(max_length=25, blank=True)
     title_choices = [("PROF", "Prof."), ("DR", "Dr.")]
-    academic_title = models.CharField(max_length=10,
-                                      choices=title_choices,
-                                      blank=True)
-    working_group = models.ForeignKey(
-        "WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True
-    )
+    academic_title = models.CharField(max_length=10, choices=title_choices, blank=True)
+    working_group = models.ForeignKey("WorkingGroup", on_delete=models.SET_NULL, null=True, blank=True)
     is_representative = models.BooleanField(default=False)
 
     USERNAME_FIELD = "email"
     EMAIL_FIELD = "email"
-    REQUIRED_FIELDS = ["username"]
+    REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.username
-
-
-def random_username(sender, instance, **kwargs):
-    if not instance.username:
-        instance.username = instance.email
-models.signals.pre_save.connect(random_username, sender=CustomUser)
+        return f"{self.first_name} {self.last_name}"
 
 
 class ResearchField(models.Model):
@@ -70,6 +62,7 @@ class ResearchField(models.Model):
 class Institution(models.Model):
     """Research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, null=False, blank=False)
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
@@ -87,6 +80,7 @@ class Institution(models.Model):
 class WorkingGroup(models.Model):
     """Working group at a research institution"""
 
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.OneToOneField(
@@ -94,7 +88,7 @@ class WorkingGroup(models.Model):
     )
     n_employees = models.IntegerField(null=True, blank=True)
     field = models.ForeignKey(ResearchField, on_delete=models.PROTECT, null=False)
-    public = models.BooleanField(null=False, default=False)
+    is_public = models.BooleanField(null=False, default=False)
 
     class Meta:
         """Specifies which attributes must be unique together"""
@@ -167,7 +161,7 @@ class Commuting(models.Model):
         unique_together = ("user", "timestamp", "transportation_mode")
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class BusinessTripGroup(models.Model):
@@ -303,7 +297,7 @@ class BusinessTrip(models.Model):
             ).save()
 
     def __str__(self):
-        return f"{self.user.username}, {self.transportation_mode}, {self.timestamp}"
+        return f"{self.user.first_name} {self.user.last_name}, {self.transportation_mode}, {self.timestamp}"
 
 
 class Heating(models.Model):
@@ -318,7 +312,7 @@ class Heating(models.Model):
     )
     fuel_type_choices = [(x.name, x.value) for x in HeatingFuel]
     fuel_type = models.CharField(max_length=20, choices=fuel_type_choices, blank=False)
-    unit_choices = [(x.name, x.value) for x in Unit]
+    unit_choices = [(x, x) for x in ["kWh", "l", "kg", "m^3"]]
     unit = models.CharField(max_length=20, choices=unit_choices, blank=False)
     co2e = models.FloatField()
     co2e_cap = models.FloatField()
@@ -355,3 +349,5 @@ class Electricity(models.Model):
 
     def __str__(self):
         return f"{self.working_group.name}, {self.timestamp}, {self.fuel_type}, {self.building}"
+
+
