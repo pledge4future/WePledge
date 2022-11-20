@@ -28,29 +28,24 @@ services:
     depends_on:
       - db
     env_file: ./.env
-#  frontend:
-#    container_name: wepledge-frontend
-#    tty: true
-#    build:
-#      context: ./frontend
-#      target: development
-#    volumes:
-#      - ./frontend/:/home/node/app
-#      - frontend_nodemodules:/home/node/app/node_modules
-#      - frontend_extensions:/home/node/.vscode-server
-#    # depends_on:
-#    #   - cube
-#    ports:
-#      - "3000:3000"
-#    #env_file: ./.env
-#    environment:
-#      HOME: /home/node
+  frontend:
+    container_name: wepledge-frontend
+    tty: true
+    build:
+      context: ./frontend
+      target: development
+    volumes:
+      - ./frontend/:/home/node/app
+      - frontend_nodemodules:/home/node/app/node_modules
+      - frontend_extensions:/home/node/.vscode-server
+    ports:
+      - "3000:3000"
+    env_file: ./frontend/.env.local
+    environment:
+      HOME: /home/node
 volumes:
   frontend_nodemodules:
   frontend_extensions:
   backend_env:
   backend_extensions:
   db-data:
-  pgadmin-data:
-  cube_nodemodules:
-  cube_extensions:
