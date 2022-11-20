@@ -1,11 +1,12 @@
 import { Button, Checkbox, FormControlLabel, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
-import { useFormik, yupToFormErrors } from 'formik';
+import { Field, Formik, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
 import React from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { getInstitutions, getResearchFields } from '../../api/Queries/working-groups';
 import { useQuery } from '@apollo/client';
 import { mapResearchFieldQueryResultToFormData } from '../../factories/ResearchFieldFactory';
+import FormikAutocomplete from '../../components/FormikAutocomplete';
 
 export interface CreateWorkingGroupValues {
     name: string, 
@@ -34,7 +35,7 @@ export default function CreateWorkingGroupView(){
     const workingGroupForm = useFormik({
         initialValues: {
             name: '',
-            institute: 'mockInstitute',
+            institute: '',
             city: '',
             country: '',
             field: '',
@@ -42,7 +43,7 @@ export default function CreateWorkingGroupView(){
             nEmployees: 0,
             is_public: false
         },
-        //validationSchema: newWorkingGroupValidationSchema, 
+        //validationSchema: newWorkingGroupValidationSchema, <- remove for now, seems to be buggy
         onSubmit: (newWorkingGroupValues: CreateWorkingGroupValues) => {
             console.log('clicked')
             console.log(newWorkingGroupValues)
@@ -55,12 +56,8 @@ export default function CreateWorkingGroupView(){
 
     const {data: instituteData} = useQuery(getInstitutions);
 
-    const instituteMockData = [
-        'mockInstitute1', 'mockInstitute2'
-    ]
-
-
     return (
+        <FormikProvider value={workingGroupForm}>
         <form onSubmit={workingGroupForm.handleSubmit}>
         <Grid container justifyContent={"center"} alignItems={"center"} spacing={2}>
             <Grid item xs={6}>
@@ -74,29 +71,17 @@ export default function CreateWorkingGroupView(){
                 margin="normal"
                 variant="outlined"
                 value={workingGroupForm.values.name}
-                onChange={workingGroupForm.handleChange}
+                onChange={(workingGroupForm.handleChange)}
                 error={workingGroupForm.touched.name && Boolean(workingGroupForm.errors.name)}
                 helperText={workingGroupForm.touched.name && workingGroupForm.errors.name}
                 />
             </Grid>
             <Grid item xs={6}>
-                <InputLabel id="form-field-institute">Institute</InputLabel>
-                <Select
-                    required
-                    labelId="form-field-institute"
-                    name="institute"
-                    fullWidth
-                    value={workingGroupForm.values.institute}
-                    label="Institute"
-                    onChange={workingGroupForm.handleChange}
-                    error={workingGroupForm.touched.institute && Boolean(workingGroupForm.errors.institute)}
-                    >
-                    {instituteMockData?.map(item => {
-                        return (
-                            <MenuItem value={item}>{item}</MenuItem>
-                        )
-                    })}
-                </Select>
+            <InputLabel id="form-field-institute">Label</InputLabel>
+            <Field name='institute' component={FormikAutocomplete} label="Institute" labelId="form-field-institute"
+                    options={instituteData?.institutions?.map((institution) => institution.name) ?? []}
+                    textFieldProps={{ fullWidth: true, margin: 'normal', variant: 'outlined' }}
+                    />
             </Grid>
             <Grid item xs={3}>
                 <InputLabel id="form-field-city">City</InputLabel>
@@ -209,6 +194,7 @@ export default function CreateWorkingGroupView(){
             </Grid>
         </Grid>
         </form>
+        </FormikProvider>
     )
 
 
