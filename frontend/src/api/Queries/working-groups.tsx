@@ -20,3 +20,16 @@ export const getResearchFields = gql`
         }
     }
 `
+
+export const getWorkingGroups = gql`
+query {
+    workinggroups {
+      id
+      name
+      field {
+        field
+        subfield
+      }
+    }
+  }
+`

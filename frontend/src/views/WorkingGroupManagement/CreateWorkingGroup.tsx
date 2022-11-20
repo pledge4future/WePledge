@@ -7,10 +7,12 @@ import { getInstitutions, getResearchFields } from '../../api/Queries/working-gr
 import { useQuery } from '@apollo/client';
 import { mapResearchFieldQueryResultToFormData } from '../../factories/ResearchFieldFactory';
 import FormikAutocomplete from '../../components/FormikAutocomplete';
+import { useMutation } from '@apollo/client';
+import { CREATE_WORKING_GROUP } from '../../api/mutations/working-group-mutations';
 
 export interface CreateWorkingGroupValues {
     name: string, 
-    institute: string, 
+    institution: string, 
     city: string, 
     country: string, 
     field: string, 
@@ -22,7 +24,7 @@ export interface CreateWorkingGroupValues {
 
 const newWorkingGroupValidationSchema = Yup.object({
     name: Yup.string().required('Working group name is required.'),
-    institue: Yup.string().required('Please select an to which the working group belongs.'),
+    institution: Yup.string().required('Please select an to which the working group belongs.'),
     city: Yup.string().required('Please insert a value'),
     country: Yup.string().required('Please insert a value'),
     field: Yup.string().required('Please insert a value'),
@@ -32,10 +34,19 @@ const newWorkingGroupValidationSchema = Yup.object({
 
 export default function CreateWorkingGroupView(){
 
+    const [createWorkingGroup] = useMutation(CREATE_WORKING_GROUP, {
+        onCompleted(data){
+            console.log(data)
+          },
+          onError(error) {
+              console.log(error)
+          }
+    })
+
     const workingGroupForm = useFormik({
         initialValues: {
             name: '',
-            institute: '',
+            institution: '',
             city: '',
             country: '',
             field: '',
@@ -45,8 +56,12 @@ export default function CreateWorkingGroupView(){
         },
         //validationSchema: newWorkingGroupValidationSchema, <- remove for now, seems to be buggy
         onSubmit: (newWorkingGroupValues: CreateWorkingGroupValues) => {
-            console.log('clicked')
             console.log(newWorkingGroupValues)
+            createWorkingGroup({
+                variables: {
+                    ...newWorkingGroupValues
+                }
+            })
         }
     })
 
@@ -77,8 +92,8 @@ export default function CreateWorkingGroupView(){
                 />
             </Grid>
             <Grid item xs={6}>
-            <InputLabel id="form-field-institute">Label</InputLabel>
-            <Field name='institute' component={FormikAutocomplete} label="Institute" labelId="form-field-institute"
+            <InputLabel id="form-field-institution">Institution</InputLabel>
+            <Field name='institution' component={FormikAutocomplete} label="Institution" labelId="form-field-institution"
                     options={instituteData?.institutions?.map((institution) => institution.name) ?? []}
                     textFieldProps={{ fullWidth: true, margin: 'normal', variant: 'outlined' }}
                     />
