@@ -5,7 +5,7 @@ RUN addgroup --gid 1006 developers \
 USER node
 RUN mkdir ~/app && mkdir ~/.vscode-server
 WORKDIR /home/node/app
-#COPY package.json ./
+COPY package.json yarn.lock ./
 RUN yarn install
 EXPOSE 3000
 
