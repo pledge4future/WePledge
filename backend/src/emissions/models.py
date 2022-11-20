@@ -10,10 +10,13 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
+import datetime as dt
+
 from co2calculator.co2calculator.constants import (
     TransportationMode,
+    HeatingFuel,
     ElectricityFuel,
-    HeatingFuel
+    Unit
 )
 import uuid
 
