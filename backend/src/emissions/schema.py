@@ -47,8 +47,6 @@ import warnings
 from emissions.email_client import EmailClient
 from django.conf import settings
 
-#warnings.filterwarnings("error")
-
 # -------------- GraphQL Types -------------------
 
 WEEKS_PER_MONTH = 4.34524
