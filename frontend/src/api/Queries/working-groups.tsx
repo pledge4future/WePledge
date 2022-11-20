@@ -30,6 +30,12 @@ query {
         field
         subfield
       }
+      institution {
+        id
+        name
+        city
+        country
+      }
     }
   }
 `
