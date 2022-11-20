@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/client';
 import { makeStyles } from '@material-ui/core';
 import { Grid, TextField } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { getWorkingGroups } from '../../api/Queries/working-groups';
 import WorkingGroupCard from '../../components/WorkingGroupCard';
 import { IWorkingGroup } from '../../interfaces/IWorkingGroup';
@@ -10,7 +10,6 @@ import { IWorkingGroup } from '../../interfaces/IWorkingGroup';
 export default function FindWorkingGroupView(){
 
     const {data: workingGroupData} = useQuery(getWorkingGroups)
-    console.log("🚀 ~ file: FindWorkingGroup.tsx ~ line 13 ~ FindWorkingGroupView ~ workingGroupData", workingGroupData)
 
     const [searchInput, setSearchInput] = useState('')
 
@@ -22,12 +21,7 @@ export default function FindWorkingGroupView(){
         // add here endpoint to request working group joining
     }
 
-    let test_data;
-    if(workingGroupData){
-        test_data = [...workingGroupData.workinggroups,...workingGroupData.workinggroups,...workingGroupData.workinggroups,...workingGroupData.workinggroups,...workingGroupData.workinggroups]
-    }
-    console.log("🚀 ~ file: FindWorkingGroup.tsx ~ line 26 ~ FindWorkingGroupView ~ test_data", test_data)
-
+    const parentRef = useRef(null);
     
     return (
         <Grid container justifyContent={"center"} alignItems={"center"} spacing={2}>
@@ -40,17 +34,8 @@ export default function FindWorkingGroupView(){
                 label={'Search'}
                 />
             </Grid>
-            {/* {workingGroupData?.workinggroups?.map((workingGroup: IWorkingGroup) => {
-                return (
-                    <Grid item xs={3}>
-                        <WorkingGroupCard 
-                        workingGroup={workingGroup}
-                        requestJoinWorkingGroup={requestJoinWorkingGroup}
-                    />
-                    </Grid>
-                )
-            })} */}
-            {test_data?.map((workingGroup: IWorkingGroup) => {
+            {workingGroupData?.workinggroups?.filter((workingGroup: IWorkingGroup) => workingGroup.name.toLowerCase().includes(searchInput))
+            .map((workingGroup: IWorkingGroup) => {
                 return (
                     <Grid item xs={3}>
                         <WorkingGroupCard 
@@ -63,3 +48,4 @@ export default function FindWorkingGroupView(){
         </Grid>
     )
 }
+

@@ -47,7 +47,9 @@ export default function WorkingGroupCard(props: IWorkingGroupCardProps){
                 </CardContent>
                 <div className={classes.cardFooter}>
                 <IconButton color="green" onClick={() => requestJoinWorkingGroup(workingGroup)}>
-                  <GroupAddIcon />
+                  <Tooltip title="Request working group access">
+                    <GroupAddIcon />
+                  </Tooltip>
                 </IconButton>
                 </div>
             </Card>
