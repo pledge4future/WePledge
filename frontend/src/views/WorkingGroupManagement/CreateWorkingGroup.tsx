@@ -1,7 +1,7 @@
-import { Button, Checkbox, FormControlLabel, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, Checkbox, CircularProgress, FormControlLabel, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Field, Formik, FormikProvider, useFormik } from 'formik';
 import * as Yup from 'yup';
-import React from 'react';
+import React, { useState } from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import { getInstitutions, getResearchFields } from '../../api/Queries/working-groups';
 import { useQuery } from '@apollo/client';
@@ -9,6 +9,8 @@ import { mapResearchFieldQueryResultToFormData } from '../../factories/ResearchF
 import FormikAutocomplete from '../../components/FormikAutocomplete';
 import { useMutation } from '@apollo/client';
 import { CREATE_WORKING_GROUP } from '../../api/mutations/working-group-mutations';
+import router from 'next/router';
+import { InputErrorComponent } from '../../components/InputErrorComponent';
 
 export interface CreateWorkingGroupValues {
     name: string, 
@@ -34,12 +36,19 @@ const newWorkingGroupValidationSchema = Yup.object({
 
 export default function CreateWorkingGroupView(){
 
+    const [loading, setLoading] = useState(false);
+    const [errorState, setErrorState ] = useState(false);
+    const [errorMessage, setErrorMessage ] = useState('')
+
     const [createWorkingGroup] = useMutation(CREATE_WORKING_GROUP, {
-        onCompleted(data){
-            console.log(data)
+        onCompleted(){
+            setLoading(false);
+            router.push("/working-group")
           },
           onError(error) {
-              console.log(error)
+            setLoading(false);
+            setErrorState(true);
+            setErrorMessage(error.message)
           }
     })
 
@@ -56,7 +65,7 @@ export default function CreateWorkingGroupView(){
         },
         //validationSchema: newWorkingGroupValidationSchema, <- remove for now, seems to be buggy
         onSubmit: (newWorkingGroupValues: CreateWorkingGroupValues) => {
-            console.log(newWorkingGroupValues)
+            setLoading(true);
             createWorkingGroup({
                 variables: {
                     ...newWorkingGroupValues
@@ -65,13 +74,14 @@ export default function CreateWorkingGroupView(){
         }
     })
 
-    const {data: researchFieldQueryData, error, loading} = useQuery(getResearchFields);
+    const {data: researchFieldQueryData, error, loading: queryLoading} = useQuery(getResearchFields);
 
     const {mainResearchFields: researchFieldData, fieldSubfieldStore: researchSubfieldStore} = mapResearchFieldQueryResultToFormData(researchFieldQueryData);
 
     const {data: instituteData} = useQuery(getInstitutions);
 
     return (
+        <>
         <FormikProvider value={workingGroupForm}>
         <form onSubmit={workingGroupForm.handleSubmit}>
         <Grid container justifyContent={"center"} alignItems={"center"} spacing={2}>
@@ -203,13 +213,24 @@ export default function CreateWorkingGroupView(){
 
             </Grid>
             <Grid item xs={12}>
-                <Button type="submit" color="primary" size="large" variant="contained" disabled={!workingGroupForm.dirty || !workingGroupForm.isValid}>
-                    create working group <AddIcon />
+                <Button type="submit" color="primary" size="large" variant="contained" disabled={!workingGroupForm.dirty || !workingGroupForm.isValid || loading}>
+                    {!loading && (
+                        <>
+                        create working group <AddIcon />
+                        </>
+                    )}
+                    {loading && (
+                        <>
+                            <CircularProgress color="primary"/>
+                        </>
+                    )}
                 </Button>
             </Grid>
         </Grid>
         </form>
         </FormikProvider>
+        <InputErrorComponent isOpen={errorState} handleDialogClose={() => setErrorState(false)} errorMessage={errorMessage}/>
+        </>
     )
 
 

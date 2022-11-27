@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
-import { makeStyles } from '@material-ui/core';
 import { Grid, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { getWorkingGroups } from '../../api/Queries/working-groups';
+import { UnderConstructionDialog } from '../../components/UnderConstructionDialog';
 import WorkingGroupCard from '../../components/WorkingGroupCard';
 import { IWorkingGroup } from '../../interfaces/IWorkingGroup';
 
@@ -12,6 +12,7 @@ export default function FindWorkingGroupView(){
     const {data: workingGroupData} = useQuery(getWorkingGroups)
 
     const [searchInput, setSearchInput] = useState('')
+    const [ showAlert, setShowAlert ] = useState(false);
 
     const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(event.target.value)
@@ -19,11 +20,13 @@ export default function FindWorkingGroupView(){
 
     const requestJoinWorkingGroup = (workingGroup: IWorkingGroup) => {
         // add here endpoint to request working group joining
+        setShowAlert(true)
     }
 
     const parentRef = useRef(null);
     
     return (
+        <>
         <Grid container justifyContent={"center"} alignItems={"center"} spacing={2}>
             <Grid item xs={12}>
                 <TextField
@@ -46,6 +49,8 @@ export default function FindWorkingGroupView(){
                 )
             })}
         </Grid>
+        <UnderConstructionDialog feature='Joining Working Group Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
+        </>
     )
 }
 
