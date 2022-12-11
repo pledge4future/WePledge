@@ -121,8 +121,8 @@ Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
 Car | diesel, gasoline, cng, electric, hybrid, plug-in_hybrid, **average** | small, medium, large, **average** | - | - | **1**, 2, 3, 4, 5, 6, 7, 8, 9 | -
 Train | diesel, electric, **average** | - | - | - | - | - (assumes "long-distance")
-Bus | diesel | medium, large, **average** | in % 20, **50**, 80, 100 | - | - | - (assumes "long-distance")
-Plane | - | - | - | **average**, Economy class, Business class, Premium economy class, First class | - | - (determined from distance)
+Bus | diesel | medium, large, **average** | in % 20, **50**, 80, 100 | - | - | (assumes "long-distance")
+Plane | - | - | - | **average**, Economy class, Business class, Premium economy class, First class | - | (determined from distance)
 Ferry | - | - | - | **average**, Foot passenger, Car passenger | - | -
 
 
@@ -155,8 +155,8 @@ Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
 Car | diesel, gasoline, cng, electric, hybrid, plug-in_hybrid, **average** | small, medium, large, **average** | - | - | **1**, 2, 3, 4, 5, 6, 7, 8, 9 | -
 Motorbike | - | small, medium, large, **average** | - | - | - | -
-Train | diesel, electric, **average** | - | - | - | - | - (assumes "local")
-Bus | diesel | medium, large, **average** | in % 20, **50**, 80, 100 | - | - | - (assumes "local")
+Train | diesel, electric, **average** | - | - | - | - | (assumes "local")
+Bus | diesel | medium, large, **average** | in % 20, **50**, 80, 100 | - | - | (assumes "local")
 Tram | - | - | - | - | - | -
 Bicycle | - | - | - | - | - | -
 Pedelec | - | - | - | - | - | -
