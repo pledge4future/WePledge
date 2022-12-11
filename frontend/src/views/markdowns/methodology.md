@@ -1,4 +1,4 @@
-# Documentation of CO<sub>2</sub>e calculations
+# How do we compute your carbon footprint?
 
 We believe that good solutions come with the use of scientifically sound approaches and transparency. This is why we are sharing the information about how we calculate CO<sub>2</sub> emissions from the user inputs. For this, we need so-called emission factors, which allow us to convert units of activity (e.g., distance travelled in km) to greenhouse gas emissions in CO<sub>2</sub> equivalents. 
 
@@ -42,7 +42,7 @@ For electricity the user can select between the German electricity mix or solar 
 
 $E = \epsilon_{\text{electricity}} \times \frac{C}{277777.7778}$
 <br/>
-Example: $3942.6 kg = 109518 kg/TJ \times \frac{10000 kWh}{277777.7778}$
+Example: $3942.6 \text{ kg} = 109518 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of electricity use
 
@@ -68,7 +68,7 @@ $C = \kappa \times C_{\text{other unit}}$
 $E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}$
 <br/>
 
-Example: $2360,8 kg CO2e = 65578 kg/TJ \times \frac{10000 kWh}{277777.7778}$
+Example: $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of heating consumption
 
@@ -118,7 +118,7 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D$
 <br/>
 <br/>
-Example (long-distance train): $16 kg CO2e = 0.032 kg/P.km \times 500 km$
+Example (long-distance train): $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
 
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
@@ -162,7 +162,7 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
 <br/>
 <br/>
-Example (bus): $89.7 kg CO2e = 0.0389 kg/P.km \times 50 km$
+Example (bus): $89.7 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
