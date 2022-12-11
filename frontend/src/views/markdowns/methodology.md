@@ -51,7 +51,7 @@ If the electricity consumption is only known for a building or building complex 
 
 ## 3 Heating
 
-The user is asked about the annual consumption and the energy sources for heating, based on which the CO<sub>2</sub>e emissions are determined. Heating consumption can be provided in kWh, or in other units, depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
+The user is asked about the annual consumption $C$ and the energy sources for heating, based on which the CO<sub>2</sub>e emissions $E$ are determined. Heating consumption can be provided in kWh, or in other units, depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
 - Oil: l
 - Liquid gas, Coal, Pellets, Woodchips: kg
 - Gas: m<sup>3</sup>
@@ -60,7 +60,7 @@ The conversion factors $\kappa$ are retrieved from:
 - [BAFA (2020): Merkblatt zur Ermittlung des Gesamtenergieverbrauchs](https://www.bafa.de/SharedDocs/Downloads/DE/Energie/ea_ermittlung_gesamtenergieverbrauch.html)
 - [Krajnc, N. (2015): Wood fuels handbook, FAO](https://agris.fao.org/agris-search/search.do?recordID=XF2017001919)
 
-The emission factors depend on the fuel type. Fuel types may be oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
+The emission factors \epsilon_{\text{heating}} depend on the fuel type. Fuel types may be oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
 
 $C = \kappa \times C_{\text{other unit}}$
 
@@ -74,7 +74,7 @@ If the heating consumption is only known for a building or building complex and 
 
 ## 4 Business trips
 
-The `co2calculator` allows to quantify the emissions for individual business trips for different modes of transport. The CO<sub>2</sub> equivalent is a function of the distance travelled in km. This distance may either be directly provided, or it may be computed from given start and stop locations using [distances.py](https://github.com/pledge4future/co2calculator/blob/dev/co2calculator/distances.py). In the latter case, the coordinates of the locations have to be retrieved by geocoding and then the travel distance between the locations is computed. Next to the distance or the locations, the user defines the mode of transport and its specifica.
+The `co2calculator` allows to quantify the CO<sub>2</sub>e emissions $E$ [kg] for individual business trips for different modes of transport. The CO<sub>2</sub> equivalent is a function of the distance $D$ travelled in km. This distance may either be directly provided, or it may be computed from given start and stop locations using [distances.py](https://github.com/pledge4future/co2calculator/blob/dev/co2calculator/distances.py). In the latter case, the coordinates of the locations have to be retrieved by geocoding and then the travel distance between the locations is computed. Next to the distance or the locations, the user defines the mode of transport and its specifica.
 
 ### Geocoding
 
@@ -107,14 +107,15 @@ Plane | + 95 km | CSN EN 16258 - Methodology for calculation and declaration of 
 
 ### Specifica of the modes of transport for business trips
 
-Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions in kg per passenger are calculated by multiplying the distance with a specific emission factor. For all transportation modes except for car, the given emission factors are already in passenger kilometers. For cars, the emission factors we are using are in vehicle kilometers, so we multiply the distance by the emission factor and divide it by the number of passengers. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. 
+Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions $E$ in kg per passenger are calculated by multiplying the distance $D$ with a specific emission factor $\epsilon$. For all transportation modes except for car, the given emission factors are already in passenger kilometers. For cars, the emission factors we are using are in vehicle kilometers, so we multiply the distance by the emission factor and divide it by the number of passengers.  
 
-> CO<sub>2</sub>e<sub>car</sub>(person) = d x CO<sub>2</sub>e<sub>car</sub> / n [kg]
+$E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 
+$E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D$
+<br/>
+<br/>
 
-> CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub>(person) = d x CO<sub>2</sub>e<sub>bus/train/plane/ferry</sub> [kg]
-
-We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
 Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
@@ -137,7 +138,7 @@ Trips are categorized based on their ranges, which can be used later for analysi
 
 ## 5 Commuting
 
-Emissions from commuting are also quantified individually for each mode of transport [calc_co2_commuting](https://github.com/pledge4future/co2calculator/blob/2e102a0971dda57423fe7aef9958d0e61358248c/co2calculator/calculate.py#L445). For a given mode of transport, the user provides the average weekly distance travelled in a given time period (`work_weeks`). Available transportation modes are:
+CO<sub>2</sub>e emissions $E$ [kg] from commuting are also quantified individually for each mode of transport [calc_co2_commuting](https://github.com/pledge4future/co2calculator/blob/2e102a0971dda57423fe7aef9958d0e61358248c/co2calculator/calculate.py#L445). For a given mode of transport, the user provides the average weekly distance $D_{\text{weekly}}$ travelled in a given time period (`work_weeks`). Available transportation modes are:
 - Car
 - (Local) bus
 - (Local) train
@@ -148,7 +149,15 @@ Emissions from commuting are also quantified individually for each mode of trans
 
 ### Specifica of the modes of transport for commuting
 
-Emissions from commuting are calculated the same way as emissions from business trips by multiplying the weekly distance by an emission factor. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+Emissions from commuting are calculated the same way as emissions from business trips by multiplying the weekly distance $D_{\text{weekly}}$ by an emission factor $\epsilon$:
+
+$E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}$
+
+$E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
+<br/>
+<br/>
+
+The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
 Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
@@ -163,11 +172,11 @@ Pedelec | - | - | - | - | - | -
 
 ### Aggregating to the group's level
 
-If we assume that a representative sample (`n_participants`) of the entire group (`n_member`) entered their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
+If we assume that a representative sample of $n$ persons of the entire group, consisting of $N$ members,  entered their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
 
-> CO<sub>2</sub>e<sub>group</sub> = CO<sub>2</sub>e<sub>aggr</sub> / n_participants x n_members
+$E_{\text{group}} = \frac{E_{\text{aggr}}}{n} \times N$
 
-with "CO<sub>2</sub>e<sub>aggr</sub>" the sum of the CO<sub>2</sub>e emissions of all participants.
+with $E_{\text{aggr}}$ being the sum of the CO<sub>2</sub>e emissions of all participants.
 <br/>
 <br/>
 
