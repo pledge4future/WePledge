@@ -19,11 +19,11 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
  ![Methodology](https://github.com/pledge4future/WePledge/blob/demo/frontend/public/static/images/methodology.png)
 
 
-The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. Emissions are given as CO<sub>2</sub> equivalents (CO<sub>2</sub>e). 
+The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020), who calculated the carbon footprint of their research institute. Emissions are given as CO<sub>2</sub> equivalents $E$ [kg]. 
 
 Business trips and field trips are assessed on an individual level whereas heating and electricity are assessed once for the entire research group.
 
-The CO<sub>2</sub>e emissions are calculated using emission factors from different sources:
+The CO<sub>2</sub>e $E$ emissions are calculated using emission factors $\epsilon$ from different sources:
 - [Probas](https://www.probas.umweltbundesamt.de/php/index.php): electricity, heating, most cars, buses, trains
 - [UBA (2021). "Umweltfreundlich mobil"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil): bicycles, pedelecs, trams
 - [GOV.UK (2020). Greenhouse gas reporting: conversion factors 2020](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020): planes, ferries, electric cars, motorbikes
@@ -32,16 +32,15 @@ More information about the sources of the emission factors can be found in chapt
 
 The specific emission factors for different activities are collected in [this emission factor table](https://github.com/pledge4future/co2calculator/blob/dev/data/emission_factors.csv). 
 
-The basic formula is:
-$E = \epsilon \times C$
+The basic formula is $E = \epsilon \times C$, with $E$ being the CO<sub>2</sub> equivalents, $\epsilon$ being a specific emission factor and $C$ being consumption (e.g. of electricity).
 <br/>
 
 
 ## 2 Electricity
 
-For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular German electricity contract. Solar power is applicable, if the institute uses self-generated power from solar panels. The user is asked for the annual electricity consumption c [kWh] which is then used to calculate the CO<sub>2</sub> equivalents [kg/TJ]. Since the emission factors for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
+For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular German electricity contract. Solar power is applicable, if the institute uses self-generated power from solar panels. The user is asked for the annual electricity consumption $C$ [kWh] which is then used to calculate the CO<sub>2</sub> equivalents $E$ [kg]. Since the emission factors $\epsilon$ for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
 
-> CO<sub>2</sub>e<sub>electricity</sub>(group) [kg] = c [kWh]/277777.7778 x CO<sub>2</sub>e<sub>electricity</sub>[kg/TJ]
+$E = \epsilon_{\text{electricity}} \times \frac{C}{277777.7778}$
 
 
 ### Defining a share of electricity use
@@ -57,15 +56,15 @@ The user is asked about the annual consumption and the energy sources for heatin
 - Liquid gas, Coal, Pellets, Woodchips: kg
 - Gas: m<sup>3</sup>
 
-The conversion factors are retrieved from:
+The conversion factors $\kappa$ are retrieved from:
 - [BAFA (2020): Merkblatt zur Ermittlung des Gesamtenergieverbrauchs](https://www.bafa.de/SharedDocs/Downloads/DE/Energie/ea_ermittlung_gesamtenergieverbrauch.html)
 - [Krajnc, N. (2015): Wood fuels handbook, FAO](https://agris.fao.org/agris-search/search.do?recordID=XF2017001919)
 
 The emission factors depend on the fuel type. Fuel types may be oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
 
-> c [kWh]= $c<sub>other unit</sub> x conversion factor
+$C = \kappa \times C_{\text{other unit}}$
 
-> CO<sub>2</sub>e<sub>heating</sub>(group) [kg] = c [kWh]/277777.7778 x CO<sub>2</sub>e<sub>heating</sub>[kg/TJ]
+$E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}$
 
 ### Defining a share of heating consumption
 
@@ -219,6 +218,7 @@ Goal (°C) | Total carbon budget [t] | Carbon budget per person (2020-2050) [t] 
 of increased greenhouse gas concentrations. Weather, 62: 307-311.
 https://doi.org/10.1002/wea.103
 
+- Jahnke, K., Fendt, C., Fouesneau, M. et al. An astronomical institute’s perspective on meeting the challenges of the climate crisis. Nat Astron 4, 812–815 (2020). https://doi.org/10.1038/s41550-020-1202-4
 
 - IFEU Heidelberg, Umweltbundesamt (UBA), 2010. TREMOD (Transport emission model) version
 5.1. Data and calculation model; energy use and pollutant emissions of motorized traffic in
