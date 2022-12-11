@@ -108,7 +108,7 @@ Plane | + 95 km | CSN EN 16258 - Methodology for calculation and declaration of 
 
 ### Specifica of the modes of transport for business trips
 
-Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions in kg per passenger are calculated by multiplying the distance with a specific emission factor. For cars, the distance is multiplied by the emission factor and divided by the number of passengers. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. 
+Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions in kg per passenger are calculated by multiplying the distance with a specific emission factor. For all transportation modes except for car, the given emission factors are already in passenger kilometers. For cars, the emission factors we are using are in vehicle kilometers, so we multiply the distance by the emission factor and divide it by the number of passengers. The emission factors are specified according to the transportation modes and their specifica, which are shown in the table below. 
 
 > CO<sub>2</sub>e<sub>car</sub>(person) = d x CO<sub>2</sub>e<sub>car</sub> / n [kg]
 
