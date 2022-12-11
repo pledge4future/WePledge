@@ -42,7 +42,8 @@ For electricity the user can select between the German electricity mix or solar 
 
 $E = \epsilon_{\text{electricity}} \times \frac{C}{277777.7778}$
 <br/>
-Example: $3942.6 \text{ kg} = 109518 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
+<br/>
+<ins>Example:<ins> $3942.6 \text{ kg} = 109518 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of electricity use
 
@@ -67,8 +68,9 @@ $C = \kappa \times C_{\text{other unit}}$
 
 $E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}$
 <br/>
+<br/>
 
-Example: $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
+<ins>Example:<ins> $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of heating consumption
 
@@ -118,8 +120,9 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D$
 <br/>
 <br/>
-Example (long-distance train): $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
-
+<ins>Example (long-distance train):<ins> $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
+<br/>
+<br/>
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
@@ -162,8 +165,9 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
 <br/>
 <br/>
-Example (bus): $89.7 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
-
+<ins>Example (bus):<ins> $89.7 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
+<br/>
+<br/>
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
 Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
