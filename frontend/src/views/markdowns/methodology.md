@@ -165,7 +165,7 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
 <br/>
 <br/>
-<ins>Example (bus):<ins> $89.7 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
+<ins>Example (bus):<ins> $1.95 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
 <br/>
 <br/>
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
