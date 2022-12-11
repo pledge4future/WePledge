@@ -33,7 +33,7 @@ More information about the sources of the emission factors can be found in chapt
 The specific emission factors for different activities are collected in [this emission factor table](https://github.com/pledge4future/co2calculator/blob/dev/data/emission_factors.csv). 
 
 The basic formula is:
-> CO<sub>2</sub>e emissions = consumption x emission factor
+$E = \epsilon \times C$
 <br/>
 
 
