@@ -41,7 +41,8 @@ The basic formula is $E = \epsilon \times C$, with $E$ being the CO<sub>2</sub> 
 For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular German electricity contract. Solar power is applicable, if the institute uses self-generated power from solar panels. The user is asked for the annual electricity consumption $C$ [kWh] which is then used to calculate the CO<sub>2</sub> equivalents $E$ [kg]. Since the emission factors $\epsilon$ for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
 
 $E = \epsilon_{\text{electricity}} \times \frac{C}{277777.7778}$
-
+<br/>
+Example: $3942.6 kg = 109518 kg/TJ \times \frac{10000 kWh}{277777.7778}$
 
 ### Defining a share of electricity use
 
@@ -65,6 +66,9 @@ The emission factors \epsilon_{\text{heating}} depend on the fuel type. Fuel typ
 $C = \kappa \times C_{\text{other unit}}$
 
 $E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}$
+<br/>
+
+Example: $2360,8 kg CO2e = 65578 kg/TJ \times \frac{10000 kWh}{277777.7778}$
 
 ### Defining a share of heating consumption
 
@@ -114,6 +118,8 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D$
 <br/>
 <br/>
+Example (long-distance train): $16 kg CO2e = 0.032 kg/P.km \times 500 km$
+
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
@@ -156,6 +162,7 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}$
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
 <br/>
 <br/>
+Example (bus): $89.7 kg CO2e = 0.0389 kg/P.km \times 50 km$
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
