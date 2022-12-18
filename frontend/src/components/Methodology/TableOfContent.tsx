@@ -22,7 +22,8 @@ const useStyles = makeStyles((theme: Theme) =>
       listItem: {
         '&:hover': {
             cursor: 'pointer',
-            color: theme.palette.primary.main
+            color: theme.palette.primary.main,
+            fontWeight: 'bold'
         }
       },
       subListItem: {
@@ -30,6 +31,7 @@ const useStyles = makeStyles((theme: Theme) =>
         '&:hover': {
             cursor: 'pointer',
             color: theme.palette.primary.main,
+            fontWeight: 'bold'
          },
       },
     })

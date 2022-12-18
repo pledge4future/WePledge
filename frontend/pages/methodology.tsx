@@ -7,12 +7,12 @@ import 'katex/dist/katex.min.css';
 import withRoot from "../src/withRoot";
 import methodology from "../src/views/markdowns/methodology.md";
 
-import {TableOfContent} from '../src/components/TableOfContent';
+import {TableOfContent} from '../src/components/Methodology/TableOfContent';
 
 import PageContainer from "../src/components/PageContainer";
 
 // Material-UI
-import { Theme, createStyles, withStyles, WithStyles } from "@material-ui/core/styles";
+import { Theme, createStyles, withStyles, WithStyles, makeStyles } from "@material-ui/core/styles";
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 import Typography from "@material-ui/core/Typography";
@@ -26,11 +26,23 @@ import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid"
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { MethodologyCard } from "../src/components/Methodology/MethodologyCard";
+import { MethodologyCardFigure } from "../src/components/Methodology/MethodologyCardFigure";
+
+const useStyles = makeStyles((theme: Theme) => 
+  createStyles({
+    figureContainer: {
+      marginTop: '30px',
+      marginBottom: '30px'
+    }
+  })
+);
+
 
 const styles = (theme: Theme) => {
   return createStyles({
     listItem: {
-      marginTop: theme.spacing(1),
+      marginTop: theme?.spacing(1),
       wordWrap: "break-word"
     },
     table: {
@@ -111,6 +123,8 @@ const MarkdownImage = withStyles(styles)((props: WithStyles<typeof styles> & { w
 });
 function Methodology() {
 
+  const classes = useStyles();
+
   const tableOfContentElements = []
 
   const addToToC = (component: any, props: any) => {
@@ -147,6 +161,10 @@ function Methodology() {
   }
   return (
     <PageContainer title="Methodology">
+      <>
+      <div className={classes.figureContainer}>
+            <MethodologyCardFigure />
+      </div>
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <ReactMarkdown 
@@ -160,6 +178,7 @@ function Methodology() {
           {renderTableOfContent()}
         </Grid>
       </Grid>
+      </>
     </PageContainer>
 
   );
