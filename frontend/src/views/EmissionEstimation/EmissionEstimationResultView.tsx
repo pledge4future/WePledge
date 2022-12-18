@@ -89,7 +89,7 @@ export default function EmissionEstimationResultView(props: IEmissionEstimationR
                 <ComposedChart height={500} width={1200} data={displayData}>
                     <XAxis dataKey="name" />
                     <YAxis domain={[0, getUpperDomainLimit(displayData)]}>
-                        <Label value="tCO2" position="insideLeft" angle={270} />
+                        <Label value="kg CO2eq" position="insideLeft" angle={270} />
                     </YAxis>
                     <Tooltip />
                     <Legend />

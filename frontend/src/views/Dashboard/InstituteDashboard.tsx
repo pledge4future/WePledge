@@ -101,7 +101,7 @@ export function InstituteDashboard(props: DashboardProps){
           <ComposedChart width={1000} height={500} data={chartData}>
             <XAxis dataKey="name" />
             <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
-            <Label value="tCO2" position="insideLeft" angle={270} />
+            <Label value="kg CO2eq" position="insideLeft" angle={270} />
             </YAxis>
             <Tooltip />
             ({ 
