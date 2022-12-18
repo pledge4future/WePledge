@@ -7,6 +7,8 @@ import 'katex/dist/katex.min.css';
 import withRoot from "../src/withRoot";
 import methodology from "../src/views/markdowns/methodology.md";
 
+import {TableOfContent} from '../src/components/TableOfContent';
+
 import PageContainer from "../src/components/PageContainer";
 
 // Material-UI
@@ -22,6 +24,8 @@ import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import Paper from "@material-ui/core/Paper";
+import Grid from "@material-ui/core/Grid"
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 const styles = (theme: Theme) => {
   return createStyles({
@@ -100,31 +104,58 @@ const MarkdownImage = withStyles(styles)((props: WithStyles<typeof styles> & { w
     width: " 100%",
   }} {...other} />;
 });
-
-const components = {
-  h1: ({node, ...props}) => <Typography gutterBottom={true} variant={'h4'} {...props}/>,
-  h2: ({node, ...props}) => <Typography gutterBottom={true} variant={'h5'} {...props}/>,
-  h3: ({node, ...props}) => <Typography gutterBottom={true} variant={'subtitle1'} {...props}/>,
-  h4: ({node, ...props}) => <Typography gutterBottom={true} variant={'caption'} paragraph={true} {...props}/>,
-  p: ({node, ...props}) => <Typography paragraph={true} {...props}/>,
-  a: ({node, ...props}) => <Link {...props}/>,
-  img: ({node, ...props}) => <MarkdownImage {...props}/>,
-  table: ({node, ...props}) => <MarkdownTable {...props}/>,
-  thead: ({node, ...props}) => <MarkdownTableHead {...props}/>,
-  tbody: ({node, ...props}) => <MarkdownTableBody {...props}/>,
-  tr: ({node, ...props}) => <MarkdownTableRow {...props}/>,
-  td: ({node, ...props}) => <MarkdownTableCell {...props}/>,
-  th: ({node, ...props}) => <TableCell {...props} />,
-}
-
 function Methodology() {
+
+  const tableOfContentElements = []
+
+  const addToToC = (component: any, props: any) => {
+    const {level, children} = props;
+    if(level===2){
+      tableOfContentElements.push({level: 1, text: children[0], nestedElements: []})
+      
+    }
+    if(level===3){
+      tableOfContentElements[tableOfContentElements.length - 1]?.nestedElements.push({level: 2, text: children[0], nestedElements: []})
+    }
+    return component;
+  }
+
+    const renderTableOfContent = useCallback(() => {
+      return <TableOfContent elements={tableOfContentElements} />
+    }, [tableOfContentElements])
+
+  const components = {
+    h1: ({node, ...props}) => addToToC(<Typography gutterBottom={true} variant={'h4'} {...props}/>, props),
+    h2: ({node, ...props}) => addToToC(<Typography gutterBottom={true} variant={'h5'} {...props}/>,props),
+    h3: ({node, ...props}) => addToToC(<Typography gutterBottom={true} variant={'subtitle1'} {...props}/>,props),
+    h4: ({node, ...props}) => <Typography gutterBottom={true} variant={'caption'} paragraph={true} {...props}/>,
+    p: ({node, ...props}) => <Typography paragraph={true} {...props}/>,
+    a: ({node, ...props}) => <Link {...props}/>,
+    img: ({node, ...props}) => <MarkdownImage {...props}/>,
+    table: ({node, ...props}) => <MarkdownTable {...props}/>,
+    thead: ({node, ...props}) => <MarkdownTableHead {...props}/>,
+    tbody: ({node, ...props}) => <MarkdownTableBody {...props}/>,
+    tr: ({node, ...props}) => <MarkdownTableRow {...props}/>,
+    td: ({node, ...props}) => <MarkdownTableCell {...props}/>,
+    th: ({node, ...props}) => <TableCell {...props} />,
+  }
   return (
     <PageContainer title="Methodology">
-      <ReactMarkdown 
-      remarkPlugins={[[remarkMath], [remarkGfm]]}
-      rehypePlugins={[rehypeKatex]}
-      components={components}>{methodology}</ReactMarkdown>
+      <Grid container spacing={2}>
+        <Grid item xs={10}>
+          <ReactMarkdown 
+          remarkPlugins={[[remarkMath], [remarkGfm]]}
+          rehypePlugins={[rehypeKatex]}
+          components={components}>
+            {methodology}
+          </ReactMarkdown>
+        </Grid>
+        <Grid item xs={2}>
+          {renderTableOfContent()}
+        </Grid>
+      </Grid>
     </PageContainer>
+
   );
 }
 
