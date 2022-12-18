@@ -1,24 +1,56 @@
-import { ListSubheader } from '@material-ui/core';
+import { ListSubheader, Theme } from '@material-ui/core';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
+import { makeStyles, createStyles } from '@material-ui/core/styles';
+
 interface IToCListItem {
     level: number, 
     text: string, 
-    nestedElements: IToCListItem[]
+    nestedElements: IToCListItem[],
+    id: string
 }
 
 interface ITableOfContentProps {
     elements: IToCListItem[]
 }
 
+const useStyles = makeStyles((theme: Theme) => 
+    createStyles({
+      listItem: {
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.primary.main
+        }
+      },
+      subListItem: {
+        marginLeft: '30px',
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.primary.main,
+         },
+      },
+    })
+);
+  
+
 
 export const TableOfContent = (props: ITableOfContentProps) => {
 
 
+    const classes = useStyles();
+
     const {elements} = props;
+    
+    const handleNavItemClick = ((item: IToCListItem) => {
+        console.log(item);
+        const element = document.getElementById(item.id);
+        if(element){
+            element.scrollIntoView()
+        }
+    })
 
     return (
         <List
@@ -30,14 +62,14 @@ export const TableOfContent = (props: ITableOfContentProps) => {
                 {elements.map((item: IToCListItem) => {
                     return(
                     <>
-                    <ListItem>
+                    <ListItem className={classes.listItem} onClick={() => handleNavItemClick(item)}>
                         <ListItemText primary={item.text} style={{fontStyle: 'bold'}} />
                     </ListItem>
                     {item.nestedElements.length > 0 && (
                             <List component="div" disablePadding>
                                 {item.nestedElements.map((item: IToCListItem) => {
                                     return (
-                                        <ListItem style={{marginLeft: '20px'}}>
+                                        <ListItem className={classes.subListItem} onClick={() => handleNavItemClick(item)}>
                                             <ListItemText primary={item.text}/>
                                         </ListItem>
                                     )

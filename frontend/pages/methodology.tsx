@@ -50,6 +50,11 @@ const styles = (theme: Theme) => {
   });
 };
 
+function flatten(text, child) {
+  return typeof child === 'string'
+    ? text + child
+    : React.Children.toArray(child.props.children).reduce(flatten, text)
+}
 
 function MarkdownTable(props: { children: boolean | React.ReactChild | React.ReactFragment | React.ReactPortal | null | undefined; }) {
   return (
@@ -110,14 +115,15 @@ function Methodology() {
 
   const addToToC = (component: any, props: any) => {
     const {level, children} = props;
+    const id = children.reduce(flatten, '').toLowerCase().replace(/\W/g, '-')
     if(level===2){
-      tableOfContentElements.push({level: 1, text: children[0], nestedElements: []})
+      tableOfContentElements.push({level: 1, text: children[0], nestedElements: [], id: id})
       
     }
     if(level===3){
-      tableOfContentElements[tableOfContentElements.length - 1]?.nestedElements.push({level: 2, text: children[0], nestedElements: []})
+      tableOfContentElements[tableOfContentElements.length - 1]?.nestedElements.push({level: 2, text: children[0], nestedElements: [], id: id})
     }
-    return component;
+    return <div id={id}>{component}</div>;
   }
 
     const renderTableOfContent = useCallback(() => {

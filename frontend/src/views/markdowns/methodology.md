@@ -7,7 +7,7 @@ You can find the source code and data in our [GitHub repository](https://github.
 
 
 ## 1 General information
-### What are $CO_2$ e-emissions?
+### What are CO2 e-emissions?
 
 Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide ($CO_2$), methane ($CH_4$), nitrous oxides ($N_2O$) and others. The molecules of these gases contribute differently to global warming. For example, the impact of one methane molecule is 21 times higher than the impact caused by one carbon dioxide molecule (Moss et al. 2000). This is why the impact of different greenhouse gases is usually converted to the equivalent impact that carbon dioxide molecules would have. Therefore, for carbon footprint calculations, $CO_2$ equivalents are used as a standard unit (Gohar & Shine 2007).
 
