@@ -10,11 +10,25 @@ import { format } from 'date-fns'
 
 // mutation to add heating entry
 const ADD_HEATING = gql`
-  mutation createHeating($timestamp: Date!, $consumption: Float!, $unit: String!, $fuelType: String!, $building: String!, $groupShare: Float!) {
-    createHeating(input: {timestamp: $timestamp, consumption: $consumption, unit: $unit, fuelType: $fuelType, building: $building, groupShare: $groupShare}){
-      ok
+  mutation createHeating(
+    $timestamp: Date!,
+    $consumption: Float!,
+    $unit: String!,
+    $fuelType: String!,
+    $building: String!,
+    $groupShare: Float!
+    ){
+      createHeating(input: {
+        timestamp: $timestamp,
+        consumption: $consumption,
+        unit: $unit,
+        fuelType: $fuelType,
+        building: $building,
+        groupShare: $groupShare
+      }) {
+        success
+      }
     }
-  }
 `
 
 export interface HeatingFormValues {

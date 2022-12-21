@@ -10,10 +10,22 @@ import { format } from 'date-fns'
 
 // mutation to add electricity entry
 const ADD_ELECTRICITY = gql`
-  mutation createElectricity($timestamp: Date!, $consumption: Float!, $fuelType: String!, $building: String!, $groupShare: Float!) {
-    createElectricity(input: {timestamp: $timestamp, consumption: $consumption, fuelType: $fuelType, building: $building, groupShare: $groupShare}) {
-      ok
-    }
+  mutation createElectricity(
+    $timestamp: Date!,
+    $consumption: Float!,
+    $fuelType: String!,
+    $building: String!,
+    $groupShare: Float!
+  ) {
+    createElectricity(input: {
+      timestamp: $timestamp,
+      consumption: $consumption,
+      fuelType: $fuelType,
+      building: $building,
+      groupShare: $groupShare
+    }){
+        success
+      }
   }
 `
 
@@ -65,7 +77,7 @@ export function ElectricityForm(
       console.log(values)
       const { setSubmitting } = formikHelpers;
       const queryParams = {
-        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        timestamp: format(new Date(values.year, values.month, 0), 'yyyy-MM'),
         consumption: values.consumption,
         fuelType: values.energySource, 
         building: values. building,

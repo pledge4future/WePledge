@@ -13,9 +13,25 @@ import { UnderConstructionDialog } from '../../components/UnderConstructionDialo
 
 // mutation to add business trip entry
 const ADD_BUSINESSTRIP = gql`
-  mutation createBusinesstrip($timestamp: Date!, $transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $roundtrip: Boolean){
-    createBusinesstrip(input: {timestamp: $timestamp, transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, roundtrip: $roundtrip}){
-      ok
+  mutation createBusinesstrip(
+    $timestamp: Date!,
+    $transportationMode: String!,
+    $distance: Float!,
+    $size: String,
+    $fuelType: String,
+    $passengers: Int,
+    $roundtrip: Boolean
+  ){
+    createBusinesstrip(input: {
+      timestamp: $timestamp,
+      transportationMode: $transportationMode,
+      distance: $distance,
+      size: $size,
+      fuelType: $fuelType,
+      passengers: $passengers,
+      roundtrip: $roundtrip
+    }) {
+      success
     }
   }
 `
@@ -38,7 +54,6 @@ export interface BusinessFormValues {
   seatingClass: string,
   passengers: number,
   roundTrip: boolean
-  
 }
 
 const transportationModes = ['Car','Train','Plane','Bus','Ferry']
