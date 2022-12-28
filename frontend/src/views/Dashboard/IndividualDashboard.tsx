@@ -139,7 +139,7 @@ export function IndividualDashboard(props: DashboardProps){
         <XAxis dataKey="name">
         </XAxis>
         <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
-          <Label value="tCO2" position="insideLeft" angle={270}/>
+          <Label value="kg CO2eq" position="insideLeft" angle={270}/>
         </YAxis>
         <Tooltip />
         ({ 
