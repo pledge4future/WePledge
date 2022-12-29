@@ -34,15 +34,15 @@ function AboutUs() {
 
   const members = [
     { title: "Hannah Weiser",            desc: "Geography Student",                 url: avatarsDir + "HannahWeiser.jpeg"},
-    { title: "Sarah Lohr",               desc: "Researcher (Geoinformatics)",       url: avatarsDir + "SarahLohr.jpeg"},
+    { title: "Sarah Lohr",               desc: "Researcher (Climate Impacts)",       url: avatarsDir + "SarahLohr.jpeg"},
     { title: "Nina Krašovec",            desc: "Researcher (Geoinformatics)",       url: avatarsDir + "NinaKrasovec.jpeg"},
     { title: "Christina Ludwig",         desc: "Researcher (Geoinformatics)",       url: avatarsDir + "ChristinaLudwig.jpeg"},
-    { title: "Veit Ulrich",              desc: "Geography Student",                 url: avatarsDir + "VeitUlrich.jpeg"},
-    { title: "Guillermo Lozano Onrubia", desc: "Chemistry Student",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
+    { title: "Veit Ulrich",              desc: "Researcher (Geoinformatics)",                 url: avatarsDir + "VeitUlrich.jpeg"},
+    { title: "Guillermo Lozano Onrubia", desc: "Researcher (Chemistry)",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
     { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
-    { title: "Maria Fernanda Lozano",    desc: "Physics Student",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
-    { title: "Alex Bercik",              desc: "Aerospace Engineering Student",     url: avatarsDir + "AlexBercik.jpeg"},
-    { title: "Alvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
+    { title: "María Fernanda Lozano",    desc: "Researcher (Physics)",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
+    { title: "Alex Bercik",              desc: "Researcher (Aerospace Engineering)",     url: avatarsDir + "AlexBercik.jpeg"},
+    { title: "Álvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
   ];
 
   return (
@@ -112,8 +112,7 @@ function AboutUs() {
             that CO2e-footprints per researcher can be three times higher than the German
             climate target for 2030, we handed in a project idea to measure and reduce
             CO2e-emissions for working groups at the The Climate Challenge Hackathon of
-            S4F Heidelberg and <Link href="https://www.goethe.de/de/index.html">Goethe Institute</Link> - Pledge4Future was born. We were one of
-            the winners of the hackathon, got funded by Goethe Institute, and since then, we
+            S4F Heidelberg and <Link href="https://www.goethe.de/de/index.html">Goethe Institute</Link> - Pledge4Future was born. We won the hackathon, got funded by Goethe Institute, and since then, we
             voluntarily developed our tool.
           </MuiTypography>
           </Box>
@@ -134,9 +133,9 @@ function AboutUs() {
           <Grid item lg>
           <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
             <MuiTypography variant="body1" component='div' align="justify" >
-              Mainly active in the field of geography, we know the manifold impacts of climate
-              change on physical, biological and human systems. Climate change leads to mass
-              extinction, to migration, to the destruction of ecosystems.
+              We know the manifold impacts of climate
+              change on physical, biological and human systems. Among others, climate change leads to mass
+              extinction, to displacement, to the potentially irreversible destruction of physical systems we all depend on.
               <br />
               <br />
               We want to contribute to fight this crisis. We believe that humankind is able to stop
@@ -161,9 +160,9 @@ function AboutUs() {
                     <Grid item lg>
           <Box borderRight={4} borderColor={theme.palette.primary.main} sx={{paddingRight: '20px', marginRight: '-20px'}}>
             <MuiTypography variant="body1" component='div' align="justify" >
-              Mainly active in the field of geography, we know the manifold impacts of climate
-              change on physical, biological and human systems. Climate change leads to mass
-              extinction, to migration, to the destruction of ecosystems.
+              We know the manifold impacts of climate
+              change on physical, biological and human systems. Among others, climate change leads to mass
+              extinction, to displacement, to the potentially irreversible destruction of physical systems we all depend on.
               <br />
               <br />
               We want to contribute to fight this crisis. We believe that humankind is able to stop
@@ -211,7 +210,7 @@ function AboutUs() {
             <br />
 
             <Typography component="span">
-              1) enable all kinds of working groups to reliably compute and reduce their
+              1) enable all kinds of working groups to reliably compute and reduce their carbon footprints,
             </Typography>
             <br />
             <Typography component="span">
