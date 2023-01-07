@@ -13,6 +13,11 @@ logger = logging.basicConfig()
 script_path = os.path.dirname(os.path.realpath(__file__))
 
 
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
+ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
+
+
 class Command(BaseCommand):
     """Base Command to populate data"""
 
@@ -24,6 +29,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Populate database"""
+
+        # Create super user
+        try:
+            CustomUser.objects.create_superuser(
+                username=ADMIN_USERNAME,
+                first_name='admin',
+                last_name='admin',
+                email=ADMIN_EMAIL,
+                password=ADMIN_PASSWORD
+            )
+        except IntegrityError:
+            pass
 
         config_path = f"{script_path}/../../data/test_data.json"
 
@@ -49,28 +66,33 @@ class Command(BaseCommand):
                 new_user.save()
             except IntegrityError as e:
                 print(e)
-
+            except Exception as e:
+                print(e)
 
         # Create working groups
         working_groups = config_data["working_groups"]
         for working_group, workinggroup_data in working_groups.items():
             try:
-                wg_environmental = WorkingGroup(
+                representative_user = CustomUser.objects.get(username=workinggroup_data["representative"])
+                working_group = WorkingGroup(
                     name=workinggroup_data["name"],
                     institution=Institution.objects.filter(
                         name=workinggroup_data["institution"]["name"], city=workinggroup_data["institution"]["city"],
                         country=workinggroup_data["institution"]["country"]
                     )[0],
-                    representative=CustomUser.objects.get(username=workinggroup_data["representative"]),
+                    representative=representative_user,
                     n_employees=workinggroup_data["n_employees"],
                     field=ResearchField.objects.filter(
                         field=workinggroup_data["research_field"]["field"],
                         subfield=workinggroup_data["research_field"]["subfield"],
                     )[0],
-                    public=workinggroup_data["public"]
+                    #public=workinggroup_data["public"]
                 )
-                wg_environmental.save()
+                working_group.save()
                 # Set a representative for the group
+                representative_user.is_representative = True
+                representative_user.working_group = working_group
+                representative_user.save()
 
             except IntegrityError as e:
                 print(e)

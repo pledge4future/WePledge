@@ -1,28 +1,28 @@
 {"users": {
   "test_user1": {
-    "username": "testuser1",
-    "first_name": "test",
+    "username": "test1",
+    "first_name": "test1",
     "last_name": "user",
     "email": "test1@pledge4future.org",
     "password": "test_password"
   },
   "test_user2": {
-    "username": "testuser2",
-    "first_name": "test",
+    "username": "test2",
+    "first_name": "test2",
     "last_name": "user",
     "email": "test2@pledge4future.org",
     "password": "test_password"
   },
   "test_user_representative": {
-    "username": "testuser_representative",
-    "first_name": "test",
+    "username": "test3_rep",
+    "first_name": "test3_rep",
     "last_name": "user",
     "email": "test3@pledge4future.org",
     "password": "test_password"
   },
   "test_user_representative2": {
-    "username": "testuser_representative2",
-    "first_name": "test",
+    "username": "test4_rep",
+    "first_name": "test4_rep",
     "last_name": "user",
     "email": "test4@pledge4future.org",
     "password": "test_password"
@@ -36,7 +36,7 @@
       "city": "Heidelberg",
       "country": "Germany"
     },
-    "representative": "testuser_representative",
+    "representative": "test3_rep",
     "n_employees": 10,
     "research_field": {
       "field": "Natural Sciences",
@@ -51,7 +51,7 @@
       "city": "Heidelberg",
       "country": "Germany"
     },
-    "representative": "testuser_representative2",
+    "representative": "test4_rep",
     "n_employees": 10,
     "research_field": {
       "field": "Natural Sciences",
