@@ -13,18 +13,25 @@
     "email": "test2@pledge4future.org",
     "password": "test_password"
   },
-  "test_user_representative": {
+  "test_user3_representative": {
     "username": "test3_rep",
     "first_name": "test3_rep",
     "last_name": "user",
     "email": "test3@pledge4future.org",
     "password": "test_password"
   },
-  "test_user_representative2": {
+  "test_user4_representative": {
     "username": "test4_rep",
     "first_name": "test4_rep",
     "last_name": "user",
     "email": "test4@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_register_user": {
+    "username": "test5",
+    "first_name": "test5",
+    "last_name": "user",
+    "email": "test5@pledge4future.org",
     "password": "test_password"
   }
 },

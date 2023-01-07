@@ -20,12 +20,12 @@ load_dotenv("../../../../.env")
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
-with open("config.json") as f:
+with open("../data/test_data.json") as f:
     test_data_users = json.load(f)["users"]
 
 
 @pytest.fixture(scope="session")
-def test_user_token():
+def test_user1_token():
     """Log in test user and yield token"""
 
     query = """
@@ -41,8 +41,37 @@ def test_user_token():
           }
         }
     """
-    variables = {"email": test_data_users["test_user"]["email"],
-                 "password": test_data_users["test_user"]["password"]
+    variables = {"email": test_data_users["test_user1"]["email"],
+                 "password": test_data_users["test_user1"]["password"]
+                 }
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["data"]["tokenAuth"]["success"]
+
+    yield data["data"]["tokenAuth"]["token"]
+
+
+
+@pytest.fixture(scope="session")
+def test_user3_rep_token():
+    """Log in test user and yield token"""
+
+    query = """
+            mutation ($email: String!, $password: String!){
+            tokenAuth (
+            email: $email
+            password: $password
+          ) {
+             success
+            errors
+            token
+            refreshToken
+          }
+        }
+    """
+    variables = {"email": test_data_users["test_user3_representative"]["email"],
+                 "password": test_data_users["test_user3_representative"]["password"]
                  }
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200

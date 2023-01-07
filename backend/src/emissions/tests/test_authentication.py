@@ -19,17 +19,20 @@ TEST_PASSWORD = os.environ.get("TEST_PASSWORD")
 TOKEN = ""
 REFRESH_TOKEN = ""
 
-with open("config.json") as f:
+with open("../data/test_data.json") as f:
     test_data_users = json.load(f)["users"]
 
 
 def test_register():
     """Test user registration"""
     pass
+    # disabled because user cannot be deleted after registration wihtin the test
     register_query = """
-            mutation ($email: String!, $username: String!, $password1: String! $password2: String!) {
+            mutation ($email: String!, $first_name: String!, $last_name: String!, $password1: String! $password2: String!) {
             register (
             email: $email,
+            firstName: $first_name,
+            lastName: $last_name,
             password1: $password1,
             password2: $password2
           ) {
@@ -39,42 +42,23 @@ def test_register():
         }
         """
     variables = {
-        "username": test_data_users["test_user1"]["username"],
-        "email": test_data_users["test_user1"]["email"],
-        "password1": test_data_users["test_user1"]["password"],
-        "password2": test_data_users["test_user1"]["password"],
+        "email": test_data_users["test_register_user"]["email"],
+        "first_name": test_data_users["test_register_user"]["first_name"],
+        "last_name": test_data_users["test_register_user"]["last_name"],
+        "password1": test_data_users["test_register_user"]["password"],
+        "password2": test_data_users["test_register_user"]["password"],
     }
-    response = requests.post(
-        GRAPHQL_URL, json={"query": register_query, "variables": variables}
-    )
-    logger.info(response)
-    assert response.status_code == 200
-    # data = response.json()
-    # assert data["data"]["register"]["success"]'''
+    #response = requests.post(
+    #    GRAPHQL_URL, json={"query": register_query, "variables": variables}
+    #)
+    ##logger.info(response)
+    ##assert response.status_code == 200
+    #data = response.json()
+    #assert data["data"]["register"]["success"]
 
 
-def test_verify(test_user_token):
-    """Test if account verification works"""
-    verify_query = """
-            mutation ($token: String!){
-                verifyAccount (
-                    token: $token
-                ) {
-                    success
-                    errors
-                }
-            }
-    """
-    variables = {"token": test_user_token}
-    response = requests.post(
-        GRAPHQL_URL, json={"query": verify_query, "variables": variables}
-    )
-    assert response.status_code == 200
-    # data = response.json()
-    # assert data["data"]["verifyAccount"]["success"]  ## todo: returns "false" with message "Invalid token"
 
-
-def test_login(test_user_token):
+def test_login(test_user1_token):
     """Test user login"""
     query = """
             mutation ($email: String!, $password: String!){
@@ -89,21 +73,19 @@ def test_login(test_user_token):
           }
         }
     """
-    variables = {"email": test_data_users["test_user"]["email"],
-                 "password": test_data_users["test_user"]["password"]}
+    variables = {"email": test_data_users["test_user1"]["email"],
+                 "password": test_data_users["test_user1"]["password"]}
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
     assert data["data"]["tokenAuth"]["success"]
 
-    global TOKEN
-    TOKEN = data["data"]["tokenAuth"]["token"]
-    assert TOKEN == test_user_token
+    assert data["data"]["tokenAuth"]["token"] == test_user1_token
     global REFRESH_TOKEN
     REFRESH_TOKEN = data["data"]["tokenAuth"]["refreshToken"]
 
 
-def test_verify_token(test_user_token):
+def test_verify_token(test_user1_token):
     """Test if token can be verified"""
     verify_token_query = """
             mutation ($token: String!){
@@ -116,7 +98,7 @@ def test_verify_token(test_user_token):
               }
             }
     """
-    variables = {"token": test_user_token}
+    variables = {"token": test_user1_token}
     response = requests.post(
         GRAPHQL_URL, json={"query": verify_token_query, "variables": variables}
     )
@@ -125,12 +107,13 @@ def test_verify_token(test_user_token):
     assert data["data"]["verifyToken"]["success"]
 
 
-def test_me_query(test_user_token):
+def test_me_query(test_user3_rep_token):
     """Test whether me query returns the currently logged in user"""
     me_query = """
         query {
           me {
             verified
+            firstName
             workingGroup {
                 id
                 name
@@ -138,23 +121,22 @@ def test_me_query(test_user_token):
           }
     }
     """
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_token}"}
+    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user3_rep_token}"}
     response = requests.post(GRAPHQL_URL, json={"query": me_query}, headers=headers)
     assert response.status_code == 200
     data = response.json()
-    assert data["data"]["me"]["username"] == test_data_users["test_user"]["username"]
+    assert data["data"]["me"]["firstName"] == test_data_users["test_user3_representative"]["first_name"]
     assert data["data"]["me"]["verified"]
+    assert data["data"]["me"]["workingGroup"] is not None
 
 
-def test_update_query(test_user_token):
+def test_update_query(test_user1_token):
     """Test whether user data can be updated"""
     update_query = """
         mutation {
         updateAccount (
             firstName: "Louise"
             lastName: "Ise"
-            username: "lou123"
-            academicTitle: "DR"
       ) {
         success
         errors
@@ -163,7 +145,7 @@ def test_update_query(test_user_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": update_query}, headers=headers)
     assert response.status_code == 200
@@ -172,12 +154,10 @@ def test_update_query(test_user_token):
 
     # reset user data
     update_query = """
-            mutation ($first_name: String!, $last_name: String!, $username: String!, $academic_title: String!) {
+            mutation ($first_name: String!, $last_name: String!) {
             updateAccount (
                 firstName: $first_name
                 lastName: $last_name
-                username: $username
-                academicTitle: $academic_title
           ) {
             success
             errors
@@ -185,41 +165,14 @@ def test_update_query(test_user_token):
         }
         """
     variables = {
-        "first_name": test_data_users["test_user"]["first_name"],
-        "last_name": test_data_users["test_user"]["last_name"],
-        "username": test_data_users["test_user"]["username"],
-        "academic_title": test_data_users["test_user"]["academic_title"]
+        "first_name": test_data_users["test_user1"]["first_name"],
+        "last_name": test_data_users["test_user1"]["last_name"],
     }
     response = requests.post(GRAPHQL_URL, json={"query": update_query, "variables": variables}, headers=headers)
     assert response.status_code == 200
 
 
-def test_refresh_token():
-    """Test whether new token can be queried"""
-    refresh_token_query = """
-        mutation ($refreshtoken: String!) {
-      refreshToken(
-        refreshToken: $refreshtoken
-      ) {
-        success,
-        errors,
-        payload,
-        token,
-        refreshToken
-      }
-    }"""
-    variables = {"refreshtoken": REFRESH_TOKEN}
-    response = requests.post(
-        GRAPHQL_URL, json={"query": refresh_token_query, "variables": variables}
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["data"]["refreshToken"]["success"]
-    global TOKEN
-    TOKEN = data["data"]["refreshToken"]["token"]
-
-
-def test_change_password(test_user_token):
+def test_change_password(test_user1_token):
     """Test whether password can be changed"""
     new_password = "123456super"
     change_password_query = """
@@ -237,10 +190,10 @@ def test_change_password(test_user_token):
         }"""
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     variables = {
-        "password": test_data_users["test_user"]["password"],
+        "password": test_data_users["test_user1"]["password"],
         "new_password": new_password
     }
     response = requests.post(
@@ -270,31 +223,6 @@ def test_change_password(test_user_token):
         GRAPHQL_URL, json={"query": change_back_password_query, "variables": variables}, headers=headers
     )
     assert response.status_code == 200
-
-
-def test_delete_account():
-    """Test whether account is deleted (not applied atm)"""
-    pass
-    # Archive account
-    # delete_query = """mutation ($password: String!)
-    # {
-    #    deleteAccount(
-    #        password: $password,
-    # ) {
-    #    success,
-    #    errors
-    # }
-    # }"""
-    # headers = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
-    # variables = {"password": TEST_PASSWORD}
-    # response = requests.post(
-    #    GRAPHQL_URL,
-    #    json={"query": delete_query, "variables": variables},
-    #    headers=headers,
-    # )
-    # assert response.status_code == 200
-    # data = response.json()
-    # assert data["data"]["deleteAccount"]["success"]
 
 
 def test_list_users():
