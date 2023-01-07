@@ -40,10 +40,6 @@ from dotenv import load_dotenv, find_dotenv
 # Load settings from ./.env file
 #load_dotenv(find_dotenv())
 
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
-ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
-
 logger = logging.basicConfig()
 
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -61,13 +57,6 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         """Populate database"""
 
-        # Create super user
-        try:
-            CustomUser.objects.create_superuser(username=ADMIN_USERNAME,
-                email=ADMIN_EMAIL, password=ADMIN_PASSWORD
-            )
-        except IntegrityError:
-            pass
 
         # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
         print("Loading institutions ...")
