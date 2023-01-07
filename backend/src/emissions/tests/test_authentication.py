@@ -119,12 +119,13 @@ def test_verify_token():
     assert data["data"]["verifyToken"]["success"]
 
 
-def test_me_query():
+def test_me_query(test_user_representative_token):
     """Test whether me query returns the currently logged in user"""
     me_query = """
         query {
           me {
             verified
+            email
             workingGroup {
                 id
                 name
@@ -132,12 +133,13 @@ def test_me_query():
           }
     }
     """
-    headers = {"Content-Type": "application/json", "Authorization": f"JWT {TOKEN}"}
+    headers = {"Content-Type": "application/json", "Authorization": f"JWT {test_user_representative_token}"}
     response = requests.post(GRAPHQL_URL, json={"query": me_query}, headers=headers)
     assert response.status_code == 200
     data = response.json()
-    assert data["data"]["me"]["email"] == TEST_EMAIL
+    assert data["data"]["me"]["email"] == "test3@pledge4future.org"
     assert data["data"]["me"]["verified"]
+    assert data["data"]["me"]["workingGroup"] is not None
 
 
 def test_update_query():
