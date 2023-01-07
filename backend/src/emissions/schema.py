@@ -685,15 +685,16 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
                               description="If true, the group will be publicly visible.")
 
 
-class WorkingGroupInput(graphene.InputObjectType):
+class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    name = graphene.String(reqired=True, description="Name of the working group")
+    id = graphene.UUID(required=False, description="UUID of working group")
+    name = graphene.String(required=False, description="Name of the working group")
     institution = graphene.String(
         required=True, description="Name of institution of working group"
     )
-    city = graphene.String(required=True, description="City of working group")
-    country = graphene.String(required=True, description="Country of working group")
+    city = graphene.String(required=False, description="City of working group")
+    country = graphene.String(required=False, description="Country of working group")
 
 
 # --------------- Mutations ------------------------------------
@@ -792,7 +793,7 @@ class SetWorkingGroup(graphene.Mutation):
     class Arguments:
         """Assign input type"""
 
-        input = WorkingGroupInput()
+        input = SetWorkingGroupInput()
 
     success = graphene.Boolean()
     user = graphene.Field(UserType)
@@ -805,7 +806,9 @@ class SetWorkingGroup(graphene.Mutation):
         success = True
 
         # Search matching working groups
+        print(input.id)
         matching_working_groups = WorkingGroup.objects.filter(
+            id=input.id,
             name=input.name,
             institution__name=input.institution,
             institution__city=input.city,

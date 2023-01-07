@@ -80,7 +80,7 @@ class Institution(models.Model):
 class WorkingGroup(models.Model):
     """Working group at a research institution"""
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
     name = models.CharField(max_length=200, blank=False)
     institution = models.ForeignKey(Institution, on_delete=models.PROTECT, null=True)
     representative = models.OneToOneField(

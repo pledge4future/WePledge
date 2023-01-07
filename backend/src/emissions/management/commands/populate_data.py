@@ -145,6 +145,7 @@ class Command(BaseCommand):
         )
         if len(environmental_search) == 0:
             wg_environmental = WorkingGroup(
+                id=0,
                 name="Environmental Research Group",
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
@@ -166,6 +167,7 @@ class Command(BaseCommand):
         if len(biomed_search) == 0:
             testuser_representative = CustomUser.objects.get(email="test3@pledge4future.org")
             wg_biomed = WorkingGroup(
+                id=1,
                 name="Biomedical Research Group",
                 institution=Institution.objects.filter(
                     name="Heidelberg University", city="Heidelberg", country="Germany"
