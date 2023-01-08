@@ -760,8 +760,8 @@ class CreateWorkingGroup(graphene.Mutation):
         )
         new_workinggroup.save()
 
-        user.is_representative = True
         user.working_group = new_workinggroup
+        user.is_representative = True
         user.save()
 
         return CreateWorkingGroup(success=success, workinggroup=new_workinggroup)
