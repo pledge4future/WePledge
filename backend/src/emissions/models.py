@@ -47,6 +47,7 @@ class CustomUser(AbstractUser):
 class ResearchField(models.Model):
     """Research field"""
 
+    id = models.IntegerField(primary_key=True, null=False, blank=False)
     field = models.CharField(max_length=100, null=False, blank=False)
     subfield = models.CharField(max_length=100, null=False, blank=False)
 
