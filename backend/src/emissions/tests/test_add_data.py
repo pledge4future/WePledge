@@ -7,6 +7,8 @@ import requests
 import logging
 from dotenv import load_dotenv
 import os
+import json
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -16,6 +18,9 @@ logger.addHandler(logging.StreamHandler())
 load_dotenv("../../../../.env")
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
+
+with open("../data/test_data.json") as f:
+    test_data_users = json.load(f)["users"]
 
 
 def test_add_electricity_data_not_representative(test_user1_token):

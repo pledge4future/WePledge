@@ -7,6 +7,8 @@ import requests
 import logging
 from dotenv import load_dotenv
 import os
+import json
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -18,7 +20,11 @@ GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
 
-def test_set_workinggroup(test_user_token2):
+with open("../data/test_data.json") as f:
+    test_workinggroups = json.load(f)["working_groups"]
+
+
+def test_set_workinggroup(test_user1_token):
     """Test whether user data can be updated"""
     query = """
         mutation ($name: String!, $institution: String!, $city: String!, $country: String!){
@@ -40,14 +46,14 @@ def test_set_workinggroup(test_user_token2):
         }
     """
     variables = {
-        "name": "Biomedical Research Group",
-        "institution": "Heidelberg University",
-        "city": "Heidelberg",
-        "country": "Germany",
+        "name": test_workinggroups['working_group1']['name'],
+        "institution": test_workinggroups['working_group1']['institution']['name'],
+        "city": test_workinggroups['working_group1']['institution']['city'],
+        "country": test_workinggroups['working_group1']['institution']['country'],
     }
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token2}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(
         GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
@@ -62,7 +68,7 @@ def test_set_workinggroup(test_user_token2):
     )
 
 
-def test_resolve_working_groups(test_user_token):
+def test_resolve_working_groups(test_user1_token):
     """List all working groups"""
     query = """
         query {
@@ -78,7 +84,7 @@ def test_resolve_working_groups(test_user_token):
      """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
@@ -124,7 +130,7 @@ def test_resolve_research_fields():
     assert data["data"]["researchfields"][0]["field"] == "Natural Sciences"
 
 
-def test_create_workinggroup(test_user_token):
+def test_create_workinggroup(test_user1_token):
     """Create a new working group"""
     query = """
         mutation {
@@ -150,7 +156,7 @@ def test_create_workinggroup(test_user_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
@@ -161,9 +167,10 @@ def test_create_workinggroup(test_user_token):
     assert (
         data["data"]["createWorkingGroup"]["workinggroup"]["representative"]["email"] is not None
     )
+    # todo: delete working group after it has been created
 
 
-def test_create_workinggroup_by_representative(test_user_representative_token):
+def test_create_workinggroup_by_representative(test_user3_rep_token):
     """Create a new working group"""
     query = """
         mutation {
@@ -189,7 +196,7 @@ def test_create_workinggroup_by_representative(test_user_representative_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_representative_token}",
+        "Authorization": f"JWT {test_user3_rep_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
