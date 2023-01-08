@@ -91,16 +91,14 @@ class Command(BaseCommand):
             try:
                 representative_user = CustomUser.objects.get(username=workinggroup_data["representative"])
                 working_group = WorkingGroup(
+                    id=workinggroup_data['id'],
                     name=workinggroup_data["name"],
                     institution=Institution.objects.filter(
-                        name=workinggroup_data["institution"]["name"], city=workinggroup_data["institution"]["city"],
-                        country=workinggroup_data["institution"]["country"]
-                    )[0],
+                        id=workinggroup_data["institution"]["id"])[0],
                     representative=representative_user,
                     n_employees=workinggroup_data["n_employees"],
                     field=ResearchField.objects.filter(
-                        field=workinggroup_data["research_field"]["field"],
-                        subfield=workinggroup_data["research_field"]["subfield"],
+                        id=workinggroup_data["research_field"]["id"]
                     )[0],
                     #public=workinggroup_data["public"]
                 )
