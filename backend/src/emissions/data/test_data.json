@@ -26,13 +26,6 @@
     "last_name": "user",
     "email": "test4@pledge4future.org",
     "password": "test_password"
-  },
-  "test_register_user": {
-    "username": "test5",
-    "first_name": "test5",
-    "last_name": "user",
-    "email": "test5@pledge4future.org",
-    "password": "test_password"
   }
 },
 "institutions": {
@@ -55,7 +48,7 @@
     "research_field": {
       "id": 1
     },
-    "public": "True"
+    "is_public": "True"
   },
     "working_group2": {
       "id": 2,
@@ -68,7 +61,7 @@
       "research_field": {
         "id": 2
       },
-      "public": "False"
+      "is_public": "False"
   }
 },
 "business_trips": {

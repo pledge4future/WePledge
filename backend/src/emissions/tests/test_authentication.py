@@ -23,41 +23,6 @@ with open("../data/test_data.json") as f:
     test_data_users = json.load(f)["users"]
 
 
-def test_register():
-    """Test user registration"""
-    pass
-    # disabled because user cannot be deleted after registration wihtin the test
-    register_query = """
-            mutation ($email: String!, $first_name: String!, $last_name: String!, $password1: String! $password2: String!) {
-            register (
-            email: $email,
-            firstName: $first_name,
-            lastName: $last_name,
-            password1: $password1,
-            password2: $password2
-          ) {
-             success
-            errors
-          }
-        }
-        """
-    variables = {
-        "email": test_data_users["test_register_user"]["email"],
-        "first_name": test_data_users["test_register_user"]["first_name"],
-        "last_name": test_data_users["test_register_user"]["last_name"],
-        "password1": test_data_users["test_register_user"]["password"],
-        "password2": test_data_users["test_register_user"]["password"],
-    }
-    #response = requests.post(
-    #    GRAPHQL_URL, json={"query": register_query, "variables": variables}
-    #)
-    ##logger.info(response)
-    ##assert response.status_code == 200
-    #data = response.json()
-    #assert data["data"]["register"]["success"]
-
-
-
 def test_login(test_user1_token):
     """Test user login"""
     query = """
