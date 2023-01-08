@@ -35,36 +35,40 @@
     "password": "test_password"
   }
 },
+"institutions": {
+  "institution1": {
+    "id": 1,
+    "name": "Test University",
+    "city": "Heidelberg",
+    "country": "Germany"
+  }
+},
 "working_groups": {
   "working_group1": {
+    "id": 1,
     "name": "testgroup1",
     "institution": {
-      "name": "Heidelberg University",
-      "city": "Heidelberg",
-      "country": "Germany"
+      "id": 1
     },
     "representative": "test3_rep",
     "n_employees": 10,
     "research_field": {
-      "field": "Natural Sciences",
-      "subfield": "Earth and related environmental sciences"
+      "id": 1
     },
     "public": "True"
   },
     "working_group2": {
-    "name": "testgroup2",
-    "institution": {
-      "name": "Heidelberg University",
-      "city": "Heidelberg",
-      "country": "Germany"
-    },
-    "representative": "test4_rep",
-    "n_employees": 10,
-    "research_field": {
-      "field": "Natural Sciences",
-      "subfield": "Earth and related environmental sciences"
-    },
-    "public": "False"
+      "id": 2,
+      "name": "testgroup2",
+      "institution": {
+        "id": 1
+      },
+      "representative": "test4_rep",
+      "n_employees": 10,
+      "research_field": {
+        "id": 2
+      },
+      "public": "False"
   }
 },
 "business_trips": {

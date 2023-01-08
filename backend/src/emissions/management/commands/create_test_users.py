@@ -69,6 +69,22 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
 
+
+        # Create institutions
+        institutions = config_data["institutions"]
+        for institution, institution_data in institutions.items():
+            try:
+                new_institution = Institution(
+                    id=institution_data["id"],
+                    name=institution_data["name"],
+                    city=institution_data["city"],
+                    country=institution_data["country"],
+                )
+                new_institution.save()
+
+            except IntegrityError as e:
+                print(e)
+
         # Create working groups
         working_groups = config_data["working_groups"]
         for working_group, workinggroup_data in working_groups.items():

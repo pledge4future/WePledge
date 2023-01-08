@@ -62,7 +62,7 @@ class ResearchField(models.Model):
 class Institution(models.Model):
     """Research institution"""
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=True)
     name = models.CharField(max_length=200, null=False, blank=False)
     city = models.CharField(max_length=100, null=False, blank=False)
     state = models.CharField(max_length=100, null=True)
