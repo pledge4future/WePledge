@@ -663,20 +663,11 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for creating a new working group"""
 
     name = graphene.String(reqired=True, description="Name of the working group")
-    institution = graphene.String(
-        required=True, description="Name of institution the working group belongs to"
+    institution_id = graphene.Int(
+        required=True, description="UUID of institution the working group belongs to"
     )
-    city = graphene.String(
-        required=True, description="City of institution the working group belongs to"
-    )
-    country = graphene.String(
-        required=True, description="Country of institution the working group belongs to"
-    )
-    field = graphene.String(
-        required=True, description="Research field of working group"
-    )
-    subfield = graphene.String(
-        required=True, description="Research subfield of working group"
+    research_field_id = graphene.Int(
+        required=True, description="ID of Research field of working group"
     )
     n_employees = graphene.Int(
         required=True, description="Number of employees of working group"
@@ -736,24 +727,18 @@ class CreateWorkingGroup(graphene.Mutation):
         success = True
 
         institution_found = Institution.objects.filter(
-            name=input.institution, city=input.city, country=input.country
+            id=input.institution_id
         )
         if len(institution_found) == 0:
             raise GraphQLError("Institution not found.")
-        elif len(institution_found) > 1:
-            raise GraphQLError("Multiple institutions found.")
         else:
             institution = institution_found[0]
 
-        field_found = ResearchField.objects.filter(
-            field=input.field, subfield=input.subfield
-        )
+        field_found = ResearchField.objects.filter(id=input.research_field_id)
         if len(field_found) == 0:
             raise GraphQLError("Research field is invalid.")
-        elif len(field_found) > 1:
-            raise GraphQLError("Multiple research field were found. Please specify further.")
         else:
-            field = field_found[0]
+            research_field = field_found[0]
 
         # Check if working group already exists
         exists = WorkingGroup.objects.filter(name=input.name, institution=institution)
@@ -769,7 +754,7 @@ class CreateWorkingGroup(graphene.Mutation):
             name=input.name,
             institution=institution,
             representative=user,
-            field=field,
+            field=research_field,
             n_employees=input.n_employees,
             is_public=input.is_public
         )

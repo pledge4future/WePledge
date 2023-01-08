@@ -87,56 +87,16 @@ def test_resolve_working_groups(test_user1_token):
     assert len(data["data"]["workinggroups"]) > 0
 
 
-def test_resolve_institutions():
-    """List all institutions"""
-    query = """
-        query {
-          institutions {
-            id
-            name
-            city
-            state
-            country
-          }
-        }
-     """
-    response = requests.post(GRAPHQL_URL, json={"query": query})
-    assert response.status_code == 200
-    data = response.json()
-    # logger.warning(data)
-    assert len(data["data"]["institutions"]) > 0
-
-
-def test_resolve_research_fields():
-    """List all research fields"""
-    query = """
-        query {
-          researchfields {
-            field
-            subfield
-          }
-        }
-     """
-    response = requests.post(GRAPHQL_URL, json={"query": query})
-    assert response.status_code == 200
-    data = response.json()
-    # logger.warning(data)
-    assert data["data"]["researchfields"][0]["field"] == "Natural Sciences"
-
-
 def test_create_workinggroup(test_user1_token):
     """Create a new working group"""
     query = """
-        mutation {
+        mutation ($name: String!, $institution_id: Int!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
             createWorkingGroup (input: {
-                name: "Geology"
-                institution: "Heidelberg University"
-                city: "Heidelberg"
-                country: "Germany"
-                field: "Natural Sciences"
-                subfield: "Earth and related environmental sciences"
-                nEmployees: 5
-                isPublic: false
+                name: $name
+                institutionId: $institution_id
+                researchFieldId: $research_field_id
+                nEmployees: $nemployees
+                isPublic: $is_public
             }) {
                 success
                 workinggroup {
@@ -148,11 +108,18 @@ def test_create_workinggroup(test_user1_token):
             }
         }
     """
+    variables = {
+        "name": test_workinggroups['working_group1']['name'] + "test",
+        "institution_id": test_workinggroups['working_group1']['institution']['id'],
+        "research_field_id": test_workinggroups['working_group1']['research_field']['id'],
+        "nemployees": test_workinggroups['working_group1']['n_employees'],
+        "is_public": test_workinggroups['working_group1']['is_public'],
+    }
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"JWT {test_user1_token}",
     }
-    response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers)
     assert response.status_code == 200
     logger.warning(response.content)
     data = response.json()
@@ -167,16 +134,13 @@ def test_create_workinggroup(test_user1_token):
 def test_create_workinggroup_by_representative(test_user3_rep_token):
     """Create a new working group"""
     query = """
-        mutation {
+        mutation ($name: String!, $institution_id: Int!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
             createWorkingGroup (input: {
-                name: "Hydrology"
-                institution: "Heidelberg University"
-                city: "Heidelberg"
-                country: "Germany"
-                field: "Natural Sciences"
-                subfield: "Earth and related environmental sciences"
-                nEmployees: 5
-                isPublic: true
+                name: $name
+                institutionId: $institution_id
+                researchFieldId: $research_field_id
+                nEmployees: $nemployees
+                isPublic: $is_public
             }) {
                 success
                 workinggroup {
@@ -188,15 +152,21 @@ def test_create_workinggroup_by_representative(test_user3_rep_token):
             }
         }
     """
+    variables = {
+        "name": test_workinggroups['working_group1']['name'] + "test2",
+        "institution_id": test_workinggroups['working_group1']['institution']['id'],
+        "research_field_id": test_workinggroups['working_group1']['research_field']['id'],
+        "nemployees": test_workinggroups['working_group1']['n_employees'],
+        "is_public": test_workinggroups['working_group1']['is_public'],
+    }
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"JWT {test_user3_rep_token}",
     }
-    response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers)
     assert response.status_code == 200
     logger.warning(response.content)
     data = response.json()
-    # logger.warning(data)
     assert (
         data["errors"][0]["message"]
         == "This user cannot create a new working group, since they are already the representative of another working group."
