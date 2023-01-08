@@ -149,3 +149,43 @@ def test_query_electricity_aggregated_with_invalid_token():
         data["errors"][0]["message"]
         == "You do not have permission to perform this action"
     )
+
+
+
+
+def test_resolve_institutions():
+    """List all institutions"""
+    query = """
+        query {
+          institutions {
+            id
+            name
+            city
+            state
+            country
+          }
+        }
+     """
+    response = requests.post(GRAPHQL_URL, json={"query": query})
+    assert response.status_code == 200
+    data = response.json()
+    # logger.warning(data)
+    assert len(data["data"]["institutions"]) > 0
+
+
+def test_resolve_research_fields():
+    """List all research fields"""
+    query = """
+        query {
+          researchfields {
+            field
+            subfield
+          }
+        }
+     """
+    response = requests.post(GRAPHQL_URL, json={"query": query})
+    assert response.status_code == 200
+    data = response.json()
+    # logger.warning(data)
+    assert data["data"]["researchfields"][0]["field"] == "Natural Sciences"
+
