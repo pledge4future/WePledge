@@ -27,29 +27,23 @@ with open("../data/test_data.json") as f:
 def test_set_workinggroup(test_user1_token):
     """Test whether user data can be updated"""
     query = """
-        mutation ($name: String!, $institution: String!, $city: String!, $country: String!){
+        mutation ($id: Int!){
           setWorkingGroup (input: {
-              name: $name
-              institution: $institution
-              city: $city
-              country: $country
+              id: $id
             }
           ) {
             success
             user {
                 email
-              workingGroup {
-                name
+                workingGroup {
+                    name
               }
             }
             }
         }
     """
     variables = {
-        "name": test_workinggroups['working_group1']['name'],
-        "institution": test_workinggroups['working_group1']['institution']['name'],
-        "city": test_workinggroups['working_group1']['institution']['city'],
-        "country": test_workinggroups['working_group1']['institution']['country'],
+        "id": test_workinggroups['working_group1']['id']
     }
     headers = {
         "Content-Type": "application/json",
@@ -64,7 +58,7 @@ def test_set_workinggroup(test_user1_token):
     assert data["data"]["setWorkingGroup"]["success"]
     assert (
         data["data"]["setWorkingGroup"]["user"]["workingGroup"]["name"]
-        == variables["name"]
+        == test_workinggroups['working_group1']["name"]
     )
 
 
