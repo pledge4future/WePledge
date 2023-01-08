@@ -7,6 +7,8 @@ import requests
 import logging
 from dotenv import load_dotenv
 import os
+import json
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -17,8 +19,11 @@ load_dotenv("../../../../.env")
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
+with open("../data/test_data.json") as f:
+    test_data_users = json.load(f)["users"]
 
-def test_add_electricity_data_not_representative(test_user_token2):
+
+def test_add_electricity_data_not_representative(test_user1_token):
     """Add electricity data by authenticated user"""
     query = """
         mutation {
@@ -42,7 +47,7 @@ def test_add_electricity_data_not_representative(test_user_token2):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token2}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
@@ -54,7 +59,7 @@ def test_add_electricity_data_not_representative(test_user_token2):
     )
 
 
-def test_add_electricity_data(test_user_representative_token):
+def test_add_electricity_data(test_user3_rep_token):
     """Add electricity data by authenticated group representative"""
     query = """
         mutation {
@@ -78,7 +83,7 @@ def test_add_electricity_data(test_user_representative_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_representative_token}",
+        "Authorization": f"JWT {test_user3_rep_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     assert response.status_code == 200
@@ -88,7 +93,7 @@ def test_add_electricity_data(test_user_representative_token):
     assert data["data"]["createElectricity"]["electricity"]["consumption"] == 3000.0
 
 
-def test_add_heating_data(test_user_representative_token):
+def test_add_heating_data(test_user3_rep_token):
     """Add heating data by authenticated group representative"""
     query = """
         mutation createHeating{
@@ -112,7 +117,7 @@ def test_add_heating_data(test_user_representative_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_representative_token}",
+        "Authorization": f"JWT {test_user3_rep_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     logger.warning(response.content)
@@ -123,7 +128,7 @@ def test_add_heating_data(test_user_representative_token):
     assert data["data"]["createHeating"]["heating"]["consumption"] == 3000.0
 
 
-def test_add_businesstrip_data(test_user_token):
+def test_add_businesstrip_data(test_user1_token):
     """Add businesstrip data by authenticated user"""
     query = """
         mutation {
@@ -145,7 +150,7 @@ def test_add_businesstrip_data(test_user_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     logger.warning(response.content)
@@ -156,7 +161,7 @@ def test_add_businesstrip_data(test_user_token):
     assert data["data"]["createBusinesstrip"]["businesstrip"]["distance"] == 200.0
 
 
-def test_add_commuting_data(test_user_token):
+def test_add_commuting_data(test_user1_token):
     """Add commuting data by authenticated user"""
     query = """
         mutation createCommuting {
@@ -176,7 +181,7 @@ def test_add_commuting_data(test_user_token):
     """
     headers = {
         "Content-Type": "application/json",
-        "Authorization": f"JWT {test_user_token}",
+        "Authorization": f"JWT {test_user1_token}",
     }
     response = requests.post(GRAPHQL_URL, json={"query": query}, headers=headers)
     logger.warning(response.content)

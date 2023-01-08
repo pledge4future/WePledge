@@ -40,10 +40,6 @@ from dotenv import load_dotenv, find_dotenv
 # Load settings from ./.env file
 #load_dotenv(find_dotenv())
 
-ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME")
-ADMIN_EMAIL = os.environ.get("ADMIN_EMAIL")
-ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD")
-
 logger = logging.basicConfig()
 
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -60,64 +56,6 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         """Populate database"""
-
-        # Create super user
-        try:
-            CustomUser.objects.create_superuser(username=ADMIN_USERNAME,
-                email=ADMIN_EMAIL, password=ADMIN_PASSWORD
-            )
-        except IntegrityError:
-            pass
-
-        # LOAD INSTITUTIONS - GERMAN ONLY RIGHT NOW --------------------------------------------------------
-        print("Loading institutions ...")
-        grid = pd.read_csv(f"{script_path}/../../data/grid.csv")
-        grid = grid.loc[grid.Country == "Germany"]
-        for inst in grid.iterrows():
-            try:
-                new_institution = Institution(
-                    name=inst[1].Name,
-                    city=inst[1].City,
-                    state=inst[1].State,
-                    country=inst[1].Country,
-                )
-                new_institution.save()
-            except IntegrityError:
-                print("Institutions already loaded.")
-                break
-        del grid
-
-        # Create user for unit tests -----------------------------------------------------
-        try:
-            new_user = CustomUser(
-                first_name="test",
-                last_name="user",
-                email="test2@pledge4future.org",
-            )
-            new_user.set_password("test_password")
-            new_user.save()
-            status = new_user.status
-            setattr(status, "verified", True)
-            status.save(update_fields=["verified"])
-            new_user.save()
-        except IntegrityError:
-            pass
-
-        try:
-            testuser_representative = CustomUser(
-                first_name="test",
-                last_name="user",
-                email="test3@pledge4future.org",
-            )
-            testuser_representative.set_password("test_password")
-            # setattr(new_user, "is_representative", True)
-            testuser_representative.save()
-            status = testuser_representative.status
-            setattr(status, "verified", True)
-            status.save(update_fields=["verified"])
-            testuser_representative.save()
-        except IntegrityError:
-            pass
 
         # CREATE USERS --------------------------------------------------------
         print("Loading users ...")
