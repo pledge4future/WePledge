@@ -34,15 +34,15 @@ function AboutUs() {
 
   const members = [
     { title: "Hannah Weiser",            desc: "Geography Student",                 url: avatarsDir + "HannahWeiser.jpeg"},
-    { title: "Sarah Lohr",               desc: "Researcher (Geoinformatics)",       url: avatarsDir + "SarahLohr.jpeg"},
+    { title: "Sarah Lohr",               desc: "Researcher (Climate Impacts)",       url: avatarsDir + "SarahLohr.jpeg"},
     { title: "Nina Krašovec",            desc: "Researcher (Geoinformatics)",       url: avatarsDir + "NinaKrasovec.jpeg"},
     { title: "Christina Ludwig",         desc: "Researcher (Geoinformatics)",       url: avatarsDir + "ChristinaLudwig.jpeg"},
-    { title: "Veit Ulrich",              desc: "Geography Student",                 url: avatarsDir + "VeitUlrich.jpeg"},
-    { title: "Guillermo Lozano Onrubia", desc: "Chemistry Student",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
+    { title: "Veit Ulrich",              desc: "Researcher (Geoinformatics)",                 url: avatarsDir + "VeitUlrich.jpeg"},
+    { title: "Guillermo Lozano Onrubia", desc: "Researcher (Chemistry)",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
     { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
-    { title: "Maria Fernanda Lozano",    desc: "Physics Student",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
-    { title: "Alex Bercik",              desc: "Aerospace Engineering Student",     url: avatarsDir + "AlexBercik.jpeg"},
-    { title: "Alvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
+    { title: "María Fernanda Lozano",    desc: "Researcher (Physics)",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
+    { title: "Alex Bercik",              desc: "Researcher (Aerospace Engineering)",     url: avatarsDir + "AlexBercik.jpeg"},
+    { title: "Álvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
   ];
 
   return (
@@ -105,16 +105,15 @@ function AboutUs() {
         <Grid item lg>
         <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
           <MuiTypography variant="body1" component='div' align="justify" >
-            In October 2020 some of us, working as researchers or student assistants at the
+            In October 2020, some of us, working as researchers or student assistants at the
             geography department of Heidelberg University, formed an internal sustainability
             group. In order to create synergies we joined forces with  <Link href="https://scientists4future-heidelberg.de/en/">Scientists4Future (S4F)Heidelberg</Link>.
             As we were concerned by a <Link href="https://www.nature.com/articles/s41550-020-1202-4">paper</Link> by Jahnke et al. (2020) showing
             that CO2e-footprints per researcher can be three times higher than the German
             climate target for 2030, we handed in a project idea to measure and reduce
-            CO2e-emissions for working groups at the The Climate Challenge Hackathon of
-            S4F Heidelberg and <Link href="https://www.goethe.de/de/index.html">Goethe Institute</Link> - Pledge4Future was born. We were one of
-            the winners of the hackathon, got funded by Goethe Institute, and since then, we
-            voluntarily developed our tool.
+            CO2e-emissions for working groups at the "The Climate Challenge Hackathon" of
+            S4F Heidelberg and <Link href="https://www.goethe.de/de/index.html">Goethe Institute</Link> - Pledge4Future was born. 
+            We won the hackathon, got funded by Goethe Institute, and since then, we have been developing our tool.
           </MuiTypography>
           </Box>
         </Grid>
@@ -134,9 +133,9 @@ function AboutUs() {
           <Grid item lg>
           <Box borderLeft={4} borderColor={theme.palette.primary.main} sx={{paddingLeft: '20px', marginLeft: '-20px'}}>
             <MuiTypography variant="body1" component='div' align="justify" >
-              Mainly active in the field of geography, we know the manifold impacts of climate
-              change on physical, biological and human systems. Climate change leads to mass
-              extinction, to migration, to the destruction of ecosystems.
+              We know the manifold impacts of climate
+              change on physical, biological and human systems. Among others, climate change leads to mass
+              extinction, to displacement, to the potentially irreversible destruction of physical systems we all depend on.
               <br />
               <br />
               We want to contribute to fight this crisis. We believe that humankind is able to stop
@@ -148,8 +147,7 @@ function AboutUs() {
               global warming. However, in research, greenhouse gas emissions are still
               excessively high. But how high are the emissions of your working group? And
               where are the highest potentials to reduce them? Answers to these questions are
-              essential to support effective mitigation decisions and policies. Therefore, we
-              developed this tool to enable working groups around the globe to easily compute
+              essential to support effective mitigation decisions and policies. This is why we are developing this tool to enable working groups around the globe to easily compute
               and on the long term reduce their emissions.
             </MuiTypography>
             </Box>
@@ -161,9 +159,9 @@ function AboutUs() {
                     <Grid item lg>
           <Box borderRight={4} borderColor={theme.palette.primary.main} sx={{paddingRight: '20px', marginRight: '-20px'}}>
             <MuiTypography variant="body1" component='div' align="justify" >
-              Mainly active in the field of geography, we know the manifold impacts of climate
-              change on physical, biological and human systems. Climate change leads to mass
-              extinction, to migration, to the destruction of ecosystems.
+              We know the manifold impacts of climate
+              change on physical, biological and human systems. Among others, climate change leads to mass
+              extinction, to displacement, to the potentially irreversible destruction of physical systems we all depend on.
               <br />
               <br />
               We want to contribute to fight this crisis. We believe that humankind is able to stop
@@ -175,8 +173,7 @@ function AboutUs() {
               global warming. However, in research, greenhouse gas emissions are still
               excessively high. But how high are the emissions of your working group? And
               where are the highest potentials to reduce them? Answers to these questions are
-              essential to support effective mitigation decisions and policies. Therefore, we
-              developed this tool to enable working groups around the globe to easily compute
+              essential to support effective mitigation decisions and policies. This is why we are developing this tool to enable working groups around the globe to easily compute
               and on the long term reduce their emissions.
             </MuiTypography>
             </Box>
@@ -211,7 +208,7 @@ function AboutUs() {
             <br />
 
             <Typography component="span">
-              1) enable all kinds of working groups to reliably compute and reduce their
+              1) enable all kinds of working groups to reliably compute and reduce their carbon footprints,
             </Typography>
             <br />
             <Typography component="span">
@@ -245,7 +242,7 @@ function AboutUs() {
               colors, symbolizing the different climate scenarios that we could reach tomorrow,
               based on the actions that we take today. The needle in the middle indicates to the
               light blue - a scenario without catastrophic climatic changes. You can also see four
-              magnifying glasses representing the scientific and community approach of our
+              magnifying glasses representing the scientific and collaborative approach of our
               project. We all have to examine our own footprints and altogether take action to
               solve this global crisis.
             </MuiTypography>
@@ -262,7 +259,7 @@ function AboutUs() {
               colors, symbolizing the different climate scenarios that we could reach tomorrow,
               based on the actions that we take today. The needle in the middle indicates to the
               light blue - a scenario without catastrophic climatic changes. You can also see four
-              magnifying glasses representing the scientific and community approach of our
+              magnifying glasses representing the scientific and collaborative approach of our
               project. We all have to examine our own footprints and altogether take action to
               solve this global crisis.
             </MuiTypography>
