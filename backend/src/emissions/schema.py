@@ -43,7 +43,7 @@ from co2calculator.co2calculator.constants import ElectricityFuel
 from graphql_jwt.decorators import login_required
 import warnings
 
-warnings.filterwarnings("error")
+#warnings.filterwarnings("error")
 
 # -------------- GraphQL Types -------------------
 
