@@ -3,7 +3,6 @@ services:
   db:
     image: postgres
     restart: always
-    container_name: db
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
@@ -29,7 +28,6 @@ services:
       - db
     env_file: ./.env
   frontend:
-    container_name: wepledge-frontend
     tty: true
     build:
       context: ./frontend
