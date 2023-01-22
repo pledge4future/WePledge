@@ -199,7 +199,7 @@ with $E_{\text{aggr}}$ being the sum of the $CO_2e$  emissions of all participan
 ### ProBas database
 
 The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel
-types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
+types, and for heating and electricity come from [GEMIS](https://iinas.org/en/downloads/gemis-downloads/) (Globales Emissions-Modell Integrierter
 Systeme), a freely available computer model with an integrated database for lifecycle
 assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut &
 IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
