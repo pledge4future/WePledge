@@ -258,6 +258,6 @@ Sciences. https://doi.org/10.1051/animres:2000119
 integrated database for lifecycle asessments and co2 footprints of energy, resource and
 transport systems, developed by Öko-Institut, 2012 passed to the International Institute for
 Sustainability Analysis and Strategy/Internationales Institut für Nachhaltigkeitsanalysen und
--strategien (IINAS). http://iinas.org/about-gemis.html
+-strategien (IINAS). https://iinas.org/en/downloads/gemis-downloads/
 
 - Umweltbundesamt (UBA), 2021. Umweltfreundlich mobil! Ein ökologischer Verkehrsartenvergleich für den Personen- und Güterverkehr in Deutschland. https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil
