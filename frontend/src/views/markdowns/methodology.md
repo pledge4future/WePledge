@@ -196,6 +196,26 @@ with $E_{\text{aggr}}$ being the sum of the $CO_2e$  emissions of all participan
 
 ## 6 Emission factor sources
 
+
+### Overview
+
+The table shows an overview of the emission factor sources. For more information on the sources, see the paragraphs below and the References section at the bottom of the page.
+
+Mode of transport | Fuel type/Energy source | Emission factor source
+-------------- | -------------- | --------------
+Bus | compressed natural gas, hydrogen | GEMIS
+Bus | diesel | TREMOD
+Car | compressed natural gas | GEMIS
+Car | average, gasoline, diesel | TREMOD
+Car | hybrid, plug-in hybrid, battery electric | 2020 UK GHG Conversion factors
+Electricity | all energy sources | GEMIS
+Ferry | average | 2020 UK GHG Conversion factors
+Heating | all energy sources | GEMIS
+Motorbike | average | 2020 UK GHG Conversion factors
+Plane | kerosine | 2020 UK GHG Conversion factors
+Train | all fuel types | TREMOD
+
+
 ### ProBas database
 
 The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel
@@ -211,7 +231,7 @@ IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) a
 The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport (UBA, 2021). The emission factors for bicycles, pedelecs, and tram were taken from Table 3 on p. 38 of this brochure.
 
 
-### Greenhouse gas reporting: conversion factors 2020
+### 2020 UK GHG Conversion factors
 
 This comprehensive set of [conversion factors](https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020) provided by the UK Department for Business, Energy & Industrial Strategy is intended for use by companies and other organizations to report on their greenhouse gas emissions. We have used conversion factors for planes, ferries, electric cars, and motorbikes from this source.
 
