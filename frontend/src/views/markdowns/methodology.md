@@ -239,15 +239,10 @@ https://doi.org/10.1002/wea.103
 
 - Jahnke, K., Fendt, C., Fouesneau, M. et al. An astronomical institute’s perspective on meeting the challenges of the climate crisis. Nat Astron 4, 812–815 (2020). https://doi.org/10.1038/s41550-020-1202-4
 
-- IFEU Heidelberg, Umweltbundesamt (UBA), 2010. TREMOD (Transport emission model) version
-5.1. Data and calculation model; energy use and pollutant emissions of motorized traffic in
-germany on behalf of Umweltbundesamt (UBA).
-https://www.bmu.de/fileadmin/Daten_BMU/Pools/Forschungsdatenbank/fkz_3707_45_101_motorisierter_verkehr_bf.pdf
-
-
 - IFEU Heidelberg, Umweltbundesamt (UBA), 2019. TREMOD (Transport emission model).
 https://www.ifeu.de/en/project/uba-tremod-2019/
 
+- IFEU Heidelberg, Umweltbundesamt (UBA), 2020. Updating the models TREMOD/TREMOD-MM for the emissions reporting 2020 (reporting period 1990-2018). "TREMOD" reporting section. https://www.umweltbundesamt.de/sites/default/files/medien/1410/publikationen/2020-06-29_texte_116-2020_tremod_2019_0.pdf
 
 - Moss, A. R., Jouany, J. P., & Newbold, J., (2000). Methane production by ruminants: its
 contribution to global warming. In Annales de zootechnie (Vol. 49, No. 3, pp. 231-253). EDP
