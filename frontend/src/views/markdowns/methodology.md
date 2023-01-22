@@ -203,7 +203,7 @@ types, and for heating and electricity come from [GEMIS](https://iinas.org/en/do
 Systeme), a freely available computer model with an integrated database for lifecycle
 assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut &
 IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
-[International Institute for Sustainability Analysis and Strategy](http://iinas.org/news.html) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
+[International Institute for Sustainability Analysis and Strategy](https://iinas.org/en/) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
 
 
 ### Brochure "Umweltfeundlich mobil!"
