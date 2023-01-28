@@ -1,6 +1,7 @@
 interface IResearchFieldEntry{
     field: string, 
     subfield: string,
+    id: number,
     __typename: string
 }
 
@@ -22,7 +23,11 @@ export function mapResearchFieldQueryResultToFormData(researchFieldQueryResult: 
     const mainResearchFields = [...new Set(researchFieldQueryResult?.researchfields?.map(item => item.field))]
     const fieldSubfieldStore = {}
     mainResearchFields.forEach(researchField => {
-        const values = researchFieldQueryResult?.researchfields?.filter(item => item.field === researchField).map(item => item.subfield)
+        const values = researchFieldQueryResult?.researchfields?.filter(item => item.field === researchField).map(item => {
+            return {
+                subfield: item.subfield, id: item.id
+            }
+        });
         fieldSubfieldStore[researchField] = values
     })
 

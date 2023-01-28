@@ -14,11 +14,9 @@ import { InputErrorComponent } from '../../components/InputErrorComponent';
 
 export interface CreateWorkingGroupValues {
     name: string, 
-    institution: string, 
-    city: string, 
-    country: string, 
+    institution: any, 
     field: string, 
-    subField: string, 
+    subField: any,
     nEmployees: number, 
     is_public: boolean
 }
@@ -55,25 +53,35 @@ export default function CreateWorkingGroupView(){
     const workingGroupForm = useFormik({
         initialValues: {
             name: '',
-            institution: '',
-            city: '',
-            country: '',
+            institution: {
+                id: '',
+                name: ''
+            },
             field: '',
-            subField: '',
+            subField: {
+                id: '',
+                subfield: ''
+            },
             nEmployees: 0,
             is_public: false
         },
         //validationSchema: newWorkingGroupValidationSchema, <- remove for now, seems to be buggy
         onSubmit: (newWorkingGroupValues: CreateWorkingGroupValues) => {
             setLoading(true);
+            const mutation_input = {
+                name: newWorkingGroupValues.name,
+                institution: newWorkingGroupValues.institution.id,
+                field: newWorkingGroupValues.subField.id,
+                nEmployees: newWorkingGroupValues.nEmployees,
+                is_public: newWorkingGroupValues.is_public
+            }
             createWorkingGroup({
                 variables: {
-                    ...newWorkingGroupValues
+                    ...mutation_input
                 }
             })
         }
     })
-
     const {data: researchFieldQueryData, error, loading: queryLoading} = useQuery(getResearchFields);
 
     const {mainResearchFields: researchFieldData, fieldSubfieldStore: researchSubfieldStore} = mapResearchFieldQueryResultToFormData(researchFieldQueryData);
@@ -104,43 +112,11 @@ export default function CreateWorkingGroupView(){
             <Grid item xs={6}>
             <InputLabel id="form-field-institution">Institution</InputLabel>
             <Field name='institution' component={FormikAutocomplete} label="Institution" labelId="form-field-institution"
-                    options={instituteData?.institutions?.map((institution) => institution.name) ?? []}
+                    options={instituteData?.institutions?.map((institution) => institution) ?? []}
                     textFieldProps={{ fullWidth: true, margin: 'normal', variant: 'outlined' }}
                     />
             </Grid>
-            <Grid item xs={3}>
-                <InputLabel id="form-field-city">City</InputLabel>
-                <TextField required
-                id="city"
-                name="city"
-                label="City"
-                labelId="form-field-city"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                value={workingGroupForm.values.city}
-                onChange={workingGroupForm.handleChange}
-                error={workingGroupForm.touched.city && Boolean(workingGroupForm.errors.city)}
-                helperText={workingGroupForm.touched.city && workingGroupForm.errors.city}
-                />
-            </Grid>
-            <Grid item xs={3}>
-                <InputLabel id="form-field-country">Country</InputLabel>
-                <TextField required
-                id="country"
-                name="country"
-                label="Country"
-                labelId="form-field-country"
-                fullWidth
-                margin="normal"
-                variant="outlined"
-                value={workingGroupForm.values.country}
-                onChange={workingGroupForm.handleChange}
-                error={workingGroupForm.touched.country && Boolean(workingGroupForm.errors.country)}
-                helperText={workingGroupForm.touched.country && workingGroupForm.errors.country}
-                />
-            </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={6}>
                 <InputLabel id="form-field-employees">Number of Employees</InputLabel>
                 <TextField 
                     required
@@ -155,10 +131,10 @@ export default function CreateWorkingGroupView(){
                     value={workingGroupForm.values.nEmployees}
                     onChange={workingGroupForm.handleChange}
                     error={workingGroupForm.touched.nEmployees && Boolean(workingGroupForm.errors.nEmployees)}
-                    helperTExt={workingGroupForm.touched.nEmployees && workingGroupForm.errors.nEmployees}
+                    helperText={workingGroupForm.touched.nEmployees && workingGroupForm.errors.nEmployees}
                 />
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={6}>
                 <FormControlLabel 
                 style={{
                     alignItems: 'center',
@@ -196,17 +172,20 @@ export default function CreateWorkingGroupView(){
                 <InputLabel id="form-field-researchSubField">Research Sub-Field</InputLabel>
                 <Select
                 required
+                key={workingGroupForm.values.subField.id}
                 labelId="form-field-researchSubField"
                 name="subField"
                 fullWidth
-                value={workingGroupForm.values.subField}
+                value={workingGroupForm.values.subField.subfield}
+                //defaultValue={workingGroupForm.values.subField.subfield || ""}
                 label="Research Sub-Field"
                 onChange={workingGroupForm.handleChange}
                 error={workingGroupForm.touched.subField && Boolean(workingGroupForm.errors.subField)}
+                disabled={workingGroupForm.values.field === ''}
                 >
                     {researchSubfieldStore[workingGroupForm.values.field]?.map(item => {
                         return (
-                            <MenuItem value={item}>{item}</MenuItem>
+                            <MenuItem value={item}>{item.subfield}</MenuItem>
                         )
                     })}
                 </Select>
