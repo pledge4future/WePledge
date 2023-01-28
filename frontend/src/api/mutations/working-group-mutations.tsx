@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 
 export const CREATE_WORKING_GROUP = gql`
-mutation createWorkingGrou($name: String!, $institution: String!, $city: String!, $country: String!, $field: String!, $subField: String!, $nEmployees: Int!, $is_public: Boolean!){
+mutation createWorkingGroup($name: String!, $institution: String!, $city: String!, $country: String!, $field: String!, $subField: String!, $nEmployees: Int!, $is_public: Boolean!){
     createWorkingGroup (input: {
         name: $name
         institution: $institution

@@ -19,16 +19,21 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 
 export function mapChartData(rawData: any){
-    const mappedData = {
-        "businessTotal" : mapBackendResult(rawData[backendResultFields.BUSINESSTRIP]),
-        "commutingTotal" : mapBackendResult(rawData[backendResultFields.COMMUTING]),
-        "electricityTotal": mapBackendResult(rawData[backendResultFields.ELECTRICITY]),
-        "heatingTotal": mapBackendResult(rawData[backendResultFields.HEATING])
+    if(Object.keys(rawData).map(key => rawData[key]).every(dataEntry => dataEntry.length === 0)){
+        return [];
     }
-    const chartData = months.map(month => {
-        return createDataEntry(month, mappedData)
-    })
-    return chartData;
+    else {
+        const mappedData = {
+            "businessTotal" : mapBackendResult(rawData[backendResultFields.BUSINESSTRIP]),
+            "commutingTotal" : mapBackendResult(rawData[backendResultFields.COMMUTING]),
+            "electricityTotal": mapBackendResult(rawData[backendResultFields.ELECTRICITY]),
+            "heatingTotal": mapBackendResult(rawData[backendResultFields.HEATING])
+        }
+        const chartData = months.map(month => {
+            return createDataEntry(month, mappedData)
+        })
+        return chartData;
+    }
 }
 
 function createDataEntry(month: string, rawData: any): IChartDataEntry{
