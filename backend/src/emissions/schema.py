@@ -663,7 +663,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for creating a new working group"""
 
     name = graphene.String(reqired=True, description="Name of the working group")
-    institution_id = graphene.Int(
+    institution_id = graphene.String(
         required=True, description="UUID of institution the working group belongs to"
     )
     research_field_id = graphene.Int(
@@ -816,6 +816,8 @@ class CreateElectricity(graphene.Mutation):
     success = graphene.Boolean()
     electricity = graphene.Field(ElectricityType)
 
+    print("entering here")
+
     @staticmethod
     @login_required
     @representative_required
@@ -832,7 +834,12 @@ class CreateElectricity(graphene.Mutation):
             input.fuel_type,
             input.group_share,
         )
-        co2e_cap = co2e / user.working_group.n_employees
+        # error boundary if user has no working group.
+        print(vars(user))
+        if user.working_group is not None:
+            co2e_cap = co2e / user.working_group.n_employees
+        else:
+            co2e_cap = co2e
 
         # Store in database
         new_electricity = Electricity(
