@@ -16,7 +16,7 @@ export interface CreateWorkingGroupValues {
     name: string, 
     institution: any, 
     field: string, 
-    subField: any,
+    subField: string,
     nEmployees: number, 
     is_public: boolean
 }
@@ -36,7 +36,9 @@ export default function CreateWorkingGroupView(){
 
     const [loading, setLoading] = useState(false);
     const [errorState, setErrorState ] = useState(false);
-    const [errorMessage, setErrorMessage ] = useState('')
+    const [errorMessage, setErrorMessage ] = useState('');
+
+    const [selectedSubFieldId, setSelectedSubFieldId ] = useState(undefined); // handle this extra because formik and select can not handle objects as items
 
     const [createWorkingGroup] = useMutation(CREATE_WORKING_GROUP, {
         onCompleted(){
@@ -58,10 +60,7 @@ export default function CreateWorkingGroupView(){
                 name: ''
             },
             field: '',
-            subField: {
-                id: '',
-                subfield: ''
-            },
+            subField: '',
             nEmployees: 0,
             is_public: false
         },
@@ -71,7 +70,7 @@ export default function CreateWorkingGroupView(){
             const mutation_input = {
                 name: newWorkingGroupValues.name,
                 institution: newWorkingGroupValues.institution.id,
-                field: newWorkingGroupValues.subField.id,
+                field: selectedSubFieldId,
                 nEmployees: newWorkingGroupValues.nEmployees,
                 is_public: newWorkingGroupValues.is_public
             }
@@ -88,6 +87,13 @@ export default function CreateWorkingGroupView(){
 
     const {data: instituteData} = useQuery(getInstitutions);
 
+    // this is the worst workaround in history but everything else I tried did not work...
+    const handleSelectChange = ((event: any) => {
+        const subFieldId = researchSubfieldStore[workingGroupForm.values.field].find((item: any) => item.subfield === event.target.value).id
+        setSelectedSubFieldId(subFieldId);
+        workingGroupForm.setFieldValue('subField', event.target.value)
+    })
+
     return (
         <>
         <FormikProvider value={workingGroupForm}>
@@ -98,7 +104,6 @@ export default function CreateWorkingGroupView(){
                 <TextField required
                 id="name"
                 name="name"
-                label="Name"
                 labelId="form-field-name"
                 fullWidth
                 margin="normal"
@@ -172,20 +177,20 @@ export default function CreateWorkingGroupView(){
                 <InputLabel id="form-field-researchSubField">Research Sub-Field</InputLabel>
                 <Select
                 required
-                key={workingGroupForm.values.subField.id}
+                key={"subFieldSelection"}
                 labelId="form-field-researchSubField"
                 name="subField"
                 fullWidth
-                value={workingGroupForm.values.subField.subfield}
-                //defaultValue={workingGroupForm.values.subField.subfield || ""}
-                label="Research Sub-Field"
-                onChange={workingGroupForm.handleChange}
+                value={workingGroupForm.values.subField}
+                onChange={handleSelectChange}
                 error={workingGroupForm.touched.subField && Boolean(workingGroupForm.errors.subField)}
                 disabled={workingGroupForm.values.field === ''}
-                >
-                    {researchSubfieldStore[workingGroupForm.values.field]?.map(item => {
+                displayEmpty
+                autoWidth
+                > 
+                    {Object.keys(researchSubfieldStore).length > 0 && researchSubfieldStore[workingGroupForm.values.field]?.map(item => {
                         return (
-                            <MenuItem value={item}>{item.subfield}</MenuItem>
+                            <MenuItem key={item.id} value={item.subfield}>{item.subfield}</MenuItem>
                         )
                     })}
                 </Select>
