@@ -834,12 +834,8 @@ class CreateElectricity(graphene.Mutation):
             input.fuel_type,
             input.group_share,
         )
-        # error boundary if user has no working group.
-        print(vars(user))
-        if user.working_group is not None:
-            co2e_cap = co2e / user.working_group.n_employees
-        else:
-            co2e_cap = co2e
+        
+        co2e_cap = co2e / user.working_group.n_employees
 
         # Store in database
         new_electricity = Electricity(
