@@ -296,17 +296,15 @@ class Query(UserQuery, MeQuery, ObjectType):
         self, info, level="group", time_interval="month", **kwargs
     ):
         """
-        Yields monthly co2e emissions (per capita) of heating consumption
-        - for a group (if group_id is given),
-        - for an institution (if inst_id is given)
-        param: level: Aggregation level: group or institution. Default: group
+        Yields monthly co2e emissions (per capita) of heating consumption, for the user, their group or their institution
+        param: level: Aggregation level: personal, group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         if not info.context.user.is_authenticated:
             raise GraphQLError("User is not authenticated.")
 
         # Get relevant data entries
-        if level == "group":
+        if level in ["group", "personal"]:
             entries = Heating.objects.filter(
                 working_group__id=info.context.user.working_group.id
             )
