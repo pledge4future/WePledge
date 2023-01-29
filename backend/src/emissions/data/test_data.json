@@ -69,12 +69,22 @@
 
   }
 },
-"heatings": [
+"heating": [
   {
     "working_group_id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
     "consumption": 2000,
     "unit": "l",
     "fuel_type": "oil",
+    "building": "348",
+    "timestamp": "2022-01-01",
+    "group_share": 1
+  }
+],
+"electricity": [
+  {
+    "working_group_id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
+    "consumption": 1000,
+    "fuel_type": "german_energy_mix",
     "building": "348",
     "timestamp": "2022-01-01",
     "group_share": 1

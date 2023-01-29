@@ -342,15 +342,13 @@ class Query(UserQuery, MeQuery, ObjectType):
         self, info, level="group", time_interval="month", **kwargs
     ):
         """
-        Yields monthly co2e emissions of electricity consumption
-        - for a group (if group_id is given),
-        - for an institutions (if inst_id is given)
+        Yields monthly co2e emissions (per capita) of electricity consumption, for the user, their group or their institution
         param: level: Aggregation level: group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         user = info.context.user
         # Get relevant data entries
-        if level == "group":
+        if level in ["group", "personal"]:
             entries = Heating.objects.filter(working_group__id=user.working_group.id)
         elif level == "institution":
             entries = Heating.objects.filter(

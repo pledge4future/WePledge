@@ -123,6 +123,35 @@ def test_query_electricity_aggregated_institution(test_user3_rep_token):
     assert len(data["data"]["electricityAggregated"]) == 1
 
 
+
+def test_query_electricity_aggregated_institution(test_user3_rep_token):
+    """Query aggregated electricity data by authenticated user"""
+    query = """
+        query ($level: String!) {
+          electricityAggregated (level: $level) {
+            date
+            co2e
+            co2eCap
+          }
+    }
+    """
+    variables = {"level": "institution"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user3_rep_token}",
+    }
+    response = requests.post(
+        GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert isinstance(data["data"]["electricityAggregated"][0]["date"], str)
+    assert isinstance(data["data"]["electricityAggregated"][0]["co2e"], float)
+    assert isinstance(data["data"]["electricityAggregated"][0]["co2eCap"], float)
+    assert len(data["data"]["electricityAggregated"]) == 1
+
+
+
 def test_query_businesstrip_aggregated_personal(test_user1_token):
     """Query aggregated businesstrip data by authenticated user"""
     query = """
