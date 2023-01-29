@@ -30,7 +30,7 @@
 },
 "institutions": {
   "institution1": {
-    "id": 1,
+    "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002",
     "name": "Test University",
     "city": "Heidelberg",
     "country": "Germany"
@@ -38,10 +38,10 @@
 },
 "working_groups": {
   "working_group1": {
-    "id": 1,
+    "id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
     "name": "testgroup1",
     "institution": {
-      "id": 1
+      "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
     },
     "representative": "test3_rep",
     "n_employees": 10,
@@ -51,10 +51,10 @@
     "is_public": "True"
   },
     "working_group2": {
-      "id": 2,
+      "id": "3aaa81a6-9fcd-11ed-a8fc-0242ac120002",
       "name": "testgroup2",
       "institution": {
-        "id": 1
+        "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
       },
       "representative": "test4_rep",
       "n_employees": 10,
@@ -68,5 +68,16 @@
   "business_trip1": {
 
   }
-}
+},
+"heatings": [
+  {
+    "working_group_id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
+    "consumption": 2000,
+    "unit": "l",
+    "fuel_type": "oil",
+    "building": "348",
+    "timestamp": "2022-01-01",
+    "group_share": 1
+  }
+]
 }
