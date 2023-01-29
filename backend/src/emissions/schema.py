@@ -306,18 +306,23 @@ class Query(UserQuery, MeQuery, ObjectType):
             raise GraphQLError("User is not authenticated.")
 
         # Get relevant data entries
-        if level == "group":
+        if level == "personal":
             entries = Heating.objects.filter(
                 working_group__id=info.context.user.working_group.id
             )
+            metrics = {"co2e": Sum("co2e") / info.context.user.working_group.n_employees, "co2e_cap": Sum("co2e_cap")}
+        elif level == "group":
+            entries = Heating.objects.filter(
+                working_group__id=info.context.user.working_group.id
+            )
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         elif level == "institution":
             entries = Heating.objects.filter(
                 working_group__institution__id=info.context.user.working_group.institution.id
             )
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
-
-        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
@@ -349,16 +354,21 @@ class Query(UserQuery, MeQuery, ObjectType):
         """
         user = info.context.user
         # Get relevant data entries
-        if level == "group":
-            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+        if level == "personal":
+            entries = Electricity.objects.filter(
+                working_group__id=info.context.user.working_group.id
+            )
+            metrics = {"co2e": Sum("co2e") / info.context.user.working_group.n_employees, "co2e_cap": Sum("co2e_cap")}
+        elif level == "group":
+            entries = Electricity.objects.filter(working_group__id=user.working_group.id)
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         elif level == "institution":
-            entries = Heating.objects.filter(
+            entries = Electricity.objects.filter(
                 working_group__institution__id=user.working_group.institution.id
             )
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
-
-        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
