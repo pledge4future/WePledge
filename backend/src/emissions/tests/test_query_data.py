@@ -72,6 +72,29 @@ def test_query_heating_aggregated_personal(test_user3_rep_token):
     assert len(data["data"]["heatingAggregated"]) == 1
 
 
+def test_query_heating_aggregated_no_workinggroup(test_user1_token):
+    """Query aggregated heating data by authenticated user"""
+    query = """
+        query ($level: String!) {
+          heatingAggregated (level: $level) {
+            date
+            co2e
+            co2eCap
+          }
+    }
+    """
+    variables = {"level": "personal"}
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user1_token}",
+    }
+    response = requests.post(
+        GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+    )
+    assert response.status_code == 200
+    data = response.json()
+    assert data["errors"][0]["message"] == 'No heating data available, since user is not assigned to any working group yet.'
+
 
 def test_query_electricity_aggregated_institution(test_user3_rep_token):
     """Query aggregated electricity data by authenticated user"""

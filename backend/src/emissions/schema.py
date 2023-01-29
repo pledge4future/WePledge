@@ -300,8 +300,11 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: level: Aggregation level: personal, group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User is not authenticated.")
+        #if not info.context.user.is_authenticated:
+        #    raise GraphQLError("User is not authenticated.")
+
+        if info.context.user.working_group is None:
+            raise GraphQLError("No heating data available, since user is not assigned to any working group yet.")
 
         # Get relevant data entries
         if level in ["group", "personal"]:
