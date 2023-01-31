@@ -70,7 +70,7 @@ def test_query_heating_aggregated_personal(test_user3_rep_token):
     assert isinstance(data["data"]["heatingAggregated"][0]["co2e"], float)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
     assert len(data["data"]["heatingAggregated"]) == 1
-
+    assert data["data"]["heatingAggregated"][0]["co2eCap"] == data["data"]["heatingAggregated"][0]["co2e"]
 
 def test_query_heating_aggregated_no_workinggroup(test_user1_token):
     """Query aggregated heating data by authenticated user"""

@@ -302,23 +302,26 @@ class Query(UserQuery, MeQuery, ObjectType):
         """
         #if not info.context.user.is_authenticated:
         #    raise GraphQLError("User is not authenticated.")
+        user = info.context.user
 
-        if info.context.user.working_group is None:
+        if user.working_group is None:
             raise GraphQLError("No heating data available, since user is not assigned to any working group yet.")
 
         # Get relevant data entries
-        if level in ["group", "personal"]:
-            entries = Heating.objects.filter(
-                working_group__id=info.context.user.working_group.id
-            )
+        if level == "personal":
+            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+            # Use the average co2e emissions per capital as total emissons for one person
+            metrics = {"co2e": Sum("co2e_cap"), "co2e_cap": Sum("co2e_cap")}
+        elif level == "group":
+            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         elif level == "institution":
             entries = Heating.objects.filter(
-                working_group__institution__id=info.context.user.working_group.institution.id
+                working_group__institution__id=user.working_group.institution.id
             )
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
-
-        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
@@ -347,17 +350,24 @@ class Query(UserQuery, MeQuery, ObjectType):
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         user = info.context.user
+        if user.working_group is None:
+            raise GraphQLError("No heating data available, since user is not assigned to any working group yet.")
+
         # Get relevant data entries
-        if level in ["group", "personal"]:
-            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+        if level == "personal":
+            entries = Electricity.objects.filter(working_group__id=user.working_group.id)
+            # Use the average co2e emissions per capital as total emissons for one person
+            metrics = {"co2e": Sum("co2e_cap"), "co2e_cap": Sum("co2e_cap")}
+        elif level == "group":
+            entries = Electricity.objects.filter(working_group__id=user.working_group.id)
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         elif level == "institution":
-            entries = Heating.objects.filter(
+            entries = Electricity.objects.filter(
                 working_group__institution__id=user.working_group.institution.id
             )
+            metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         else:
             raise GraphQLError(f"Invalid value for parameter 'level': {level}")
-
-        metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
 
         if time_interval == "month":
             return (
