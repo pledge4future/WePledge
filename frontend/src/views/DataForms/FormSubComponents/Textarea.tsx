@@ -1,5 +1,7 @@
 import React from 'react'
 import { Field, ErrorMessage } from 'formik'
+import {TextField } from '@material-ui/core';
+
 // import TextError from './TextError'
 
 function Textarea (props) {
@@ -7,7 +9,7 @@ function Textarea (props) {
   return (
     <div className='form-control'>
       <label htmlFor={name}>{label}</label>
-      <Field as='textarea' id={name} name={name} {...rest} />
+      <TextField id={name} name={name} {...rest} />
       {/* <ErrorMessage component={TextError} name={name} /> */}
     </div>
   )
