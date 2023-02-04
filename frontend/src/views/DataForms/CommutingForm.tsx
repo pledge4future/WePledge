@@ -12,7 +12,7 @@ import { format } from 'date-fns'
 const ADD_COMMUTING = gql`
   mutation createCommuting($transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $workweeks: Int, $fromTimestamp: Date!, $toTimestamp: Date!){
     createCommuting(input: {transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, workweeks: $workweeks, fromTimestamp: $fromTimestamp, toTimestamp: $toTimestamp}){
-      ok
+      success
     }
   }
 `
