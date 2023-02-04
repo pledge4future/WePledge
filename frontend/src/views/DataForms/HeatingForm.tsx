@@ -9,9 +9,9 @@ import * as Yup from 'yup';
 import { format } from 'date-fns'
 
 import { FormTextField, FormSelectField } from './FormSubComponents';
+import { months, years } from './FormModels';
 
 
-// mutation to add heating entry
 const ADD_HEATING = gql`
   mutation createHeating(
     $timestamp: Date!,
@@ -66,39 +66,15 @@ const units = [
   { label: "m³", value: "m³" }
 ]
 
-const months = [
-  { label: "1", value: 1},
-  { label: "2", value: 2},
-  { label: "3", value: 3},
-  { label: "4", value: 4},
-  { label: "5", value: 5},
-  { label: "6", value: 6},
-  { label: "7", value: 7},
-  { label: "8", value: 8},
-  { label: "9", value: 9},
-  { label: "10", value: 10},
-  { label: "11", value: 11},
-  { label: "12", value: 12}
-]
-
-const years = [
-  { label: "2019", value: 2019},
-  { label: "2020", value: 2020},
-  { label: "2021", value: 2021},
-  { label: "2022", value: 2022},
-  { label: "2023", value: 2023}
-]
-
-
 export function HeatingForm(
-  props: {
-    error?: boolean,
-    onSubmit: (values: HeatingFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
-  }
+  // props: {
+  //   error?: boolean,
+  //   onSubmit: (values: HeatingFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+  // }
 ){
 
   const initialFormValues = {
-    month: 1,
+    month: 0,
     year: 2023,
     building: '',
     groupShare: 0.0,
@@ -138,13 +114,12 @@ export function HeatingForm(
   const formik = useFormik({
     initialValues: initialFormValues,
     onSubmit: (values: HeatingFormValues, formikHelpers: FormikHelpers<HeatingFormValues>)  => {
-      // console.log(values)
       const { setSubmitting } = formikHelpers;
       const queryParams = {
-        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        timestamp: format(new Date(values.year, values.month), 'yyyy-MM'),
         consumption: values.consumption,
         fuelType: values.energySource, 
-        building: values. building,
+        building: values.building,
         groupShare: values.groupShare,
         unit: values.unit
       }
@@ -156,16 +131,16 @@ export function HeatingForm(
   return (
     <div style={{margin: 8 }}>
       <Formik
-        initialValues={initialFormValues}
+        initialValues={formik.initialValues}
+        validateOnChange={true}
         validationSchema={heatDataFormValidationSchema}
-        onSubmit={(values: HeatingFormValues, formikHelpers: FormikHelpers<HeatingFormValues> ) => {
-          console.log(values)
+        onSubmit={(values: HeatingFormValues, formikHelpers: FormikHelpers<HeatingFormValues>) => {
           const { setSubmitting } = formikHelpers;
           const queryParams = {
-            timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+            timestamp: format(new Date(values.year, values.month), 'yyyy-MM'),
             consumption: values.consumption,
             fuelType: values.energySource, 
-            building: values. building,
+            building: values.building,
             groupShare: values.groupShare,
             unit: values.unit
           }
@@ -174,12 +149,12 @@ export function HeatingForm(
         }
       }
       >
-        {() => (
-            <Form noValidate onSubmit={formik.handleSubmit}>
+        {(values: HeatingFormValues, errors) => (
+            <Form noValidate>
 
               <div>
                 <Field required label="Month" name="month" component={FormSelectField}
-                  options={months}/>
+                  options={months} value={values.month}/>
               </div>
               <div>
                 <Field required label="Year" name="year" component={FormSelectField}

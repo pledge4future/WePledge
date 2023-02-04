@@ -640,7 +640,7 @@ class ElectricityInput(graphene.InputObjectType):
         required=True, description="Number of Building if there are several ones"
     )
     group_share = graphene.Float(
-        required=True, description="Share of the building beloning to the working group"
+        required=True, description="Share of the building belonging to the working group"
     )
 
 
@@ -872,7 +872,7 @@ class CreateElectricity(graphene.Mutation):
             co2e_cap=round(co2e_cap, 1),
         )
         new_electricity.save()
-        return CreateElectricity(success=success, electricity=new_electricity)
+        return CreateElectricity(ok=ok, electricity=new_electricity)
 
 
 class CreateHeating(graphene.Mutation):
