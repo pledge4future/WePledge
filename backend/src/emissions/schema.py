@@ -816,8 +816,6 @@ class CreateElectricity(graphene.Mutation):
     success = graphene.Boolean()
     electricity = graphene.Field(ElectricityType)
 
-    print("entering here")
-
     @staticmethod
     @login_required
     @representative_required
