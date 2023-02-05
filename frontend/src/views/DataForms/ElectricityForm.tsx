@@ -12,7 +12,7 @@ import { format } from 'date-fns'
 const ADD_ELECTRICITY = gql`
   mutation createElectricity($timestamp: Date!, $consumption: Float!, $fuelType: String!, $building: String!, $groupShare: Float!) {
     createElectricity(input: {timestamp: $timestamp, consumption: $consumption, fuelType: $fuelType, building: $building, groupShare: $groupShare}) {
-      ok
+      success
     }
   }
 `
