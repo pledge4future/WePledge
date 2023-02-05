@@ -32,11 +32,12 @@ export function mapChartData(rawData: any, year: string){
         "commutingTotal" : mapBackendResult(filtered_raw_data[backendResultFields.COMMUTING]),
         "electricityTotal": mapBackendResult(filtered_raw_data[backendResultFields.ELECTRICITY]),
         "heatingTotal": mapBackendResult(filtered_raw_data[backendResultFields.HEATING])
+        }
+        const chartData = months.map(month => {
+            return createDataEntry(month, mappedData)
+        })
+        return chartData;
     }
-    const chartData = months.map(month => {
-        return createDataEntry(month, mappedData)
-    })
-    return chartData;
 }
 
 function createDataEntry(month: string, rawData: any): IChartDataEntry{

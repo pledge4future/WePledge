@@ -296,29 +296,28 @@ class Query(UserQuery, MeQuery, ObjectType):
         self, info, level="group", time_interval="month", **kwargs
     ):
         """
-        Yields monthly co2e emissions (per capita) of heating consumption
-        - for a group (if group_id is given),
-        - for an institution (if inst_id is given)
-        param: level: Aggregation level: group or institution. Default: group
+        Yields monthly co2e emissions (per capita) of heating consumption, for the user, their group or their institution
+        param: level: Aggregation level: personal, group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
-        if not info.context.user.is_authenticated:
-            raise GraphQLError("User is not authenticated.")
+        #if not info.context.user.is_authenticated:
+        #    raise GraphQLError("User is not authenticated.")
+        user = info.context.user
+
+        if user.working_group is None:
+            raise GraphQLError("No heating data available, since user is not assigned to any working group yet.")
 
         # Get relevant data entries
         if level == "personal":
-            entries = Heating.objects.filter(
-                working_group__id=info.context.user.working_group.id
-            )
-            metrics = {"co2e": Sum("co2e") / info.context.user.working_group.n_employees, "co2e_cap": Sum("co2e_cap")}
+            entries = Heating.objects.filter(working_group__id=user.working_group.id)
+            # Use the average co2e emissions per capital as total emissons for one person
+            metrics = {"co2e": Sum("co2e_cap"), "co2e_cap": Sum("co2e_cap")}
         elif level == "group":
-            entries = Heating.objects.filter(
-                working_group__id=info.context.user.working_group.id
-            )
+            entries = Heating.objects.filter(working_group__id=user.working_group.id)
             metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         elif level == "institution":
             entries = Heating.objects.filter(
-                working_group__institution__id=info.context.user.working_group.institution.id
+                working_group__institution__id=user.working_group.institution.id
             )
             metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
         else:
@@ -346,19 +345,19 @@ class Query(UserQuery, MeQuery, ObjectType):
         self, info, level="group", time_interval="month", **kwargs
     ):
         """
-        Yields monthly co2e emissions of electricity consumption
-        - for a group (if group_id is given),
-        - for an institutions (if inst_id is given)
+        Yields monthly co2e emissions (per capita) of electricity consumption, for the user, their group or their institution
         param: level: Aggregation level: group or institution. Default: group
         param: time_interval: Aggregate co2e per "month" or "year"
         """
         user = info.context.user
+        if user.working_group is None:
+            raise GraphQLError("No heating data available, since user is not assigned to any working group yet.")
+
         # Get relevant data entries
         if level == "personal":
-            entries = Electricity.objects.filter(
-                working_group__id=info.context.user.working_group.id
-            )
-            metrics = {"co2e": Sum("co2e") / info.context.user.working_group.n_employees, "co2e_cap": Sum("co2e_cap")}
+            entries = Electricity.objects.filter(working_group__id=user.working_group.id)
+            # Use the average co2e emissions per capital as total emissons for one person
+            metrics = {"co2e": Sum("co2e_cap"), "co2e_cap": Sum("co2e_cap")}
         elif level == "group":
             entries = Electricity.objects.filter(working_group__id=user.working_group.id)
             metrics = {"co2e": Sum("co2e"), "co2e_cap": Sum("co2e_cap")}
@@ -673,7 +672,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for creating a new working group"""
 
     name = graphene.String(reqired=True, description="Name of the working group")
-    institution_id = graphene.Int(
+    institution_id = graphene.String(
         required=True, description="UUID of institution the working group belongs to"
     )
     research_field_id = graphene.Int(
@@ -842,6 +841,7 @@ class CreateElectricity(graphene.Mutation):
             input.fuel_type,
             input.group_share,
         )
+        
         co2e_cap = co2e / user.working_group.n_employees
 
         # Store in database

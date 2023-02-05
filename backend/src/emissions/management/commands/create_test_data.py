@@ -6,8 +6,11 @@ import json
 import logging
 import os
 from django.core.management.base import BaseCommand
+from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from emissions.models import CustomUser, WorkingGroup, Institution, ResearchField
+from emissions.models import CustomUser, WorkingGroup, Institution, ResearchField, Heating, Electricity
+
+from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
 
 logger = logging.basicConfig()
 script_path = os.path.dirname(os.path.realpath(__file__))
@@ -69,7 +72,6 @@ class Command(BaseCommand):
             except Exception as e:
                 print(e)
 
-
         # Create institutions
         institutions = config_data["institutions"]
         for institution, institution_data in institutions.items():
@@ -107,10 +109,72 @@ class Command(BaseCommand):
                 representative_user.is_representative = True
                 representative_user.working_group = working_group
                 representative_user.save()
+            except IntegrityError as e:
+                print(e)
+            except ValidationError as e:
+                print(e)
 
+        # Create heating entries
+        print("Loading heating entries...")
+        heating_entries = config_data["heating"]
+        for data in heating_entries:
+            try:
+                working_group = WorkingGroup.objects.filter(id=data["working_group_id"])[0]
+
+                # Calculate co2e
+                co2e = calc_co2_heating(
+                    consumption=data["consumption"],
+                    unit=data["unit"],
+                    fuel_type=data["fuel_type"],
+                    area_share=data["group_share"],
+                )
+                co2e_cap = co2e / working_group.n_employees
+
+                # Store in database
+                new_heating = Heating(
+                    working_group=working_group,
+                    timestamp=data["timestamp"],
+                    consumption=data["consumption"],
+                    fuel_type=data["fuel_type"],
+                    building=data["building"],
+                    group_share=data["group_share"],
+                    co2e=co2e,
+                    co2e_cap=co2e_cap
+                )
+                new_heating.save()
             except IntegrityError as e:
                 print(e)
 
+            # Create heating entries
+            print("Loading electricity entries...")
+            entries = config_data["electricity"]
+            for data in entries:
+                try:
+                    working_group = WorkingGroup.objects.filter(id=data["working_group_id"])[0]
+
+                    # Calculate co2e
+                    co2e = calc_co2_electricity(
+                        consumption=data["consumption"],
+                        fuel_type=data["fuel_type"],
+                        energy_share=data["group_share"],
+                    )
+
+                    co2e_cap = co2e / working_group.n_employees
+
+                    new_electricity = Electricity(
+                        working_group=working_group,
+                        timestamp=data["timestamp"],
+                        consumption=data["consumption"],
+                        fuel_type=data["fuel_type"],
+                        building=data["building"],
+                        group_share=data["group_share"],
+                        co2e=co2e,
+                        co2e_cap=co2e_cap,
+                    )
+                    new_electricity.save()
+
+                except IntegrityError as e:
+                    print(e)
 
 
         # Create business trips

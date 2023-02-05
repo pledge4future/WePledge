@@ -41,8 +41,7 @@ function AboutUs() {
     { title: "Guillermo Lozano Onrubia", desc: "Researcher (Chemistry)",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
     { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
     { title: "María Fernanda Lozano",    desc: "Researcher (Physics)",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
-    { title: "Alex Bercik",              desc: "Researcher (Aerospace Engineering)",     url: avatarsDir + "AlexBercik.jpeg"},
-    { title: "Álvaro Lozano Onrubia",    desc: "Researcher (Theoretical Physics)",  url: avatarsDir + "AlvaroLozanoOnrubia.jpeg"}
+    { title: "Alex Bercik",              desc: "Researcher (Aerospace Engineering)",     url: avatarsDir + "AlexBercik.jpeg"}
   ];
 
   return (
