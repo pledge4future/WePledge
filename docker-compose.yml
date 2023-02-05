@@ -4,7 +4,7 @@ services:
     image: postgres
     restart: always
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
     environment:
       - POSTGRES_DB=postgres
       - POSTGRES_USER=postgres
@@ -46,4 +46,4 @@ volumes:
   frontend_extensions:
   backend_env:
   backend_extensions:
-  db-data:
+  db_data:
