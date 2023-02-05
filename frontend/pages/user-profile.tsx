@@ -123,7 +123,7 @@ function UserProfile() {
                       shrink: true
                     }}
                     variant="outlined"
-                    value={userForm.values.workingGroup}
+                    value={userForm.values.workingGroup.name}
                     onChange={userForm.handleChange}
                     disabled={true} />
                   {editMode && (

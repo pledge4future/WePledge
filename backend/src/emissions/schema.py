@@ -663,7 +663,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for creating a new working group"""
 
     name = graphene.String(reqired=True, description="Name of the working group")
-    institution_id = graphene.Int(
+    institution_id = graphene.String(
         required=True, description="UUID of institution the working group belongs to"
     )
     research_field_id = graphene.Int(
@@ -832,6 +832,7 @@ class CreateElectricity(graphene.Mutation):
             input.fuel_type,
             input.group_share,
         )
+        
         co2e_cap = co2e / user.working_group.n_employees
 
         # Store in database
