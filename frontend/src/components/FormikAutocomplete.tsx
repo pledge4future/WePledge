@@ -18,7 +18,7 @@ const FormikAutocomplete = ({ textFieldProps, ...props }) => {
       {...props}
       {...field}
       onChange={ (_, value) => setFieldValue(name, value) }
-      getOptionLabel={(option) => option}
+      getOptionLabel={(option) => option?.name ?? ''}
       renderInput={ props => (
         <TextField {...props} {...textFieldProps} helperText={helperText} error={error} />
       )}

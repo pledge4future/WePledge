@@ -15,6 +15,7 @@ export const getInstitutions = gql`
 export const getResearchFields = gql`
     query {
         researchfields {
+        id
         field
         subfield
         }
