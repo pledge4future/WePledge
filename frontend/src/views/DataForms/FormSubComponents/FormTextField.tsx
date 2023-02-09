@@ -13,8 +13,8 @@ export const FormTextField: React.FC<FieldProps> = ({
 
   return (
     <TextField fullWidth margin="normal" variant="outlined"
-      helperText={errorText}
-      error={!!errorText}
+      // helperText={errorText}
+      // error={!!errorText}
       {...field}
       {...props}
     />
