@@ -1,5 +1,5 @@
 export const disableOnProd = () => {
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "production") {
     return {
       redirect: {
         permanent: false,
