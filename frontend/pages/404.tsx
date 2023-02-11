@@ -16,15 +16,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export const getServerSideProps = () => {
-  return {
-    redirect: {
-      permanent: false,
-      destination: "/",
-    },
-  };
-};
-
 function ErrorPage() {
 
   const classes = useStyles();
