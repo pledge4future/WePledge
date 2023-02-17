@@ -3,7 +3,7 @@ export const disableOnProd = () => {
     return {
       redirect: {
         permanent: false,
-        destination: "/",
+        destination: "/404",
       },
     };
   }
