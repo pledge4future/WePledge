@@ -3,6 +3,8 @@ import withRoot from "../src/withRoot";
 
 import PageContainer from "../src/components/PageContainer";
 import EmissionEstimation from "../src/views/EmissionEstimation";
+import { disableOnProd } from "../src/utils/disableOnProd";
+
 
 function DashboardPage() {
   return (
@@ -13,3 +15,5 @@ function DashboardPage() {
 }
 
 export default withRoot(DashboardPage);
+
+export const getServerSideProps = disableOnProd;

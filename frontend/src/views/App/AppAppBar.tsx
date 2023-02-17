@@ -28,7 +28,6 @@ import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
 import { routes, Route, authenticatedRoutes, prodRoutes } from "../../data/routes";
 
 import { AuthContext } from "../../providers/Auth/AuthContext";
-import LogoutContainer from "../Authentication/LogoutContainer";
 
 const styles = (theme: Theme) => ({
   right: {

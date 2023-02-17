@@ -1,7 +1,8 @@
 import * as React from "react";
 
 import withRoot from "../src/withRoot";
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import { disableOnProd } from "../src/utils/disableOnProd";
 
 // Material-UI
 import Link from "@material-ui/core/Link";
@@ -158,3 +159,5 @@ function SignIn() {
 }
 
 export default withRoot(SignIn);
+
+export const getServerSideProps = disableOnProd;
