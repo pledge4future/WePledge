@@ -17,17 +17,21 @@ const stableEmptyDataEntry = {
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
 
+const filterRawBackendDataForYear = (dataEntry: any, year: string) => {
+    return dataEntry.filter((item: any) => new Date(item.date).getFullYear().toString() === year)    
+}
 
-export function mapChartData(rawData: any){
-    if(Object.keys(rawData).map(key => rawData[key]).every(dataEntry => dataEntry.length === 0)){
-        return [];
+export function mapChartData(rawData: any, year: string){
+    const filtered_raw_data = {}
+    Object.keys(rawData).forEach(key => filtered_raw_data[key] = filterRawBackendDataForYear(rawData[key], year))
+    if(Object.keys(filtered_raw_data).map(key => filtered_raw_data[key]).every(dataCollection => dataCollection.length === 0)){
+        return []
     }
-    else {
-        const mappedData = {
-            "businessTotal" : mapBackendResult(rawData[backendResultFields.BUSINESSTRIP]),
-            "commutingTotal" : mapBackendResult(rawData[backendResultFields.COMMUTING]),
-            "electricityTotal": mapBackendResult(rawData[backendResultFields.ELECTRICITY]),
-            "heatingTotal": mapBackendResult(rawData[backendResultFields.HEATING])
+    const mappedData = {
+        "businessTotal" : mapBackendResult(filtered_raw_data[backendResultFields.BUSINESSTRIP]),
+        "commutingTotal" : mapBackendResult(filtered_raw_data[backendResultFields.COMMUTING]),
+        "electricityTotal": mapBackendResult(filtered_raw_data[backendResultFields.ELECTRICITY]),
+        "heatingTotal": mapBackendResult(filtered_raw_data[backendResultFields.HEATING])
         }
         const chartData = months.map(month => {
             return createDataEntry(month, mappedData)

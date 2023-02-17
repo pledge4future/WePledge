@@ -6,7 +6,7 @@ import { NoDataComponent } from "../../components/NoDataComponent";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Select, MenuItem } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 
 import { AuthContext }from '../../providers/Auth/AuthContext';
@@ -25,6 +25,16 @@ query getTotalEmissions($level: String!, $timeInterval: String!) {
     date
   }
  businesstripAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+  heatingAggregated (level: $level, timeInterval: $timeInterval) {
+    co2e
+    co2eCap
+    date
+  }
+  electricityAggregated (level: $level, timeInterval: $timeInterval) {
     co2e
     co2eCap
     date
@@ -73,6 +83,12 @@ export function IndividualDashboard(props: DashboardProps){
 
   const [showPerCapita, setShowPerCapita] = useState(false);
 
+  const [dataYear, setDataYear] = useState(new Date().getFullYear().toString())
+
+  const handleYearSelectChange = (event: any) => {
+    setDataYear(event.target.value)
+  }
+
 
   const legendBarData: CustomLegendItem[] = [
     { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
@@ -114,7 +130,7 @@ export function IndividualDashboard(props: DashboardProps){
       variables: {level: "personal", timeInterval: "month"}
     });
     if(!res.loading && !res.error) {
-      chartData = mapChartData(res.data);
+      chartData = mapChartData(res.data, dataYear);
     }
 
     if(!isAuthenticated){
@@ -127,9 +143,6 @@ export function IndividualDashboard(props: DashboardProps){
         return newItem
       });
     }
-
-
-
     if(chartData?.length > 0){
       return (
       <Grid container>
@@ -182,7 +195,7 @@ export function IndividualDashboard(props: DashboardProps){
           </Grid>
       )
     }
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated, dataYear]);
   
   return (
     <React.Fragment>
@@ -191,8 +204,21 @@ export function IndividualDashboard(props: DashboardProps){
         alignItems="center"
         justifyContent="center"
         spacing={2}>
-      <Grid item xs={10}>
+      <Grid item xs={9}>
         <h3>Individual Emissions</h3>
+      </Grid>
+      <Grid item xs={1}>
+        <Select
+        fullWidth
+        value={dataYear}
+        onChange={handleYearSelectChange}>
+          <MenuItem value={"2018"}>2018</MenuItem>
+          <MenuItem value={"2019"}>2019</MenuItem>
+          <MenuItem value={"2020"}>2020</MenuItem>
+          <MenuItem value={"2021"}>2021</MenuItem>
+          <MenuItem value={"2022"}>2022</MenuItem>
+          <MenuItem value={"2023"}>2023</MenuItem>
+        </Select>
       </Grid>
       <Grid item xs={2}>
         <div className={styles.buttonContainer}>
