@@ -205,6 +205,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     workinggroups = graphene.List(WorkingGroupType)
     researchfields = graphene.List(ResearchFieldType)
     institutions = graphene.List(InstitutionType)
+    workinggroup_users = graphene.List(UserType)
 
     # Aggregated data
     heating_aggregated = graphene.List(
@@ -258,6 +259,13 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_workinggroups(self, info, **kwargs):
         """Yields all working group objects"""
         return WorkingGroup.objects.all()
+
+    @login_required
+    @representative_required
+    def resolve_workinggroup_users(self, info, **kawrgs):
+        """Returns the users of a certain working group."""
+        id = info.context.user.working_group.id
+        return CustomUser.objects.filter(working_group__id = id)
 
     def resolve_institutions(self, info, **kwargs):
         """Yields all institution objects"""
