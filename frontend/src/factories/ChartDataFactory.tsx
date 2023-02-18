@@ -1,4 +1,4 @@
-import { format, getMonth } from "date-fns"
+import { format } from "date-fns"
 import { IChartDataEntry } from "../interfaces/ChartData"
 import { IBusinessTripEntry, ICommutingEntry, IElectricityEntry, IHeatingEntry } from "../interfaces/EmissionEntries"
 
@@ -38,7 +38,6 @@ export function mapChartData(rawData: any, year: string){
         })
         return chartData;
     }
-}
 
 function createDataEntry(month: string, rawData: any): IChartDataEntry{
     const businessTripEntry = rawData.businessTotal?.find((businessTripEntry: IBusinessTripEntry) => businessTripEntry.date === month) ?? stableEmptyDataEntry

@@ -17,11 +17,9 @@ export const prodRoutes: Route[] = [
 // TODO: add translation
 export const routes: Route[] = [
   { name: "Demo", link: "/dashboard" },
-  { name: "Emission Estimation", link: "/emission-estimation"},
   //{ name: "Overview/Results", link: "/overview-results" },
-  { name: "Participate", link: "/participate" },
+  // { name: "Participate", link: "/participate" },
   { name: "Methodology", link: "/methodology" },
-  { name: "Working Group", link: "/working-group"},
   { name: "About Us", link: "/about-us" },
   { name: "Sign In", link: "/sign-in"}
   // { name: "Contact", link: "/contact" },
@@ -34,7 +32,7 @@ export const authenticatedRoutes: Route[] = [
   { name: "Emission Estimation", link: "/emission-estimation"},
   { name: "Working Group", link: "/working-group"},
   //{ name: "Overview/Results", link: "/overview-results" },
-  { name: "Participate", link: "/participate" },
+  // { name: "Participate", link: "/participate" },
   { name: "Methodology", link: "/methodology" },
   { name: "About Us", link: "/about-us" }
 ]
