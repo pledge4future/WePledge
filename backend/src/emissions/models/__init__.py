@@ -10,3 +10,4 @@ from .businessTrip import (BusinessTrip, BusinessTripGroup)
 from .commuting import (Commuting, CommutingGroup)
 from .electricity import Electricity
 from .heating import Heating
+from .workingGroupJoinRequest import WorkingGroupJoinRequest
