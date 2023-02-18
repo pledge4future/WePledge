@@ -11,7 +11,7 @@ import Grid from '@material-ui/core/Grid';
 import Alert from '@mui/material/Alert';
 
 // Components
-import AppAppBar from "../src/views/App/AppAppBar";
+import TopBar from "../src/views/App/TopBar";
 import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
@@ -90,7 +90,7 @@ function UserProfile() {
       <Head>
         <title>{title ? `${title} | ${siteName}` : siteName}</title>
       </Head>
-      <AppAppBar />
+      <TopBar />
       <PageContainer title="User Profile">
         <Container>
           {user.me && (

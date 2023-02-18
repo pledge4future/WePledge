@@ -3,7 +3,7 @@ import React from "react";
 import Head from "next/head";
 
 // Components
-import AppAppBar from "../src/views/App/AppAppBar";
+import TopBar from "../src/views/App/TopBar";
 
 //import ProductHero from '../src/views/Product/ProductHero';
 import ProductHeroLayout from "../src/views/Product/ProductHeroLayout";
@@ -59,7 +59,7 @@ function Index() {
       <Head>
         <title>{title ? `${title} | ${siteName}` : siteName }</title>
       </Head>
-      <AppAppBar />
+      <TopBar />
       <ProductHeroLayout backgroundClassName={classes?.background} classes={classes}>
       {/* Increase the network loading priority of the background image. */}
       <>

@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import { Button, Dialog, DialogActions, DialogTitle, makeStyles, TextField } from "@material-ui/core";
 
 // Components
-import AppAppBar from "../src/views/App/AppAppBar";
+import TopBar from "../src/views/App/TopBar";
 import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
@@ -85,7 +85,7 @@ function UserProfile() {
 
   return (
     <>
-      <AppAppBar />
+      <TopBar />
       <PageContainer title="Change Password">
       <div style={{ padding: "48px 16px" }}>
         <Container maxWidth="xs">

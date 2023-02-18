@@ -5,7 +5,7 @@ import Container from "@material-ui/core/Container";
 import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@material-ui/core";
 
 // Components
-import AppAppBar from "../src/views/App/AppAppBar";
+import TopBar from "../src/views/App/TopBar";
 import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import PageContainer from "../src/components/PageContainer";
@@ -86,7 +86,7 @@ function SetNewPasswordForm() {
 
   return (
     <React.Fragment>
-      <AppAppBar />
+      <TopBar />
       <PageContainer title="Set New Password">
       <div style={{ padding: "48px 16px" }}>
         <Container maxWidth="xs">

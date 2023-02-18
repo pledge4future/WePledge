@@ -7,7 +7,7 @@ import Box from "@material-ui/core/Box";
 
 // Components-Views
 import Typography from "./Typography";
-import AppAppBar from "../views/App/AppAppBar";
+import TopBar from "../views/App/TopBar";
 import AppFooter from "../views/App/AppFooter";
 import withRoot from "../withRoot";
 
@@ -26,7 +26,7 @@ const PageContainer = (props: Props) => {
       <Head>
         <title>{title ? `${title} | ${siteName}` : siteName}</title>
       </Head>
-      <AppAppBar />
+      <TopBar />
       <Container maxWidth="lg">
         <Box mt={7} mb={12}>
           {showTitle ? (

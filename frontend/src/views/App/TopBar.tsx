@@ -55,7 +55,6 @@ const styles = (theme: Theme) => ({
     },
   },
   drawerIconContainer: {
-    // marginLeft: "auto",
     padding: 0,
     "&:hover": {
       backgroundColor: "transparent",
@@ -101,7 +100,7 @@ const styles = (theme: Theme) => ({
   placeholder: toolbarStyles(theme).root,
 });
 
-function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
+function TopBar(props: WithStyles<typeof styles> & AppBarProps) {
   const { classes } = props;
   const theme = useTheme();
   const iOS = process.browser && /iPad|iPhone|iPod/.test(navigator.userAgent);
@@ -349,4 +348,4 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   );
 }
 
-export default withStyles(styles)(AppAppBar);
+export default withStyles(styles)(TopBar);
