@@ -1,4 +1,4 @@
-import React, { useContext, useState} from "react";
+import React, { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import {
   AppBarProps,
@@ -10,7 +10,7 @@ import {
   ListItemText,
   IconButton,
   Menu,
-  ListItemIcon
+  ListItemIcon,
 } from "@material-ui/core";
 import { withStyles, Theme, useTheme } from "@material-ui/core/styles";
 import Link from "@material-ui/core/Link";
@@ -19,11 +19,11 @@ import Toolbar, { styles as toolbarStyles } from "../../components/Toolbar";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import MenuIcon from "@material-ui/icons/Menu";
 
-// icons for user submenu 
+// icons for user submenu
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
+import { StyledMenuItem } from "../../components/StyledMenu/StyledMenuItem";
 
 import { unauthenticatedRoutes, Route, authenticatedRoutes, prodRoutes } from "../../data/routes";
 
@@ -93,7 +93,7 @@ const styles = (theme: Theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: 128
+    width: 128,
   },
   toolbar: {
     justifyContent: "space-between",
@@ -114,99 +114,96 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   const [userSubmenuAnchorElement, setUserSubmenuAnchorElement] = useState(null);
   const userSubmenuOpen = Boolean(userSubmenuAnchorElement);
 
-  function openUserSubmenu(event: any): void{
+  function openUserSubmenu(event: any): void {
     setUserSubmenuAnchorElement(event?.currentTarget);
-
   }
 
   const handleUserSubmenuClose = () => {
     setUserSubmenuAnchorElement(null);
-  }
+  };
 
-  function logoutUser(){
-    if(authContext){
+  function logoutUser() {
+    if (authContext) {
       authContext?.logout();
     }
-    router.push('/');
+    router.push("/");
   }
 
-  function openUserProfile(){
-    router.push('/user-profile')
+  function openUserProfile() {
+    router.push("/user-profile");
   }
 
-
-  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV) ? unauthenticatedRoutes : prodRoutes;
-  const authenticatedPaths: Route[] = authenticatedRoutes
-
-
+  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV)
+    ? unauthenticatedRoutes
+    : prodRoutes;
+  const authenticatedPaths: Route[] = authenticatedRoutes;
 
   const tabs = (
     <div className={classes.right}>
-      {!authContext.isAuthenticated ? path.map(({ name, link }) => (
-        <Link
-          key={link}
-          color="inherit"
-          variant="h6"
-          underline="none"
-          className={classes.rightLink}
-          href={link}
-        >
-          {name}
-        </Link>
-      )) : 
-      authenticatedPaths.map(({ name, link }) => (
-        <Link
-          key={link}
-          color="inherit"
-          variant="h6"
-          underline="none"
-          className={classes.rightLink}
-          href={link}
-        >
-          {name}
-        </Link>
-      ))}
+      {!authContext.isAuthenticated
+        ? path.map(({ name, link }) => (
+            <Link
+              key={link}
+              color="inherit"
+              variant="h6"
+              underline="none"
+              className={classes.rightLink}
+              href={link}
+            >
+              {name}
+            </Link>
+          ))
+        : authenticatedPaths.map(({ name, link }) => (
+            <Link
+              key={link}
+              color="inherit"
+              variant="h6"
+              underline="none"
+              className={classes.rightLink}
+              href={link}
+            >
+              {name}
+            </Link>
+          ))}
       {authContext.isAuthenticated && (
         <>
-        <Link
-          color="inherit"
-          variant="h6"
-          underline="none"
-          className={classes.rightLink}
-          onClick={openUserSubmenu}
-          href="#"
-        >
-          {"User"}
-        </Link>
-        <Menu
-          id="user-menu-popover"
-          open={userSubmenuOpen}
-          anchorEl={userSubmenuAnchorElement}
-          onClose={handleUserSubmenuClose}
-          anchorOrigin={{
-            vertical: 'center',
-            horizontal: 'center',
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'center',
-          }}
-        >
-          <StyledMenuItem
-          onClick = {openUserProfile}>
-            <ListItemIcon>
-              <AccountCircleIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="User Profile" />
-          </StyledMenuItem>
-          <StyledMenuItem
-          onClick ={logoutUser}>
-            <ListItemIcon>
-              <ExitToAppIcon fontSize="small" />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </StyledMenuItem>
-        </Menu>
+          <Link
+            color="inherit"
+            variant="h6"
+            underline="none"
+            className={classes.rightLink}
+            onClick={openUserSubmenu}
+            href="#"
+          >
+            {"User"}
+          </Link>
+          <Menu
+            id="user-menu-popover"
+            open={userSubmenuOpen}
+            anchorEl={userSubmenuAnchorElement}
+            onClose={handleUserSubmenuClose}
+            anchorOrigin={{
+              vertical: "center",
+              horizontal: "center",
+            }}
+            transformOrigin={{
+              vertical: "top",
+              horizontal: "center",
+            }}
+          >
+            <StyledMenuItem onClick={openUserProfile}>
+              <ListItemIcon>
+                <AccountCircleIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="User Profile" />
+            </StyledMenuItem>
+            <StyledMenuItem onClick={logoutUser}>
+              <ListItemIcon>
+                <ExitToAppIcon fontSize="small" />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </StyledMenuItem>
+          </Menu>
         </>
       )}
     </div>
@@ -225,90 +222,97 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
       >
         <div className={classes.toolbarMargin} />
         <List disablePadding>
-          {!authContext.isAuthenticated ? path.map(({ name, link }) => (
-            <ListItem
-              key={link}
-              divider
-              button
-              onClick={() => {
-                setOpenDrawer(false);
-              }}
-            >
-              <ListItemText disableTypography>
-                <Link href={link}>
-                  <Typography
-                    style={{
-                      color:
-                        router.pathname === link ? theme.palette.primary.main : "rgb(107 107 107)",
-                      fontWeight: router.pathname === link ? "bold" : undefined,
-                    }}
-                  >
-                    {name}
-                  </Typography>
-                </Link>
-              </ListItemText>
-            </ListItem>
-          )) : authenticatedPaths.map(({name, link}) => (
-            <ListItem
-              key={link}
-              divider
-              button
-              onClick={() => {
-                setOpenDrawer(false);
-              }}
-            >
-              <ListItemText disableTypography>
-                <Link href={link}>
-                  <Typography
-                    style={{
-                      color:
-                        router.pathname === link ? theme.palette.primary.main : "rgb(107 107 107)",
-                      fontWeight: router.pathname === link ? "bold" : undefined,
-                    }}
-                  >
-                    {name}
-                  </Typography>
-                </Link>
-              </ListItemText>
-            </ListItem>
-          ))}
+          {!authContext.isAuthenticated
+            ? path.map(({ name, link }) => (
+                <ListItem
+                  key={link}
+                  divider
+                  button
+                  onClick={() => {
+                    setOpenDrawer(false);
+                  }}
+                >
+                  <ListItemText disableTypography>
+                    <Link href={link}>
+                      <Typography
+                        style={{
+                          color:
+                            router.pathname === link
+                              ? theme.palette.primary.main
+                              : "rgb(107 107 107)",
+                          fontWeight: router.pathname === link ? "bold" : undefined,
+                        }}
+                      >
+                        {name}
+                      </Typography>
+                    </Link>
+                  </ListItemText>
+                </ListItem>
+              ))
+            : authenticatedPaths.map(({ name, link }) => (
+                <ListItem
+                  key={link}
+                  divider
+                  button
+                  onClick={() => {
+                    setOpenDrawer(false);
+                  }}
+                >
+                  <ListItemText disableTypography>
+                    <Link href={link}>
+                      <Typography
+                        style={{
+                          color:
+                            router.pathname === link
+                              ? theme.palette.primary.main
+                              : "rgb(107 107 107)",
+                          fontWeight: router.pathname === link ? "bold" : undefined,
+                        }}
+                      >
+                        {name}
+                      </Typography>
+                    </Link>
+                  </ListItemText>
+                </ListItem>
+              ))}
           {authContext.isAuthenticated && (
-          <>
-            <ListItem
-            divider
-            button
-            onClick={() => {
-              setOpenDrawer(false);
-            }}
-          >
-            <ListItemText disableTypography>
-              <Link onClick={openUserProfile}>
-                <Typography
-                style={{
-                  color: router.pathname === '/user-profile' ? theme.palette.primary.main : "rgb(107 107 107)",
-                  fontWeight: router.pathname === '/user-profile' ? "bold" : undefined
-                }}>
-                  {"User Profile"}
-                </Typography>
-              </Link>
-            </ListItemText>
-          </ListItem>
-            <ListItem
-              divider
-              button
-              onClick={() => {
-                setOpenDrawer(false);
-              }}
-            >
-              <ListItemText disableTypography>
-                <Link onClick={logoutUser}>
-                  <Typography
-                  style={{color: "rgb(107 107 107)"}}>
-                    {"Log Out"}
-                  </Typography>
-                </Link>
-              </ListItemText>
-            </ListItem>
+            <>
+              <ListItem
+                divider
+                button
+                onClick={() => {
+                  setOpenDrawer(false);
+                }}
+              >
+                <ListItemText disableTypography>
+                  <Link onClick={openUserProfile}>
+                    <Typography
+                      style={{
+                        color:
+                          router.pathname === "/user-profile"
+                            ? theme.palette.primary.main
+                            : "rgb(107 107 107)",
+                        fontWeight: router.pathname === "/user-profile" ? "bold" : undefined,
+                      }}
+                    >
+                      {"User Profile"}
+                    </Typography>
+                  </Link>
+                </ListItemText>
+              </ListItem>
+              <ListItem
+                divider
+                button
+                onClick={() => {
+                  setOpenDrawer(false);
+                }}
+              >
+                <ListItemText disableTypography>
+                  <Link onClick={logoutUser}>
+                    <Typography style={{ color: "rgb(107 107 107)" }}>{"Log Out"}</Typography>
+                  </Link>
+                </ListItemText>
+              </ListItem>
             </>
           )}
         </List>
@@ -326,11 +330,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   const logo = (
     <div className={matches ? classes.center : classes.left}>
       <Link href="/">
-        <img
-          className={classes.logo}
-          src={"./static/images/logos/logo.svg"}
-          alt="Cube.js"
-        />
+        <img className={classes.logo} src={"./static/images/logos/logo.svg"} alt="Cube.js" />
       </Link>
     </div>
   );
