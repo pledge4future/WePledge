@@ -37,7 +37,6 @@ export function mapChartData(rawData: any, year: string){
             return createDataEntry(month, mappedData)
         })
         return chartData;
-    }
 }
 
 function createDataEntry(month: string, rawData: any): IChartDataEntry{
