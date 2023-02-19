@@ -44,6 +44,9 @@ from co2calculator.co2calculator.constants import ElectricityFuel
 from graphql_jwt.decorators import login_required
 import warnings
 
+from emissions.email import EmailClient
+from django.conf import settings
+
 #warnings.filterwarnings("error")
 
 # -------------- GraphQL Types -------------------
@@ -871,14 +874,22 @@ class RequestJoinWorkingGroup(graphene.Mutation):
         new_request.save()
 
         # Send email to group representative
+        representative = working_group.representative
+        values = {'representative_first_name': representative.first_name,
+                  'representative_last_name': representative.last_name,
+                  'user_first_name': user.first_name,
+                  'user_last_name': user.last_name,
+                  'working_group_name': working_group.name
+                  }
+        TEMPLATE_DIR = settings.TEMPLATES[0]['DIRS'][0]
+        email_client = EmailClient(template_dir=TEMPLATE_DIR)
+        text, html = email_client.get_template_email('join_request', values)
+        subject = email_client.get_template_subject('join_request', values)
+        email_client.send_email(subject,
+                                html,
+                                from_email="no-reply@pledge4future.org",
+                                to_email=representative.email)
 
-        send_mail(
-            'That’s your subject',
-            'That’s your message body',
-            'from@yourdjangoapp.com',
-            ['to@yourbestuser.com'],
-            fail_silently=False,
-        )
 
         return RequestJoinWorkingGroup(success=success, join_request=new_request)
 
