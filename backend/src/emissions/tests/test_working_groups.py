@@ -27,7 +27,7 @@ with open("../data/test_data.json") as f:
 def test_set_workinggroup(test_user1_token):
     """Test whether user data can be updated"""
     query = """
-        mutation ($id: Int!){
+        mutation ($id: String!){
           setWorkingGroup (input: {
               id: $id
             }
@@ -90,7 +90,7 @@ def test_resolve_working_groups(test_user1_token):
 def test_create_workinggroup(test_user2_token):
     """Create a new working group"""
     query = """
-        mutation ($name: String!, $institution_id: Int!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
+        mutation ($name: String!, $institution_id: String!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
             createWorkingGroup (input: {
                 name: $name
                 institutionId: $institution_id
@@ -134,7 +134,7 @@ def test_create_workinggroup(test_user2_token):
 def test_create_workinggroup_by_representative(test_user3_rep_token):
     """Create a new working group"""
     query = """
-        mutation ($name: String!, $institution_id: Int!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
+        mutation ($name: String!, $institution_id: String!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
             createWorkingGroup (input: {
                 name: $name
                 institutionId: $institution_id

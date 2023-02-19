@@ -42,7 +42,7 @@ def test_query_heating_aggregated(test_user3_rep_token):
     assert isinstance(data["data"]["heatingAggregated"][0]["date"], str)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2e"], float)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
-    assert len(data["data"]["heatingAggregated"]) == 1
+    assert len(data["data"]["heatingAggregated"]) == 2
 
 
 def test_query_heating_aggregated_personal(test_user3_rep_token):
@@ -69,7 +69,7 @@ def test_query_heating_aggregated_personal(test_user3_rep_token):
     assert isinstance(data["data"]["heatingAggregated"][0]["date"], str)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2e"], float)
     assert isinstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
-    assert len(data["data"]["heatingAggregated"]) == 1
+    assert len(data["data"]["heatingAggregated"]) == 2
     assert data["data"]["heatingAggregated"][0]["co2eCap"] == data["data"]["heatingAggregated"][0]["co2e"]
 
 def test_query_heating_aggregated_no_workinggroup(test_user1_token):
@@ -148,7 +148,7 @@ def test_query_electricity_aggregated_institution(test_user3_rep_token):
     assert isinstance(data["data"]["electricityAggregated"][0]["date"], str)
     assert isinstance(data["data"]["electricityAggregated"][0]["co2e"], float)
     assert isinstance(data["data"]["electricityAggregated"][0]["co2eCap"], float)
-    assert len(data["data"]["electricityAggregated"]) == 1
+    assert len(data["data"]["electricityAggregated"]) == 2
 
 
 
@@ -190,7 +190,7 @@ def test_query_commuting_aggregated_group(test_user1_token):
           }
     }
     """
-    variables = {"level": "group"}
+    variables = {"level": "personal"}
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"JWT {test_user1_token}",
