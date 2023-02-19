@@ -715,7 +715,7 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
 class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    id = graphene.Int(reqired=True, description="ID of the working group")
+    id = graphene.String(reqired=True, description="ID of the working group")
 
 
 # --------------- Mutations ------------------------------------
