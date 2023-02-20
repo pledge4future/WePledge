@@ -207,9 +207,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
 EMAIL_PORT = 587
-EMAIL_HOST_USER = "no-reply@pledge4future.org"
-EMAIL_HOST = "mail.greensta.de"
-EMAIL_HOST_PASSWORD = 'sY9Yp#o3'
+EMAIL_HOST_USER = "fill_in"
+EMAIL_HOST = "fill_in"
+EMAIL_HOST_PASSWORD = 'fill_in'
 
 
 
