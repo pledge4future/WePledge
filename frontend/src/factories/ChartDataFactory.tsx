@@ -38,7 +38,7 @@ export function mapChartData(rawData: any, year: string){
         })
         return chartData;
     }
-}
+
 
 function createDataEntry(month: string, rawData: any): IChartDataEntry{
     const businessTripEntry = rawData.businessTotal?.find((businessTripEntry: IBusinessTripEntry) => businessTripEntry.date === month) ?? stableEmptyDataEntry
@@ -62,7 +62,7 @@ function createDataEntry(month: string, rawData: any): IChartDataEntry{
 }
 
 function mapBackendResult(rawBackendResult: any){
-    if ( rawBackendResult && rawBackendResult.length > 1) {
+    if ( rawBackendResult && rawBackendResult.length >= 1) {
         return rawBackendResult?.map((backendResultEntry: any) => {
             const datestring = backendResultEntry.date
             const month = format(new Date(datestring), 'LLLL');
