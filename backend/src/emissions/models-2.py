@@ -10,15 +10,11 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import Sum
 from django.utils.translation import gettext_lazy as _
 from django.core.exceptions import ValidationError
-import datetime as dt
 
-from co2calculator.co2calculator.constants import (
-    TransportationMode,
-    HeatingFuel,
-    ElectricityFuel,
-    Unit
-)
+
+from co2calculator.co2calculator.constants import (TransportationMode, HeatingFuel, ElectricityFuel)
 import uuid
+
 
 
 class CustomUser(AbstractUser):
@@ -42,7 +38,6 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
-
 
 class ResearchField(models.Model):
     """Research field"""
