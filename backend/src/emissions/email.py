@@ -1,11 +1,8 @@
-from django.core.mail import send_mail
 from pathlib import Path
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
-import logging
 from django.core.mail import EmailMessage
 
-logger = logging.getLogger('test')
 
 class EmailClient:
     """Handles sending emails"""
@@ -17,7 +14,7 @@ class EmailClient:
         """
         self.template_dir = Path(template_dir) / 'email'
 
-    def get_template_email(self, name: str, values: str = None):
+    def get_template_email(self, name: str, values: dict = None):
         """
         Get template for email text from template folder
         :param name: Name of template
@@ -33,7 +30,7 @@ class EmailClient:
         text_content = strip_tags(html_message)  # Strip the html tag. So people can see the pure text at least.
         return text_content, html_message
 
-    def get_template_subject(self, name: str, values: str = None):
+    def get_template_subject(self, name: str, values: dict = None):
         """
         Get template for email subject from template folder
         :param name: Name of template
