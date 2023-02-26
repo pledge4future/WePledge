@@ -29,6 +29,7 @@ export const prodRoutes: Route[] = [
 
 export const unauthenticatedRoutes: Route[] = [
   routes.demo,
+  routes.travelPlanner,
   routes.methodology,
   routes.aboutUs,
   routes.signIn
