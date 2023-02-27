@@ -40,3 +40,12 @@ query {
     }
   }
 `
+
+export const getWorkingGroupUsers = gql`
+query {
+  workinggroupUsers {
+    id
+    email
+  }
+}
+`
