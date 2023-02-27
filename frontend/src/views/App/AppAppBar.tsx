@@ -25,7 +25,7 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 import {StyledMenuItem} from '../../components/StyledMenu/StyledMenuItem'
 
-import { routes, Route, authenticatedRoutes, prodRoutes } from "../../data/routes";
+import { unauthenticatedRoutes, Route, authenticatedRoutes, prodRoutes } from "../../data/routes";
 
 import { AuthContext } from "../../providers/Auth/AuthContext";
 
@@ -135,7 +135,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   }
 
 
-  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV) ? routes : prodRoutes;
+  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV) ? unauthenticatedRoutes : prodRoutes;
   const authenticatedPaths: Route[] = authenticatedRoutes
 
 

@@ -1,4 +1,4 @@
-import { format, getMonth } from "date-fns"
+import { format } from "date-fns"
 import { IChartDataEntry } from "../interfaces/ChartData"
 import { IBusinessTripEntry, ICommutingEntry, IElectricityEntry, IHeatingEntry } from "../interfaces/EmissionEntries"
 
