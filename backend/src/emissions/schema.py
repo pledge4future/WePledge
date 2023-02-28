@@ -610,7 +610,6 @@ class JoinRequestInput(graphene.InputObjectType):
     workinggroup_id = graphene.String(reqired=True, description="ID of the working group")
 
 
-
 class CommutingInput(graphene.InputObjectType):
     """GraphQL Input type for commuting"""
 
@@ -716,6 +715,13 @@ class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
     id = graphene.String(reqired=True, description="ID of the working group")
+
+
+class AnswerJoinRequestInput(graphene.InputObjectType):
+    """GraphQL Input type for setting working group"""
+
+    request_id = graphene.String(required=True, description="ID of join request")
+    approve = graphene.Boolean(reqired=True, description="Approve (true) or decline (false) join request")
 
 
 # --------------- Mutations ------------------------------------
@@ -838,6 +844,50 @@ class SetWorkingGroup(graphene.Mutation):
             return SetWorkingGroup(user=user, success=success)
         except ValidationError as e:
             return SetWorkingGroup(user=user, success=success, errors=e)
+
+
+
+
+class AnswerJoinRequest(graphene.Mutation):
+    """GraphQL mutation to set working group of user"""
+
+    class Arguments:
+        """Assign input type"""
+
+        input = AnswerJoinRequestInput()
+
+    success = graphene.Boolean()
+    requesting_user = graphene.Field(UserType)
+
+    @staticmethod
+    @login_required
+    def mutate(root, info, input: AnswerJoinRequestInput = None):
+        """Process incoming data"""
+        success = True
+
+        # Search for join request
+        matching_join_request = WorkingGroupJoinRequest.objects.filter(id=input.request_id)
+        if len(matching_join_request) == 0:
+            raise GraphQLError("Join request not found.")
+        else:
+            join_request = matching_join_request[0]
+
+        if not input.approve:
+            join_request.status = 'Declined'
+            join_request.save()
+        elif input.approve:
+            requesting_user = join_request.user
+            setattr(join_request.user, "working_group", join_request.working_group)
+            requesting_user.save()
+            join_request.status = 'Approved'
+            join_request.save()
+
+            try:
+                requesting_user.full_clean()
+                requesting_user.save()
+                return AnswerJoinRequest(success=success, requesting_user=requesting_user)
+            except ValidationError as e:
+                return SetWorkingGroup(success=success, requesting_user=None, errors=e)
 
 
 class RequestJoinWorkingGroup(graphene.Mutation):
@@ -1190,6 +1240,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     set_working_group = SetWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     plan_trip = PlanTrip.Field()
+    answer_join_request = AnswerJoinRequest.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
