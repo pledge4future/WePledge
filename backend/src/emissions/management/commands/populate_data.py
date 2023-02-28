@@ -4,9 +4,14 @@
 """Polulate database with dummy data"""
 
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import Group
 from django.db.models import Sum
 from django.db.utils import IntegrityError
+
+import numpy as np
+import pandas as pd
+import os
+import logging
+
 from emissions.models import (
     CustomUser,
     WorkingGroup,
@@ -18,24 +23,18 @@ from emissions.models import (
     CommutingGroup,
     ResearchField,
 )
+
 from co2calculator.co2calculator.calculate import (
     calc_co2_heating,
     calc_co2_electricity,
     calc_co2_commuting,
-    calc_co2_businesstrip,
 )
 
-import numpy as np
-import pandas as pd
-import os
-import logging
-from django.contrib.auth.management.commands import createsuperuser
 from co2calculator.co2calculator.constants import (
     TransportationMode,
     HeatingFuel,
     ElectricityFuel,
 )
-from dotenv import load_dotenv, find_dotenv
 
 # Load settings from ./.env file
 #load_dotenv(find_dotenv())

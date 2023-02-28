@@ -5,12 +5,14 @@
 import json
 import logging
 import os
+
 from django.core.management.base import BaseCommand
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
-from emissions.models import CustomUser, WorkingGroup, Institution, ResearchField, Heating, Electricity
 
-from co2calculator.co2calculator import calc_co2_heating, calc_co2_electricity
+from emissions.models import (CustomUser, WorkingGroup, Institution, ResearchField, Heating, Electricity)
+
+from co2calculator.co2calculator import (calc_co2_heating, calc_co2_electricity)
 
 logger = logging.basicConfig()
 script_path = os.path.dirname(os.path.realpath(__file__))

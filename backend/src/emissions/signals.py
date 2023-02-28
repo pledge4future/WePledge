@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """Functions to catch signals when models are being edited"""
+
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
-from emissions.models import CustomUser, WorkingGroup
+
+from emissions.models import (CustomUser, WorkingGroup)
+
 import logging
 
 logger = logging.getLogger(__name__)
