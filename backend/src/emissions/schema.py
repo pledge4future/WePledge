@@ -44,7 +44,7 @@ from co2calculator.co2calculator.constants import ElectricityFuel
 from graphql_jwt.decorators import login_required
 import warnings
 
-from emissions.email import EmailClient
+from emissions.email_client import EmailClient
 from django.conf import settings
 
 #warnings.filterwarnings("error")

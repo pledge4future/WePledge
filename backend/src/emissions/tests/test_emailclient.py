@@ -1,6 +1,6 @@
 from dotenv import load_dotenv
 load_dotenv("../../.env")
-from backend.src.emissions.email import EmailClient
+from backend.src.emissions.email_client import EmailClient
 from django.conf import settings
 
 TEMPLATE_DIR = settings.TEMPLATES[0]['DIRS'][0]
