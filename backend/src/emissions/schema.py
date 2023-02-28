@@ -861,9 +861,11 @@ class AnswerJoinRequest(graphene.Mutation):
 
     @staticmethod
     @login_required
+    @representative_required
     def mutate(root, info, input: AnswerJoinRequestInput = None):
         """Process incoming data"""
         success = True
+        user = info.context.user
 
         # Search for join request
         matching_join_request = WorkingGroupJoinRequest.objects.filter(id=input.request_id)
@@ -871,6 +873,11 @@ class AnswerJoinRequest(graphene.Mutation):
             raise GraphQLError("Join request not found.")
         else:
             join_request = matching_join_request[0]
+
+        # Check if the current user is the representative of the working group
+        if not user.working_group == join_request.working_group:
+            raise GraphQLError(f"You are not authorized to answer this join request, because you are "
+                               f"not the representative of the {join_request.working_group.name}.")
 
         if not input.approve:
             join_request.status = 'Declined'
