@@ -10,7 +10,7 @@ class WorkingGroupJoinRequest(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, blank=False, null=False)
     working_group = models.ForeignKey(WorkingGroup, on_delete=models.CASCADE, null=False)
     timestamp = models.DateTimeField(auto_now_add=True, null=False)
-    status_choices = [('Pending', 'pending' ), ('representative_notified', 'representative_notified')]
+    status_choices = [('Pending', 'pending'), ('Approved', 'approved'), ('Declined', 'declined')]
     status = models.CharField(max_length=50, choices=status_choices, null=False, blank=False)
 
     def __str__(self):
