@@ -29,6 +29,7 @@ from emissions.models import (
     CommutingGroup,
     BusinessTripGroup,
     ResearchField,
+    WorkingGroupJoinRequest
 )
 from emissions.decorators import representative_required
 
@@ -42,6 +43,9 @@ from co2calculator.co2calculator.constants import ElectricityFuel
 
 from graphql_jwt.decorators import login_required
 import warnings
+
+from emissions.email import EmailClient
+from django.conf import settings
 
 #warnings.filterwarnings("error")
 
@@ -67,6 +71,15 @@ class WorkingGroupType(DjangoObjectType):
         """Assign django model"""
 
         model = WorkingGroup
+
+class WorkingGroupJoinRequestType(DjangoObjectType):
+    """GraphQL Working Group Type"""
+
+    class Meta:
+        """Assign django model"""
+
+        model = WorkingGroupJoinRequest
+
 
 
 class InstitutionType(DjangoObjectType):
@@ -591,6 +604,12 @@ class Query(UserQuery, MeQuery, ObjectType):
 
 # -------------- Input Object Types --------------------------
 
+class JoinRequestInput(graphene.InputObjectType):
+    """GraphQL Input type for sending request to join a working group"""
+
+    workinggroup_id = graphene.String(reqired=True, description="ID of the working group")
+
+
 
 class CommutingInput(graphene.InputObjectType):
     """GraphQL Input type for commuting"""
@@ -696,11 +715,10 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
 class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    id = graphene.Int(reqired=True, description="ID of the working group")
+    id = graphene.String(reqired=True, description="ID of the working group")
 
 
 # --------------- Mutations ------------------------------------
-
 
 class AuthMutation(graphene.ObjectType):
     """Authentication mutations"""
@@ -820,6 +838,60 @@ class SetWorkingGroup(graphene.Mutation):
             return SetWorkingGroup(user=user, success=success)
         except ValidationError as e:
             return SetWorkingGroup(user=user, success=success, errors=e)
+
+
+class RequestJoinWorkingGroup(graphene.Mutation):
+    """GraphQL mutation to request to join a working group"""
+
+    class Arguments:
+        """Assign input type"""
+
+        input = JoinRequestInput()
+
+    success = graphene.Boolean()
+    join_request = graphene.Field(WorkingGroupJoinRequestType)
+
+    @staticmethod
+    @login_required
+    def mutate(root, info, input=None):
+        """Process incoming data"""
+        user = info.context.user
+        success = True
+
+        # Search matching working groups
+        matching_working_groups = WorkingGroup.objects.filter(
+            id=input.workinggroup_id
+        )
+        if len(matching_working_groups) == 0:
+            raise GraphQLError("Working group not found.")
+        else:
+            working_group = matching_working_groups[0]
+
+        # Create entry in workinggroup join requests tabel
+        new_request = WorkingGroupJoinRequest(user=user,
+                                              working_group=working_group,
+                                              status='Pending')
+        new_request.save()
+
+        # Send email to group representative
+        representative = working_group.representative
+        values = {'representative_first_name': representative.first_name,
+                  'representative_last_name': representative.last_name,
+                  'user_first_name': user.first_name,
+                  'user_last_name': user.last_name,
+                  'working_group_name': working_group.name
+                  }
+        TEMPLATE_DIR = settings.TEMPLATES[0]['DIRS'][0]
+        email_client = EmailClient(template_dir=TEMPLATE_DIR)
+        text, html = email_client.get_template_email('join_request', values)
+        subject = email_client.get_template_subject('join_request', values)
+        email_client.send_email(subject,
+                                html,
+                                from_email="no-reply@pledge4future.org",
+                                to_email=representative.email)
+
+
+        return RequestJoinWorkingGroup(success=success, join_request=new_request)
 
 
 class CreateElectricity(graphene.Mutation):
@@ -1114,6 +1186,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_electricity = CreateElectricity.Field()
     create_heating = CreateHeating.Field()
     create_commuting = CreateCommuting.Field()
+    request_join_working_group = RequestJoinWorkingGroup.Field()
     set_working_group = SetWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     plan_trip = PlanTrip.Field()
