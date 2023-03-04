@@ -278,7 +278,14 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_workinggroup_users(self, info, **kawrgs):
         """Returns the users of a certain working group."""
         id = info.context.user.working_group.id
-        return CustomUser.objects.filter(working_group__id = id)
+        return CustomUser.objects.filter(working_group__id=id)
+
+    @login_required
+    @representative_required
+    def resolve_join_requests(self, info, **kwargs):
+        """Yields all institution objects"""
+        id = info.context.user.working_group.id
+        return WorkingGroupJoinRequest.objects.all(working_group__id=id)
 
     def resolve_institutions(self, info, **kwargs):
         """Yields all institution objects"""
