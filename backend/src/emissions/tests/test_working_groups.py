@@ -174,7 +174,7 @@ def test_create_workinggroup_by_representative(test_user3_rep_token):
 
 
 
-def test_join_request_workinggroup(test_user1_token):
+def test_join_request_workinggroup(test_user1_token, test_user3_rep_token, test_user4_rep_token):
     """Test whether user data can be updated"""
     query = """
         mutation ($id: String!){
@@ -185,6 +185,7 @@ def test_join_request_workinggroup(test_user1_token):
             success
             joinRequest {
               status
+              id
               workingGroup {
                 id
               }
@@ -204,6 +205,74 @@ def test_join_request_workinggroup(test_user1_token):
     )
     assert response.status_code == 200
     data = response.json()
-    logger.info(data["data"])
     assert data["data"]['requestJoinWorkingGroup']['joinRequest']["workingGroup"]["id"] == test_workinggroups['working_group1']['id']
     assert data["data"]['requestJoinWorkingGroup']['joinRequest']["status"] == 'PENDING'
+    request_id = data["data"]['requestJoinWorkingGroup']['joinRequest']['id']
+
+    # test if error is raised if person other than the group representative answers
+    query2 = """
+            mutation ($requestId: String!, $approve: Boolean!){
+              answerJoinRequest (input: {
+                  approve: $approve
+                  requestId: $requestId
+                }
+              ) {
+                success
+                requestingUser {
+                    workingGroup {
+                        id
+                      }
+                    }
+                }
+            }
+        """
+    variables2 = {
+        "requestId": request_id,
+        "approve": True
+    }
+    headers2 = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user4_rep_token}",
+    }
+    response2 = requests.post(
+        GRAPHQL_URL, json={"query": query2, "variables": variables2}, headers=headers2
+    )
+    assert response2.status_code == 200
+    data2 = response2.json()
+    assert (
+        "You are not authorized to answer this join request" in data2["errors"][0]["message"]
+    )
+
+    # Test if request can be approved
+    query3 = """
+        mutation ($requestId: String!, $approve: Boolean!){
+          answerJoinRequest (input: {
+              approve: $approve
+              requestId: $requestId
+            }
+          ) {
+            success
+            requestingUser {
+                workingGroup {
+                    id
+                  }
+                }
+            }
+        }
+    """
+    variables3 = {
+        "requestId": request_id,
+        "approve": True
+    }
+    headers3 = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user3_rep_token}",
+    }
+    response3 = requests.post(
+        GRAPHQL_URL, json={"query": query3, "variables": variables3}, headers=headers3
+    )
+    assert response3.status_code == 200
+    data3 = response3.json()
+    assert data3['data']["answerJoinRequest"]['success']
+    assert data3['data']["answerJoinRequest"]['requestingUser']['workingGroup']['id'] == test_workinggroups['working_group1']['id']
+
