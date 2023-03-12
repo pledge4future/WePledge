@@ -232,9 +232,6 @@ def test_query_electricity_aggregated_with_invalid_token():
         == "You do not have permission to perform this action"
     )
 
-
-
-
 def test_resolve_institutions():
     """List all institutions"""
     query = """

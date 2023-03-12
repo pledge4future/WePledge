@@ -1,17 +1,15 @@
 import graphene
-from graphene_django.types import ObjectType
-from graphql_auth.schema import UserQuery, MeQuery
 from graphql import GraphQLError
 from graphql_jwt.decorators import login_required
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncYear
 
 from .types import ElectricityType, ElectricityAggregatedType
-
+from ...utils.base import BaseQuery
 from emissions.models import Electricity
 
 
-class Query(UserQuery, MeQuery, ObjectType):
+class ElectricityQuery(BaseQuery):
 
 	electricities = graphene.List(ElectricityType)
 

@@ -1,6 +1,4 @@
 import graphene
-from graphene_django.types import ObjectType
-from graphql_auth.schema import UserQuery, MeQuery
 from graphql import GraphQLError
 from graphql_jwt.decorators import login_required
 from django.db.models import Sum, F
@@ -8,9 +6,10 @@ from django.db.models.functions import TruncMonth, TruncYear
 
 from .types import CommutingType, CommutingAggregatedType
 from emissions.models import Commuting, CommutingGroup
+from ...utils.base import BaseQuery
 
 
-class Query(UserQuery, MeQuery, ObjectType):
+class CommutingQuery(BaseQuery):
 
 	commutings = graphene.List(CommutingType)
 

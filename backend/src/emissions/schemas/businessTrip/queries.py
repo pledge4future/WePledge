@@ -6,11 +6,12 @@ from graphql import GraphQLError
 from django.db.models.functions import TruncMonth, TruncYear
 from django.db.models import Sum, F
 
+from ...utils.base import BaseQuery
 from .types import BusinessTripType, BusinessTripAggregatedType
 from emissions.models import BusinessTrip, BusinessTripGroup
 
 
-class Query():
+class BusinessTripQuery(BaseQuery):
 
 	businesstrips = graphene.List(BusinessTripType)
 

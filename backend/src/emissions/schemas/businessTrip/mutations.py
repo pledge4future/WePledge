@@ -5,7 +5,6 @@ from graphql_jwt.decorators import login_required
 
 from co2calculator.co2calculator.calculate import calc_co2_businesstrip
 
-
 from emissions.models import BusinessTrip
 from .types import BusinessTripType, BusinessTripInput, PlanTripInput
 
@@ -62,6 +61,7 @@ class CreateBusinessTrip(graphene.Mutation):
         businesstrip_instance.save()
 
         return CreateBusinessTrip(success=success, businesstrip=businesstrip_instance)
+
 
 class PlanTrip(graphene.Mutation):
     """GraphQL mutation for business trips"""

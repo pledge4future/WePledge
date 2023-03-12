@@ -1,15 +1,13 @@
 import graphene
-from graphene_django.types import ObjectType
-from graphql_auth.schema import UserQuery, MeQuery
 from graphql_jwt.decorators import login_required
-from django.db.models import Sum, F
-from django.db.models.functions import TruncMonth, TruncYear
+
 
 from .types import WorkingGroupType
 from emissions.models import WorkingGroup
+from ...utils.base import BaseQuery
 
 
-class Query(UserQuery, MeQuery, ObjectType):
+class WorkingGroupQuery(BaseQuery):
 
 	workinggroups = graphene.List(WorkingGroupType)
 

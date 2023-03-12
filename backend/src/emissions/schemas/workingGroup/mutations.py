@@ -4,7 +4,9 @@ from graphql import GraphQLError
 from django.core.exceptions import ValidationError
 
 from .types import WorkingGroupType, CreateWorkingGroupInput, SetWorkingGroupInput
-from emissions.schema.types import Institution, UserType, ResearchField
+from ..institution.types import Institution
+from ..researchField.types import  ResearchField
+from ..auth.types import UserType
 from emissions.models import WorkingGroup
 
 

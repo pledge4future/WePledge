@@ -1,19 +1,16 @@
 import graphene
-from graphene_django.types import ObjectType
-
-from graphql_auth.schema import UserQuery, MeQuery
 from graphql_jwt.decorators import login_required
 from graphql import GraphQLError
 
 from django.db.models import Sum
 from django.db.models.functions import TruncMonth, TruncYear
 
-
+from ...utils.base import BaseQuery
 from .types import HeatingType, HeatingAggregatedType
 from emissions.models import Heating
 
 
-class HeatingQuery(UserQuery, MeQuery, ObjectType):
+class HeatingQuery(BaseQuery):
 
 	heatings = graphene.List(HeatingType)
 
