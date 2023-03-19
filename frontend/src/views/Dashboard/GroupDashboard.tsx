@@ -34,9 +34,6 @@ const useStyles = makeStyles({
     alignItems: 'center',
     justifyConten: 'center',
     display: 'flex'
-  },
-  containerDiv: {
-    padding: '20px'
   }
 })
 
@@ -76,7 +73,7 @@ export function GroupDashboard(props: DashboardProps){
     { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
-  const workingGroupSize = 10;
+  const workingGroupSize = 10; // TODO: Adjust to actual working group
 
   const exampleData = useMemo(() => {
     return getAllExampleData(workingGroupSize);

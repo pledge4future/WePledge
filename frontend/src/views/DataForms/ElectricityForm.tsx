@@ -42,10 +42,8 @@ export function ElectricityForm(
   const [submitData] = useMutation(ADD_ELECTRICITY,
    {
      onCompleted: (data) => {
-       console.log(data);
      },
      onError(error){
-       console.log(error)
        setErrorState(true);
      }
    });
