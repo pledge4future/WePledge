@@ -1,12 +1,17 @@
-import { Grid, makeStyles } from "@material-ui/core";
+import { Button, Grid, makeStyles, MenuItem, Select } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
+import AddIcon from '@material-ui/icons/Add';
 
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { DashboardProps } from "./interfaces/DashboardProps";
 import { NoDataComponent } from "../../components/NoDataComponent";
+import { IChartDataEntry } from "../../interfaces/ChartData";
+import { GET_TOTAL_EMISSIONS as GET_TOTAL_GROUP_EMISSIONS } from "../../api/Queries/emissions";
+import { useQuery } from "@apollo/client";
+import { mapChartData } from "../../factories/ChartDataFactory";
 
 const useStyles = makeStyles({
   horizontalLegendContainer: {
@@ -21,6 +26,14 @@ const useStyles = makeStyles({
     justifyContent: 'center',
     paddingLeft: '150px',
     paddingTop: '100px'
+  },
+  containerDiv: {
+    padding: '20px'
+  },
+  buttonContainer: {
+    alignItems: 'center',
+    justifyConten: 'center',
+    display: 'flex'
   },
   containerDiv: {
     padding: '20px'
@@ -43,6 +56,12 @@ export function GroupDashboard(props: DashboardProps){
   const [showAverage, setShowAverage] = useState(false);
   const [showPerCapita, setShowPerCapita] = useState(false)
   const [showTotalBudget, setShowTotalBudget] = useState(false);
+
+  const [dataYear, setDataYear] = useState(new Date().getFullYear().toString())
+
+  const handleYearSelectChange = (event: any) => {
+    setDataYear(event.target.value)
+  }
 
   const legendBarData: CustomLegendItem[] = [
     { label: 'Electricity', color: ChartColors.electricity, shown: showElectricity, onItemChange: (() => setShowElectricity(!showElectricity))  },
@@ -84,7 +103,17 @@ export function GroupDashboard(props: DashboardProps){
 
     const sums = calculateSum(exampleData);
     
-    let chartData;
+    let chartData: IChartDataEntry[] = [];
+
+    const res = useQuery(GET_TOTAL_GROUP_EMISSIONS, {
+      variables: {level: "group", timeInterval: "month"}
+    });
+
+    if(!res.loading && !res.error) {
+      chartData = mapChartData(res.data, dataYear);
+    }
+
+
     if (!isAuthenticated){
       chartData = exampleData.map((item, index) => { 
         let newItem = {
@@ -93,11 +122,7 @@ export function GroupDashboard(props: DashboardProps){
         }
         return newItem
       });
-    } else {
-      // later add data query
-      chartData = []
     }
-
 
     if(chartData.length > 0 ){
     return (
@@ -155,16 +180,49 @@ export function GroupDashboard(props: DashboardProps){
           </Grid>
       )
     }
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget, isAuthenticated]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget, isAuthenticated, dataYear]);
   
   return (
-    <React.Fragment>
-    <h3>Group Emissions</h3>
-    <div id="ChartContainer">
-      {
-        renderComposedGroupChart()
-      }
-    </div>
-    </React.Fragment>
+      <React.Fragment>
+      <Grid 
+          container
+          alignItems="center"
+          justifyContent="center"
+          spacing={2}>
+        <Grid item xs={9}>
+          <h3>Group Emissions</h3>
+        </Grid>
+        <Grid item xs={1}>
+          <Select
+          fullWidth
+          value={dataYear}
+          onChange={handleYearSelectChange}>
+            <MenuItem value={"2018"}>2018</MenuItem>
+            <MenuItem value={"2019"}>2019</MenuItem>
+            <MenuItem value={"2020"}>2020</MenuItem>
+            <MenuItem value={"2021"}>2021</MenuItem>
+            <MenuItem value={"2022"}>2022</MenuItem>
+            <MenuItem value={"2023"}>2023</MenuItem>
+          </Select>
+        </Grid>
+        <Grid item xs={2}>
+          <div className={styles.buttonContainer}>
+          <Button 
+            variant="outlined"
+            startIcon={<AddIcon />}
+            color="secondary"
+            href="/dataforms"
+            >
+            Add Emissions
+          </Button>
+          </div>
+        </Grid>
+      </Grid>
+      <div id="ChartContainer">
+        {
+          renderComposedGroupChart()
+        }
+      </div>
+      </React.Fragment>
   )
 }
