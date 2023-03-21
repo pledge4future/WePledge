@@ -1,4 +1,4 @@
-import { format, getMonth } from "date-fns"
+import { format } from "date-fns"
 import { IChartDataEntry } from "../interfaces/ChartData"
 import { IBusinessTripEntry, ICommutingEntry, IElectricityEntry, IHeatingEntry } from "../interfaces/EmissionEntries"
 
@@ -37,7 +37,7 @@ export function mapChartData(rawData: any, year: string,  workingGroupSize: numb
             return createDataEntry(month, mappedData, workingGroupSize)
         })
         return chartData;
-    }
+}
 
 
 function createDataEntry(month: string, rawData: any, workingGroupSize: number): IChartDataEntry{

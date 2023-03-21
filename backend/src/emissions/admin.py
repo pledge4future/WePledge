@@ -16,6 +16,7 @@ from emissions.models import (
     BusinessTrip,
     BusinessTripGroup,
     ResearchField,
+    WorkingGroupJoinRequest
 )
 
 # Admin Models: Configure how information is displayed on Django Admin page
@@ -36,6 +37,7 @@ admin.site.register(CommutingGroup)
 admin.site.register(BusinessTrip)
 admin.site.register(BusinessTripGroup)
 admin.site.register(ResearchField)
+admin.site.register(WorkingGroupJoinRequest)
 
 # GraphQL
 app = apps.get_app_config("graphql_auth")

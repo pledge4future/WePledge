@@ -29,6 +29,7 @@ from emissions.models import (
     CommutingGroup,
     BusinessTripGroup,
     ResearchField,
+    WorkingGroupJoinRequest
 )
 from emissions.decorators import representative_required
 
@@ -42,6 +43,9 @@ from co2calculator.co2calculator.constants import ElectricityFuel
 
 from graphql_jwt.decorators import login_required
 import warnings
+
+from emissions.email_client import EmailClient
+from django.conf import settings
 
 #warnings.filterwarnings("error")
 
@@ -67,6 +71,15 @@ class WorkingGroupType(DjangoObjectType):
         """Assign django model"""
 
         model = WorkingGroup
+
+class WorkingGroupJoinRequestType(DjangoObjectType):
+    """GraphQL Working Group Type"""
+
+    class Meta:
+        """Assign django model"""
+
+        model = WorkingGroupJoinRequest
+
 
 
 class InstitutionType(DjangoObjectType):
@@ -205,6 +218,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     workinggroups = graphene.List(WorkingGroupType)
     researchfields = graphene.List(ResearchFieldType)
     institutions = graphene.List(InstitutionType)
+    workinggroup_users = graphene.List(UserType)
 
     # Aggregated data
     heating_aggregated = graphene.List(
@@ -258,6 +272,20 @@ class Query(UserQuery, MeQuery, ObjectType):
     def resolve_workinggroups(self, info, **kwargs):
         """Yields all working group objects"""
         return WorkingGroup.objects.all()
+
+    @login_required
+    @representative_required
+    def resolve_workinggroup_users(self, info, **kawrgs):
+        """Returns the users of a certain working group."""
+        id = info.context.user.working_group.id
+        return CustomUser.objects.filter(working_group__id=id)
+
+    @login_required
+    @representative_required
+    def resolve_join_requests(self, info, **kwargs):
+        """Yields all institution objects"""
+        id = info.context.user.working_group.id
+        return WorkingGroupJoinRequest.objects.all(working_group__id=id)
 
     def resolve_institutions(self, info, **kwargs):
         """Yields all institution objects"""
@@ -583,6 +611,11 @@ class Query(UserQuery, MeQuery, ObjectType):
 
 # -------------- Input Object Types --------------------------
 
+class JoinRequestInput(graphene.InputObjectType):
+    """GraphQL Input type for sending request to join a working group"""
+
+    workinggroup_id = graphene.String(reqired=True, description="ID of the working group")
+
 
 class CommutingInput(graphene.InputObjectType):
     """GraphQL Input type for commuting"""
@@ -688,11 +721,17 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
 class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    id = graphene.Int(reqired=True, description="ID of the working group")
+    id = graphene.String(reqired=True, description="ID of the working group")
+
+
+class AnswerJoinRequestInput(graphene.InputObjectType):
+    """GraphQL Input type for setting working group"""
+
+    request_id = graphene.String(required=True, description="ID of join request")
+    approve = graphene.Boolean(reqired=True, description="Approve (true) or decline (false) join request")
 
 
 # --------------- Mutations ------------------------------------
-
 
 class AuthMutation(graphene.ObjectType):
     """Authentication mutations"""
@@ -812,6 +851,111 @@ class SetWorkingGroup(graphene.Mutation):
             return SetWorkingGroup(user=user, success=success)
         except ValidationError as e:
             return SetWorkingGroup(user=user, success=success, errors=e)
+
+
+
+
+class AnswerJoinRequest(graphene.Mutation):
+    """GraphQL mutation to set working group of user"""
+
+    class Arguments:
+        """Assign input type"""
+
+        input = AnswerJoinRequestInput()
+
+    success = graphene.Boolean()
+    requesting_user = graphene.Field(UserType)
+
+    @staticmethod
+    @login_required
+    @representative_required
+    def mutate(root, info, input: AnswerJoinRequestInput = None):
+        """Process incoming data"""
+        success = True
+        user = info.context.user
+
+        # Search for join request
+        matching_join_request = WorkingGroupJoinRequest.objects.filter(id=input.request_id)
+        if len(matching_join_request) == 0:
+            raise GraphQLError("Join request not found.")
+        else:
+            join_request = matching_join_request[0]
+
+        # Check if the current user is the representative of the working group
+        if not user.working_group == join_request.working_group:
+            raise GraphQLError(f"You are not authorized to answer this join request, because you are "
+                               f"not the representative of the {join_request.working_group.name}.")
+
+        if not input.approve:
+            join_request.status = 'Declined'
+            join_request.save()
+        elif input.approve:
+            requesting_user = join_request.user
+            setattr(join_request.user, "working_group", join_request.working_group)
+            requesting_user.save()
+            join_request.status = 'Approved'
+            join_request.save()
+
+            try:
+                requesting_user.full_clean()
+                requesting_user.save()
+                return AnswerJoinRequest(success=success, requesting_user=requesting_user)
+            except ValidationError as e:
+                return SetWorkingGroup(success=success, requesting_user=None, errors=e)
+
+
+class RequestJoinWorkingGroup(graphene.Mutation):
+    """GraphQL mutation to request to join a working group"""
+
+    class Arguments:
+        """Assign input type"""
+
+        input = JoinRequestInput()
+
+    success = graphene.Boolean()
+    join_request = graphene.Field(WorkingGroupJoinRequestType)
+
+    @staticmethod
+    @login_required
+    def mutate(root, info, input=None):
+        """Process incoming data"""
+        user = info.context.user
+        success = True
+
+        # Search matching working groups
+        matching_working_groups = WorkingGroup.objects.filter(
+            id=input.workinggroup_id
+        )
+        if len(matching_working_groups) == 0:
+            raise GraphQLError("Working group not found.")
+        else:
+            working_group = matching_working_groups[0]
+
+        # Create entry in workinggroup join requests tabel
+        new_request = WorkingGroupJoinRequest(user=user,
+                                              working_group=working_group,
+                                              status='Pending')
+        new_request.save()
+
+        # Send email to group representative
+        representative = working_group.representative
+        values = {'representative_first_name': representative.first_name,
+                  'representative_last_name': representative.last_name,
+                  'user_first_name': user.first_name,
+                  'user_last_name': user.last_name,
+                  'working_group_name': working_group.name
+                  }
+        TEMPLATE_DIR = settings.TEMPLATES[0]['DIRS'][0]
+        email_client = EmailClient(template_dir=TEMPLATE_DIR)
+        text, html = email_client.get_template_email('join_request', values)
+        subject = email_client.get_template_subject('join_request', values)
+        email_client.send_email(subject,
+                                html,
+                                from_email="no-reply@pledge4future.org",
+                                to_email=representative.email)
+
+
+        return RequestJoinWorkingGroup(success=success, join_request=new_request)
 
 
 class CreateElectricity(graphene.Mutation):
@@ -1106,9 +1250,11 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_electricity = CreateElectricity.Field()
     create_heating = CreateHeating.Field()
     create_commuting = CreateCommuting.Field()
+    request_join_working_group = RequestJoinWorkingGroup.Field()
     set_working_group = SetWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     plan_trip = PlanTrip.Field()
+    answer_join_request = AnswerJoinRequest.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

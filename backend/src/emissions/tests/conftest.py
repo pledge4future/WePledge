@@ -110,8 +110,10 @@ def test_user3_rep_token():
     yield data["data"]["tokenAuth"]["token"]
 
 
+
+
 @pytest.fixture(scope="session")
-def test_user_token2():
+def test_user4_rep_token():
     """Log in test user and yield token"""
 
     query = """
@@ -127,12 +129,14 @@ def test_user_token2():
           }
         }
     """
-    # change to test_user1 (or whatever) in test_data_users
-    variables = {"email": "Sebastian.Mueller@uni-hd.de", "password": "test_password"}
+    variables = {"email": test_data_users["test_user4_representative"]["email"],
+                 "password": test_data_users["test_user4_representative"]["password"]
+                 }
     response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables})
     assert response.status_code == 200
     data = response.json()
     assert data["data"]["tokenAuth"]["success"]
 
     yield data["data"]["tokenAuth"]["token"]
+
 
