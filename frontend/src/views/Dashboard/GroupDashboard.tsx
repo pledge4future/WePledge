@@ -1,4 +1,4 @@
-import { Button, Grid, makeStyles, MenuItem, Select } from "@material-ui/core";
+import { Button, CircularProgress, Grid, makeStyles, MenuItem, Select } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
@@ -12,6 +12,8 @@ import { IChartDataEntry } from "../../interfaces/ChartData";
 import { GET_TOTAL_EMISSIONS as GET_TOTAL_GROUP_EMISSIONS } from "../../api/Queries/emissions";
 import { useQuery } from "@apollo/client";
 import { mapChartData } from "../../factories/ChartDataFactory";
+import { getUserProfile } from "../../api/Queries/me";
+import { NoWorkingGroupComponent } from "../../components/NoWorkingGroupComponent";
 
 const useStyles = makeStyles({
   horizontalLegendContainer: {
@@ -43,6 +45,9 @@ export function GroupDashboard(props: DashboardProps){
 
   const { isAuthenticated } = props; 
 
+  const {loading, error, data: userProfile} = useQuery(getUserProfile);
+  console.log("🚀 ~ file: GroupDashboard.tsx:49 ~ GroupDashboard ~ userProfile:", userProfile)
+
   const styles = useStyles();
 
   const [showElectricity, setShowElectricity] = useState(true);
@@ -73,7 +78,7 @@ export function GroupDashboard(props: DashboardProps){
     { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
-  const workingGroupSize = 10; // TODO: Adjust to actual working group
+  const workingGroupSize = userProfile?.me?.workingGroup?.nEmployees ?? 1;
 
   const exampleData = useMemo(() => {
     return getAllExampleData(workingGroupSize);
@@ -107,7 +112,7 @@ export function GroupDashboard(props: DashboardProps){
     });
 
     if(!res.loading && !res.error) {
-      chartData = mapChartData(res.data, dataYear);
+      chartData = mapChartData(res.data, dataYear, workingGroupSize);
     }
 
 
@@ -119,6 +124,24 @@ export function GroupDashboard(props: DashboardProps){
         }
         return newItem
       });
+    }
+
+    if(res.loading){
+      <React.Fragment>
+                        <CircularProgress color="primary"/>
+      </React.Fragment>
+    }
+
+    if(!userProfile?.me?.workingGroup && !loading){
+      return (
+      <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoWorkingGroupComponent></NoWorkingGroupComponent>
+              </div>
+            </Grid>
+      </Grid>
+      )
     }
 
     if(chartData.length > 0 ){
@@ -166,7 +189,8 @@ export function GroupDashboard(props: DashboardProps){
                 </div>
               </Grid>
           </Grid>
-    )} else {
+    )}
+    if(chartData.length = 0 && !res.loading ) {
       return (
         <Grid container>
           <Grid item xs={9}>
@@ -177,7 +201,7 @@ export function GroupDashboard(props: DashboardProps){
           </Grid>
       )
     }
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget, isAuthenticated, dataYear]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showAverage, showPerCapita, showTotalBudget, isAuthenticated, dataYear, userProfile, loading, workingGroupSize]);
   
   return (
       <React.Fragment>
