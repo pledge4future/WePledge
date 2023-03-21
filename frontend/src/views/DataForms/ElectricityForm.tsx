@@ -65,7 +65,7 @@ export function ElectricityForm(
       console.log(values)
       const { setSubmitting } = formikHelpers;
       const queryParams = {
-        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        timestamp: format(new Date(values.year, values.month-1, 1), 'yyyy-MM-dd'),
         consumption: values.consumption,
         fuelType: values.energySource, 
         building: values. building,
