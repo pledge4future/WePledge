@@ -46,7 +46,6 @@ export function GroupDashboard(props: DashboardProps){
   const { isAuthenticated } = props; 
 
   const {loading, error, data: userProfile} = useQuery(getUserProfile);
-  console.log("🚀 ~ file: GroupDashboard.tsx:49 ~ GroupDashboard ~ userProfile:", userProfile)
 
   const styles = useStyles();
 
@@ -128,7 +127,7 @@ export function GroupDashboard(props: DashboardProps){
 
     if(res.loading){
       <React.Fragment>
-                        <CircularProgress color="primary"/>
+          <CircularProgress color="primary"/>
       </React.Fragment>
     }
 
@@ -167,7 +166,7 @@ export function GroupDashboard(props: DashboardProps){
             ({
             showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
             })
-            <Line dataKey="total" stroke={ChartColors.trendLine} />
+            <Line name="total" dataKey="sum" stroke={ChartColors.trendLine} />
             ({
               showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
             })

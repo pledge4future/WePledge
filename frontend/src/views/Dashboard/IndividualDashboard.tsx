@@ -142,7 +142,7 @@ export function IndividualDashboard(props: DashboardProps){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="total" stroke={ChartColors.trendLine} />
+        <Line name="total" dataKey="sum" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })

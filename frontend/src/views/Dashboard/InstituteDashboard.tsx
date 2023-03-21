@@ -1,4 +1,4 @@
-import { makeStyles, Grid, Select, MenuItem, Button } from "@material-ui/core";
+import { makeStyles, Grid, Select, MenuItem, Button, CircularProgress } from "@material-ui/core";
 import { ChartColors } from './viz/VizColors';
 import React, { useState, useCallback, useMemo } from "react";
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
@@ -13,6 +13,8 @@ import { IChartDataEntry } from "../../interfaces/ChartData";
 import { GET_TOTAL_EMISSIONS as GET_TOTAL_INSTITUTE_EMISISONS } from "../../api/Queries/emissions";
 import { useQuery } from "@apollo/client";
 import { mapChartData } from "../../factories/ChartDataFactory";
+import { getUserProfile } from "../../api/Queries/me";
+import { NoWorkingGroupComponent } from "../../components/NoWorkingGroupComponent";
 
 const useStyles = makeStyles({
   horizontalLegendContainer: {
@@ -45,6 +47,8 @@ export function InstituteDashboard(props: DashboardProps){
   const { isAuthenticated } = props;
 
   const styles = useStyles();
+
+  const {loading, error, data: userProfile} = useQuery(getUserProfile);
 
   const [showElectricity, setShowElectricity] = useState(true);
   const [showHeating, setShowHeating] = useState(true);
@@ -106,7 +110,7 @@ export function InstituteDashboard(props: DashboardProps){
     });
 
     if(!res.loading && !res.error) {
-      chartData = mapChartData(res.data, dataYear)
+      chartData = mapChartData(res.data, dataYear, workingGroupSize)
     }
 
     if(!isAuthenticated){
@@ -117,6 +121,24 @@ export function InstituteDashboard(props: DashboardProps){
       }
       return newItem
     });
+    }
+
+    if(res.loading){
+      <React.Fragment>
+          <CircularProgress color="primary"/>
+      </React.Fragment>
+    }
+
+    if(!userProfile?.me?.workingGroup && !loading){
+      return (
+      <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoWorkingGroupComponent></NoWorkingGroupComponent>
+              </div>
+            </Grid>
+      </Grid>
+      )
     }
 
     if(chartData.length > 0){
@@ -142,7 +164,7 @@ export function InstituteDashboard(props: DashboardProps){
             ({
             showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
             })
-            <Line dataKey="total" stroke={ChartColors.trendLine} />
+            <Line name="total" dataKey="sum" stroke={ChartColors.trendLine} />
             ({
             showPerCapita && <Line dataKey="totalMax" stroke={ChartColors.totalBudgetLine} />
             })
@@ -159,7 +181,8 @@ export function InstituteDashboard(props: DashboardProps){
           </Grid>
           </Grid>
       )
-    } else {
+    }
+    if(chartData.length = 0 && !res.loading ){
       return(
       <Grid container>
       <Grid item xs={9}>
@@ -169,7 +192,7 @@ export function InstituteDashboard(props: DashboardProps){
         </Grid>
       </Grid>
       )}
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated]);
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated, dataYear, userProfile, loading, workingGroupSize]);
   
   return (
     <React.Fragment>
