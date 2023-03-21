@@ -189,7 +189,7 @@ export function GroupDashboard(props: DashboardProps){
               </Grid>
           </Grid>
     )}
-    if(chartData.length = 0 && !res.loading ) {
+    if(chartData.length === 0 && !res.loading ) {
       return (
         <Grid container>
           <Grid item xs={9}>
