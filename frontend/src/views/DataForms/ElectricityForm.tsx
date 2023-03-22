@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, Snackbar, TextField } from '@material-ui/core';
 import {InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { FormikHelpers, useFormik } from "formik";
 import {tooltips } from './FormTooltips';
@@ -6,6 +6,7 @@ import React from 'react';
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { format } from 'date-fns'
+import { Alert } from '@mui/material';
 
 
 // mutation to add electricity entry
@@ -37,15 +38,21 @@ export function ElectricityForm(
 ){
 
   const [errorState, setErrorState] = useState(false);
+  const [successState, setSuccessState] = useState(false);
 
   // data query
   const [submitData] = useMutation(ADD_ELECTRICITY,
    {
      onCompleted: (data) => {
-       console.log(data);
+      if(data.createElectricity?.success === true){
+        setSuccessState(true)
+        formik.resetForm();
+      }
+      else{
+        setErrorState(true);
+      }
      },
      onError(error){
-       console.log(error)
        setErrorState(true);
      }
    });
@@ -223,6 +230,16 @@ export function ElectricityForm(
           Add entry
         </Button>
   </form>
+  <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+    <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+      Successfully added entry!
+    </Alert>
+  </Snackbar>
+  <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+    <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+      Failed to add entry!
+    </Alert>
+  </Snackbar>
   </div>
   )
 }
