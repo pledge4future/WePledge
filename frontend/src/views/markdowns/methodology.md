@@ -1,8 +1,7 @@
 # How do we compute your carbon footprint?
 
-We believe that good solutions come with the use of scientifically sound approaches and transparency. This is why we are sharing the information about how we calculate $CO_2$ emissions from the user inputs. For this, we need so-called emission factors, which allow us to convert units of activity (e.g., distance travelled in km) to greenhouse gas emissions in $CO_2$ equivalents. 
 
-You can find the source code and data in our [GitHub repository](https://github.com/pledge4future/WePledge).
+We believe that good solutions depend on the use of scientifically sound approaches and transparency. This is why we are sharing the details of how we calculate CO<sub>2</sub> emissions from user inputs. These calcuations require emission factors, which allow us to convert units of activity (e.g., distance travelled in km) to greenhouse gas emissions in CO<sub>2</sub> equivalents. 
 
 
 
@@ -13,12 +12,18 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
 
 
 
+Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide (CO<sub>2</sub>), methane (CH<sub>4</sub>), nitrous oxides (N<sub>2</sub>O). The molecules of these gases contribute differently to global warming. For example, the warming potential of one methane molecule is 21 times higher over 100 years than that of one carbon dioxide molecule over the same time span (Moss et al. 2000). For this reason, the impact of different greenhouse gases is usually converted to the equivalent impact of carbon dioxide. Therefore, for carbon footprint calculations, CO<sub>2</sub> equivalents are used as a standard unit (Gohar & Shine 2007).
+<br/>
+
+
 ### Calculation of your carbon footprint
 
  ![Methodology](../../../static/images/methodology.png)
 
 
-The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020), who calculated the carbon footprint of their research institute. Emissions are given as $CO_2$ equivalents $E$ [kg]. 
+
+The *co2calculator* can compute emissions from four big areas of the workplace: electricity, heating, business trips and commuting. These were identified as the major emissions sources by Jahnke et al. (2020) based on their calculation of the carbon footprint of their research institute. Emissions are given as CO<sub>2</sub> equivalents $E$ [kg]. 
+
 
 Business trips and field trips are assessed on an individual level whereas heating and electricity are assessed once for the entire research group.
 
@@ -31,14 +36,14 @@ More information about the sources of the emission factors can be found in chapt
 
 The specific emission factors for different activities are collected in [this emission factor table](https://github.com/pledge4future/co2calculator/blob/dev/data/emission_factors.csv). 
 
-The basic formula is $E = \epsilon \times C$, with $E$ being the $CO_2$ equivalents, $\epsilon$ being a specific emission factor and $C$ being consumption (e.g. of electricity).
 
-
+The basic formula is $E = \epsilon \times C$, with $E$ being the CO<sub>2</sub> equivalent, $\epsilon$ being a specific emission factor and $C$ being consumption (e.g. of electricity).
+<br/>
 
 
 ## 2 Electricity
 
-For electricity the user can select between the German electricity mix or solar power. The German electricity mix applies, if the research institute has a regular German electricity contract. Solar power is applicable, if the institute uses self-generated power from solar panels. The user is asked for the annual electricity consumption $C$ [kWh] which is then used to calculate the $CO_2$ equivalents $E$ [kg]. Since the emission factors $\epsilon$ for heating and electricity in the ProBas database apply for a consumption of 1 TJ, the consumption needs to be converted from kWh to TJ with a conversion factor of 277777.7778.
+For electricity the user can select between the German electricity mix or solar power. The German electricity mix is applicable if the research institute has a regular German electricity contract, whereas solar power is applicable if the institute uses self-generated power from solar panels. The user is also asked for the annual electricity consumption $C$ [kWh] which is then used together with the selected electricity-source emission factor to calculate the CO<sub>2</sub> equivalents $E$ [kg]. Since the emission factors $\epsilon$ for heating and electricity in the ProBas database are in units of 1 TJ, the consumption is converted from kWh to TJ with a conversion factor of 277777.7778.
 
 $$
 E = \epsilon_{\text{electricity}} \times \frac{C}{277777.7778}
@@ -49,14 +54,15 @@ $\underline{\text{Example:}}$ $3942.6 \text{ kg} = 109518 \text{ kg/TJ} \times \
 
 ### Defining a share of electricity use
 
-If the electricity consumption is only known for a building or building complex and the group occupies only parts of the building and uses only parts of the appliances, the total consumption and an estimate of the share of energy use (approximated from the share of the building area) can be provided.
 
-
-
+If the electricity consumption is only known for a building or building complex where the group only uses a subset of the building and its appliances, the total consumption and an estimate of the share of energy use approximated by the share of the building area can be provided.
+<br/>
+<br/>
 
 ## 3 Heating
 
-The user is asked about the annual consumption $C$ and the energy sources for heating, based on which the $CO_2$ emissions $E$ are determined. Heating consumption can be provided in kWh, or in other units, depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
+The user is asked to provide the energy sources and annual consumption $C$ of heating upon which the CO<sub>2</sub>e emissions $E$ are determined. Heating consumption can be provided in kWh or in other units depending on the fuel type (see this [conversion table](https://github.com/pledge4future/co2calculator/blob/dev/data/conversion_factors_heating.csv)):
+
 - Oil: l
 - Liquid gas, Coal, Pellets, Wsoodchips: kg
 - Gas: $m^3$
@@ -65,7 +71,7 @@ The conversion factors $\kappa$ are retrieved from:
 - [BAFA (2020): Merkblatt zur Ermittlung des Gesamtenergieverbrauchs](https://www.bafa.de/SharedDocs/Downloads/DE/Energie/ea_ermittlung_gesamtenergieverbrauch.html)
 - [Krajnc, N. (2015): Wood fuels handbook, FAO](https://agris.fao.org/agris-search/search.do?recordID=XF2017001919)
 
-The emission factors \epsilon_{\text{heating}} depend on the fuel type. Fuel types may be oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
+The emission factors \epsilon_{\text{heating}} depend on the fuel type. Fuel types include oil, gas, liquid gas, electricity, coal, district heating, different types of heat pumps (ground, air, water), pellets, woodchips and solar.
 
 $$
 C = \kappa \times C_{\text{other unit}}
@@ -78,12 +84,14 @@ $\text{Example:}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{100
 
 ### Defining a share of heating consumption
 
-If the heating consumption is only known for a building or building complex and the group occupies only parts of the building, the total consumption and an estimate of the share of energy use (approximated from the share of the building area) can be provided.
 
+If the heating consumption is only known for a building or building complex, and the group occupies only parts of the building, the total consumption and an estimate of the share of energy use approximated from the share of the building area can be provided.
+<br/>
+<br/>
 
 ## 4 Business trips
 
-The `co2calculator` allows to quantify the $CO_2e$  emissions $E$ [kg] for individual business trips for different modes of transport. The $CO_2$  equivalent is a function of the distance $D$ travelled in km. This distance may either be directly provided, or it may be computed from given start and stop locations using [distances.py](https://github.com/pledge4future/co2calculator/blob/dev/co2calculator/distances.py). In the latter case, the coordinates of the locations have to be retrieved by geocoding and then the travel distance between the locations is computed. Next to the distance or the locations, the user defines the mode of transport and its specifica.
+The `co2calculator` allows one to quantify the CO<sub>2</sub>e emissions $E$ [kg] from individual business trips based on different modes of transport. The CO<sub>2</sub> equivalent is a function of the distance $D$ travelled in km. This distance may either be provided directly, or it may be computed from inputed start and end locations using [distances.py](https://github.com/pledge4future/co2calculator/blob/dev/co2calculator/distances.py). In the latter case, the coordinates of the locations are retrieved through geocoding after which the travel distance between the locations is computed. In addition to the distance or locations, the user also defines the mode of transport and its specifications.
 
 ### Geocoding
 
@@ -98,10 +106,10 @@ To find airports ([geocoding_airport](https://github.com/pledge4future/co2calcul
 
 ### Distance computation
 
-For cars and motorbikes, distances are computed with [openrouteservice](https://openrouteservice.org/dev/#/api-docs/directions) with the `profile='driving-car'`.
+For cars and motorbikes, distances are computed using [openrouteservice](https://openrouteservice.org/dev/#/api-docs/directions) with the `profile='driving-car'`.
 
-For other modes of transport (airplane, ferry, train, bus), the distances between the locations as the crow flies are computed with the [haversine formula](https://github.com/pledge4future/co2calculator/blob/ffc12ec577cb18bf7c67b628ff7d9d79ffeef25b/co2calculator/distances.py#L20). Then, different detour coefficients or constants are applied.
-With the `roundtrip` option, users can define if their trip is a roundtrip in which case the distance will be doubled. 
+For other modes of transport (airplane, ferry, train, bus), the distance is calculated using the shortest path between locations following the [haversine formula] (https://github.com/pledge4future/co2calculator/blob/ffc12ec577cb18bf7c67b628ff7d9d79ffeef25b/co2calculator/distances.py#L20). Then, different detour coefficients or constants are applied.
+With the `roundtrip` option, users can define if their trip is a roundtrip in which case the distance is doubled. 
 
 #### Detour
 
@@ -114,9 +122,11 @@ Train | x 1.2 | Adapted from [GES 1point5](https://labos1point5.org/ges-1point5)
 Plane | + 95 km | CSN EN 16258 - Methodology for calculation and declaration of energy consumption and GHG emissions of transport services (freight and passengers), European Committee for Standardization, Brussels, November 2012, [Méthode pour la réalisation des bilans d’émissions de gaz à effet de , Version 4](https://www.ecologie.gouv.fr/sites/default/files/Guide%20m%C3%A9thodologique%20sp%C3%A9cifique%20pour%20les%20collectivit%C3%A9s%20pour%20la%20r%C3%A9alisation%20du%20bilan%20d%E2%80%99%C3%A9missions%20de%20GES.pdf), p. 53
 
 
-### Specifica of the modes of transport for business trips
+### Specifications of the modes of transport for business trips
 
-Business trips include five transportation types: car, train, bus, airplane, and ferry. Generally, the $CO_2e$  emissions $E$ in kg per passenger are calculated by multiplying the distance $D$ with a specific emission factor $\epsilon$. For all transportation modes except for car, the given emission factors are already in passenger kilometers. For cars, the emission factors we are using are in vehicle kilometers, so we multiply the distance by the emission factor and divide it by the number of passengers.  
+
+Business trips include five transportation types: car, bus, train, airplane, and ferry. Generally, the CO<sub>2</sub>e emissions $E$ in kg per passenger are calculated by multiplying the distance $D$ with a specific emission factor $\epsilon$. For all transportation modes except for car, the given emission factors are already in passenger kilometers. For cars, the emission factors used are in vehicle kilometers, so we multiply the distance by the emission factor and divide it by the number of passengers.  
+
 
 $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 
@@ -125,7 +135,7 @@ $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \tim
 $\text{Example (long-distance train):}$ $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
 
 
-The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+The emission factors $\epsilon$ are specified according to the transportation modes and their specifications, which are shown in the table below. We ask the user to give the values for the following specifications. If no value is given, the values marked in **bold** are used as default values.
 
 Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
@@ -157,7 +167,7 @@ $CO_2e$  emissions $E$ [kg] from commuting are also quantified individually for 
 - Bicycle
 - Pedelec
 
-### Specifica of the modes of transport for commuting
+### Specifications of the modes of transport for commuting
 
 Emissions from commuting are calculated the same way as emissions from business trips by multiplying the weekly distance $D_{\text{weekly}}$ by an emission factor $\epsilon$:
 
@@ -165,13 +175,13 @@ $$
 E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D_{\text{weekly}}}{n}
 $$
 
-$$
-E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}
-$$
-
-$\text{Example (bus):}$ $1.95 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
-
-The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
+$E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}$
+<br/>
+<br/>
+<ins>Example (bus):<ins> $1.95 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
+<br/>
+<br/>
+The emission factors $\epsilon$ are determined according to the transportation mode and its specifications, which are shown in the table below. The user is requested to provide values for the outlined specifications. If no value is given, the values marked in **bold** are used as default values.
 
 Mode of transport | Fuel type | Size | Occupancy | Seating | Passengers | Range 
 ------------ | ------------- | ------------- | ------------ | ------------- | ------------- | -------------
@@ -186,7 +196,7 @@ Pedelec | - | - | - | - | - | -
 
 ### Aggregating to the group's level
 
-If we assume that a representative sample of $n$ persons of the entire group, consisting of $N$ members,  entered their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
+If we assume that a representative sample of $n$ group members belonging to a group with a total of $N$ members enter their commuting data, we can obtain an estimate of the commuting emissions for the entire group:
 
 $$
 E_{\text{group}} = \frac{E_{\text{aggr}}}{n} \times N
@@ -237,11 +247,11 @@ This comprehensive set of [conversion factors](https://www.gov.uk/government/pub
 
 ## 7 Calculation of remaining carbon budget
 
-In the plots of your emissions dashboard, your remaining carbon budget is visible as a green line. This is meant as a coarse figure that you can compare your emissions to. “The term ‘carbon budget’ refers to the maximum amount of cumulative net global anthropogenic CO2 emissions that would result in limiting global warming to a given level with a given probability, taking into account the effect of other anthropogenic climate forcers. This is referred to as the total carbon budget when expressed starting from the pre-industrial period, and as the remaining carbon budget when expressed from a recent specified date (Glossary). The remaining carbon budget indicates how much CO2 could still be emitted while keeping warming below a specific temperature level" ([IPCC 2021, p. 28](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_SPM.pdf)).
+In the plots of your emissions dashboard, your remaining carbon budget is visible as a green line. This is a coarse representation that you can compare your emissions to. “The term ‘carbon budget’ refers to the maximum amount of cumulative net global anthropogenic CO2 emissions that would result in limiting global warming to a given level with a given probability taking into account the effect of other anthropogenic climate forcers. This is referred to as the total carbon budget when expressed starting from the pre-industrial period, and as the remaining carbon budget when expressed from a recent specified date (Glossary). The remaining carbon budget indicates how much CO2 could still be emitted while keeping warming below a specific temperature level" ([IPCC 2021, p. 28](https://www.ipcc.ch/report/ar6/wg1/downloads/report/IPCC_AR6_WGI_SPM.pdf)).
 
-To calculate the remaining carbon budget, we followed an equal-per-capita approach. This means that the remaining global carbon budget is distributed equally among the world's population. First, we divide the amount of CO2 that can still be emitted worldwide by the world' population. For example, to reach the 1.5° goal, we can still emit 300 billion tons of CO2. We need to take into account that the population of the world is growing, so we do not divide the amount of CO2 by the current population of the world, but instead we divide it by the mean between the current population and the population projected for 2050. 2050 is when most of the countries plan to be carbon neutral. Finally, we divide the remaining carbon budget per person by the number of years left until carbon neutrality should be reached. The calculation of the carbon budget is summed up in the following table. Since Germany has pledged to be carbon neutral already by 2045, the remaining time is shorter and therefore the remaining carbon budget per person and year is a bit higher.
+To calculate the remaining carbon budget, we followed an equal-per-capita approach. This means that the remaining global carbon budget is distributed equally among the world's population. First, we divide the amount of CO2 that can still be emitted worldwide by the world' population. For example, to reach the 1.5° goal, we can still emit 300 billion tons of CO2. We need to take into account that the population of the world is growing, so we do not divide the amount of CO2 by the current population of the world, but instead we divide it by the mean between the current population and the population projected for 2050. 2050 is when most countries plan to be carbon neutral. Finally, we divide the remaining carbon budget per person by the number of years left until carbon neutrality should be reached. The calculation of the carbon budget is summed up in the following table. Since Germany has pledged to be carbon neutral by 2045, the remaining time is shorter and therefore the remaining carbon budget per person and year is a bit higher.
 
-You can view this remaining carbon budget per person and year as the average amount of carbon that you can still emit per year until 2050 (or 2045). Probably, your emissions will decrease gradually until you become carbon-neutral. So it is ok if you are still emitting more than your yearly budget at the moment, as long as your annual emissions will sink below your annual budget soon enough.
+You can view this remaining carbon budget per person and year as the average amount of carbon that you can still emit per year until 2050 (or 2045). Individual emissions will decrease gradually until becoming carbon-neutral in which case it is ok if individual emissions are currently higher than the alloted yearly budget so long as individual annual emissions start decline to below the annual budget soon.
 
 Goal (°C) | Total carbon budget [t] | Carbon budget per person (2020-2050) [t] | Carbon budget per person and year in Germany (2020-2045) [t] | Carbon budget per person and year (2020-2050) [t]
 ------------ | ------------- | ------------- | ------------ | -------------
