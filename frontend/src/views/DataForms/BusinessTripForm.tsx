@@ -67,7 +67,7 @@ export function BusinessTripForm(
   const [submitBusinessTripData] = useMutation(ADD_BUSINESSTRIP,
     {
       onCompleted: (data) => {
-        if(data.createBusinesstrip?.ok === true){
+        if(data.createBusinesstrip?.success === true){
           setSuccessState(true)
           formik.resetForm()
         }
@@ -104,7 +104,7 @@ export function BusinessTripForm(
     onSubmit: (values: BusinessFormValues, formikHelpers: FormikHelpers<BusinessFormValues>)  => {
       const { setSubmitting } = formikHelpers;
       const queryParams = {
-        timestamp: format(new Date(values.year, values.month, 1), 'yyyy-MM-dd'),
+        timestamp: format(new Date(values.year, values.month-1, 1), 'yyyy-MM-dd'), // constructor takes month-index instead of actual month
         transportationMode: values.transportationMode,
         fuelType: values.fuelType, 
         passengers: values.passengers,
