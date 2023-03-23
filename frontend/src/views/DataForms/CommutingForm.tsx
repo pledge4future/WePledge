@@ -88,8 +88,8 @@ export function CommutingForm(
         distance: values.distance,
         size: values.size,
         workweeks: values.workWeeks,
-        fromTimestamp: format(new Date(values.startYear, values.startMonth, 1), 'yyyy-MM-dd'),
-        toTimestamp: format(new Date(values.endYear, values.endMonth, 1), 'yyyy-MM-dd')
+        fromTimestamp: format(new Date(values.startYear, values.startMonth-1, 1), 'yyyy-MM-dd'), // constructor takes month-index instead of actual month
+        toTimestamp: format(new Date(values.endYear, values.endMonth-1, 1), 'yyyy-MM-dd') // constructor takes month-index instead of actual month
       }
       submitCommutingData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
