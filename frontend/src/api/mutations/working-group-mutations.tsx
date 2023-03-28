@@ -36,3 +36,20 @@ mutation requestJoinWorkingGroup ($id: String!){
   }
 }
 `
+
+export const ANSWER_JOIN_REQUEST = gql`
+mutation ($requestId: String!, $approve: Boolean!){
+  answerJoinRequest (input: {
+       approve: $approve
+       requestId: $requestId
+     }
+     ) {
+       success
+       requestingUser {
+          workingGroup {
+             id
+            }
+          }
+      }
+  }
+`

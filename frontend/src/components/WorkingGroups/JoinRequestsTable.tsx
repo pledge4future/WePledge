@@ -1,10 +1,12 @@
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip } from "@material-ui/core";
-import { green, red } from "@material-ui/core/colors";
+import { useMutation } from "@apollo/client";
+import { IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip } from "@material-ui/core";
+import { green, grey, red } from "@material-ui/core/colors";
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
+import { Alert } from "@mui/material";
 import React, { useState } from "react";
+import { ANSWER_JOIN_REQUEST } from "../../api/mutations/working-group-mutations";
 import theme from "../../theme";
-import { UnderConstructionDialog } from "../UnderConstructionDialog";
 
 interface IWorkingGroupJoinRequestsTableProps {
     data: any;
@@ -29,7 +31,28 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
 
     const {data: requestsTableData} = props;
 
-    const [showDialog, setShowDialog] = useState(false)
+    const sortedRequestsTableData = requestsTableData ? [...requestsTableData] : []
+
+    sortedRequestsTableData?.sort((a: IRequestTableRow, b: IRequestTableRow) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // maybe do this in the backend already
+
+
+    const [successState, setSuccessState] = useState(false)
+    const [errorState, setErrorState] = useState(false);
+
+    const [answerJoinRequest] = useMutation(ANSWER_JOIN_REQUEST, {
+        onCompleted(res){
+            if(res.answerJoinRequest.success){
+                setSuccessState(true)
+                window.location.reload();
+            }
+            else {
+                setErrorState(true)
+            }
+        },
+        onError(error){
+            console.log(error);
+        }
+    })
 
     function formatUserString(user: IRequestUser){
         return (
@@ -42,8 +65,13 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
     }
 
     const handleRequest = (row: IRequestTableRow, approve: boolean) => {
-        setShowDialog(true);
+        answerJoinRequest({variables: {
+            requestId: row.id,
+            approve: approve
+        }})
     }
+
+
 
     return (
         <React.Fragment>
@@ -59,7 +87,7 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
                         </TableRow>    
                     </TableHead>
                     <TableBody>
-                        {requestsTableData?.map((row: IRequestTableRow) => (
+                        {sortedRequestsTableData?.map((row: IRequestTableRow) => (
                             <TableRow key={row.id}>
                                 <TableCell component="th" scope="row">
                                     {row.id}
@@ -75,12 +103,12 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
                                 </TableCell>
                                 <TableCell align="right">
                                 <ThemeProvider theme={theme}>
-                                    <IconButton style={{color: green[500]}} onClick={() => handleRequest(row, true)}>
+                                    <IconButton style={{color: row.status === "PENDING" ? green[500] : grey[500]}} onClick={() => handleRequest(row, true)} disabled={row.status !== "PENDING"}>
                                         <Tooltip title="Approve join request">
                                             <ThumbUpIcon />
                                         </Tooltip>
                                     </IconButton>
-                                    <IconButton style={{color: red[500]}} onClick={() => handleRequest(row, false)}>
+                                    <IconButton style={{color: row.status === "PENDING" ? red[500] : grey[500]}} onClick={() => handleRequest(row, false)} disabled={row.status !== "PENDING"}>
                                         <Tooltip title="Decline join request">
                                             <ThumbDownIcon />
                                         </Tooltip>
@@ -92,7 +120,16 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
                         </TableBody> 
                 </Table>
             </TableContainer>
-            <UnderConstructionDialog feature="Handling of working group join requests" isOpen={showDialog} handleDialogClose={() => setShowDialog(false)}/>
+            <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+                <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+                Successfully answered request!
+                </Alert>
+            </Snackbar>
+            <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+                <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+                Failed answer request, try again!
+                </Alert>
+            </Snackbar>
         </React.Fragment>
     )
 }
