@@ -3,7 +3,7 @@ import { Alert, Grid, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { REQUEST_JOIN_WORKING_GROUP } from '../../api/mutations/working-group-mutations';
 import { getWorkingGroups } from '../../api/Queries/working-groups';
-import WorkingGroupCard from '../../components/WorkingGroupCard';
+import WorkingGroupCard from '../../components/WorkingGroups/WorkingGroupCard';
 import { IWorkingGroup } from '../../interfaces/IWorkingGroup';
 
 
