@@ -3,6 +3,7 @@ import { Container, Grid, Typography } from '@material-ui/core';
 import React from 'react';
 import { getUserProfile } from '../../api/Queries/me';
 import { getWorkingGroupUsers, resolveWorkingGroupJoinRequests } from '../../api/Queries/working-groups';
+import { WorkingGroupJoinRequestsTable } from '../../components/WorkingGroups/JoinRequestsTable';
 import { WorkingGroupUsersTable } from '../../components/WorkingGroups/WorkingGroupUsersTable';
 
 export default function WorkingGroupDetailsView(){
@@ -17,7 +18,7 @@ export default function WorkingGroupDetailsView(){
 
     return (
         <Container>
-            <Grid container spacing={2} alignItems="center" justifyContent="center">
+            <Grid container spacing={4} alignItems="center" justifyContent="center">
                 <Grid item xs={12}>
                     <span>{workingGroup?.name}</span>
                 </Grid>
@@ -26,6 +27,12 @@ export default function WorkingGroupDetailsView(){
             </Typography>
                 <Grid item xs={12}>
                     <WorkingGroupUsersTable data={users_data?.workinggroupUsers} />
+                </Grid>
+            <Typography variant="h6">
+                Join Requests
+            </Typography>
+                <Grid item xs={12}>
+                    <WorkingGroupJoinRequestsTable data={requests_data?.joinRequests}/>
                 </Grid>
             </Grid>
         </Container>
