@@ -272,7 +272,7 @@ class Query(UserQuery, MeQuery, ObjectType):
     @login_required
     def resolve_workinggroups(self, info, **kwargs):
         """Yields all working group objects"""
-        return WorkingGroup.objects.all()
+        return WorkingGroup.objects.filter(is_public=True)
 
     @login_required
     @representative_required
