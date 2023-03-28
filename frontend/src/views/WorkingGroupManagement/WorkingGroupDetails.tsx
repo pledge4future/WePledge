@@ -1,40 +1,46 @@
 import { useQuery } from '@apollo/client';
-import { Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import React from 'react';
 import { getUserProfile } from '../../api/Queries/me';
-import { getWorkingGroupUsers, resolveWorkingGroupJoinRequests } from '../../api/Queries/working-groups';
-import { WorkingGroupJoinRequestsTable } from '../../components/WorkingGroups/JoinRequestsTable';
-import { WorkingGroupUsersTable } from '../../components/WorkingGroups/WorkingGroupUsersTable';
+import { WorkingGroupAdminDetails } from './WorkingGroupAdminDetails';
 
 export default function WorkingGroupDetailsView(){
 
     const { loading: profile_loading, error: profile_error, data: profile_data } = useQuery(getUserProfile);
 
-    const { loading: users_loading, error: users_error, data: users_data} = useQuery(getWorkingGroupUsers)
-
-    const {loading: requests_loading, error: requests_error, data: requests_data} = useQuery(resolveWorkingGroupJoinRequests)
-
     const workingGroup = profile_data?.me?.workingGroup;
 
     return (
         <Container>
-            <Grid container spacing={4} alignItems="center" justifyContent="center">
-                <Grid item xs={12}>
+            <Grid container spacing={2} alignItems="center" justifyContent="center">
+                <Grid item xs={4}>
+                    <span><b>Working Group Name: </b></span>
+                </Grid>
+                <Grid item xs={8}>
                     <span>{workingGroup?.name}</span>
                 </Grid>
-            <Typography variant="h6">
-                Assigned Users
-            </Typography>
-                <Grid item xs={12}>
-                    <WorkingGroupUsersTable data={users_data?.workinggroupUsers} />
+                <Grid item xs={4}>
+                    <span><b>Working Group Institute: </b></span>
                 </Grid>
-            <Typography variant="h6">
-                Join Requests
-            </Typography>
-                <Grid item xs={12}>
-                    <WorkingGroupJoinRequestsTable data={requests_data?.joinRequests}/>
+                <Grid item xs={8}>
+                    <span>{workingGroup?.institution?.name}</span>
+                </Grid>
+                <Grid item xs={4}>
+                    <span><b>Research Field: </b></span>
+                </Grid>
+                <Grid item xs={8}>
+                    <span>{`${workingGroup?.field?.field} - ${workingGroup?.field?.subfield}`}</span>
+                </Grid>
+                <Grid item xs={4}>
+                    <span><b>Number of employees: </b></span>
+                </Grid>
+                <Grid item xs={8}>
+                    <span>{workingGroup?.nEmployees}</span>
                 </Grid>
             </Grid>
+            {profile_data?.me?.isRepresentative && (
+                <WorkingGroupAdminDetails />
+            )}
         </Container>
     )
 }
