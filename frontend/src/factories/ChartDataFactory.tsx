@@ -10,8 +10,8 @@ enum backendResultFields {
 }
 
 const stableEmptyDataEntry = {
-    co2e: 0,
-    co2eCap: 0,
+    emission: 0,
+    perCapita: 0,
     date: undefined
 }
 
@@ -21,7 +21,7 @@ const filterRawBackendDataForYear = (dataEntry: any, year: string) => {
     return dataEntry.filter((item: any) => new Date(item.date).getFullYear().toString() === year)    
 }
 
-export function mapChartData(rawData: any, year: string){
+export function mapChartData(rawData: any, year: string,  workingGroupSize: number = 1){
     const filtered_raw_data = {}
     Object.keys(rawData).forEach(key => filtered_raw_data[key] = filterRawBackendDataForYear(rawData[key], year))
     if(Object.keys(filtered_raw_data).map(key => filtered_raw_data[key]).every(dataCollection => dataCollection.length === 0)){
@@ -34,18 +34,20 @@ export function mapChartData(rawData: any, year: string){
         "heatingTotal": mapBackendResult(filtered_raw_data[backendResultFields.HEATING])
         }
         const chartData = months.map(month => {
-            return createDataEntry(month, mappedData)
+            return createDataEntry(month, mappedData, workingGroupSize)
         })
         return chartData;
 }
 
-function createDataEntry(month: string, rawData: any): IChartDataEntry{
+
+function createDataEntry(month: string, rawData: any, workingGroupSize: number): IChartDataEntry{
     const businessTripEntry = rawData.businessTotal?.find((businessTripEntry: IBusinessTripEntry) => businessTripEntry.date === month) ?? stableEmptyDataEntry
     const commutingEntry = rawData.commutingTotal?.find((commutingEntry: ICommutingEntry) => commutingEntry.date === month) ?? stableEmptyDataEntry
     const electricityEntry = rawData.electricityTotal?.find((electricityEntry: IElectricityEntry) => electricityEntry.date === month)  ?? stableEmptyDataEntry
     const heatingEntry = rawData.heatingTotal.find((heatingEntry: IHeatingEntry) => heatingEntry.date === month) ?? stableEmptyDataEntry;
 
-    const sum = (businessTripEntry.emission + heatingEntry.emission + commutingEntry.emission + electricityEntry.emission)
+    const sum = [businessTripEntry.emission, heatingEntry.emission, commutingEntry.emission, electricityEntry.emission].filter(item => item !== undefined).reduce((sum, current) => sum + current, 0)
+    const avg = [businessTripEntry.perCapita, heatingEntry.perCapita, commutingEntry.perCapita, electricityEntry.perCapita].filter(item => item !== undefined).reduce((sum, current) => sum + current, 0)
 
     return {
         name: month, 
@@ -55,13 +57,13 @@ function createDataEntry(month: string, rawData: any): IChartDataEntry{
         electricity: electricityEntry.emission,
         sum: sum,
         max: 1000,
-        totalMax: 1000*1,
-        avg: Math.round((sum / 1) * 10) / 10
+        totalMax: 1000*workingGroupSize,
+        avg: Math.round(avg * 10) / 10
     }
 }
 
 function mapBackendResult(rawBackendResult: any){
-    if ( rawBackendResult && rawBackendResult.length > 1) {
+    if ( rawBackendResult && rawBackendResult.length >= 1) {
         return rawBackendResult?.map((backendResultEntry: any) => {
             const datestring = backendResultEntry.date
             const month = format(new Date(datestring), 'LLLL');
