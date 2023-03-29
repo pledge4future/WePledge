@@ -1,19 +1,14 @@
-// Material-UI
 import React from "react";
 import Head from "next/head";
+import { Typography, makeStyles, Theme, Button } from "@material-ui/core";
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
-
-//import ProductHero from '../src/views/Product/ProductHero';
-import ProductHeroLayout from "../src/views/Product/ProductHeroLayout";
 import AppFooter from '../src/views/App/AppFooter';
 import withRoot from "../src/withRoot";
-import { Typography, makeStyles, Theme, Button } from "@material-ui/core";
-
+import Hero from "../src/components/Hero/Hero";
 
 const backgroundImage = '../static/images/background_pic.jpg'
-
 
 const useStyles = makeStyles((theme: Theme) => ({
     background: {
@@ -60,13 +55,7 @@ function Index() {
         <title>{title ? `${title} | ${siteName}` : siteName }</title>
       </Head>
       <AppAppBar />
-      <ProductHeroLayout backgroundClassName={classes?.background} classes={classes}>
-      {/* Increase the network loading priority of the background image. */}
-      <>
-      <Typography color="inherit" align="center" variant="h2" className={classes?.h2}>
-          Pledge. Measure. Solve.
-      </Typography>
-      </>
+      <Hero imageSrc={backgroundImage}></Hero>
       <Typography color="inherit" align="center" variant="h5" className={classes?.h5}>
         Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e-footprint.
         It helps you and everyone else to contribute protecting our climate and life on Earth.
@@ -91,10 +80,6 @@ function Index() {
       >
         Subscribe for Updates
       </Button>
-     {/*  <div className={classes.imageLicense}>
-        <small>photo by NASA Goddard Space Flight Center, used and modified under CC BY</small>
-      </div> */}
-      </ProductHeroLayout>
       <AppFooter />
     </React.Fragment>
   );
