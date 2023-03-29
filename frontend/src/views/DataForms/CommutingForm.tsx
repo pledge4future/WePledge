@@ -7,6 +7,7 @@ import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { format } from 'date-fns'
 import { Alert } from '@mui/material';
+import { FormMonthSelection, FormYearSelection } from '../../constants/FormConstants';
 
 
 // mutation to add commuting entry
@@ -137,18 +138,11 @@ export function CommutingForm(
     label="Month"
     value={formik.values.startMonth}
     onChange={formik.handleChange}>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-      <MenuItem value={4}>4</MenuItem>
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={6}>6</MenuItem>
-      <MenuItem value={7}>7</MenuItem>
-      <MenuItem value={8}>8</MenuItem>
-      <MenuItem value={9}>9</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={11}>11</MenuItem>
-      <MenuItem value={12}>12</MenuItem>
+      {
+      FormMonthSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
 
     <InputLabel id="selectStartYearLabel">Start Year</InputLabel>
@@ -164,10 +158,11 @@ export function CommutingForm(
     label='Start Year'
     value={formik.values.startYear}
     onChange={formik.handleChange}>
-      <MenuItem value={2019}>2019</MenuItem>
-      <MenuItem value={2020}>2020</MenuItem>
-      <MenuItem value={2021}>2021</MenuItem>
-      <MenuItem value={2022}>2022</MenuItem>
+      {
+      FormYearSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
     <InputLabel id='selectEndMonthLabel'>End Month</InputLabel>
     <Select
@@ -182,18 +177,11 @@ export function CommutingForm(
     label="Month"
     value={formik.values.endMonth}
     onChange={formik.handleChange}>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-      <MenuItem value={4}>4</MenuItem>
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={6}>6</MenuItem>
-      <MenuItem value={7}>7</MenuItem>
-      <MenuItem value={8}>8</MenuItem>
-      <MenuItem value={9}>9</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={11}>11</MenuItem>
-      <MenuItem value={12}>12</MenuItem>
+      {
+      FormMonthSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
 
     <InputLabel id="selectStartYearLabel">End Year</InputLabel>
@@ -209,10 +197,11 @@ export function CommutingForm(
     label='End Year'
     value={formik.values.endYear}
     onChange={formik.handleChange}>
-      <MenuItem value={2019}>2019</MenuItem>
-      <MenuItem value={2020}>2020</MenuItem>
-      <MenuItem value={2021}>2021</MenuItem>
-      <MenuItem value={2022}>2022</MenuItem>
+      {
+      FormYearSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
     <InputLabel id="selectTransportationModeLabel">Transportation Mode</InputLabel>
     <Select
