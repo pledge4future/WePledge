@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, Snackbar, TextField } from '@material-ui/core';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
@@ -6,6 +6,7 @@ import { tooltips } from './FormTooltips';
 import { gql, useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { format } from 'date-fns'
+import { Alert } from '@mui/material';
 
 
 // mutation to add commuting entry
@@ -49,14 +50,17 @@ export function CommutingForm(
 ){
 
   const [errorState, setErrorState] = useState(false);
+  const [successState, setSuccessState] = useState(false);
 
   const [submitCommutingData] = useMutation(ADD_COMMUTING,
     {
       onCompleted: (data) => {
-        console.log(data);
+        if(data.createCommuting.success === true){
+          setSuccessState(true);
+          formik.resetForm()
+        }
       },
       onError(error){
-        console.log(error)
         setErrorState(true);
       }
     });
@@ -379,6 +383,16 @@ export function CommutingForm(
           Add entry
         </Button>
   </form>
+  <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+    <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+      Successfully added entry!
+    </Alert>
+  </Snackbar>
+  <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+    <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+      Failed to add entry!
+    </Alert>
+  </Snackbar>
   </div>
   )
 }
