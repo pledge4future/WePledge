@@ -5,7 +5,7 @@
 from django.dispatch import receiver
 from django.db.models.signals import pre_save
 
-from emissions.models import (CustomUser, WorkingGroup)
+from emissions.models import CustomUser, WorkingGroup
 
 import logging
 

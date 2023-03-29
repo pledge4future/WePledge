@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-""" Django models for handling co2 emission data """
+"""init models"""
 
-from .customUser import CustomUser
-from .researchField import ResearchField
-from .institution import Institution
-from .workingGroup import WorkingGroup
-from .businessTrip import (BusinessTrip, BusinessTripGroup)
-from .commuting import (Commuting, CommutingGroup)
-from .electricity import Electricity
-from .heating import Heating
+from .customUser import *
+from .researchField import *
+from .institution import *
+from .workingGroup import *
+from .businessTrip import * 
+from .commuting import *
+from .electricity import *
+from .heating import *

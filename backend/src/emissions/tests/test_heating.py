@@ -2,11 +2,13 @@
 # -*- coding: utf-8 -*-
 
 """Testing of GraphQL API queries related to Heating data"""
-
 import requests
 import logging
 from dotenv import load_dotenv
 import os
+from emissions.models import Heating
+from django.test import TestCase
+
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -17,6 +19,41 @@ load_dotenv("../../../../.env")
 GRAPHQL_URL = os.environ.get("GRAPHQL_URL")
 logger.info(GRAPHQL_URL)
 
+class HeatingAggregatedTest(TestCase):
+
+    def setUp(self):
+        # Create test data
+        Heating.objects.create(date='2022-01-01', co2e=1.0, co2eCap=2.0)
+
+    def test_query_heating_aggregated(self, test_user3_rep_token):
+        """Query aggregated heating data by authenticated user"""
+        query = """
+            query ($level: String!) {
+              heatingAggregated (level: $level) {
+                date
+                co2e
+                co2eCap
+              }
+        }
+        """
+        variables = {"level": "group"}
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"JWT {test_user3_rep_token}",
+        }
+        response = self.client.post(
+            GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers
+        )
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsInstance(data["data"]["heatingAggregated"][0]["date"], str)
+        self.assertIsInstance(data["data"]["heatingAggregated"][0]["co2e"], float)
+        self.assertIsInstance(data["data"]["heatingAggregated"][0]["co2eCap"], float)
+        self.assertEqual(len(data["data"]["heatingAggregated"]), 1)
+
+    def tearDown(self):
+        # Clean up test data
+        Heating.objects.all().delete()
 
 def test_query_heating_aggregated(test_user3_rep_token):
     """Query aggregated heating data by authenticated user"""
