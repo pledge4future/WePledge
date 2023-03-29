@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   },
   buttonContainer: {
     alignItems: 'center',
-    justifyConten: 'center',
+    justifyContent: 'center',
     display: 'flex'
   },
   containerDiv: {
