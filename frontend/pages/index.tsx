@@ -4,10 +4,9 @@ import { Typography, makeStyles, Theme, Button, Grid } from "@material-ui/core";
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
-import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Hero from "../src/components/Hero/Hero";
-import Footer from "../src/views/App/AppFooter2";
+import Footer from "../src/views/App/Footer";
 
 const backgroundImage = "../static/images/background_pic.jpg";
 const subscribeForm =

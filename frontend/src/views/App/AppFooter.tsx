@@ -1,17 +1,11 @@
 import * as React from "react";
-import { makeStyles, Theme } from "@material-ui/core/styles";
 
 // Material-UI
-import Grid from "@material-ui/core/Grid";
-import Link from "@material-ui/core/Link";
-import Container from "@material-ui/core/Container";
+import { Container, Grid, Typography, Link, Box, IconButton, Tooltip } from "@material-ui/core";
+import { makeStyles, Theme } from "@material-ui/core/styles";
 import InstagramIcon from "@material-ui/icons/Instagram";
 import TwitterIcon from "@material-ui/icons/Twitter";
-import GitHubIcon from "@mui/icons-material/GitHub";
-
-// Components
-import Typography from "../../components/Typography";
-import TextField from "../../components/TextField";
+import GitHubIcon from "@material-ui/icons/GitHub";
 
 function Copyright() {
   return (
@@ -31,7 +25,7 @@ const useStyles = makeStyles((theme: Theme) => ({
     backgroundColor: theme.palette.secondary.light,
   },
   container: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(16),
     marginBottom: theme.spacing(8),
     display: "flex",
   },
@@ -74,22 +68,46 @@ const useStyles = makeStyles((theme: Theme) => ({
     paddingTop: theme.spacing(0.5),
     paddingBottom: theme.spacing(0.5),
   },
-  language: {
-    marginTop: theme.spacing(1),
-    width: 150,
-  },
   supportedByLogos: {
     width: 80,
     height: 50,
   },
-}));
-
-const LANGUAGES = [
-  {
-    code: "en-US",
-    name: "English",
+  socialIcons: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: theme.spacing(2),
   },
-];
+  legalLinks: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: theme.spacing(2),
+  },
+  footerLink: {
+    color: "#6b6b6b",
+    margin: theme.spacing(0, 2),
+    fontWeight: 400,
+    fontSize: "0.9rem",
+    "&:hover": {
+      color: theme.palette.secondary.main,
+      fontWeight: 500,
+    },
+  },
+  logo: {
+    height: 30,
+    width: "auto",
+    marginRight: theme.spacing(1),
+  },
+  text: {
+    color: "#6b6b6b",
+    fontWeight: 400,
+    fontSize: "0.9rem",
+  },
+  copyRight: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: theme.spacing(2),
+  },
+}));
 
 const logos_directory = "../../static/images/logos/";
 
@@ -118,123 +136,95 @@ const SUPPORTED_BY = [
 
 export default function AppFooter() {
   const classes = useStyles();
-  /** 
-	return (
-		<Typography component="footer" className={classes.root}>
-			<Container className={classes.container}>
-				<Grid container spacing={5}>
-					<Grid item xs={6} sm={4} md={3}>
-						<Grid container direction="column" alignContent="flex-start"
-							className={classes.iconsWrapper} spacing={2}>
-							<Grid item className={classes.icons}>
-								<a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
-									<InstagramIcon />
-								</a>
-								<a href="https://twitter.com/pledge4futurede" className={classes.icon}>
-									<TwitterIcon />
-								</a>
-								<a href="https://github.com/pledge4future/WePledge" className={classes.icon}>
-									<GitHubIcon />
-								</a>
-							</Grid>
-						</Grid>
-						<Grid item>
-							<Copyright />
-						</Grid>
-					</Grid>
-					<Grid item xs={6} sm={4} md={2}>
-						<Typography variant="h6" marked="left" gutterBottom>
-							Legal
-						</Typography>
-						<ul className={classes.list}>
-							<li className={classes.listItem}>
-								<Link href="/contact">Contact</Link>
-							</li>
-							<li className={classes.listItem}>
-								<Link href="https://heigit.org/imprint/">Imprint</Link>
-							</li>
-							<li className={classes.listItem}>
-								<Link href="https://heigit.org/legal-notice/">Privacy Policy</Link>
-							</li>
-						</ul>
-					</Grid>
-					<Grid item xs={2} sm={4} md={3}>
-						<Typography variant="h6" marked="left" gutterBottom>
-							Supported By
-						</Typography>
-						<Grid container direction="row" alignContent="flex-start" spacing={2} className={classes.logosWrapper}>
-							<Grid item className={classes.icons}>
-								{ SUPPORTED_BY.map((item) => {
-									return (
-										<a href={item.link} className={classes.supporterLogo}>
-											<img src={item.src} title={item.tooltip} className={classes.supportedByLogos}/>
-										</a>
-									)
-								})}
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-			</Container>
-		</Typography>
-	);
-	*/
 
-	return (
-		<Typography component="footer" className={classes.root}>
-			<Container className={classes.container}>
-				<Grid container spacing={5}>
-					<Grid item xs={6} sm={4} md={3}>
-						<Grid container direction="column" alignContent="flex-start"
-							className={classes.iconsWrapper} spacing={2}>
-							<Grid item className={classes.icons}>
-								<a href="https://www.instagram.com/pledge4future_de/" className={classes.icon}>
-									<InstagramIcon />
-								</a>
-								<a href="https://twitter.com/pledge4futurede" className={classes.icon}>
-									<TwitterIcon />
-								</a>
-								<a href="https://github.com/pledge4future/WePledge" className={classes.icon}>
-									<GitHubIcon />
-								</a>
-							</Grid>
-						</Grid>
-						<Grid item>
-							<Copyright />
-						</Grid>
-					</Grid>
-					<Grid item xs={6} sm={4} md={2}>
-						<Typography variant="h6" marked="left" gutterBottom>
-							Legal
-						</Typography>
-						<ul className={classes.list}>
-							<li className={classes.listItem}>
-								<Link href="/contact">Contact</Link>
-							</li>
-							<li className={classes.listItem}>
-								<Link href="https://heigit.org/imprint/">Imprint</Link>
-							</li>
-							<li className={classes.listItem}>
-								<Link href="https://heigit.org/legal-notice/">Privacy Policy</Link>
-							</li>
-						</ul>
-					</Grid>
-					<Grid item xs={2} sm={4} md={3}>
-						<Typography variant="h6" marked="left" gutterBottom>
-							Supported By
-						</Typography>
-						<Grid container direction="row" alignContent="flex-start" spacing={2} className={classes.logosWrapper}>
-							<Grid item className={classes.icons}>
-								{ SUPPORTED_BY.map((item) => (
-									<a href={item.link} className={classes.supporterLogo} key={item.src}>
-										<img src={item.src} title={item.tooltip} className={classes.supportedByLogos}/>
-									</a>
-								))}
-							</Grid>
-						</Grid>
-					</Grid>
-				</Grid>
-			</Container>
-		</Typography>
-	);
+  return (
+    <Typography component="footer" className={classes.root}>
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
+          <Grid item xs={4} md={4}>
+            <Typography variant="h6" color="textPrimary" gutterBottom>
+              Connect with Us
+            </Typography>
+            <div>
+              <IconButton
+                href="https://www.instagram.com/pledge4future_de/"
+                target="_blank"
+                rel="noopener"
+                aria-label="Instagram"
+              >
+                <InstagramIcon />
+              </IconButton>
+              <IconButton
+                href="https://twitter.com/pledge4futurede"
+                target="_blank"
+                rel="noopener"
+                aria-label="Twitter"
+              >
+                <TwitterIcon />
+              </IconButton>
+              <IconButton
+                href="https://github.com/pledge4future/WePledge"
+                target="_blank"
+                rel="noopener"
+                aria-label="GitHub"
+              >
+                <GitHubIcon />
+              </IconButton>
+            </div>
+          </Grid>
+          <Grid item xs={4} md={4}>
+            <Typography variant="h6" color="textPrimary" gutterBottom>
+              Legal
+            </Typography>
+            <ul>
+              <li className={classes.footerLink}>
+                <Link href="/contact" color="textSecondary">
+                  Contact
+                </Link>
+              </li>
+              <li className={classes.footerLink}>
+                <Link href="https://heigit.org/imprint/" color="textSecondary">
+                  Imprint
+                </Link>
+              </li>
+              <li className={classes.footerLink}>
+                <Link href="https://heigit.org/legal-notice/" color="textSecondary">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
+          </Grid>
+          <Grid item xs={4} md={4}>
+            <Typography variant="h6" color="textPrimary" gutterBottom>
+              Supported By
+            </Typography>
+            <Grid
+              container
+              direction="row"
+              alignContent="flex-start"
+              spacing={2}
+              className={classes.logosWrapper}
+            >
+              <Grid item className={classes.icons}>
+                {SUPPORTED_BY.map((item) => {
+                  return (
+                    <a href={item.link} className={classes.supporterLogo}>
+                      <img
+                        src={item.src}
+                        title={item.tooltip}
+                        className={classes.supportedByLogos}
+                      />
+                    </a>
+                  );
+                })}
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+		<div>
+            <p className={classes.copyRight}>{Copyright()}</p>
+        </div>
+      </Container>
+    </Typography>
+  );
 }
