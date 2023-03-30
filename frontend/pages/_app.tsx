@@ -15,8 +15,6 @@ import { useRouter } from "next/router";
 
 import * as ga from '../lib/ga';
 
-import "../src/components/Hero/Hero.css"
-
 import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react';
 
 const MATOMO_URL = 'https://pledge4future.matomo.cloud/'
