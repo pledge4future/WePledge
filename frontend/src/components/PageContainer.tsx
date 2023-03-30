@@ -8,7 +8,7 @@ import Box from "@material-ui/core/Box";
 // Components-Views
 import Typography from "./Typography";
 import AppAppBar from "../views/App/AppAppBar";
-import AppFooter from "../views/App/AppFooter";
+import Footer from "../views/App/Footer";
 import withRoot from "../withRoot";
 
 interface Props {
@@ -37,7 +37,7 @@ const PageContainer = (props: Props) => {
           {children}
         </Box>
       </Container>
-      <AppFooter />
+      <Footer />
       <style jsx global>
         {`
           html,

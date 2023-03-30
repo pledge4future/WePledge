@@ -6,9 +6,8 @@ import { Button, Dialog, DialogActions, DialogTitle, makeStyles, TextField } fro
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
-import AppFooter from "../src/views/App/AppFooter";
+import Footer from "../src/views/App/Footer";
 import withRoot from "../src/withRoot";
-import Typography from "../src/components/Typography";
 import PageContainer from "../src/components/PageContainer";
 
 // GraphQL
@@ -154,7 +153,7 @@ function UserProfile() {
       </Dialog>
       </div>
     </PageContainer>
-    <AppFooter />
+    <Footer />
     </>
   );
 }
