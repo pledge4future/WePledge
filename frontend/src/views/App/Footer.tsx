@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
   supportedByLogos: {
     width: 80,
     height: 50,
+    margin: theme.spacing(0, 1),
   },
   supporterLogo: {
     width: 48,
@@ -63,7 +64,6 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    margin: "10px",
   },
   footerLink: {
     color: "#6b6b6b",

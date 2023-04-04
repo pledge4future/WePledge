@@ -2,16 +2,6 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core";
 
-const Hero = ({ imageSrc }) => {
-  const classes = useStyles();
-  return (
-    <div className={classes.hero}>
-      <img src={imageSrc} alt="Travel" className={classes.hero__image} />
-      <h1 className={classes.hero__title}>Pledge. Measure. Solve.</h1>
-    </div>
-  );
-};
-
 const useStyles = makeStyles((theme: Theme) => ({
   hero: {
     position: 'relative',
@@ -33,5 +23,15 @@ const useStyles = makeStyles((theme: Theme) => ({
     padding: '15px',
   },
 }));
+
+const Hero = ({ imageSrc }) => {
+  const classes = useStyles();
+  return (
+    <div className={classes.hero}>
+      <img src={imageSrc} alt="Travel" className={classes.hero__image} />
+      <h1 className={classes.hero__title}>Pledge. Measure. Solve.</h1>
+    </div>
+  );
+};
 
 export default Hero;
