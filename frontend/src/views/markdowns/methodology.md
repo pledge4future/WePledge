@@ -87,9 +87,11 @@ Buildings in colder climates may require more heating in the winter than buildin
 There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, there $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
 
 $$
-D_{\text{heating}} = \int_{t_0}^{T} \max \left\lbrace 0 , \theta_{\text{ref}} - \theta (t) \right\rbrace d t
+\begin{aligned}
+D_{\text{heating}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta_{\text{ref}} - \theta (t) \right\rbrace d t
 \\
-D_{\text{cooling}} = \int_{t_0}^{T} \max \left\lbrace 0 , \theta (t) - \theta_{\text{ref}} \right\rbrace d t
+D_{\text{cooling}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta (t) - \theta_{\text{ref}} \right\rbrace d t
+\end{aligned}
 $$
 
 The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate - especially in intermittently heated buildings, and the thermostat settings may influence both the definition of the reference temperature and the response as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this function obtains an hourly ERA5 reanalysis temperature data [16], then performs a numerical integration.
