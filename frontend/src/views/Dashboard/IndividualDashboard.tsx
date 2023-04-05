@@ -15,32 +15,7 @@ import { gql, useQuery } from "@apollo/client";
 import { DashboardProps } from "./interfaces/DashboardProps";
 import { mapChartData } from "../../factories/ChartDataFactory";
 import { IChartDataEntry } from "../../interfaces/ChartData";
-
-
-const GET_TOTAL_EMISSIONS = gql`
-query getTotalEmissions($level: String!, $timeInterval: String!) {
-  commutingAggregated (level: $level, timeInterval: $timeInterval) {
-    co2e
-    co2eCap
-    date
-  }
- businesstripAggregated (level: $level, timeInterval: $timeInterval) {
-    co2e
-    co2eCap
-    date
-  }
-  heatingAggregated (level: $level, timeInterval: $timeInterval) {
-    co2e
-    co2eCap
-    date
-  }
-  electricityAggregated (level: $level, timeInterval: $timeInterval) {
-    co2e
-    co2eCap
-    date
-  }
-}
-`
+import { GET_TOTAL_EMISSIONS } from "../../api/Queries/emissions";
 
 
 
@@ -167,7 +142,7 @@ export function IndividualDashboard(props: DashboardProps){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="total" stroke={ChartColors.trendLine} />
+        <Line name="total" dataKey="sum" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })

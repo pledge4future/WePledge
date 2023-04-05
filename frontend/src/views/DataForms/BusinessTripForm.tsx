@@ -9,6 +9,7 @@ import { useState } from 'react';
 import { format } from 'date-fns'
 import Snackbar  from '../../components/Snackbar';
 import { UnderConstructionDialog } from '../../components/UnderConstructionDialog';
+import { FormMonthSelection, FormYearSelection } from '../../constants/FormConstants';
 
 
 // mutation to add business trip entry
@@ -160,18 +161,11 @@ export function BusinessTripForm(
     label="Month"
     value={formik.values.month}
     onChange={formik.handleChange}>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-      <MenuItem value={4}>4</MenuItem>
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={6}>6</MenuItem>
-      <MenuItem value={7}>7</MenuItem>
-      <MenuItem value={8}>8</MenuItem>
-      <MenuItem value={9}>9</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={11}>11</MenuItem>
-      <MenuItem value={12}>12</MenuItem>
+      {
+      FormMonthSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
     </Grid>
     <Grid item xs={6}>
@@ -189,10 +183,11 @@ export function BusinessTripForm(
     label='Year'
     value={formik.values.year}
     onChange={formik.handleChange}>
-      <MenuItem value={2019}>2019</MenuItem>
-      <MenuItem value={2020}>2020</MenuItem>
-      <MenuItem value={2021}>2021</MenuItem>
-      <MenuItem value={2022}>2022</MenuItem>
+      {
+      FormYearSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
     </Grid>
     { false && ( // make this dependent on address mode state once implemented in the backend

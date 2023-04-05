@@ -80,6 +80,42 @@ $\text{\underline{Example:}}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \tim
 
 If the heating consumption is only known for a building or building complex and the group occupies only parts of the building, the total consumption and an estimate of the share of energy use (approximated from the share of the building area) can be provided.
 
+### Normalizing heating and cooling consumption based on weather conditions
+
+Buildings in colder climates may require more heating in the winter than buildings in warmer environments. Similarly, buildings in cooler climates will require less cooling in summer months than buildings in hot climates. Degree Days are a measure of how warm or cold a location is, and therefore offer a way to compare the heating and cooling consumptions between different locations or years. 
+
+There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, there $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
+
+$$
+\begin{aligned}
+D_{\text{heating}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta_{\text{ref}} - \theta (t) \right\rbrace d t
+\\
+D_{\text{cooling}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta (t) - \theta_{\text{ref}} \right\rbrace d t
+\end{aligned}
+$$
+
+The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate - especially in intermittently heated buildings, and the thermostat settings may influence both the definition of the reference temperature and the response as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this function obtains an hourly ERA5 reanalysis temperature data [16], then performs a numerical integration.
+
+We can then use the computed degree days to more fairly compare heating and cooling consumption between different years or locations. See the two examples below. 
+
+
+The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+
+
+Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
+------------ | ------------- | ------------- | ------------ | ------------- | -------------
+ WG1  |  2020 | 300  |  4 = REF |  4/4 = 1  | 300
+ WG1  |  2021 |  100 |  2 |  4/2 = 2  | 100*2 = 200
+ WG1  |  2022 | 250  |  5 |  4/5 = 0.8  | 250*0.8 = 200
+ 
+ 
+ Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption
+------------ | ------------- | ------------- | ------------ | ------------- | -------------
+ WG1  |  2020 | 300  |  3 = REF2020 |   | 
+ WG1  |  2021 |  200 |  4 = REF2021 |   | 
+ WG2  |  2020 | 400  |  5 |  3/5=0.6  | 400*0.6 = 240
+ WG2  |  2021 | 300  |  5 |  4/5=0.8  | 300*0.8 = 240
+ 
 
 ## 4 Business trips
 
@@ -231,33 +267,47 @@ Goal (°C) | Total carbon budget [t] | Carbon budget per person (2020-2050) [t] 
 
 ## 8 References
 
-- Department for Business, Energy & Industrial Strategy, (2020). Greenhouse gas reporting: conversion factors 2020. https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020
+- [1] Department for Business, Energy & Industrial Strategy, (2020). Greenhouse gas reporting: conversion factors 2020. https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2020
 
-- Gohar, L. K. & Shine, K. P., (2007). Equivalent CO2 and its use in understanding the climate effects
+- [2] Gohar, L. K. & Shine, K. P., (2007). Equivalent CO2 and its use in understanding the climate effects
 of increased greenhouse gas concentrations. Weather, 62: 307-311.
 https://doi.org/10.1002/wea.103
 
-- Jahnke, K., Fendt, C., Fouesneau, M. et al. An astronomical institute’s perspective on meeting the challenges of the climate crisis. Nat Astron 4, 812–815 (2020). https://doi.org/10.1038/s41550-020-1202-4
+- [3] Jahnke, K., Fendt, C., Fouesneau, M. et al. An astronomical institute’s perspective on meeting the challenges of the climate crisis. Nat Astron 4, 812–815 (2020). https://doi.org/10.1038/s41550-020-1202-4
 
-- IFEU Heidelberg, Umweltbundesamt (UBA), 2010. TREMOD (Transport emission model) version
+- [4] IFEU Heidelberg, Umweltbundesamt (UBA), 2010. TREMOD (Transport emission model) version
 5.1. Data and calculation model; energy use and pollutant emissions of motorized traffic in
 germany on behalf of Umweltbundesamt (UBA).
 https://www.bmu.de/fileadmin/Daten_BMU/Pools/Forschungsdatenbank/fkz_3707_45_101_motorisierter_verkehr_bf.pdf
 
-
-- IFEU Heidelberg, Umweltbundesamt (UBA), 2019. TREMOD (Transport emission model).
+- [5] IFEU Heidelberg, Umweltbundesamt (UBA), 2019. TREMOD (Transport emission model).
 https://www.ifeu.de/en/project/uba-tremod-2019/
 
-
-- Moss, A. R., Jouany, J. P., & Newbold, J., (2000). Methane production by ruminants: its
+- [6] Moss, A. R., Jouany, J. P., & Newbold, J., (2000). Methane production by ruminants: its
 contribution to global warming. In Annales de zootechnie (Vol. 49, No. 3, pp. 231-253). EDP
 Sciences. https://doi.org/10.1051/animres:2000119
 
-- Öko-Institut, International Institute for Sustainability Analysis and Strategy (IINAS), 2021. GEMIS
+- [7] Öko-Institut, International Institute for Sustainability Analysis and Strategy (IINAS), 2021. GEMIS
 (Globales Emissions-Modell Integrierter Systeme): freely available computer model with
 integrated database for lifecycle asessments and co2 footprints of energy, resource and
 transport systems, developed by Öko-Institut, 2012 passed to the International Institute for
 Sustainability Analysis and Strategy/Internationales Institut für Nachhaltigkeitsanalysen und
 -strategien (IINAS). http://iinas.org/about-gemis.html
 
-- Umweltbundesamt (UBA), 2021. Umweltfreundlich mobil! Ein ökologischer Verkehrsartenvergleich für den Personen- und Güterverkehr in Deutschland. https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil
+- [8] Umweltbundesamt (UBA), 2021. Umweltfreundlich mobil! Ein ökologischer Verkehrsartenvergleich für den Personen- und Güterverkehr in Deutschland. https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil
+
+- [9] Day AR, Karayiannis TG. Degree-days: Comparison of calculation methods. Building Services Engineering Research and Technology. 1998;19(1):7-13. doi:10.1177/014362449801900102
+
+- [10] Spinoni, J., Vogt, J. V., Barbosa, P., Dosio, A., McCormick, N., Bigano, A., & Füssel, H. (2018). Changes of heating and cooling degree‐days in Europe from 1981 to 2100, 38, e191–e208. doi:10.1002/joc.5362
+
+- [11] Spinoni, J., Vogt, J. and Barbosa, P. (2015), European degree-day climatologies and trends for the period 1951–2011. Int. J. Climatol., 35: 25-36. https://doi.org/10.1002/joc.3959
+
+- [12] Matzarakis, A. and Balafoutis, C. (2004), Heating degree-days over Greece as an index of energy consumption. Int. J. Climatol., 24: 1817-1828. https://doi.org/10.1002/joc.1107
+
+- [13] Météo-France, « Degres jours unifies - DJU », Relevés et statistiques, 2017 (consulted on 19/01/2023).
+
+- [14] Comité scientifique et technique des industries climatiques, « https://www.costic.com/ressources-techniques-et-reglementaires/service-degres-jours-unifies », consulted on (19/01/2022).
+ 
+- [15] Degree-Days: About degree-days. University of California Agriculture & Natural Resources: Statewide Integrated Pest Management Program. Retrieved January 19, 2023, from https://ipm.ucanr.edu/WEATHER/ddconcepts.html 
+
+- [16] Muñoz Sabater, J., (2019): ERA5-Land hourly data from 1981 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). (Accessed on &lt DD-MMM-YYYY &gt), 10.24381/cds.e2161bac
