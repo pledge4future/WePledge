@@ -91,14 +91,14 @@ const SUPPORTED_BY = [
     link: "https://www.goethe.de/de/index.html",
   },
   {
-    tooltip: "GIScience",
-    src: logos_directory + "GIS_logo.svg",
-    link: "https://www.geog.uni-heidelberg.de/gis/index_en.html",
-  },
-  {
     tooltip: "Scientists4Future",
     src: logos_directory + "S4F_logo.png",
     link: "https://scientists4future.org/",
+  },
+  {
+    tooltip: "GIScience",
+    src: logos_directory + "GIS_logo.svg",
+    link: "https://www.geog.uni-heidelberg.de/gis/index_en.html",
   },
   {
     tooltip: "HEIGIT",
