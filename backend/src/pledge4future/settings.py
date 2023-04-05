@@ -42,7 +42,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False #os.environ.get("DJANGO_DEBUG")
 
-ALLOWED_HOSTS = ["http://localhost", "localhost", "http://api.test-pledge4future.heigit.org"]
+ALLOWED_HOSTS = ["http://localhost", "localhost", "0.0.0.0", "http://api.test-pledge4future.heigit.org"]
 
 CORS_ALLOW_ALL_ORIGINS = False
 CORS_ALLOW_CREDENTIALS = False
