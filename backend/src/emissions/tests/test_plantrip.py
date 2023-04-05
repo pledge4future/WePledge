@@ -27,7 +27,7 @@ logger.info(GRAPHQL_URL)
 @pytest.mark.parametrize('passengers', [1])
 @pytest.mark.parametrize('round_trip', [False])
 def test_plan_trip_car(transportation_mode, size, fuel_type, passengers, round_trip):
-    """Test whether trip planner throws error for different parameter combinations"""
+    """Test whether trip planner throws error for different parameter combinations for car trips"""
     query = """
         mutation planTrip ($transportationMode: String!, $size: String!, $fuelType: String!, $passengers: Int!, $roundTrip: Boolean!) {
             planTrip (input: {
@@ -62,7 +62,7 @@ def test_plan_trip_car(transportation_mode, size, fuel_type, passengers, round_t
 @pytest.mark.parametrize('occupancy', [20., 50., 80., 100.])
 @pytest.mark.parametrize('roundtrip', [True, False])
 def test_plan_trip_bus(transportation_mode, size, fuel_type, occupancy, roundtrip):
-    """Test whether trip planner throws error for different parameter combinations"""
+    """Test whether trip planner throws error for different parameter combinations for bus trips"""
     query = """
         mutation planTrip ($transportationMode: String!, $size: String!, $fuelType: String!, $occupancy: Float!, 
         $roundtrip: Boolean!) {
@@ -98,7 +98,7 @@ def test_plan_trip_bus(transportation_mode, size, fuel_type, occupancy, roundtri
 @pytest.mark.parametrize('fuel_type', ['diesel', 'electric', 'average'])
 @pytest.mark.parametrize('roundtrip', [True, False])
 def test_plan_trip_train(transportation_mode, fuel_type, roundtrip):
-    """Test whether trip planner throws error for different parameter combinations"""
+    """Test whether trip planner throws error for different parameter combinations for train trips"""
     query = """
         mutation planTrip ($transportationMode: String!, $fuelType: String!, $roundtrip: Boolean!) {
             planTrip (input: {
@@ -130,7 +130,7 @@ def test_plan_trip_train(transportation_mode, fuel_type, roundtrip):
 @pytest.mark.parametrize('seating_class', ['average', 'Economy class', 'Premium economy class', 'Business class', 'First class'])
 @pytest.mark.parametrize('roundtrip', [True, False])
 def test_plan_trip_plane(transportation_mode, seating_class, roundtrip):
-    """Test whether trip planner throws error for different parameter combinations"""
+    """Test whether trip planner throws error for different parameter combinations for plane trips"""
     query = """
         mutation planTrip ($transportationMode: String!, $seatingClass: String!, $roundtrip: Boolean!) {
             planTrip (input: {
@@ -162,13 +162,14 @@ def test_plan_trip_plane(transportation_mode, seating_class, roundtrip):
 @pytest.mark.parametrize('seating_class', ['average', 'Foot passenger', 'Car passenger'])
 @pytest.mark.parametrize('roundtrip', [True, False])
 def test_plan_trip_ferry(transportation_mode, seating_class, roundtrip):
-    """Test whether trip planner throws error for different parameter combinations"""
+    """Test whether trip planner throws error for different parameter combinations for ferry trips"""
     query = """
         mutation planTrip ($transportationMode: String!, $seatingClass: String!, $roundtrip: Boolean!) {
             planTrip (input: {
                 transportationMode: $transportationMode
                 seatingClass: $seatingClass
                 roundtrip: $roundtrip
+                distance: 200
             }) {
                 success
                 message
