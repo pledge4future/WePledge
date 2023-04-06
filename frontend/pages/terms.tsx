@@ -4,7 +4,7 @@ import Box from '@material-ui/core/Box';
 import Markdown from '../src/components/Markdown';
 import Typography from '../src/components/Typography';
 import AppAppBar from '../src/views/App/AppAppBar';
-import AppFooter from '../src/views/App/AppFooter';
+import Footer from '../src/views/App/Footer';
 import withRoot from '../src/withRoot';
 import terms from '../src/views/markdowns/terms.md';
 
@@ -20,7 +20,7 @@ function Terms() {
           <Markdown>{terms}</Markdown>
         </Box>
       </Container>
-      <AppFooter />
+      <Footer />
     </React.Fragment>
   );
 }

@@ -12,7 +12,6 @@ import Alert from '@mui/material/Alert';
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
-import AppFooter from "../src/views/App/AppFooter";
 import withRoot from "../src/withRoot";
 import Typography from "../src/components/Typography";
 import { UnderConstructionDialog } from "../src/components/UnderConstructionDialog";

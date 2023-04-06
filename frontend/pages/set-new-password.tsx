@@ -6,7 +6,7 @@ import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@material
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
-import AppFooter from "../src/views/App/AppFooter";
+import Footer from "../src/views/App/Footer";
 import withRoot from "../src/withRoot";
 import PageContainer from "../src/components/PageContainer";
 
@@ -156,7 +156,7 @@ function SetNewPasswordForm() {
       </Dialog>
       </div>
     </PageContainer>
-    <AppFooter />
+    <Footer />
     </React.Fragment>
   );
 }
