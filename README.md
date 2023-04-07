@@ -50,8 +50,17 @@ This project is licensed under the [GPL-3.0 License](./LICENSE).
 
 We are supported by
 
-- Goethe Institute
-- HeiGIT gGmbH (Heidelberg Institute for Geoinformation Technology)
-- GIScience Research Group, Institute of Geography at Heidelberg University
-- Scientists4Future Heidelberg
-- Max Planck Institute for Astronomy Heidelberg
+- [Goethe Institute](https://www.goethe.de)
+- [HeiGIT gGmbH (Heidelberg Institute for Geoinformation Technology)](https://heigit.org/)
+- [GIScience Research Group, Institute of Geography at Heidelberg University](https://www.geog.uni-heidelberg.de/giscience.html)
+- [Scientists4Future Heidelberg](https://heidelberg.scientists4future.org/)
+
+
+<table>
+	<tr>
+		<th><img src='./frontend/static/images/logos/GI_logo.png' height='100'></th>
+		<th><img src='./frontend/static/images/logos/HeiGIT_Logo_compact.png' height='100'></th>
+		<th><img src='./frontend/static/images/logos/GIS_logo.svg' height='100'></th>
+		<th><img src='./frontend/static/images/logos/S4F_logo.png' height='100'></th>
+	</tr>
+</table>
