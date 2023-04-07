@@ -1,6 +1,6 @@
 # Pledge4Future App
 
-Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO2e-footprint. It helps you and everyone else to contribute protecting our climate and life on Earth.
+Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e footprint. It helps you and everyone else to contribute protecting our climate and life on Earth.
 
 The [pledge4future app](https://pledge4future.org) allows you to calculate your work related CO<sub>2</sub>e emissions from heating and electricity consumptions as well as business trips and commuting. The methodology for the calculation the emissions is implemented in the [co2calculator package](https://github.com/pledge4future/co2calculator). 
 
@@ -10,13 +10,26 @@ The app is run using Docker, uses React in the frontend and Python, Django and G
 
 ### Installation
 
-Clone the repository and run docker.
+### 1. Clone repository 
 
 ```
-docker compose up  
+git clone 
+cd WePledge
 ```
 
-This will start the following services:
+### 2. Load the submodules
+
+```
+git submodule update --init --recursive
+```
+
+### 3. Run docker
+
+```
+docker compose up
+```
+
+This will start the following services on your computer:
 
 Frontend: [http://localhost:3000](http://localhost:3000)  
 Backend: [http://localhost:8000](http://localhost:8000)  
@@ -31,7 +44,7 @@ This project is licensed under the [NAME HERE] License - see the LICENSE.md file
 
 ## Acknowledgments
 
-Big thanks to our supporters!
+We are supported by
 
 - Scientists4Future Heidelberg
 - Goethe Institute
