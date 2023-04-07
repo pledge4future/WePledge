@@ -56,9 +56,9 @@ We are supported by
 
 - [Goethe Institute](https://www.goethe.de)
 - [HeiGIT gGmbH (Heidelberg Institute for Geoinformation Technology)](https://heigit.org/)
+- [openrouteservice](https://openrouteservice.org/)
 - [GIScience Research Group, Institute of Geography at Heidelberg 
 University](https://www.geog.uni-heidelberg.de/giscience.html)
-- [openrouteservice](https://openrouteservice.org/)
 - [Scientists4Future Heidelberg](https://heidelberg.scientists4future.org/)
 
 
@@ -66,6 +66,7 @@ University](https://www.geog.uni-heidelberg.de/giscience.html)
 	<tr>
 		<th><img src='./frontend/static/images/logos/GI_logo.png' height='100'></th>
 		<th><img src='./frontend/static/images/logos/HeiGIT_Logo_compact.png' height='100'></th>
+		<th><img src='./frontend/static/images/logos/openrouteservice.png' height='100'></th>
 		<th><img src='./frontend/static/images/logos/GIS_logo.svg' height='100'></th>
 		<th><img src='./frontend/static/images/logos/S4F_logo.png' height='100'></th>
 	</tr>
