@@ -40,14 +40,14 @@ Refer to the [wiki](https://github.com/pledge4future/WePledge/wiki) for detailed
 
 ## License
 
-This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
+This project is licensed under the [GPL-3.0 License](./LICENSE).
 
 ## Acknowledgments
 
 We are supported by
 
-- Scientists4Future Heidelberg
 - Goethe Institute
-- HeiGIT (Heidelberg Institute for Geoinformation Technology) gGmbH
-- Institute of Geography at Heidelberg University
+- HeiGIT gGmbH (Heidelberg Institute for Geoinformation Technology)
+- GIScience Research Group, Institute of Geography at Heidelberg University
+- Scientists4Future Heidelberg
 - Max Planck Institute for Astronomy Heidelberg
