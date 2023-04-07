@@ -1,8 +1,10 @@
 # Pledge4Future App
 
-Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e footprint. It helps you and everyone else to contribute protecting our climate and life on Earth.
+Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e emissions.
 
 The [pledge4future app](https://pledge4future.org) allows you to calculate your work related CO<sub>2</sub>e emissions from heating and electricity consumptions as well as business trips and commuting. The methodology for the calculation the emissions is implemented in the [co2calculator package](https://github.com/pledge4future/co2calculator).
+
+Check out the [demo emission dashboard](https://pledge4future.org/dashboard)!
 
 ### Installation
 
@@ -38,9 +40,11 @@ Refer to the [wiki](https://github.com/pledge4future/WePledge/wiki) for detailed
 
 ## Contribution guidelines 
 
-We're always happy about people contributing to our project. So if you encounter problems with the app, just create an issue in this repository. If you can fix it yourself, please create a new branch from 'dev', add your changes and once you're done create a pull request. 
+We're always happy about new people contributing to our project! 
 
-If you would like to become a regular contributor to the project, please write an email to [info@pledge4future.org](mailto:info@pledge4future.org).
+- If you encounter problems with the app, feel free to create an [issue in this repository](https://github.com/pledge4future/WePledge/issues). 
+- If you can fix it yourself, please create a new branch from 'dev', add your changes and once you're done create a pull request. 
+- If you would like to become a regular contributor to the project, please contact us at [info@pledge4future.org](mailto:info@pledge4future.org).
 
 ## License
 
@@ -52,7 +56,9 @@ We are supported by
 
 - [Goethe Institute](https://www.goethe.de)
 - [HeiGIT gGmbH (Heidelberg Institute for Geoinformation Technology)](https://heigit.org/)
-- [GIScience Research Group, Institute of Geography at Heidelberg University](https://www.geog.uni-heidelberg.de/giscience.html)
+- [GIScience Research Group, Institute of Geography at Heidelberg 
+University](https://www.geog.uni-heidelberg.de/giscience.html)
+- [openrouteservice](https://openrouteservice.org/)
 - [Scientists4Future Heidelberg](https://heidelberg.scientists4future.org/)
 
 
@@ -64,3 +70,4 @@ We are supported by
 		<th><img src='./frontend/static/images/logos/S4F_logo.png' height='100'></th>
 	</tr>
 </table>
+
