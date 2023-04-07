@@ -66,7 +66,7 @@ University](https://www.geog.uni-heidelberg.de/giscience.html)
 	<tr>
 		<th><img src='./frontend/static/images/logos/GI_logo.png' height='100'></th>
 		<th><img src='./frontend/static/images/logos/HeiGIT_Logo_compact.png' height='100'></th>
-		<th><img src='./frontend/static/images/logos/openrouteservice.png' height='100'></th>
+		<th><img src='./frontend/static/images/logos/openrouteservice.png' height='70'></th>
 		<th><img src='./frontend/static/images/logos/GIS_logo.svg' height='100'></th>
 		<th><img src='./frontend/static/images/logos/S4F_logo.png' height='100'></th>
 	</tr>
