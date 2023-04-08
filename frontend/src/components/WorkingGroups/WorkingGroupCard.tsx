@@ -1,5 +1,5 @@
 import { Card, CardContent, IconButton, makeStyles, Tooltip, Typography } from "@material-ui/core";
-import { IWorkingGroup } from "../interfaces/IWorkingGroup";
+import { IWorkingGroup } from "../../interfaces/IWorkingGroup";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const useStyles = makeStyles(() => ({

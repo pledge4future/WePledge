@@ -30,7 +30,7 @@ export default function WorkingGroupOverview(){
 
 
     const navigateToWorkingGroupDetails = (e: any) => {
-        const workingGroupId = data?.workingGroup?.id ?? ''
+        const workingGroupId = data?.me?.workingGroup?.id ?? ''
         router.push(`/working-group-details?id=${workingGroupId}`)
     }
 
@@ -45,16 +45,16 @@ export default function WorkingGroupOverview(){
             )}
             {!loading && (
                 <Grid container spacing={2} alignItems="center" justifyContent="center">
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                         <span>Your Working Group: </span>
                     </Grid>
                     {!!data && !data?.workingGroup && (
                         <>
-                        <Grid item xs={2}>
-                            <span style={{fontWeight: 'bold'}}>No working group </span>
+                        <Grid item xs={4}>
+                            <span style={{fontWeight: 'bold'}}>{data?.me?.workingGroup?.name ?? 'No working group'}</span>
                         </Grid>
                         <Grid item xs={1}>
-                            <IconButton color="success" disabled={!data?.workingGroup} onClick={navigateToWorkingGroupDetails}>
+                            <IconButton color="primary" disabled={!data?.me?.workingGroup} onClick={navigateToWorkingGroupDetails}>
                                 <Tooltip title="See working group details">
                                     <GroupIcon />
                                 </Tooltip>
