@@ -1,9 +1,9 @@
-import { useQuery } from '@apollo/client';
-import { Grid, TextField } from '@mui/material';
+import { useMutation, useQuery } from '@apollo/client';
+import { Alert, Grid, Snackbar, TextField } from '@mui/material';
 import React, { useRef, useState } from 'react';
+import { REQUEST_JOIN_WORKING_GROUP } from '../../api/mutations/working-group-mutations';
 import { getWorkingGroups } from '../../api/Queries/working-groups';
-import { UnderConstructionDialog } from '../../components/UnderConstructionDialog';
-import WorkingGroupCard from '../../components/WorkingGroupCard';
+import WorkingGroupCard from '../../components/WorkingGroups/WorkingGroupCard';
 import { IWorkingGroup } from '../../interfaces/IWorkingGroup';
 
 
@@ -12,15 +12,30 @@ export default function FindWorkingGroupView(){
     const {data: workingGroupData} = useQuery(getWorkingGroups)
 
     const [searchInput, setSearchInput] = useState('')
-    const [ showAlert, setShowAlert ] = useState(false);
+    const [successState, setSuccessState ] = useState(false);
+    const [errorState, setErrorState ] = useState(false);
+
+    const [sendRequestJoinWorkingGroup] = useMutation(REQUEST_JOIN_WORKING_GROUP, {
+        onCompleted(result) {
+          if(result.requestJoinWorkingGroup.success === true){
+            setSuccessState(true);
+          } else {
+
+          }
+        }
+      });
 
     const handleSearchInput = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchInput(event.target.value)
     }
 
     const requestJoinWorkingGroup = (workingGroup: IWorkingGroup) => {
-        // add here endpoint to request working group joining
-        setShowAlert(true)
+        console.log(workingGroup)
+        sendRequestJoinWorkingGroup({
+            variables: {
+                id: workingGroup.id
+            }
+        })
     }
 
     const parentRef = useRef(null);
@@ -49,7 +64,16 @@ export default function FindWorkingGroupView(){
                 )
             })}
         </Grid>
-        <UnderConstructionDialog feature='Joining Working Group Feature' isOpen={showAlert} handleDialogClose={() => setShowAlert(false)}></UnderConstructionDialog>
+        <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+            <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+                Request sent successfully!
+            </Alert>
+        </Snackbar>
+        <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+            <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+                Failt to send join request. Try again or Contact the website administrators for help!
+            </Alert>
+        </Snackbar>
         </>
     )
 }

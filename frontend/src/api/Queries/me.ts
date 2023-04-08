@@ -7,6 +7,7 @@ export const getUserProfile = gql`
     verified
     firstName
     lastName
+    isRepresentative
     workingGroup {
       id
       name

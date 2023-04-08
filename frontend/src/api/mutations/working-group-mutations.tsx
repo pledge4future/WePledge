@@ -18,3 +18,38 @@ mutation createWorkingGroup($name: String!, $institution: String!, $field: Int!,
     }
 }
 `
+
+export const REQUEST_JOIN_WORKING_GROUP = gql`
+mutation requestJoinWorkingGroup ($id: String!){
+  requestJoinWorkingGroup (input: {
+      workinggroupId: $id
+    }
+  ) {
+    success
+    joinRequest {
+      status
+      id
+      workingGroup {
+        id
+      }
+    }
+  }
+}
+`
+
+export const ANSWER_JOIN_REQUEST = gql`
+mutation ($requestId: String!, $approve: Boolean!){
+  answerJoinRequest (input: {
+       approve: $approve
+       requestId: $requestId
+     }
+     ) {
+       success
+       requestingUser {
+          workingGroup {
+             id
+            }
+          }
+      }
+  }
+`
