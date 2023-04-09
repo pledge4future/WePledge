@@ -2,7 +2,7 @@
 
 Pledge4Future is a project to help you and your working group to measure and reduce your work-related CO<sub>2</sub>e emissions.
 
-The [pledge4future app](https://pledge4future.org) allows you to calculate your work related CO<sub>2</sub>e emissions from heating and electricity consumptions as well as business trips and commuting. The methodology for the calculation the emissions is implemented in the [co2calculator package](https://github.com/pledge4future/co2calculator).
+The [pledge4future app](https://pledge4future.org) allows you to calculate your work related CO<sub>2</sub>e emissions from heating and electricity consumptions as well as business trips and commuting. The methodology for the calculation of the emissions is implemented in the [co2calculator package](https://github.com/pledge4future/co2calculator).
 
 Check out the [demo emission dashboard](https://pledge4future.org/dashboard)!
 
