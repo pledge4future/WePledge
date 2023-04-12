@@ -105,6 +105,11 @@ const SUPPORTED_BY = [
     src: logos_directory + "HeiGIT_Logo_compact.png",
     link: "https://heigit.org/",
   },
+  {
+    tooltip: "Open Route Service",
+    src: logos_directory + "openrouteservice.png",
+    link: 'https://openrouteservice.org/'
+  }
 ];
 
 function Copyright() {
