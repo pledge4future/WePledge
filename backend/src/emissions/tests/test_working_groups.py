@@ -130,6 +130,59 @@ def test_create_workinggroup(test_user2_token):
     )
     # todo: delete working group after it has been created
 
+def test_delete_workinggroup_by_representative(test_user2_token):
+    """Tests whether working groups can be deleted"""
+    query = """
+        mutation ($name: String!, $institution_id: String!, $research_field_id: Int!, $nemployees: Int!, $is_public: Boolean!){
+            createWorkingGroup (input: {
+                name: $name
+                institutionId: $institution_id
+                researchFieldId: $research_field_id
+                nEmployees: $nemployees
+                isPublic: $is_public
+            }) {
+                success
+                workinggroup {
+                    name
+                    representative {
+                        email
+                    }
+            }
+            }
+        }
+    """
+    variables = {
+        "name": test_workinggroups['workinggroup_to_delete']['name'],
+        "institution_id": test_workinggroups['workinggroup_to_delete']['institution']['id'],
+        "research_field_id": test_workinggroups['workinggroup_to_delete']['research_field']['id'],
+        "nemployees": test_workinggroups['workinggroup_to_delete']['n_employees'],
+        "is_public": test_workinggroups['workinggroup_to_delete']['is_public'],
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"JWT {test_user2_token}",
+    }
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers)
+    assert response.status_code == 200
+    
+    workinggroup_id = test_workinggroups["workinggroup_to_delete"]["id"]
+    mutation = '''
+        mutation ($workingGroupId: String!){
+            deleteWorkingGroup (input: {
+                id: $workingGroupId
+            }) {
+                success
+                }
+            }
+    '''
+    variables = {
+        "id": workinggroup_id
+    }
+    response = requests.post(GRAPHQL_URL, json={"query": query, "variables": variables}, headers=headers)
+    assert response.status_code == 200
+    assert response.success == True
+    
+
 
 def test_create_workinggroup_by_representative(test_user3_rep_token):
     """Create a new working group"""
@@ -171,7 +224,6 @@ def test_create_workinggroup_by_representative(test_user3_rep_token):
         data["errors"][0]["message"]
         == "This user cannot create a new working group, since they are already the representative of another working group."
     )
-
 
 
 def test_join_request_workinggroup(test_user1_token, test_user3_rep_token, test_user4_rep_token):
