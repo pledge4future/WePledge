@@ -84,7 +84,7 @@ If the heating consumption is only known for a building or building complex and 
 
 Buildings in colder climates may require more heating in the winter than buildings in warmer environments. Similarly, buildings in cooler climates will require less cooling in summer months than buildings in hot climates. Degree Days are a measure of how warm or cold a location is, and therefore offer a way to compare the heating and cooling consumptions between different locations or years. 
 
-There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, there $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
+There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, where $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
 
 $$
 \begin{aligned}
@@ -94,15 +94,13 @@ D_{\text{cooling}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta (t) - \theta_{
 \end{aligned}
 $$
 
-The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate - especially in intermittently heated buildings, and the thermostat settings may influence both the definition of the reference temperature and the response as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this function obtains an hourly ERA5 reanalysis temperature data [16], then performs a numerical integration.
+The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate (especially in intermittently heated buildings), and the thermostat settings may influence either the reference temperature or the degree days behaviour as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this functions above are computed using hourly ERA5 reanalysis temperature data [16] and numerical integration.
 
 We can then use the computed degree days to more fairly compare heating and cooling consumption between different years or locations. See the two examples below. 
 
 #### Example 1: Comparing heating consumption over 3 months within a single working group
 
-A working group called WG1 starts to use P4F in January 2020 with a heating consumption of 300 units. WG1 is interested in comparing their heating consumption in the following 2 months of February and March with their original consumption in January. In other words, they wonder: If the weather conditions had been the same in February and March as they were in January, would they have saved energy due to their improved consumption behaviors?
-
-The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+A working group called WG1 starts to use P4F in January 2020 with a heating consumption of 300 units. WG1 is interested in comparing their heating consumption in the following 2 months of February and March with their original consumption in January. In other words: If the weather conditions had been the same in February and March as they were in January, would they have saved energy due to their improved consumption behaviors?
 
 Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
@@ -110,29 +108,27 @@ Working group | Month/year | Heating/cooling consumption | Degree days | Scale f
  WG1  |  02/2020 | 250  |  5 |  4/5 = 0.8  | 250x0.8 = 200
  WG1  |  03/2020 | 100  |  2 |  4/2 = 2  | 100x2 = 200
  
-In this example, the working group can find out the following: 
+In this example, WG1 can find out the following: 
 
-1. Although the absolute heating consumption only decreased by 50 units from January 2020 to February 2020, since February was colder than January, this does not fully represent the improved heating consumption behaviours. In fact, had the temperature been the same in February as it was in January, we would have decreased consumption by 100 units! Congratulations to the working group!
-2. In March, the absolute heating consumption was 200 units lower than in January, and 150 units lower than in February. However, if we take into account that March was warmer than both January and February, we see that we indeed did not change our heating consumption behaviours from February to March at all. Our decreased consumption was only due to the warmer weather. So, the working group still has more work to do to be more energy efficient!
+1. Although the absolute heating consumption only decreased by 50 units from January 2020 to February 2020, since February was colder than January, this does not fully represent the improved heating consumption behaviours. In fact, had the temperature been the same in February as it was in January, WG1 would have decreased consumption by 100 units! Congratulations to the working group!
+2. In March, WG1's absolute heating consumption was 200 units lower than in January, and 150 units lower than in February. However, taking into account that March was warmer than both January and February, we can see that WG1 indeed did not change their heating consumption behaviours from February to March at all. Their decreased consumption was only due to the warmer weather. So, WG1 still has more work to do!
 
 #### Example 2: Comparing heating consumption between 2 different working groups
 
-A working group called WG1 is located in a warm place (e.g. Italy), and another working group called WG2 in a cold place (e.g. Canada). WG2 is interested in comparing their heating consumption with WG1 over the months of January and February 2020. In other words, they wonder: If the weather conditions had been the same in Canada as they were in Italy, would they have been more energy efficient than WG1?
+A working group called WG1 is located in a warm place (e.g. Italy), and another working group called WG2 in a cold place (e.g. Canada). WG2 is interested in comparing their heating consumption with WG1 over the months of January and February 2020. In other words: If the weather conditions had been the same in Canada as they were in Italy, would WG2 have been more energy efficient than WG1?
 
-In this case, the reference value for the month of January 2020 is the calculated degree days of the same month January 2020, but instead using the weather of WG1, Italy. Similarly, the reference value for the month of February 2020 is the calculated degree days of February 2020 for WG1 in Italy. We obtain our scale factor by dividing the reference value by WG2’s current month/year’s degree days.
-
-The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+The reference value for the month of January 2020 is WG1's (Italy) calculated degree days for the same month, January 2020. The reference value for the month of February 2020 is WG1's calculated degree days for February 2020. 
  
  Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
- WG1  |  01/2020 | 300  |  3 = REF01/2020 | 1  | 300
- WG1  |  02/2021 |  200 |  4 = REF02/2021 |  1 | 200
+ WG1  |  01/2020 | 300  |  3 = REF<sub>01/2020</sub> | 1  | 300
+ WG1  |  02/2021 |  200 |  4 = REF<sub>02/2021</sub> |  1 | 200
  WG2  |  01/2020 | 400  |  5 |  3/5=0.6  | 400x0.6 = 240
  WG2  |  02/2021 | 300  |  5 |  4/5=0.8  | 300x0.8 = 240
  
 In this example, WG2 can find out the following:
 
-1. In January 2020, although WG2’s absolute heating consumption was 100 units higher than WG1’s consumption, since it was colder in Canada, this does not fully represent WG1’s energy efficient habits. In fact, had the temperature been the same in Canada as it was in Italy, WG2 we would have consumed 60 units less than WG1! Congratulations to WG2!
+1. In January 2020, although WG2’s absolute heating consumption was 100 units higher than WG1’s consumption, since it was colder in Canada, this does not fully represent WG2’s energy efficient habits. In fact, had the temperature been the same in Canada as it was in Italy, WG2 we would have consumed 60 units less than WG1! Congratulations to WG2!
 2. In February 2020, both working groups decreased their absolute heating consumption by 100 units. However, February was a particularly cold month in Italy, and WG1 actually improved their heating consumption behaviours much more than WG2 did in Canada. If the temperature been the same in Canada as it was in Italy for February, WG2 would have consumed 40 units more than WG1! WG2 should improve their consumption behaviours to catch up to WG1!
 
 
