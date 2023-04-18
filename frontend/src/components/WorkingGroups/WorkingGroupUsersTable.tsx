@@ -1,9 +1,13 @@
-import { IconButton, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip } from "@material-ui/core";
+import { IconButton, Paper, Snackbar, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, ThemeProvider, Tooltip } from "@material-ui/core";
 import { red } from '@mui/material/colors';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 import React, { useState } from "react";
-import { UnderConstructionDialog } from "../UnderConstructionDialog";
 import theme from "../../theme";
+import { useMutation } from "@apollo/client";
+import { REMOVE_USER_FROM_WORKING_GROUP } from "../../api/mutations/working-group-mutations";
+import { Alert } from "@mui/material";
+import { RemoveUserDialog } from "./RemoveUserDialog";
+import { useRouter } from "next/router";
 
 interface IWorkingGroupUsersTableProps {
     data: any
@@ -21,16 +25,42 @@ interface IUserTableRow {
 
 export const WorkingGroupUsersTable = (props: IWorkingGroupUsersTableProps) => {
 
+    const router = useRouter();
+
     const {data: tableData} = props;
 
     const [showDialog, setShowDialog] = useState(false);
+    const [userToRemove, setUserToRemove] = useState({} as IUserTableRow)
+
+    const [errorState, setErrorState] = useState(false);
+    const [successState, setSuccessState] = useState(false);
+
+    const [sendRemoveUserFromWorkingGroupRequest] = useMutation(REMOVE_USER_FROM_WORKING_GROUP, {
+        onCompleted(res){
+            router.reload();
+        }
+    })
 
     function formatUserName(row: IUserTableRow){
         return `${row.firstName} ${row.lastName}`
     }
 
     const handleUserRemove = (row: IUserTableRow) => {
-        setShowDialog(true);
+        setUserToRemove(row);
+        setShowDialog(true)
+    }
+
+    const handleRemoveUserDialogClose = (() => {
+        setUserToRemove({} as IUserTableRow);
+        setShowDialog(false);
+    });
+
+    const handleRemoveUserMutation = (userID: string) => {
+        sendRemoveUserFromWorkingGroupRequest({
+            variables: {
+                userID: userID
+            }
+        })
     }
 
     return (
@@ -67,7 +97,17 @@ export const WorkingGroupUsersTable = (props: IWorkingGroupUsersTableProps) => {
                 </TableBody>
             </Table>
     </TableContainer>
-    <UnderConstructionDialog feature="Removal of users from working groups" isOpen={showDialog} handleDialogClose={() => setShowDialog(false)}/>
+    <RemoveUserDialog isOpen={showDialog} handleDialogClose={handleRemoveUserDialogClose} user={userToRemove} removeUserMutation={handleRemoveUserMutation}/>
+    <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+                <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+                    Successfully removed user from working group. 
+                </Alert>
+            </Snackbar>
+            <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+                <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+                Failed to remove user from working group, try again!
+                </Alert>
+            </Snackbar>
     </React.Fragment>
     )
 }
