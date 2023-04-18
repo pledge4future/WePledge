@@ -9,7 +9,7 @@ You can find the source code and data in our [GitHub repository](https://github.
 ## 1 General information
 ### What are CO2 e-emissions?
 
-Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide ($CO_2$), methane ($CH_4$), nitrous oxides ($N_2O$) and others. The molecules of these gases contribute differently to global warming. For example, the impact of one methane molecule is 21 times higher than the impact caused by one carbon dioxide molecule (Moss et al. 2000). This is why the impact of different greenhouse gases is usually converted to the equivalent impact that carbon dioxide molecules would have. Therefore, for carbon footprint calculations, $CO_2$ equivalents are used as a standard unit (Gohar & Shine 2007).
+Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide ($CO_2$), methane ($CH_4$), nitrous oxides ($N_2O$) and others. The molecules of these gases contribute differently to global warming. For example, the impact of one methane molecule is 21 times higher than the impact caused by one carbon dioxide molecule [6]. This is why the impact of different greenhouse gases is usually converted to the equivalent impact that carbon dioxide molecules would have. Therefore, for carbon footprint calculations, $CO_2$ equivalents are used as a standard unit [2].
 
 
 
@@ -18,7 +18,7 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
  ![Methodology](../../../static/images/methodology.png)
 
 
-The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020), who calculated the carbon footprint of their research institute. Emissions are given as $CO_2$ equivalents $E$ [kg]. 
+The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020) [3], who calculated the carbon footprint of their research institute. Emissions are given as $CO_2$ equivalents $E$ [kg]. 
 
 Business trips and field trips are assessed on an individual level whereas heating and electricity are assessed once for the entire research group.
 
@@ -98,36 +98,37 @@ The reference temperature is fixed for simplicity, and is chosen in our case to 
 
 We can then use the computed degree days to more fairly compare heating and cooling consumption between different years or locations. See the two examples below. 
 
-++Example 1:++ Comparing heating consumption over 3 months within a single working group
+#### Example 1: Comparing heating consumption over 3 months within a single working group
 
 A working group called WG1 starts to use P4F in January 2020 with a heating consumption of 300 units. WG1 is interested in comparing their heating consumption in the following 2 months of February and March with their original consumption in January. In other words, they wonder: If the weather conditions had been the same in February and March as they were in January, would they have saved energy due to their improved consumption behaviors?
 
-Working group | Month/year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption* 
+The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+
+Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
  WG1  |  01/2020 | 300  |  4 = REF |  4/4 = 1  | 300
- WG1  |  02/2020 | 250  |  5 |  4/5 = 0.8  | 250*0.8 = 200
- WG1  |  03/2020 | 100  |  2 |  4/2 = 2  | 100*2 = 200
-  *The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+ WG1  |  02/2020 | 250  |  5 |  4/5 = 0.8  | 250x0.8 = 200
+ WG1  |  03/2020 | 100  |  2 |  4/2 = 2  | 100x2 = 200
  
 In this example, the working group can find out the following: 
 
 1. Although the absolute heating consumption only decreased by 50 units from January 2020 to February 2020, since February was colder than January, this does not fully represent the improved heating consumption behaviours. In fact, had the temperature been the same in February as it was in January, we would have decreased consumption by 100 units! Congratulations to the working group!
 2. In March, the absolute heating consumption was 200 units lower than in January, and 150 units lower than in February. However, if we take into account that March was warmer than both January and February, we see that we indeed did not change our heating consumption behaviours from February to March at all. Our decreased consumption was only due to the warmer weather. So, the working group still has more work to do to be more energy efficient!
 
-++Example 2:++ Comparing heating consumption between 2 different working groups
+#### Example 2: Comparing heating consumption between 2 different working groups
 
 A working group called WG1 is located in a warm place (e.g. Italy), and another working group called WG2 in a cold place (e.g. Canada). WG2 is interested in comparing their heating consumption with WG1 over the months of January and February 2020. In other words, they wonder: If the weather conditions had been the same in Canada as they were in Italy, would they have been more energy efficient than WG1?
 
 In this case, the reference value for the month of January 2020 is the calculated degree days of the same month January 2020, but instead using the weather of WG1, Italy. Similarly, the reference value for the month of February 2020 is the calculated degree days of February 2020 for WG1 in Italy. We obtain our scale factor by dividing the reference value by WG2’s current month/year’s degree days.
 
+The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
  
- Working group | Month/year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption*
+ Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
  WG1  |  01/2020 | 300  |  3 = REF01/2020 | 1  | 300
  WG1  |  02/2021 |  200 |  4 = REF02/2021 |  1 | 200
- WG2  |  01/2020 | 400  |  5 |  3/5=0.6  | 400*0.6 = 240
- WG2  |  02/2021 | 300  |  5 |  4/5=0.8  | 300*0.8 = 240
-  *The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+ WG2  |  01/2020 | 400  |  5 |  3/5=0.6  | 400x0.6 = 240
+ WG2  |  02/2021 | 300  |  5 |  4/5=0.8  | 300x0.8 = 240
  
 In this example, WG2 can find out the following:
 
@@ -257,14 +258,14 @@ with $E_{\text{aggr}}$ being the sum of the $CO_2e$  emissions of all participan
 
 ### ProBas database
 
-The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
-Systeme), a freely available computer model with an integrated database for lifecycle assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut & IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
+The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model [5]. ProBas uses data from the 2010 project, i.e., Version 5 [4]. Emission factors for specific car fuel types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
+Systeme), a freely available computer model with an integrated database for lifecycle assessments and CO2 footprints of energy, resource and transport systems [7]. It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
 [International Institute for Sustainability Analysis and Strategy](http://iinas.org/news.html) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
 
 
 ### Brochure "Umweltfeundlich mobil!"
 
-The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport (UBA, 2021). The emission factors for bicycles, pedelecs, and tram were taken from Table 3 on p. 38 of this brochure.
+The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport [8]. The emission factors for bicycles, pedelecs, and tram were taken from Table 3 on p. 38 of this brochure.
 
 
 ### Greenhouse gas reporting: conversion factors 2020
@@ -330,4 +331,4 @@ Sustainability Analysis and Strategy/Internationales Institut für Nachhaltigkei
  
 - [15] Degree-Days: About degree-days. University of California Agriculture & Natural Resources: Statewide Integrated Pest Management Program. Retrieved January 19, 2023, from https://ipm.ucanr.edu/WEATHER/ddconcepts.html 
 
-- [16] Muñoz Sabater, J., (2019): ERA5-Land hourly data from 1981 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). (Accessed on &lt DD-MMM-YYYY &gt), 10.24381/cds.e2161bac
+- [16] Muñoz Sabater, J., (2019): ERA5-Land hourly data from 1981 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). 10.24381/cds.e2161bac
