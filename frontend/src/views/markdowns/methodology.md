@@ -98,24 +98,47 @@ The reference temperature is fixed for simplicity, and is chosen in our case to 
 
 We can then use the computed degree days to more fairly compare heating and cooling consumption between different years or locations. See the two examples below. 
 
+++Example 1:++ Comparing heating consumption over 3 months within a single working group
 
-The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+A working group called WG1 starts to use P4F in January 2020 with a heating consumption of 300 units. WG1 is interested in comparing their heating consumption in the following 2 months of February and March with their original consumption in January. In other words, they wonder: If the weather conditions had been the same in February and March as they were in January, would they have saved energy due to their improved consumption behaviors?
 
-
-Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
+Working group | Month/year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption* 
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
- WG1  |  2020 | 300  |  4 = REF |  4/4 = 1  | 300
- WG1  |  2021 |  100 |  2 |  4/2 = 2  | 100*2 = 200
- WG1  |  2022 | 250  |  5 |  4/5 = 0.8  | 250*0.8 = 200
+ WG1  |  01/2020 | 300  |  4 = REF |  4/4 = 1  | 300
+ WG1  |  02/2020 | 250  |  5 |  4/5 = 0.8  | 250*0.8 = 200
+ WG1  |  03/2020 | 100  |  2 |  4/2 = 2  | 100*2 = 200
+  *The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
  
+In this example, the working group can find out the following: 
+
+1. Although the absolute heating consumption only decreased by 50 units from January 2020 to February 2020, since February was colder than January, this does not fully represent the improved heating consumption behaviours. In fact, had the temperature been the same in February as it was in January, we would have decreased consumption by 100 units! Congratulations to the working group!
+2. In March, the absolute heating consumption was 200 units lower than in January, and 150 units lower than in February. However, if we take into account that March was warmer than both January and February, we see that we indeed did not change our heating consumption behaviours from February to March at all. Our decreased consumption was only due to the warmer weather. So, the working group still has more work to do to be more energy efficient!
+
+++Example 2:++ Comparing heating consumption between 2 different working groups
+
+A working group called WG1 is located in a warm place (e.g. Italy), and another working group called WG2 in a cold place (e.g. Canada). WG2 is interested in comparing their heating consumption with WG1 over the months of January and February 2020. In other words, they wonder: If the weather conditions had been the same in Canada as they were in Italy, would they have been more energy efficient than WG1?
+
+In this case, the reference value for the month of January 2020 is the calculated degree days of the same month January 2020, but instead using the weather of WG1, Italy. Similarly, the reference value for the month of February 2020 is the calculated degree days of February 2020 for WG1 in Italy. We obtain our scale factor by dividing the reference value by WG2’s current month/year’s degree days.
+
  
- Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption
+ Working group | Month/year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption*
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
- WG1  |  2020 | 300  |  3 = REF2020 |   | 
- WG1  |  2021 |  200 |  4 = REF2021 |   | 
- WG2  |  2020 | 400  |  5 |  3/5=0.6  | 400*0.6 = 240
- WG2  |  2021 | 300  |  5 |  4/5=0.8  | 300*0.8 = 240
+ WG1  |  01/2020 | 300  |  3 = REF01/2020 | 1  | 300
+ WG1  |  02/2021 |  200 |  4 = REF02/2021 |  1 | 200
+ WG2  |  01/2020 | 400  |  5 |  3/5=0.6  | 400*0.6 = 240
+ WG2  |  02/2021 | 300  |  5 |  4/5=0.8  | 300*0.8 = 240
+  *The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
  
+In this example, WG2 can find out the following:
+
+1. In January 2020, although WG2’s absolute heating consumption was 100 units higher than WG1’s consumption, since it was colder in Canada, this does not fully represent WG1’s energy efficient habits. In fact, had the temperature been the same in Canada as it was in Italy, WG2 we would have consumed 60 units less than WG1! Congratulations to WG2!
+2. In February 2020, both working groups decreased their absolute heating consumption by 100 units. However, February was a particularly cold month in Italy, and WG1 actually improved their heating consumption behaviours much more than WG2 did in Canada. If the temperature been the same in Canada as it was in Italy for February, WG2 would have consumed 40 units more than WG1! WG2 should improve their consumption behaviours to catch up to WG1!
+
+
+#### What if degree days are zero?
+Although this is a fringe case, the possibility of having a value of zero for degree days, and therefore dividing by zero when rescaling consumptions, presents an issue. We avoid this issue by manually setting a minimum value for degree days of 0.1. Note that this modified minimum value represents a very small deviation from the actual temperature series, and therefore does not largely affect what the degree days value represents.
+
+
 
 ## 4 Business trips
 
@@ -234,11 +257,8 @@ with $E_{\text{aggr}}$ being the sum of the $CO_2e$  emissions of all participan
 
 ### ProBas database
 
-The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel
-types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
-Systeme), a freely available computer model with an integrated database for lifecycle
-assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut &
-IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
+The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
+Systeme), a freely available computer model with an integrated database for lifecycle assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut & IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
 [International Institute for Sustainability Analysis and Strategy](http://iinas.org/news.html) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
 
 
