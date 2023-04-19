@@ -74,7 +74,7 @@ E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}
 $$
 
 
-$\text{\underline{Example:}}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
+$\underline{\text{Example:}}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of heating consumption
 
