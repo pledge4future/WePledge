@@ -886,8 +886,10 @@ class AnswerJoinRequest(graphene.Mutation):
                                f"not the representative of the {join_request.working_group.name}.")
 
         if not input.approve:
+            requesting_user = join_request.user
             join_request.status = 'Declined'
             join_request.save()
+            return AnswerJoinRequest(success=True, requesting_user=requesting_user)
         elif input.approve:
             requesting_user = join_request.user
             setattr(join_request.user, "working_group", join_request.working_group)
