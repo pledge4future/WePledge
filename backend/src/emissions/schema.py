@@ -715,12 +715,17 @@ class CreateWorkingGroupInput(graphene.InputObjectType):
     )
     is_public = graphene.Boolean(required=True,
                               description="If true, the group will be publicly visible.")
+    
+class DeleteWorkingGroupInput(graphene.InputObjectType):
+    """GraphQL Input type for deleting an existing working group"""
+    
+    id = graphene.String(required=True, description="ID of the working group")
 
 
 class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    id = graphene.String(reqired=True, description="ID of the working group")
+    id = graphene.String(required=True, description="ID of the working group")
 
 
 class AnswerJoinRequestInput(graphene.InputObjectType):
@@ -812,8 +817,47 @@ class CreateWorkingGroup(graphene.Mutation):
         user.save()
 
         return CreateWorkingGroup(success=success, workinggroup=new_workinggroup)
+    
+class DeleteWorkingGroup(graphene.Mutation):
+    """Mutatino to delete an existing working group"""
+    
+    class Arguments:
+        """Assign input type"""
+        input = DeleteWorkingGroupInput()
 
+    success = graphene.Boolean()
+    
+    @staticmethod
+    @login_required
+    @representative_required
+    def mutate(root, info, input=None):
+        
+        user = info.context.user
+        
+        working_groups = WorkingGroup.objects.filter(
+            id=input.id
+        )
+        
+        if len(working_groups) == 0:
+            raise GraphQLError("Working group not found.")
+        if len(working_groups) > 1:
+            raise GraphQLError("More then one working group found, invalid ID")
+        
+        group_to_delete = working_groups[0]
+        
+        if info.context.user.id != group_to_delete.representative.id:
+            raise GraphQLError("You are not the representative of the specified working group. Unable to delete")
+        
+        try:
+            setattr(user, "is_representative", False)
+            user.save()
+            working_groups[0].delete()
+            return DeleteWorkingGroup(success=True)
+        except ValidationError as e:
+            return DeleteWorkingGroup(success=False, errors=e)
+        
 
+        
 class SetWorkingGroup(graphene.Mutation):
     """GraphQL mutation to set working group of user"""
 
@@ -886,8 +930,10 @@ class AnswerJoinRequest(graphene.Mutation):
                                f"not the representative of the {join_request.working_group.name}.")
 
         if not input.approve:
+            requesting_user = join_request.user
             join_request.status = 'Declined'
             join_request.save()
+            return AnswerJoinRequest(success=True, requesting_user=requesting_user)
         elif input.approve:
             requesting_user = join_request.user
             setattr(join_request.user, "working_group", join_request.working_group)
@@ -1251,6 +1297,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_commuting = CreateCommuting.Field()
     request_join_working_group = RequestJoinWorkingGroup.Field()
     set_working_group = SetWorkingGroup.Field()
+    delete_working_group = DeleteWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     plan_trip = PlanTrip.Field()
     answer_join_request = AnswerJoinRequest.Field()
