@@ -818,6 +818,27 @@ class CreateWorkingGroup(graphene.Mutation):
 
         return CreateWorkingGroup(success=success, workinggroup=new_workinggroup)
     
+class LeaveWorkingGroup(graphene.Mutation):
+    """Mutation to create a new working group"""
+
+    success = graphene.Boolean()
+    
+    @staticmethod
+    @login_required
+    def mutate(root, info):
+        user = info.context.user
+        
+        if user.is_representative is True:
+            raise GraphQLError(
+                "Users that are representatives can not leave their working groups. Please delete the working group instead."
+            )
+        
+        try:
+            setattr(user, "working_group", None)
+            user.save()
+            return LeaveWorkingGroup(success=True)
+        except ValidationError as e:
+            return LeaveWorkingGroup(success=False, errors=e)
 class DeleteWorkingGroup(graphene.Mutation):
     """Mutatino to delete an existing working group"""
     
@@ -1299,6 +1320,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     set_working_group = SetWorkingGroup.Field()
     delete_working_group = DeleteWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
+    leave_working_group = LeaveWorkingGroup.Field()
     plan_trip = PlanTrip.Field()
     answer_join_request = AnswerJoinRequest.Field()
 
