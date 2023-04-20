@@ -9,7 +9,7 @@ You can find the source code and data in our [GitHub repository](https://github.
 ## 1 General information
 ### What are CO2 e-emissions?
 
-Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide ($CO_2$), methane ($CH_4$), nitrous oxides ($N_2O$) and others. The molecules of these gases contribute differently to global warming. For example, the impact of one methane molecule is 21 times higher than the impact caused by one carbon dioxide molecule (Moss et al. 2000). This is why the impact of different greenhouse gases is usually converted to the equivalent impact that carbon dioxide molecules would have. Therefore, for carbon footprint calculations, $CO_2$ equivalents are used as a standard unit (Gohar & Shine 2007).
+Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxide ($CO_2$), methane ($CH_4$), nitrous oxides ($N_2O$) and others. The molecules of these gases contribute differently to global warming. For example, the impact of one methane molecule is 21 times higher than the impact caused by one carbon dioxide molecule [6]. This is why the impact of different greenhouse gases is usually converted to the equivalent impact that carbon dioxide molecules would have. Therefore, for carbon footprint calculations, $CO_2$ equivalents are used as a standard unit [2].
 
 
 
@@ -18,7 +18,7 @@ Anthropogenic climate change is caused by greenhouse gases, such as carbon dioxi
  ![Methodology](../../../static/images/methodology.png)
 
 
-The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020), who calculated the carbon footprint of their research institute. Emissions are given as $CO_2$ equivalents $E$ [kg]. 
+The *co2calculator* can compute emissions caused by four big areas of the work life: electricity, heating, business trips and commuting. These were identified as the major emission sources by Jahnke et al. (2020) [3], who calculated the carbon footprint of their research institute. Emissions are given as $CO_2$ equivalents $E$ [kg]. 
 
 Business trips and field trips are assessed on an individual level whereas heating and electricity are assessed once for the entire research group.
 
@@ -74,7 +74,7 @@ E = \epsilon_{\text{heating}} \times \frac{C}{277777.7778}
 $$
 
 
-$\text{\underline{Example:}}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
+$\underline{\text{Example:}}$ $2360.8 \text{ kg CO2e} = 65578 \text{ kg/TJ} \times \frac{10000 \text{ kWh}}{277777.7778}$
 
 ### Defining a share of heating consumption
 
@@ -84,7 +84,7 @@ If the heating consumption is only known for a building or building complex and 
 
 Buildings in colder climates may require more heating in the winter than buildings in warmer environments. Similarly, buildings in cooler climates will require less cooling in summer months than buildings in hot climates. Degree Days are a measure of how warm or cold a location is, and therefore offer a way to compare the heating and cooling consumptions between different locations or years. 
 
-There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, there $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
+There are many definitions one may use to quantify degree-days [ex. 9, 10, 14, 15]. In this work, we use the `integration approach’, which is considered to be the most rigorous approach in the literature [10, 15]. The definition is given below, where $D$ is the degree days between times $t_0$ and $T$, $t$ is time in days, $\theta$ is the outside temperature, and $\theta_{\text{ref}}$ is the reference temperature.
 
 $$
 \begin{aligned}
@@ -94,28 +94,48 @@ D_{\text{cooling}} &= \int_{t_0}^{T} \max \left\lbrace 0 , \theta (t) - \theta_{
 \end{aligned}
 $$
 
-The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate - especially in intermittently heated buildings, and the thermostat settings may influence both the definition of the reference temperature and the response as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this function obtains an hourly ERA5 reanalysis temperature data [16], then performs a numerical integration.
+The reference temperature is fixed for simplicity, and is chosen in our case to be consistent with the literature values (15.5°C for heating, and 22°C for cooling [9,10,11]). The $\max$ function is used to ensure that degree days are only calculated for times where the temperature is either below the heating reference temperature (indicating heating is required), or above the cooling reference temperature (indicating cooling is required). In practice, the inside temperature of a building will fluctuate (especially in intermittently heated buildings), and the thermostat settings may influence either the reference temperature or the degree days behaviour as the outside temperature approaches this reference temperature (ex. through a soft cutoff). However, we choose to simplify and standardize our definition of degree days, noting that most of these effects will be reflected in the building consumption anyway. Given a location and time period, this functions above are computed using hourly ERA5 reanalysis temperature data [16] and numerical integration.
 
 We can then use the computed degree days to more fairly compare heating and cooling consumption between different years or locations. See the two examples below. 
 
+#### Example 1: Comparing heating consumption over 3 months within a single working group
 
-The Rescaled heating consumption reflects the heating or cooling consumption rescaled by the weather conditions of reference year.
+A working group called WG1 starts to use P4F in January 2020 with a heating consumption of 300 units. WG1 is interested in comparing their heating consumption in the following 2 months of February and March with their original consumption in January. In other words: If the weather conditions had been the same in February and March as they were in January, would they have saved energy due to their improved consumption behaviors?
 
-
-Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
+Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption 
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
- WG1  |  2020 | 300  |  4 = REF |  4/4 = 1  | 300
- WG1  |  2021 |  100 |  2 |  4/2 = 2  | 100*2 = 200
- WG1  |  2022 | 250  |  5 |  4/5 = 0.8  | 250*0.8 = 200
+ WG1  |  01/2020 | 300  |  4 = REF |  4/4 = 1  | 300
+ WG1  |  02/2020 | 250  |  5 |  4/5 = 0.8  | 250x0.8 = 200
+ WG1  |  03/2020 | 100  |  2 |  4/2 = 2  | 100x2 = 200
  
+In this example, WG1 can find out the following: 
+
+1. Although the absolute heating consumption only decreased by 50 units from January 2020 to February 2020, since February was colder than January, this does not fully represent the improved heating consumption behaviours. In fact, had the temperature been the same in February as it was in January, WG1 would have decreased consumption by 100 units! Congratulations to the working group!
+2. In March, WG1's absolute heating consumption was 200 units lower than in January, and 150 units lower than in February. However, taking into account that March was warmer than both January and February, we can see that WG1 indeed did not change their heating consumption behaviours from February to March at all. Their decreased consumption was only due to the warmer weather. So, WG1 still has more work to do!
+
+#### Example 2: Comparing heating consumption between 2 different working groups
+
+A working group called WG1 is located in a warm place (e.g. Italy), and another working group called WG2 in a cold place (e.g. Canada). WG2 is interested in comparing their heating consumption with WG1 over the months of January and February 2020. In other words: If the weather conditions had been the same in Canada as they were in Italy, would WG2 have been more energy efficient than WG1?
+
+The reference value for the month of January 2020 is WG1's (Italy) calculated degree days for the same month, January 2020. The reference value for the month of February 2020 is WG1's calculated degree days for February 2020. 
  
- Working group | Year | Heating/Cooling consumption | Degree days | Scale factor | Rescaled heating consumption
+ Working group | Month/year | Heating/cooling consumption | Degree days | Scale factor | Rescaled heating consumption
 ------------ | ------------- | ------------- | ------------ | ------------- | -------------
- WG1  |  2020 | 300  |  3 = REF2020 |   | 
- WG1  |  2021 |  200 |  4 = REF2021 |   | 
- WG2  |  2020 | 400  |  5 |  3/5=0.6  | 400*0.6 = 240
- WG2  |  2021 | 300  |  5 |  4/5=0.8  | 300*0.8 = 240
+ WG1  |  01/2020 | 300  |  3 = REF<sub>01/2020</sub> | 1  | 300
+ WG1  |  02/2021 |  200 |  4 = REF<sub>02/2021</sub> |  1 | 200
+ WG2  |  01/2020 | 400  |  5 |  3/5=0.6  | 400x0.6 = 240
+ WG2  |  02/2021 | 300  |  5 |  4/5=0.8  | 300x0.8 = 240
  
+In this example, WG2 can find out the following:
+
+1. In January 2020, although WG2’s absolute heating consumption was 100 units higher than WG1’s consumption, since it was colder in Canada, this does not fully represent WG2’s energy efficient habits. In fact, had the temperature been the same in Canada as it was in Italy, WG2 we would have consumed 60 units less than WG1! Congratulations to WG2!
+2. In February 2020, both working groups decreased their absolute heating consumption by 100 units. However, February was a particularly cold month in Italy, and WG1 actually improved their heating consumption behaviours much more than WG2 did in Canada. If the temperature been the same in Canada as it was in Italy for February, WG2 would have consumed 40 units more than WG1! WG2 should improve their consumption behaviours to catch up to WG1!
+
+
+#### What if degree days are zero?
+Although this is a fringe case, the possibility of having a value of zero for degree days, and therefore dividing by zero when rescaling consumptions, presents an issue. We avoid this issue by manually setting a minimum value for degree days of 0.1. Note that this modified minimum value represents a very small deviation from the actual temperature series, and therefore does not largely affect what the degree days value represents.
+
+
 
 ## 4 Business trips
 
@@ -158,8 +178,7 @@ $E_{\text{car}} = \epsilon_{\text{car}} \times \frac{D}{n}$
 
 $E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D$
 
-$\text{\underline{Example (long-distance train):}}$ $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
-
+$\underline{\text{Example (long-distance train):}}$ $16 \text{ kg CO2e} = 0.032 \text{ kg/P.km} \times 500 \text{ km}$
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
@@ -205,7 +224,7 @@ $$
 E_{\text{bus/train/plane/ferry}} = \epsilon_{\text{bus/train/plane/ferry}} \times D_{\text{weekly}}
 $$
 
-$\text{\underline{Example (bus):}}$ $1.95 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
+$\underline{\text{Example (bus):}}$ $1.95 \text{kg CO2e} = 0.0389 \text{kg/P.km} \times 50 \text{km}$
 
 The emission factors $\epsilon$ are specified according to the transportation modes and their specifica, which are shown in the table below. We ask the user to give the values for the following specifica. If no value is given, the values marked in **bold** are used as default values.
 
@@ -234,17 +253,14 @@ with $E_{\text{aggr}}$ being the sum of the $CO_2e$  emissions of all participan
 
 ### ProBas database
 
-The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model (IFEU Heidelberg & UBA, 2019). ProBas uses data from the 2010 project, i.e., Version 5 (IFEU Heidelberg & UBA, 2010). Emission factors for specific car fuel
-types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
-Systeme), a freely available computer model with an integrated database for lifecycle
-assessments and CO2 footprints of energy, resource and transport systems (ÖKo-Institut &
-IINAS, 2021). It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
+The web portal [ProBas](https://www.probas.umweltbundesamt.de/php/index.php) provides process-oriented basic data from different projects. Most emission factors we use for commuting and business trips originate from [TREMOD](https://www.ifeu.de/en/project/uba-tremod-2019/), the Transport emission model [5]. ProBas uses data from the 2010 project, i.e., Version 5 [4]. Emission factors for specific car fuel types, and for heating and electricity come from [GEMIS](http://iinas.org/about-gemis.html) (Globales Emissions-Modell Integrierter
+Systeme), a freely available computer model with an integrated database for lifecycle assessments and CO2 footprints of energy, resource and transport systems [7]. It was developed by the [Öko-Institut](https://www.oeko.de/en/) and then passed to the 
 [International Institute for Sustainability Analysis and Strategy](http://iinas.org/news.html) (Internationales Institut für Nachhaltigkeitsanalysen und -strategien - IINAS) in 2012.
 
 
 ### Brochure "Umweltfeundlich mobil!"
 
-The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport (UBA, 2021). The emission factors for bicycles, pedelecs, and tram were taken from Table 3 on p. 38 of this brochure.
+The brochure ["Umweltfreundlich mobil!"](https://www.umweltbundesamt.de/en/publikationen/umweltfreundlich-mobil) by the Umweltbundesamt (Federal Environmental Agency) of Germany assesses the environmental impact of different modes of transport [8]. The emission factors for bicycles, pedelecs, and tram were taken from Table 3 on p. 38 of this brochure.
 
 
 ### Greenhouse gas reporting: conversion factors 2020
@@ -310,4 +326,4 @@ Sustainability Analysis and Strategy/Internationales Institut für Nachhaltigkei
  
 - [15] Degree-Days: About degree-days. University of California Agriculture & Natural Resources: Statewide Integrated Pest Management Program. Retrieved January 19, 2023, from https://ipm.ucanr.edu/WEATHER/ddconcepts.html 
 
-- [16] Muñoz Sabater, J., (2019): ERA5-Land hourly data from 1981 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). (Accessed on &lt DD-MMM-YYYY &gt), 10.24381/cds.e2161bac
+- [16] Muñoz Sabater, J., (2019): ERA5-Land hourly data from 1981 to present. Copernicus Climate Change Service (C3S) Climate Data Store (CDS). 10.24381/cds.e2161bac
