@@ -59,5 +59,15 @@ mutation{
   leaveWorkingGroup{
     success
    }
+`
+
+
+export const DELETE_WORKING_GROUP = gql`
+mutation ($workingGroupId: String!){
+  deleteWorkingGroup (input: {
+    id: $workingGroupId
+  }) {
+    success
+  }
 }
 `

@@ -40,7 +40,7 @@ export default function WorkingGroupDetailsView(){
                 </Grid>
             </Grid>
             {profile_data?.me?.isRepresentative && (
-                <WorkingGroupAdminDetails />
+                <WorkingGroupAdminDetails workingGroup={workingGroup} />
             )}
             {!profile_data?.me?.isRepresentative && (
                 <WorkingGroupGeneralDetails />

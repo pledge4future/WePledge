@@ -62,6 +62,19 @@
         "id": 2
       },
       "is_public": "False"
+  },
+  "workinggroup_to_delete": {
+    "id": "4aaa81a6-9fcd-11ed-a8fc-0242ac120002",
+      "name": "workinggroup_to_delete",
+      "institution": {
+        "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
+      },
+      "representative": "test3_rep",
+      "n_employees": 10,
+      "research_field": {
+        "id": 2
+      },
+      "is_public": "False"
   }
 },
 "business_trips": {
