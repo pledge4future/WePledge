@@ -54,6 +54,14 @@ mutation ($requestId: String!, $approve: Boolean!){
   }
 `
 
+export const LEAVE_WORKING_GROUP = gql`
+mutation{
+  leaveWorkingGroup{
+    success
+   }
+`
+
+
 export const DELETE_WORKING_GROUP = gql`
 mutation ($workingGroupId: String!){
   deleteWorkingGroup (input: {
