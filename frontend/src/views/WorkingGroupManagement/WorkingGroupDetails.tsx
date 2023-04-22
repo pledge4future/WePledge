@@ -3,6 +3,7 @@ import { Container, Grid } from '@material-ui/core';
 import React from 'react';
 import { getUserProfile } from '../../api/Queries/me';
 import { WorkingGroupAdminDetails } from './WorkingGroupAdminDetails';
+import { WorkingGroupGeneralDetails } from './WorkingGroupGeneralDetails';
 
 export default function WorkingGroupDetailsView(){
 
@@ -39,7 +40,10 @@ export default function WorkingGroupDetailsView(){
                 </Grid>
             </Grid>
             {profile_data?.me?.isRepresentative && (
-                <WorkingGroupAdminDetails />
+                <WorkingGroupAdminDetails workingGroup={workingGroup} />
+            )}
+            {!profile_data?.me?.isRepresentative && (
+                <WorkingGroupGeneralDetails />
             )}
         </Container>
     )
