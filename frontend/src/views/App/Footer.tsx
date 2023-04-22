@@ -106,7 +106,7 @@ const SUPPORTED_BY = [
     link: "https://heigit.org/",
   },
   {
-    tooltip: "Open Route Service",
+    tooltip: "openrouteservice",
     src: logos_directory + "openrouteservice.png",
     link: 'https://openrouteservice.org/'
   }
