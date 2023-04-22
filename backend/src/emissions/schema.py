@@ -731,7 +731,6 @@ class RemoveUserFromWorkingGroupInput(graphene.InputObjectType):
     """GraphQL input type for removing a user from a working group"""
     
     user_id = graphene.String(required=True, description="ID of the user that should be removed")
-    id = graphene.String(required=True, description="ID of the working group")
 
 
 class AnswerJoinRequestInput(graphene.InputObjectType):
@@ -953,6 +952,11 @@ class RemoveUserFromWorkingGroup(graphene.Mutation):
             raise GraphQLError(
                 "Users that are representatives of the working group can not be removed from the groups."
             )
+            
+        if user_to_remove.working_group != user.working_group:
+                raise GraphQLError(
+                    "The user you are trying to remove is not part of your working group!"
+                )
         
         try:
             setattr(user_to_remove, "working_group", None)

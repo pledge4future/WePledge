@@ -70,6 +70,7 @@ mutation{
   leaveWorkingGroup{
     success
    }
+}
 `
 
 
