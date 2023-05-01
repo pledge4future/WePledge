@@ -725,7 +725,12 @@ class DeleteWorkingGroupInput(graphene.InputObjectType):
 class SetWorkingGroupInput(graphene.InputObjectType):
     """GraphQL Input type for setting working group"""
 
-    id = graphene.String(required=True, description="ID of the working group")
+    id = graphene.String(reqired=True, description="ID of the working group")
+    
+class RemoveUserFromWorkingGroupInput(graphene.InputObjectType):
+    """GraphQL input type for removing a user from a working group"""
+    
+    user_id = graphene.String(required=True, description="ID of the user that should be removed")
 
 
 class AnswerJoinRequestInput(graphene.InputObjectType):
@@ -915,7 +920,54 @@ class SetWorkingGroup(graphene.Mutation):
             return SetWorkingGroup(user=user, success=success)
         except ValidationError as e:
             return SetWorkingGroup(user=user, success=success, errors=e)
+        
 
+class RemoveUserFromWorkingGroup(graphene.Mutation):
+    """GraphQL mutation to remove a user from a working group"""
+    
+    class Arguments:
+        """Input structure defined by input type"""
+        
+        input = RemoveUserFromWorkingGroupInput()
+        
+    success = graphene.Boolean()
+    
+    @staticmethod
+    @login_required
+    @representative_required
+    def mutate(root, info, input):
+        """Process incoming data"""
+        user = info.context.user
+        
+        user_subset = CustomUser.objects.filter(id=input.user_id)
+        
+        if len(user_subset) == 0:
+            raise GraphQLError(
+                "The user you were trying to remove was not found. Please contact your administrator."
+            )
+        else:
+            user_to_remove = user_subset[0]
+        
+        if user_to_remove.is_representative is True:
+            raise GraphQLError(
+                "Users that are representatives of the working group can not be removed from the groups."
+            )
+            
+        if user_to_remove.working_group != user.working_group:
+                raise GraphQLError(
+                    "The user you are trying to remove is not part of your working group!"
+                )
+        
+        try:
+            setattr(user_to_remove, "working_group", None)
+            user_to_remove.save()
+            return RemoveUserFromWorkingGroup(success=True)
+        except ValidationError as e:
+            return RemoveUserFromWorkingGroup(success=False, errors=e)
+    
+    
+        
+    
 
 
 
@@ -1318,6 +1370,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     create_commuting = CreateCommuting.Field()
     request_join_working_group = RequestJoinWorkingGroup.Field()
     set_working_group = SetWorkingGroup.Field()
+    remove_user_from_working_group = RemoveUserFromWorkingGroup.Field()
     delete_working_group = DeleteWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     leave_working_group = LeaveWorkingGroup.Field()
