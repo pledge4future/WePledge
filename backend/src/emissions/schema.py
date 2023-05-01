@@ -738,6 +738,11 @@ class AnswerJoinRequestInput(graphene.InputObjectType):
 
     request_id = graphene.String(required=True, description="ID of join request")
     approve = graphene.Boolean(reqired=True, description="Approve (true) or decline (false) join request")
+    
+class AddUserToWorkingGroupInput(graphene.InputObjectType):
+    """GraphQL input type for adding a user to a working group"""
+    
+    user_email = graphene.String(required=True, description="eMail of the user that should be added to the working group")
 
 
 # --------------- Mutations ------------------------------------
@@ -964,7 +969,51 @@ class RemoveUserFromWorkingGroup(graphene.Mutation):
             return RemoveUserFromWorkingGroup(success=True)
         except ValidationError as e:
             return RemoveUserFromWorkingGroup(success=False, errors=e)
+        
+        
+class AddUserToWorkingGroup(graphene.Mutation):
+    """GraphQL mutaiton to add a user to a working group"""
     
+    class Arguments:
+        """Input strucutred defined by input type"""
+        
+        input = AddUserToWorkingGroupInput()
+        
+    success= graphene.Boolean()
+        
+    @staticmethod
+    @login_required
+    @representative_required
+    def mutate(root, info, input):
+        """Process incoming data"""
+        
+        user = info.context.user
+        
+        working_group = WorkingGroup.objects.filter(id=user.working_group.id)[0]
+        
+        if working_group is None:
+            raise GraphQLError("You are not part of a working group. You can only add users to your own working group.")
+        if info.context.user.id != working_group.representative.id:
+            raise GraphQLError("You are not the representative of the specified working group. Unable to delete")
+
+        user_to_add_query_set = CustomUser.objects.filter(email=input.user_email)
+        
+        if len(user_to_add_query_set) > 1:
+            raise GraphQLError(f"Invalid email adress input. Multiple users found.") # this should never happen as email addresses should be unique in the database
+        elif len(user_to_add_query_set) == 0:
+            raise GraphQLError(f"There is no user for your provided input. Please try another email.")
+        else:
+            user_to_add = user_to_add_query_set[0]
+            if user_to_add.working_group != None:
+                raise GraphQLError(f"The user you are trying to add already has a working group assigned.")
+            
+            # assign working group to user
+            try:
+                setattr(user_to_add, "working_group", working_group)
+                user_to_add.save()
+                return AddUserToWorkingGroup(success=True)
+            except ValidationError as e:
+                return AddUserToWorkingGroup(success=False, errors=e)
     
         
     
@@ -1371,6 +1420,7 @@ class Mutation(AuthMutation, graphene.ObjectType):
     request_join_working_group = RequestJoinWorkingGroup.Field()
     set_working_group = SetWorkingGroup.Field()
     remove_user_from_working_group = RemoveUserFromWorkingGroup.Field()
+    add_user_to_working_group = AddUserToWorkingGroup.Field()
     delete_working_group = DeleteWorkingGroup.Field()
     create_working_group = CreateWorkingGroup.Field()
     leave_working_group = LeaveWorkingGroup.Field()
