@@ -989,19 +989,21 @@ class AddUserToWorkingGroup(graphene.Mutation):
         
         user = info.context.user
         
-        working_group = WorkingGroup.objects.filter(id=user.working_group.id)[0]
+        working_group_set = WorkingGroup.objects.filter(id=user.working_group.id)
         
-        if working_group is None:
+        if len(working_group_set) == 0:
             raise GraphQLError("You are not part of a working group. You can only add users to your own working group.")
-        if info.context.user.id != working_group.representative.id:
-            raise GraphQLError("You are not the representative of the specified working group. Unable to delete")
+        else:
+            working_group = working_group_set[0]
+            if info.context.user.id != working_group.representative.id:
+                raise GraphQLError("You are not the representative of the specified working group. Unable to delete")
 
         user_to_add_query_set = CustomUser.objects.filter(email=input.user_email)
         
         if len(user_to_add_query_set) > 1:
-            raise GraphQLError(f"Invalid email adress input. Multiple users found.") # this should never happen as email addresses should be unique in the database
+            raise GraphQLError(f"Invalid email address input. Multiple users found.") # this should never happen as email addresses should be unique in the database
         elif len(user_to_add_query_set) == 0:
-            raise GraphQLError(f"There is no user for your provided input. Please try another email.")
+            raise GraphQLError(f"The user that you are trying to add is not registered.")
         else:
             user_to_add = user_to_add_query_set[0]
             if user_to_add.working_group != None:
@@ -1015,10 +1017,6 @@ class AddUserToWorkingGroup(graphene.Mutation):
             except ValidationError as e:
                 return AddUserToWorkingGroup(success=False, errors=e)
     
-        
-    
-
-
 
 class AnswerJoinRequest(graphene.Mutation):
     """GraphQL mutation to set working group of user"""
