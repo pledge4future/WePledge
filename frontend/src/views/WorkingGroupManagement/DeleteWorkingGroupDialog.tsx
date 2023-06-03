@@ -87,7 +87,7 @@ export const DeleteWorkingGroupDialog = (props: IDeleteWorkingGroupDialogProps) 
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={handleDialogClose}>Abbort</Button>
+                    <Button autoFocus onClick={handleDialogClose}>Abort</Button>
                     <Button color="primary" variant="contained" onClick={onDeleteButtonPress} disabled={!deletionCheckIsPassed}>Delete</Button>
                 </DialogActions>
             </Dialog>
