@@ -146,10 +146,10 @@ export function InstituteDashboard(props: DashboardProps){
       <Grid container>
         <Grid item  xs ={12} md={9}>
           <div>
-          <ComposedChart width={1000} height={500} data={chartData}>
-            <XAxis dataKey="name" />
+          <ComposedChart width={1000} height={500} data={chartData} margin={{ top: 5, right: 5, left: 50, bottom: 5 }}>
+            <XAxis dataKey="name" style={{fontSize: '0.8rem'}}/>
             <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
-            <Label value="kg CO2eq" position="insideLeft" angle={270} />
+            <Label value="kg CO2eq" position="insideLeft" angle={270} offset={-10}/>
             </YAxis>
             <Tooltip />
             ({ 
