@@ -77,7 +77,7 @@ export function GroupDashboard(props: DashboardProps){
     { label: 'Total CO2-Budget',color: ChartColors.totalBudgetLine, shown: showTotalBudget, onItemChange: (() => setShowTotalBudget(!showTotalBudget))}
   ]
 
-  const workingGroupSize = userProfile?.me?.workingGroup?.nEmployees ?? 1;
+  const workingGroupSize = userProfile?.me?.workingGroup?.nEmployees ?? 5;
 
   const exampleData = useMemo(() => {
     return getAllExampleData(workingGroupSize);
@@ -131,7 +131,7 @@ export function GroupDashboard(props: DashboardProps){
       </React.Fragment>
     }
 
-    if(!userProfile?.me?.workingGroup && !loading){
+    if(isAuthenticated && !userProfile?.me?.workingGroup && !loading){
       return (
       <Grid container>
           <Grid item xs={9}>

@@ -75,7 +75,7 @@ export function InstituteDashboard(props: DashboardProps){
     { label: 'CO2 - Budget',color: ChartColors.totalBudgetLine, shown: showPerCapita, onItemChange: (() => setShowPerCapita(!showPerCapita))}
   ]
 
-  const workingGroupSize = 100;
+  const workingGroupSize = 50;
 
   
   const exampleData = useMemo(() => {
@@ -129,7 +129,7 @@ export function InstituteDashboard(props: DashboardProps){
       </React.Fragment>
     }
 
-    if(!userProfile?.me?.workingGroup && !loading){
+    if(isAuthenticated && !userProfile?.me?.workingGroup && !loading){
       return (
       <Grid container>
           <Grid item xs={9}>
