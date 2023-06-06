@@ -8,6 +8,8 @@ import Typography from "../../components/Typography"
 import { WorkingGroupJoinRequestsTable } from "../../components/WorkingGroups/JoinRequestsTable"
 import { WorkingGroupUsersTable } from "../../components/WorkingGroups/WorkingGroupUsersTable"
 import { DeleteWorkingGroupDialog } from "./DeleteWorkingGroupDialog"
+import { AddUserToWorkingGroupDialog } from './AddUserToWorkingGroupDialog'
+import theme from "../../theme"
 
 interface IWorkingGroupAdminDetails {
     workingGroup: any
@@ -22,7 +24,8 @@ export const WorkingGroupAdminDetails = (props: IWorkingGroupAdminDetails) => {
 
     const {loading: requests_loading, error: requests_error, data: requests_data} = useQuery(resolveWorkingGroupJoinRequests)
 
-    const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+    const [showAddUserDialog, setShowAddUserDialog] = useState(false);
 
     
     return (
@@ -55,11 +58,17 @@ export const WorkingGroupAdminDetails = (props: IWorkingGroupAdminDetails) => {
             </Typography>
             <Grid container spacing={2} alignItems="center" justifyContent="center" style={{marginTop: "2rem"}}>
                 <Grid item xs={3}>
-                    <Button color="primary" variant="contained" onClick={() => setShowDeleteDialog(true)}>Delete Working Group</Button>
+                    <Button color="primary" variant="contained" onClick={() => setShowAddUserDialog(true)}>
+                        Add user to working group
+                    </Button>
+                </Grid>
+                <Grid item xs={3}>
+                    <Button color={theme.palette.warning.main} variant="contained" onClick={() => setShowDeleteDialog(true)}>Delete Working Group</Button>
                 </Grid>
                 </Grid>
             </Grid>
             <DeleteWorkingGroupDialog workingGroupId={workingGroup.id} workingGroupName={workingGroup.name} isOpen={showDeleteDialog} handleDialogClose={() => setShowDeleteDialog(false)} />
+            <AddUserToWorkingGroupDialog isOpen={showAddUserDialog} handleDialogClose={() => setShowAddUserDialog(false)}/>
         </React.Fragment>
     )
 }

@@ -83,3 +83,14 @@ mutation ($workingGroupId: String!){
   }
 }
 `
+
+export const ADD_USER_TO_WORKING_GROUP = gql`
+mutation ($userEmail: String!){
+  addUserToWorkingGroup (input: {
+    userEmail: $userEmail
+  }) {
+    success
+  }
+}
+
+`
