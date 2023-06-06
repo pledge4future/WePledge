@@ -123,11 +123,11 @@ export function IndividualDashboard(props: DashboardProps){
       <Grid container>
       <Grid item xs={9}>
       <div className={styles.containerDiv}>
-      <ComposedChart width={950} height={500} data={chartData}>
-        <XAxis dataKey="name">
+      <ComposedChart width={950} height={500} data={chartData} margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
+        <XAxis dataKey="name" style={{fontSize: '0.8rem'}}>
         </XAxis>
         <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
-          <Label value="kg CO2eq" position="insideLeft" angle={270}/>
+          <Label value="kg CO2eq" position="insideLeft" angle={270} offset={-5}/>
         </YAxis>
         <Tooltip />
         ({ 
