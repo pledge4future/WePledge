@@ -6,6 +6,8 @@ import { ElectricityForm, ElectricityFormValues } from './ElectricityForm';
 import { HeatingForm, HeatingFormValues } from './HeatingForm';
 import { CommutingForm, CommutingFormValues } from './CommutingForm';
 import { BusinessTripForm, BusinessFormValues } from './BusinessTripForm';
+import { getUserProfile } from "../../api/Queries/me";
+import { useQuery } from "@apollo/client";
 
 function a11yProps(index: any){
   return {
@@ -15,9 +17,19 @@ function a11yProps(index: any){
 }
 
 
-export default function DataFormView(){
 
-  const [value, setValue] = useState(0)
+export default function DataFormView(){
+  
+  //TODO: Handle Loading and Error States (this is not trivial because the data forms should also be available in the demo mode)
+  // Use AuthContext like in the following lines
+  // const authContext = useContext(AuthContext);
+  // const [isDemoMode, setIsDemoMode] = useState(authContext.isAuthenticated)
+  // const { loading, error, data } = useQuery(getUserProfile);
+  // const showAllTabs = isAuthenticated || data?.me?.isRepresentative
+  // const [value, setValue] = useState(showAllTabs ? 0 : 2)
+  // Then also change conditional rendering of tabs further below...
+  const { loading, error, data } = useQuery(getUserProfile);
+  const [value, setValue] = useState(data?.me?.isRepresentative ? 0 : 2)
 
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number)=>{
     setValue(newValue);
@@ -44,8 +56,12 @@ export default function DataFormView(){
 
   return <React.Fragment>
     <Tabs value={value} onChange={handleChange} aria-label="forms tabs">
-      <Tab label="Electricity" {...a11yProps(0)} />
-      <Tab label="Heating" {...a11yProps(1)} />
+      {data?.me?.isRepresentative && (
+        <>
+        <Tab label="Electricity" {...a11yProps(0)} />
+        <Tab label="Heating" {...a11yProps(1)} />
+        </>
+      )}
       <Tab label="Commuting" {...a11yProps(2)} />
       <Tab label="Business Trip" {...a11yProps(3)} />
     </Tabs>
