@@ -196,7 +196,7 @@ GRAPHQL_AUTH = {
     "SEND_ACTIVATION_EMAIL": True,
     "ALLOW_LOGIN_NOT_VERIFIED": False,
     "EMAIL_FROM": "no-reply@pledge4future.org",
-    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate",
+    "ACTIVATION_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/confirm-email",
     "PASSWORD_RESET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-new-password",
     "ACTIVATION_SECONDARY_EMAIL_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/activate-secondary",
     "PASSWORD_SET_PATH_ON_EMAIL": os.getenv("PUBLIC_URL", "https://localhost") + "/set-password",
