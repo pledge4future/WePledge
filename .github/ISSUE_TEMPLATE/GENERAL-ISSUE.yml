@@ -1,0 +1,14 @@
+name: "General Issue"
+description: Create a generic, general ticket.
+title: "<title>"
+labels: [
+  "needs triage"
+]
+body:
+  - type: textarea
+    id: Issue Descriptions
+    attributes:
+      label: "Description"
+      description: Provide a description of your issue.
+    validations:
+      required: true
