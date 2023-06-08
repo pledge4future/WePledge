@@ -4,6 +4,7 @@
 
 __email__ = "infopledge4future.org"
 
+import os
 import traceback
 
 import graphene
@@ -1108,7 +1109,8 @@ class RequestJoinWorkingGroup(graphene.Mutation):
                   'representative_last_name': representative.last_name,
                   'user_first_name': user.first_name,
                   'user_last_name': user.last_name,
-                  'working_group_name': working_group.name
+                  'working_group_name': working_group.name,
+                  'path': os.getenv("PUBLIC_URL", "https://localhost") + "/working-group-details"
                   }
         TEMPLATE_DIR = settings.TEMPLATES[0]['DIRS'][0]
         email_client = EmailClient(template_dir=TEMPLATE_DIR)
