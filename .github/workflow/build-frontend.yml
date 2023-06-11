@@ -3,10 +3,10 @@ name: Build frontend workflow
 on:
   push:
     branches:
-      - dev   # Adjust to your main branch name
+      - dev
   pull_request:
     branches:
-      - dev   # Adjust to your main branch name
+      - dev
 
 jobs:
   build:
