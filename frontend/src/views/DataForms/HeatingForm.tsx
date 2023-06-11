@@ -62,7 +62,7 @@ export function HeatingForm(
           formik.resetForm();
         }
       },
-      onError(error){
+      onError(_error){
         setErrorState(true);
       }
     });

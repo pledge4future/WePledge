@@ -125,7 +125,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
 
   function logoutUser(){
     if(authContext){
-      authContext?.logout();
+      authContext.logout?.();
     }
     router.push('/');
   }
@@ -135,7 +135,7 @@ function AppAppBar(props: WithStyles<typeof styles> & AppBarProps) {
   }
 
 
-  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV) ? unauthenticatedRoutes : prodRoutes;
+  const path: Route[] = JSON.parse(process.env.NEXT_PUBLIC_DEV as string) ? unauthenticatedRoutes : prodRoutes;
   const authenticatedPaths: Route[] = authenticatedRoutes
 
 

@@ -1,4 +1,4 @@
-import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment, Grid, Typography } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment, Grid } from '@material-ui/core';
 import { Alert, FormControlLabel } from '@mui/material';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
@@ -76,7 +76,7 @@ export function BusinessTripForm(
           setErrorState(true);
         }
       },
-      onError: (error) => {
+      onError: () => {
         setErrorState(true)
       }
     });

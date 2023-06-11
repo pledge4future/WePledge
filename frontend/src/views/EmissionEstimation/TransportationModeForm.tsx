@@ -49,7 +49,7 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
 
     const transportationModeForm = useFormik({
         initialValues: initialTransportationModeFormValues,
-        onSubmit: (values) => {
+        onSubmit: () => {
             //  no need to submit the form, just satisfy linter
         }
     })
@@ -179,7 +179,7 @@ export const TransportationModeForm = ((props: ITransportationModeFormProps) => 
                     InputLabelProps={{
                         shrink:true
                     }}
-                    variant="outlined"
+                    variant="filled"
                     id="passengers"
                     name="passengers"
                     label="Passengers"

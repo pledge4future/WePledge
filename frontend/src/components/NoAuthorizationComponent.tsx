@@ -23,11 +23,10 @@ export function NoAuthorizationComponent(){
 
     const styles = useStyles();
 
-
     return (
         <div>
             <div className={styles.titleDiv}>
-                <NoAccountsIcon fontSize={"30rem"}></NoAccountsIcon>
+                <NoAccountsIcon fontSize={"large"}></NoAccountsIcon>
             </div>
             <div className={styles.subTitleDiv}>
             <div>You are not signed in yet!</div>

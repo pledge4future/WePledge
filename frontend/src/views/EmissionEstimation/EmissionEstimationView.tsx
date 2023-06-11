@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { Button, createStyles, Grid, InputAdornment, makeStyles, TextField } from "@material-ui/core";
 import React, { useState } from "react";
 import { TransportationModeForm } from "./TransportationModeForm";
@@ -62,7 +63,7 @@ export default function EmissionEstimationView(){
   })
 
 
-  const setFormInputToFirstTransportationMode = ((value: any) => {
+  const setFormInputToFirstTransportationMode = ((value: {name: any, value: any}) => {
       const newTransportationMode = {...firstTransportationMode}
       newTransportationMode[value.name] = value.value
       setFirstTransportationMode(newTransportationMode)

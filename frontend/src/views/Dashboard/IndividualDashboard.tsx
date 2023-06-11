@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useState } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
@@ -9,9 +9,8 @@ import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { Button, Grid, Select, MenuItem } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
 
-import { AuthContext }from '../../providers/Auth/AuthContext';
 
-import { gql, useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client";
 import { DashboardProps } from "./interfaces/DashboardProps";
 import { mapChartData } from "../../factories/ChartDataFactory";
 import { IChartDataEntry } from "../../interfaces/ChartData";
