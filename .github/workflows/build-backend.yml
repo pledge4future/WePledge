@@ -30,5 +30,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Set environment variables
+        run: |
+          echo "SECRET_KEY=mock_secret_key_for_django" >> $GITHUB_ENV
+
       - name: Run tests
         run: python ./src/manage.py test
