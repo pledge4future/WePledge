@@ -83,7 +83,7 @@ export const AddUserToWorkingGroupDialog = (props: IAddUserToWorkingGroupDialog)
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDialogClose}>Abbort</Button>
+                    <Button onClick={handleDialogClose}>Abort</Button>
                     <Button color="primary" variant="contained" onClick={onAddUserButtonPress} disabled={userEmailInputValue === ''}>Add user</Button>
                 </DialogActions>
                 <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
