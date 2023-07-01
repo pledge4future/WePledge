@@ -58,7 +58,7 @@ export const LeaveWorkingGroupDialog = (props: ILeaveWorkingGroupDialog) => {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={onClose}>Abbort</Button>
+                    <Button autoFocus onClick={onClose}>Abort</Button>
                     <Button color="primary" variant="contained" onClick={sendLeaveRequest}>
                         Leave
                     </Button>

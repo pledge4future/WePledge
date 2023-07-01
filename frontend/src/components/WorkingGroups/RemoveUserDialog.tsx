@@ -39,7 +39,7 @@ export const RemoveUserDialog = (props: IRemoveUserDialogProps) => {
         handleDialogClose();
     }
 
-    const onAbbortButtonPress = () => {
+    const onAbortButtonPress = () => {
         setInputValue('')
         handleDialogClose()
     }
@@ -73,7 +73,7 @@ export const RemoveUserDialog = (props: IRemoveUserDialogProps) => {
                     </Grid>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={onAbbortButtonPress}>Abbort</Button>
+                    <Button autoFocus onClick={onAbortButtonPress}>Abort</Button>
                     <Button color="primary" variant="contained" onClick={onDeleteButtonPress} disabled={!removalCheckIsPassed}>Delete</Button>
                 </DialogActions>
             </Dialog>
