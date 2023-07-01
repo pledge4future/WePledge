@@ -1,7 +1,7 @@
 import { Grid } from "@material-ui/core"
 import { MethodologyCard } from "./MethodologyCard"
 
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles';
 
 import CloudIcon from '@material-ui/icons/Cloud';
 import TungstenIcon from '@mui/icons-material/Tungsten';
@@ -12,7 +12,7 @@ import TableChartIcon from '@mui/icons-material/TableChart';
 import UpdateIcon from '@mui/icons-material/Update';
 
 
-const useStyles = makeStyles((theme: Theme) => 
+const useStyles = makeStyles(() => 
     createStyles({
       icon: {
         transform: 'scale(2)',

@@ -7,7 +7,7 @@ import { WorkingGroupGeneralDetails } from './WorkingGroupGeneralDetails';
 
 export default function WorkingGroupDetailsView(){
 
-    const { loading: profile_loading, error: profile_error, data: profile_data } = useQuery(getUserProfile);
+    const { data: profile_data } = useQuery(getUserProfile);
 
     const workingGroup = profile_data?.me?.workingGroup;
 

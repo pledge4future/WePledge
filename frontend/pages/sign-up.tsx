@@ -57,16 +57,6 @@ function SignUp() {
 
   const [errorState, setErrorState] = useState(false)
 
-  const errorValues = {
-    academicTitle: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    password1: '',
-    password2: ''
-  }
-  const [errorMessage, setErrors] = useState(false);
-
   const router = useRouter();
 
   const [registerUser] = useMutation(REGISTER_USER_MUTATION, {

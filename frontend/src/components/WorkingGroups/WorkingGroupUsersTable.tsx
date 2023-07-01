@@ -36,7 +36,7 @@ export const WorkingGroupUsersTable = (props: IWorkingGroupUsersTableProps) => {
     const [successState, setSuccessState] = useState(false);
 
     const [sendRemoveUserFromWorkingGroupRequest] = useMutation(REMOVE_USER_FROM_WORKING_GROUP, {
-        onCompleted(res){
+        onCompleted(){
             router.reload();
         }
     })
@@ -66,7 +66,7 @@ export const WorkingGroupUsersTable = (props: IWorkingGroupUsersTableProps) => {
     return (
         <React.Fragment>
         <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <Table style={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <TableCell>User Name</TableCell>

@@ -9,9 +9,13 @@ interface IResearchFieldQueryResult{
     researchfields: Array<IResearchFieldEntry>
 }
 
+interface IFieldSubfield {
+    [key: string]: any
+}
+
 interface IResearchFieldFactoryReturnValues {
     mainResearchFields: Array<string>
-    fieldSubfieldStore: Object
+    fieldSubfieldStore: IFieldSubfield
 }
 
 
@@ -21,7 +25,7 @@ interface IResearchFieldFactoryReturnValues {
 export function mapResearchFieldQueryResultToFormData(researchFieldQueryResult: IResearchFieldQueryResult): IResearchFieldFactoryReturnValues{
 
     const mainResearchFields = [...new Set(researchFieldQueryResult?.researchfields?.map(item => item.field))]
-    const fieldSubfieldStore = {}
+    const fieldSubfieldStore = {} as IFieldSubfield;
     mainResearchFields.forEach(researchField => {
         const values = researchFieldQueryResult?.researchfields?.filter(item => item.field === researchField).map(item => {
             return {

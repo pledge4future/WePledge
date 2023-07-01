@@ -1,5 +1,5 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide, TextField, Typography } from "@material-ui/core";
-import { Alert, AlertTitle } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@material-ui/core";
+import { Alert } from "@mui/material";
 import React, { useContext } from "react";
 import { gql, useMutation } from '@apollo/client';
 import { useState } from "react";
@@ -106,7 +106,7 @@ export function EmailSwapDialog(props: UnderConstructionDialogProps){
         onCompleted: (result) => {
             if(result['verifySecondaryEmail'].success && result["swapEmails"].success && result["removeSecondaryEmail"].success){
                 setErrorState(false)
-                authContext.logout()
+                authContext.logout?.()
                 router.push("/sign-in")
             } else {
                 let errorMessage;

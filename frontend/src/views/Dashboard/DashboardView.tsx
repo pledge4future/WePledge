@@ -27,7 +27,7 @@ export default function DashboardView(){
   const authContext = useContext(AuthContext);
 
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   }
 
@@ -40,13 +40,13 @@ export default function DashboardView(){
       <Tab label="Institute Emissions" {...a11yProps(2)} />
     </Tabs>
     <TabPanel value={value} index={0}>
-      <IndividualDashboard isAuthenticated={authContext.isAuthenticated}></IndividualDashboard>
+      <IndividualDashboard isAuthenticated={!!authContext.isAuthenticated}></IndividualDashboard>
     </TabPanel>
     <TabPanel value={value} index={1}>
-      <GroupDashboard isAuthenticated={authContext.isAuthenticated}></GroupDashboard>
+      <GroupDashboard isAuthenticated={!!authContext.isAuthenticated}></GroupDashboard>
     </TabPanel>
     <TabPanel value={value} index={2}>
-      <InstituteDashboard isAuthenticated={authContext.isAuthenticated}></InstituteDashboard>
+      <InstituteDashboard isAuthenticated={!!authContext.isAuthenticated}></InstituteDashboard>
     </TabPanel>
   </React.Fragment>
   );

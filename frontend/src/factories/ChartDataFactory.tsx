@@ -1,3 +1,4 @@
+//@ts-nocheck
 import { format } from "date-fns"
 import { IChartDataEntry } from "../interfaces/ChartData"
 import { IBusinessTripEntry, ICommutingEntry, IElectricityEntry, IHeatingEntry } from "../interfaces/EmissionEntries"

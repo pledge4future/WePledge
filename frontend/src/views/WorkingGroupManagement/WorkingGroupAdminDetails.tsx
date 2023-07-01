@@ -20,9 +20,9 @@ export const WorkingGroupAdminDetails = (props: IWorkingGroupAdminDetails) => {
     const {workingGroup} = props;
 
 
-    const { loading: users_loading, error: users_error, data: users_data} = useQuery(getWorkingGroupUsers)
+    const { data: users_data} = useQuery(getWorkingGroupUsers)
 
-    const {loading: requests_loading, error: requests_error, data: requests_data} = useQuery(resolveWorkingGroupJoinRequests)
+    const {data: requests_data} = useQuery(resolveWorkingGroupJoinRequests)
 
     const [showDeleteDialog, setShowDeleteDialog] = useState(false);
     const [showAddUserDialog, setShowAddUserDialog] = useState(false);

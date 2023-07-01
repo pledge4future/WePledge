@@ -19,7 +19,7 @@ export const AddUserToWorkingGroupDialog = (props: IAddUserToWorkingGroupDialog)
     const [userEmailInputValue, setUserEmailInputValue] = useState('')
 
     const [errorState, setErrorState] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [successState, setSuccessState] = useState(false);
 
     const [sendAddUserMutation] = useMutation(ADD_USER_TO_WORKING_GROUP, {

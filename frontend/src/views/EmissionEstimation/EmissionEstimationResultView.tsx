@@ -50,7 +50,7 @@ function getUpperDomainLimit(displayData: any){
 
     }
 
-    return Math.ceil((Math.max.apply(Math, displayData.map((item) => { return item.co2e}))+roundingFactor)/roundingFactor)*roundingFactor
+    return Math.ceil((Math.max.apply(Math, displayData.map((item: { co2e: any; }) => { return item.co2e}))+roundingFactor)/roundingFactor)*roundingFactor
 }
 
 

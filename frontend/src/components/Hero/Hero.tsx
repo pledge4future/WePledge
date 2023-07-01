@@ -2,7 +2,7 @@ import React from "react";
 
 import { makeStyles } from "@material-ui/core";
 
-const useStyles = makeStyles((theme: Theme) => ({
+const useStyles = makeStyles(() => ({
   hero: {
     position: 'relative',
     width: '100%',
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme: Theme) => ({
   },
 }));
 
-const Hero = ({ imageSrc }) => {
+const Hero = ({ imageSrc }: {imageSrc: string}) => {
   const classes = useStyles();
   return (
     <div className={classes.hero}>
