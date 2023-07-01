@@ -1,5 +1,6 @@
 import { Card, CardContent, IconButton, makeStyles, Tooltip, Typography } from "@material-ui/core";
 import { IWorkingGroup } from "../../interfaces/IWorkingGroup";
+import { green } from "@material-ui/core/colors";
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
 
 const useStyles = makeStyles(() => ({
@@ -32,21 +33,21 @@ export default function WorkingGroupCard(props: IWorkingGroupCardProps){
     return (
             <Card className={classes.card}>
               <CardContent className={classes.cardContent}>
-                <Typography sx={{ fontSize: 14 }} gutterBottom>
+                <Typography style={{ fontSize: 14 }} gutterBottom>
                   {workingGroup.institution.name}
                 </Typography>
                 <Typography variant="h5" component="div">
                     {workingGroup.name}
                 </Typography>
-                <Typography sx={{ mb: 1.5 }}>
+                <Typography>
                     {workingGroup.field.field}
                 </Typography>
-                <Typography sx={{ mb: 1.5 }}>
+                <Typography>
                     {workingGroup.field.subfield}
                 </Typography>
                 </CardContent>
                 <div className={classes.cardFooter}>
-                <IconButton color="green" onClick={() => requestJoinWorkingGroup(workingGroup)}>
+                <IconButton style={{color: green[500]}} onClick={() => requestJoinWorkingGroup(workingGroup)}>
                   <Tooltip title="Request working group access">
                     <GroupAddIcon />
                   </Tooltip>

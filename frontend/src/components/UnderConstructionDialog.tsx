@@ -1,7 +1,6 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@material-ui/core";
 import { Alert, AlertTitle } from "@mui/material";
 import React from "react";
-import { useState } from "react";
 
 // make the dialog slide in -> implement later
 /* const Transition = React.forwardRef(function Transition(

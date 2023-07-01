@@ -1,7 +1,6 @@
 import { ListSubheader, Theme } from '@material-ui/core';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 
 import { makeStyles, createStyles } from '@material-ui/core/styles';

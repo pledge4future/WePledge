@@ -36,7 +36,7 @@ export const AddressInputForm = ((props: IAddressInputFormProps) => {
 
     const addressInputForm = useFormik({
         initialValues: initialAddressInputFormValues,
-        onSubmit: (values) => {
+        onSubmit: () => {
             // no need to submit the form, jsut satisfy linter
         }
     })

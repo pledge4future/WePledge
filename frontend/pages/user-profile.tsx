@@ -8,7 +8,6 @@ import DoneIcon from '@material-ui/icons/Done'
 import EmailIcon from '@mui/icons-material/Email';
 import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
 import Grid from '@material-ui/core/Grid';
-import Alert from '@mui/material/Alert';
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
@@ -27,7 +26,7 @@ import router from "next/router";
 import { NoAuthorizationComponent } from "../src/components/NoAuthorizationComponent";
 
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   headline: {
     borderBottom: '4px',
     borderColor: 'black',
@@ -129,7 +128,7 @@ function UserProfile() {
                     <>
                       <Button
                         type="submit"
-                        color="success"
+                        color="primary"
                         size="large"
                         variant="outlined"
                         endIcon={<DoneIcon />}

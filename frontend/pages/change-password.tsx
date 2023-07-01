@@ -2,7 +2,7 @@ import * as React from "react";
 
 // Material-UI
 import Container from "@material-ui/core/Container";
-import { Button, Dialog, DialogActions, DialogTitle, makeStyles, TextField } from "@material-ui/core";
+import { Button, Dialog, DialogActions, DialogTitle, TextField } from "@material-ui/core";
 
 // Components
 import AppAppBar from "../src/views/App/AppAppBar";
