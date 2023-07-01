@@ -6,16 +6,39 @@ export interface Route {
   link: string;
 }
 
+const routes = {
+  aboutUs:        { name: "About Us",         link: "/about-us" },
+  signIn:         { name: "Sign In",          link: "/sign-in"},
+  demo:           { name: "Demo",             link: "/dashboard" },
+  dashboard:      { name: "Dashboard",        link: "/dashboard" },
+  workingGroup:   { name: "Working Group",    link: "/working-group"},
+  participate:    { name: "Participate",      link: "/participate" },
+  methodology:    { name: "Methodology",      link: "/methodology" },
+  resultOverview: { name: "Overview/Results", link: "/overview-results" },
+  travelPlanner:  { name: "Travel Planner",   link: "/travel-planner"},
+  contact:        { name: "Contact",          link: "/contact" },
+  impressum:      { name: "Impressum",        link: "/impressum" },
+  privacyPolicy:  { name: "Privacy Policy",   link: "/privacy-policy" }
+}
 
-// TODO: add translation
-export const routes: Route[] = [
-  { name: "Welcome", link: "/" },
-  { name: "Demo", link: "/dashboard" },
-  //{ name: "Overview/Results", link: "/overview-results" },
-  { name: "Participate", link: "/participate" },
-  { name: "Methodology", link: "/methodology" },
-  { name: "About Us", link: "/about-us" },
-  // { name: "Contact", link: "/contact" },
-  // { name: "Impressum", link: "/impressum" },
-  // { name: "Privacy Policy", link: "/privacy-policy" }
+export const prodRoutes: Route[] = [
+  routes.demo,
+  routes.methodology,
+  routes.aboutUs
+]
+
+export const unauthenticatedRoutes: Route[] = [
+  routes.demo,
+  routes.travelPlanner,
+  routes.methodology,
+  routes.aboutUs,
+  routes.signIn
 ];
+
+export const authenticatedRoutes: Route[] = [
+  routes.dashboard,
+  routes.travelPlanner,
+  routes.workingGroup,
+  routes.methodology,
+  routes.aboutUs
+]

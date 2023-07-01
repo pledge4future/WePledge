@@ -13,8 +13,6 @@ import client from "../src/api/apollo-client";
 import { AuthContextProvider } from "../src/providers/Auth";
 import { useRouter } from "next/router";
 
-import * as ga from '../lib/ga';
-
 import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react';
 
 const MATOMO_URL = 'https://pledge4future.matomo.cloud/'
@@ -29,22 +27,6 @@ export default function MyApp(props: AppProps) {
   const { Component, pageProps } = props;
 
   const router = useRouter()
-
-  // used for google analytics
-  useEffect(() => {
-    const handleRouteChange = (url: any) => {
-      ga.pageview(url)
-    }
-    //When the component is mounted, subscribe to router changes
-    //and log those page views
-    router.events.on('routeChangeComplete', handleRouteChange)
-
-    // If the component is unmounted, unsubscribe
-    // from the event with the `off` method
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
 
   //used for matomo
   useEffect(() => {

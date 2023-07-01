@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -8,6 +8,7 @@ import {TabPanel} from './TabPanel';
 import { IndividualDashboard } from './IndividualDashboard';
 import { GroupDashboard } from './GroupDashboard';
 import { InstituteDashboard } from './InstituteDashboard';
+import { AuthContext } from "../../providers/Auth/AuthContext";
 
 
 function a11yProps(index: any){
@@ -23,10 +24,10 @@ function a11yProps(index: any){
 export default function DashboardView(){
 
   const [value, setValue] = React.useState(0);
+  const authContext = useContext(AuthContext);
 
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
-    console.log(event); // only log to satisfy linter
+  const handleChange = (_event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue);
   }
 
@@ -39,13 +40,13 @@ export default function DashboardView(){
       <Tab label="Institute Emissions" {...a11yProps(2)} />
     </Tabs>
     <TabPanel value={value} index={0}>
-      <IndividualDashboard></IndividualDashboard>
+      <IndividualDashboard isAuthenticated={!!authContext.isAuthenticated}></IndividualDashboard>
     </TabPanel>
     <TabPanel value={value} index={1}>
-      <GroupDashboard></GroupDashboard>
+      <GroupDashboard isAuthenticated={!!authContext.isAuthenticated}></GroupDashboard>
     </TabPanel>
     <TabPanel value={value} index={2}>
-      <InstituteDashboard></InstituteDashboard>
+      <InstituteDashboard isAuthenticated={!!authContext.isAuthenticated}></InstituteDashboard>
     </TabPanel>
   </React.Fragment>
   );

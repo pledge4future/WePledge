@@ -1,0 +1,106 @@
+{"users": {
+  "test_user1": {
+    "username": "test1",
+    "first_name": "test1",
+    "last_name": "user",
+    "email": "test1@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user2": {
+    "username": "test2",
+    "first_name": "test2",
+    "last_name": "user",
+    "email": "test2@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user3_representative": {
+    "username": "test3_rep",
+    "first_name": "test3_rep",
+    "last_name": "user",
+    "email": "test3@pledge4future.org",
+    "password": "test_password"
+  },
+  "test_user4_representative": {
+    "username": "test4_rep",
+    "first_name": "test4_rep",
+    "last_name": "user",
+    "email": "test4@pledge4future.org",
+    "password": "test_password"
+  }
+},
+"institutions": {
+  "institution1": {
+    "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002",
+    "name": "Test University",
+    "city": "Heidelberg",
+    "country": "Germany"
+  }
+},
+"working_groups": {
+  "working_group1": {
+    "id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
+    "name": "testgroup1",
+    "institution": {
+      "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
+    },
+    "representative": "test3_rep",
+    "n_employees": 10,
+    "research_field": {
+      "id": 1
+    },
+    "is_public": "True"
+  },
+    "working_group2": {
+      "id": "3aaa81a6-9fcd-11ed-a8fc-0242ac120002",
+      "name": "testgroup2",
+      "institution": {
+        "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
+      },
+      "representative": "test4_rep",
+      "n_employees": 10,
+      "research_field": {
+        "id": 2
+      },
+      "is_public": "False"
+  },
+  "workinggroup_to_delete": {
+    "id": "4aaa81a6-9fcd-11ed-a8fc-0242ac120002",
+      "name": "workinggroup_to_delete",
+      "institution": {
+        "id": "59812cd8-9fcd-11ed-a8fc-0242ac120002"
+      },
+      "representative": "test3_rep",
+      "n_employees": 10,
+      "research_field": {
+        "id": 2
+      },
+      "is_public": "False"
+  }
+},
+"business_trips": {
+  "business_trip1": {
+
+  }
+},
+"heating": [
+  {
+    "working_group_id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
+    "consumption": 2000,
+    "unit": "l",
+    "fuel_type": "oil",
+    "building": "348",
+    "timestamp": "2022-01-01",
+    "group_share": 1
+  }
+],
+"electricity": [
+  {
+    "working_group_id": "2f681772-9fcd-11ed-a8fc-0242ac120002",
+    "consumption": 1000,
+    "fuel_type": "german_energy_mix",
+    "building": "348",
+    "timestamp": "2022-01-01",
+    "group_share": 1
+  }
+]
+}

@@ -2,11 +2,20 @@ import React, { useCallback, useMemo, useState } from "react"
 import { ComposedChart, Bar, XAxis, YAxis, Tooltip, Line, Label } from 'recharts';
 import { ChartColors } from './viz/VizColors';
 import { CustomLegend, CustomLegendItem } from './viz/Charts/ReCharts/CustomLegend';
+import { NoDataComponent } from "../../components/NoDataComponent";
 
 import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
-import { Button, Grid } from "@material-ui/core";
+import { Button, Grid, Select, MenuItem } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
+
+
+import { useQuery } from "@apollo/client";
+import { DashboardProps } from "./interfaces/DashboardProps";
+import { mapChartData } from "../../factories/ChartDataFactory";
+import { IChartDataEntry } from "../../interfaces/ChartData";
+import { GET_TOTAL_EMISSIONS } from "../../api/Queries/emissions";
+
 
 
 const useStyles = makeStyles({
@@ -35,8 +44,9 @@ const useStyles = makeStyles({
 })
 
 
+export function IndividualDashboard(props: DashboardProps){
 
-export function IndividualDashboard(){
+  const { isAuthenticated } = props
 
   const styles = useStyles();
 
@@ -46,6 +56,12 @@ export function IndividualDashboard(){
   const [showBusiness, setShowBusiness] = useState(true);
 
   const [showPerCapita, setShowPerCapita] = useState(false);
+
+  const [dataYear, setDataYear] = useState(new Date().getFullYear().toString())
+
+  const handleYearSelectChange = (event: any) => {
+    setDataYear(event.target.value)
+  }
 
 
   const legendBarData: CustomLegendItem[] = [
@@ -82,25 +98,35 @@ export function IndividualDashboard(){
 
   const renderComposedChart = useCallback(() => {
 
-    const sums = calculateSum(exampleData);
-    
-    const chartData = exampleData.map((item, index) => { 
-      let newItem = {
-        total: sums[index],
-        ...item
-      }
-      return newItem
-    });
+    let chartData: IChartDataEntry[] = [];
 
-    return (
+    const res = useQuery(GET_TOTAL_EMISSIONS, {
+      variables: {level: "personal", timeInterval: "month"}
+    });
+    if(!res.loading && !res.error) {
+      chartData = mapChartData(res.data, dataYear);
+    }
+
+    if(!isAuthenticated){
+      const sums = calculateSum(exampleData);
+      chartData =  exampleData.map((item, index) => { 
+        let newItem = {
+          total: sums[index],
+          ...item
+        }
+        return newItem
+      });
+    }
+    if(chartData?.length > 0){
+      return (
       <Grid container>
       <Grid item xs={9}>
       <div className={styles.containerDiv}>
-      <ComposedChart width={950} height={500} data={chartData}>
-        <XAxis dataKey="name">
+      <ComposedChart width={950} height={500} data={chartData} margin={{ top: 5, right: 5, left: 30, bottom: 5 }}>
+        <XAxis dataKey="name" style={{fontSize: '0.8rem'}}>
         </XAxis>
-        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData.map((item) => { return item.sum}))+100)/100)*100]}>
-          <Label value="tCO2" position="insideLeft" angle={270}/>
+        <YAxis domain={[0,Math.ceil((Math.max.apply(Math, chartData?.map((item) => { return item.sum}))+100)/100)*100]}>
+          <Label value="kg CO2eq" position="insideLeft" angle={270} offset={-5}/>
         </YAxis>
         <Tooltip />
         ({ 
@@ -115,7 +141,7 @@ export function IndividualDashboard(){
         ({
         showBusiness && <Bar dataKey="business" barSize={20} fill={ChartColors.business} stackId="a" />
         })
-        <Line dataKey="total" stroke={ChartColors.trendLine} />
+        <Line name="total" dataKey="sum" stroke={ChartColors.trendLine} />
         ({
         showPerCapita && <Line dataKey="max" stroke={ChartColors.perCapitaLine} />
         })
@@ -132,7 +158,18 @@ export function IndividualDashboard(){
         </Grid>
       </Grid>
     )
-  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita]);
+    } else {
+      return (
+        <Grid container>
+          <Grid item xs={9}>
+            <div className={styles.containerDiv}>
+              <NoDataComponent></NoDataComponent>
+              </div>
+            </Grid>
+          </Grid>
+      )
+    }
+  }, [showElectricity, showHeating, showCommuting, showBusiness, showPerCapita, isAuthenticated, dataYear]);
   
   return (
     <React.Fragment>
@@ -141,8 +178,21 @@ export function IndividualDashboard(){
         alignItems="center"
         justifyContent="center"
         spacing={2}>
-      <Grid item xs={10}>
+      <Grid item xs={9}>
         <h3>Individual Emissions</h3>
+      </Grid>
+      <Grid item xs={1}>
+        <Select
+        fullWidth
+        value={dataYear}
+        onChange={handleYearSelectChange}>
+          <MenuItem value={"2018"}>2018</MenuItem>
+          <MenuItem value={"2019"}>2019</MenuItem>
+          <MenuItem value={"2020"}>2020</MenuItem>
+          <MenuItem value={"2021"}>2021</MenuItem>
+          <MenuItem value={"2022"}>2022</MenuItem>
+          <MenuItem value={"2023"}>2023</MenuItem>
+        </Select>
       </Grid>
       <Grid item xs={2}>
         <div className={styles.buttonContainer}>

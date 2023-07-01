@@ -22,8 +22,7 @@ const headerLink = setContext((_, { headers }) => {
 });
 
 const httpLink = new HttpLink({
-  uri: `http://localhost:8000/graphql/`,
-  credentials: "include",
+  uri: JSON.parse(process.env.NEXT_PUBLIC_DEV ? process.env.NEXT_PUBLIC_DEV  as string : 'false' ) ? `http://localhost:8000/graphql/` : `https://api.test-pledge4future.heigit.org/graphql/`
 });
 
 

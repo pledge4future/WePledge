@@ -1,8 +1,23 @@
-import {Button, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import {Button, InputLabel, MenuItem, Select, Snackbar, TextField } from '@material-ui/core';
 import {InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { FormikHelpers, useFormik } from "formik";
 import {tooltips } from './FormTooltips';
 import React from 'react';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
+import { Alert } from '@mui/material';
+import { FormMonthSelection, FormYearSelection } from '../../constants/FormConstants';
+
+
+// mutation to add electricity entry
+const ADD_ELECTRICITY = gql`
+  mutation createElectricity($timestamp: Date!, $consumption: Float!, $fuelType: String!, $building: String!, $groupShare: Float!) {
+    createElectricity(input: {timestamp: $timestamp, consumption: $consumption, fuelType: $fuelType, building: $building, groupShare: $groupShare}) {
+      success
+    }
+  }
+`
 
 
 export interface ElectricityFormValues {
@@ -16,13 +31,32 @@ export interface ElectricityFormValues {
 
 const energySources = ['Germany energy mix','Solar']
 
-
 export function ElectricityForm(
   props: {
     error?: boolean,
     onSubmit: (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
+
+  const [errorState, setErrorState] = useState(false);
+  const [successState, setSuccessState] = useState(false);
+
+  // data query
+  const [submitData] = useMutation(ADD_ELECTRICITY,
+   {
+     onCompleted: (data) => {
+      if(data.createElectricity?.success === true){
+        setSuccessState(true)
+        formik.resetForm();
+      }
+      else{
+        setErrorState(true);
+      }
+     },
+     onError(){
+       setErrorState(true);
+     }
+   });
 
   const initialFormValues = {
     month: 0,
@@ -38,9 +72,18 @@ export function ElectricityForm(
     onSubmit: (values: ElectricityFormValues, formikHelpers: FormikHelpers<ElectricityFormValues>)  => {
       console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        timestamp: format(new Date(values.year, values.month-1, 1), 'yyyy-MM-dd'),
+        consumption: values.consumption,
+        fuelType: values.energySource, 
+        building: values. building,
+        groupShare: values.groupShare
+      }
+      submitData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     }
   });
+
 
   
   return (
@@ -61,18 +104,11 @@ export function ElectricityForm(
     label="Month"
     value={formik.values.month}
     onChange={formik.handleChange}>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-      <MenuItem value={4}>4</MenuItem>
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={6}>6</MenuItem>
-      <MenuItem value={7}>7</MenuItem>
-      <MenuItem value={8}>8</MenuItem>
-      <MenuItem value={9}>9</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={11}>11</MenuItem>
-      <MenuItem value={12}>12</MenuItem>
+      {
+      FormMonthSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
 
     <InputLabel id="selectYearLabel">Year</InputLabel>
@@ -88,9 +124,11 @@ export function ElectricityForm(
     label='Year'
     value={formik.values.year}
     onChange={formik.handleChange}>
-      <MenuItem value={2019}>2019</MenuItem>
-      <MenuItem value={2020}>2020</MenuItem>
-      <MenuItem value={2021}>2021</MenuItem>
+      {
+      FormYearSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
 
     <TextField
@@ -188,6 +226,16 @@ export function ElectricityForm(
           Add entry
         </Button>
   </form>
+  <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+    <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+      Successfully added entry!
+    </Alert>
+  </Snackbar>
+  <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+    <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+      Failed to add entry!
+    </Alert>
+  </Snackbar>
   </div>
   )
 }

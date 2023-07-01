@@ -1,9 +1,25 @@
-import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment } from '@material-ui/core';
-import { FormControlLabel } from '@mui/material';
+import {Button, InputLabel, MenuItem, Select, TextField, Checkbox, InputAdornment, Grid } from '@material-ui/core';
+import { Alert, FormControlLabel } from '@mui/material';
 import { FormikHelpers, useFormik } from "formik";
 import React from 'react';
 import { InputFieldTooltip } from './FormSubComponents/InputFieldTooltip';
 import { tooltips } from './FormTooltips';
+import { gql, useMutation } from '@apollo/client';
+import { useState } from 'react';
+import { format } from 'date-fns'
+import Snackbar  from '../../components/Snackbar';
+import { UnderConstructionDialog } from '../../components/UnderConstructionDialog';
+import { FormMonthSelection, FormYearSelection } from '../../constants/FormConstants';
+
+
+// mutation to add business trip entry
+const ADD_BUSINESSTRIP = gql`
+  mutation createBusinesstrip($timestamp: Date!, $transportationMode: String!, $distance: Float!, $size: String, $fuelType: String, $passengers: Int, $roundtrip: Boolean){
+    createBusinesstrip(input: {timestamp: $timestamp, transportationMode: $transportationMode, distance: $distance, size: $size, fuelType: $fuelType, passengers: $passengers, roundtrip: $roundtrip}){
+      success
+    }
+  }
+`
 
 
 export interface BusinessFormValues {
@@ -40,9 +56,30 @@ const occupancies = [20,50,80,100]
 export function BusinessTripForm(
   props: {
     error?: boolean,
-    onSubmit: (values: BusinessFormValues, setUbmitting: (isSubmitting: boolean) => void) => void;
+    onSubmit: (values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => void;
   }
 ){
+
+  const [errorState, setErrorState] = useState(false);
+  const [successState, setSuccessState] = useState(false)
+
+  const [addressMode, setAddressMode] = useState(false)
+
+  const [submitBusinessTripData] = useMutation(ADD_BUSINESSTRIP,
+    {
+      onCompleted: (data) => {
+        if(data.createBusinesstrip?.success === true){
+          setSuccessState(true)
+          formik.resetForm()
+        }
+        else{
+          setErrorState(true);
+        }
+      },
+      onError: () => {
+        setErrorState(true)
+      }
+    });
 
   const initialFormValues = {
     month: 0,
@@ -66,8 +103,17 @@ export function BusinessTripForm(
   const formik = useFormik({
     initialValues: initialFormValues,
     onSubmit: (values: BusinessFormValues, formikHelpers: FormikHelpers<BusinessFormValues>)  => {
-      console.log(values)
       const { setSubmitting } = formikHelpers;
+      const queryParams = {
+        timestamp: format(new Date(values.year, values.month-1, 1), 'yyyy-MM-dd'), // constructor takes month-index instead of actual month
+        transportationMode: values.transportationMode,
+        fuelType: values.fuelType, 
+        passengers: values.passengers,
+        roundtrip: values.roundTrip,
+        distance: values.distance,
+        size: values.size
+      }
+      submitBusinessTripData({variables: {...queryParams}});
       props.onSubmit(values, setSubmitting);
     },
   });
@@ -91,10 +137,17 @@ export function BusinessTripForm(
   }
 
   return (
-    <div>
+  <>
   <form onSubmit={formik.handleSubmit}>
     {// change these two parts into a date picker
     } 
+    <Grid
+      container
+      spacing={2}
+      alignItems="center"
+      justifyContent="center"
+    >
+    <Grid item xs={6}>
     <InputLabel id='selectMonthLabel'>Month</InputLabel>
     <Select
     style={
@@ -108,19 +161,14 @@ export function BusinessTripForm(
     label="Month"
     value={formik.values.month}
     onChange={formik.handleChange}>
-      <MenuItem value={1}>1</MenuItem>
-      <MenuItem value={2}>2</MenuItem>
-      <MenuItem value={3}>3</MenuItem>
-      <MenuItem value={4}>4</MenuItem>
-      <MenuItem value={5}>5</MenuItem>
-      <MenuItem value={6}>6</MenuItem>
-      <MenuItem value={7}>7</MenuItem>
-      <MenuItem value={8}>8</MenuItem>
-      <MenuItem value={9}>9</MenuItem>
-      <MenuItem value={10}>10</MenuItem>
-      <MenuItem value={11}>11</MenuItem>
-      <MenuItem value={12}>12</MenuItem>
+      {
+      FormMonthSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
+    </Grid>
+    <Grid item xs={6}>
 
     <InputLabel id="selectYearLabel">Year</InputLabel>
     <Select
@@ -135,12 +183,16 @@ export function BusinessTripForm(
     label='Year'
     value={formik.values.year}
     onChange={formik.handleChange}>
-      <MenuItem value={2019}>2019</MenuItem>
-      <MenuItem value={2020}>2020</MenuItem>
-      <MenuItem value={2021}>2021</MenuItem>
-      <MenuItem value={2022}>2022</MenuItem>
+      {
+      FormYearSelection.map((item) => (
+        <MenuItem value={item.value}>{item.key}</MenuItem>
+      ))
+      }
     </Select>
-
+    </Grid>
+    { false && ( // make this dependent on address mode state once implemented in the backend
+    <>
+    <Grid item xs={4}>
     <TextField
           fullWidth
           style={{ margin: 8 }}
@@ -155,9 +207,10 @@ export function BusinessTripForm(
           value={formik.values.startAddress}
           onChange={formik.handleChange}
           error={formik.touched.startAddress && Boolean(formik.values.startAddress)}
-          helperText={formik.touched.startAddress && formik.values.startAddress}
+          helperText={formik.touched.startAddress && formik.errors.startAddress}
         />
-
+      </Grid>
+      <Grid item xs={4}>
       <TextField
           fullWidth
           style={{ margin: 8 }}
@@ -172,28 +225,29 @@ export function BusinessTripForm(
           value={formik.values.startCity}
           onChange={formik.handleChange}
           error={formik.touched.startCity && Boolean(formik.values.startCity)}
-          helperText={formik.touched.startCity && formik.values.startCity}
+          helperText={formik.touched.startCity && formik.errors.startCity}
         />
-      <TextField
-          fullWidth
-          style={{ margin: 8 }}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true
-          }}
-          variant="outlined"
-          id="startCountry"
-          name="startCountry"
-          label="Start Country"
-          value={formik.values.startCountry}
-          onChange={formik.handleChange}
-          error={formik.touched.startCountry && Boolean(formik.values.startCountry)}
-          helperText={formik.touched.startCountry && formik.values.startCountry}
-          />
-
-
-
-<TextField
+      </Grid>
+      <Grid item xs={4}>
+        <TextField
+              fullWidth
+              style={{ margin: 8 }}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true
+              }}
+              variant="outlined"
+              id="startCountry"
+              name="startCountry"
+              label="Start Country"
+              value={formik.values.startCountry}
+              onChange={formik.handleChange}
+              error={formik.touched.startCountry && Boolean(formik.values.startCountry)}
+              helperText={formik.touched.startCountry && formik.errors.startCountry}
+            />
+        </Grid>
+        <Grid item xs={4}>
+          <TextField
           fullWidth
           style={{ margin: 8 }}
           margin="normal"
@@ -207,10 +261,11 @@ export function BusinessTripForm(
           value={formik.values.endAddress}
           onChange={formik.handleChange}
           error={formik.touched.endAddress && Boolean(formik.values.endAddress)}
-          helperText={formik.touched.endAddress && formik.values.endAddress}
+          helperText={formik.touched.endAddress && formik.errors.endAddress}
         />
-
-      <TextField
+      </Grid>
+      <Grid item xs={4}>
+        <TextField
           fullWidth
           style={{ margin: 8 }}
           margin="normal"
@@ -224,9 +279,11 @@ export function BusinessTripForm(
           value={formik.values.endCity}
           onChange={formik.handleChange}
           error={formik.touched.endCity && Boolean(formik.values.endCity)}
-          helperText={formik.touched.endCity && formik.values.endCity}
-        />
-      <TextField
+          helperText={formik.touched.endCity && formik.errors.endCity}
+          />
+      </Grid>
+      <Grid item xs={4}>
+        <TextField
           fullWidth
           style={{ margin: 8 }}
           margin="normal"
@@ -240,30 +297,60 @@ export function BusinessTripForm(
           value={formik.values.endCountry}
           onChange={formik.handleChange}
           error={formik.touched.endCountry && Boolean(formik.values.endCountry)}
-          helperText={formik.touched.endCountry && formik.values.endCountry}
+          helperText={formik.touched.endCountry && formik.errors.endCountry}
         />
-
-      <TextField
+      </Grid>
+        <Button
           fullWidth
           style={{ margin: 8 }}
-          margin="normal"
-          InputLabelProps={{
-            shrink: true
-          }}
           variant="outlined"
-          id="distance"
-          name="distance"
-          label="Distance"
-          type="number"
-          InputProps = {{
-            endAdornment: <InputAdornment position="end">km</InputAdornment>
-          }}
-          value={formik.values.distance}
-          onChange={formik.handleChange}
-          error={formik.touched.distance && Boolean(formik.values.distance)}
-          helperText={formik.touched.distance && formik.values.distance}
-        />
-
+          color="secondary"
+          size="large"
+          onClick={() => setAddressMode(false)}
+        >
+          Enter distance instead
+        </Button>
+        </>
+    )}
+      {true && (  // make this dependent on adressMode state once implemented in the backend
+        <>
+      <Grid item xs={8}>
+          <TextField
+              fullWidth
+              style={{ margin: 8 }}
+              margin="normal"
+              InputLabelProps={{
+                shrink: true
+              }}
+              variant="outlined"
+              id="distance"
+              name="distance"
+              label="Distance"
+              type="number"
+              InputProps = {{
+                endAdornment: <InputAdornment position="end">km</InputAdornment>
+              }}
+              value={formik.values.distance}
+              onChange={formik.handleChange}
+              error={formik.touched.distance && Boolean(formik.values.distance)}
+              helperText={formik.touched.distance && formik.errors.distance}
+            />
+        </Grid>
+        <Grid item xs={4}>
+          <Button
+            fullWidth
+            style={{ margin: 8 }}
+            variant="outlined"
+            color="secondary"
+            size="large"
+            onClick={() => setAddressMode(true)}
+          >
+            Enter address instead
+          </Button>
+        </Grid>
+        </>
+      )}
+      <Grid item xs={8}>
       <InputLabel id="selectTransportationModeLabel">Transportation Mode</InputLabel>
       <Select
       style={
@@ -285,10 +372,15 @@ export function BusinessTripForm(
           return <MenuItem value={tm}>{tm}</MenuItem>
         })}
       </Select>
+      </Grid>
+      <Grid item xs={4}>
+        <FormControlLabel control={<Checkbox checked={formik.values.roundTrip} name="roundTrip" onChange={formik.handleChange}/>} label="Round Trip" color="primary"/>
+      </Grid>
       {formik.values.transportationMode &&
       (formik.values.transportationMode === 'Car' || formik.values.transportationMode === 'Bus')
       && (
         <React.Fragment>
+        <Grid item xs={8}>
         <InputLabel id="selectSizeLabel">Vehicle Size</InputLabel>
           <Select
           style={
@@ -306,11 +398,16 @@ export function BusinessTripForm(
               return <MenuItem value={vehicleSize}>{`${vehicleSize}`}</MenuItem>
             })}
           </Select>
+          </Grid>
+          <Grid item xs={4}>
+            {/* only used to ensure proper alignmenet */}
+          </Grid>
           </React.Fragment>
       )}
       {formik.values.transportationMode &&
       ['Train','Bus','Car'].includes(formik.values.transportationMode) && (
         <React.Fragment>
+        <Grid item xs={8}>
         <InputLabel id="selectFuelTypeLabel">Fuel Type</InputLabel>
         <Select
           style={
@@ -326,11 +423,16 @@ export function BusinessTripForm(
           onChange={formik.handleChange}>
             {renderFuelTypes(formik.values.transportationMode)}
         </Select>
+        </Grid>
+        <Grid item xs={4}>
+            {/* only used to ensure proper alignmenet */}
+          </Grid>
         </React.Fragment>
       )}
       {formik.values.transportationMode &&
       formik.values.transportationMode === 'Bus' && (
           <React.Fragment>
+            <Grid item xs={8}>
             <InputLabel id="selectOccupancyLabel">Occupancy</InputLabel>
             <Select
             style={
@@ -348,35 +450,46 @@ export function BusinessTripForm(
               {occupancies.map((occ) => {
                 return <MenuItem value={occ}>{`${occ}`}</MenuItem>
               })}
-           </Select>        
+           </Select>    
+           </Grid> 
+           <Grid item xs={4}>
+            {/* only used to ensure proper alignmenet */}
+          </Grid>   
           </React.Fragment>
       )}
       {formik.values.transportationMode &&
       formik.values.transportationMode === 'Plane' && (
         <React.Fragment>
-        <InputLabel id="selectSeatingClassLabel">Seating Class</InputLabel>
-          <Select
-          style={
-            {
-              margin: 8
-            }
-          }
-          fullWidth
-          name="seatingClass"
-          labelId='selectSeatingClassLabel'
-          label='seating class'
-          value={formik.values.seatingClass}
-          onChange={formik.handleChange}>
-            {seatingClasses.map((seatingClass) => {
-              return <MenuItem value={seatingClass}>{`${seatingClass}`}</MenuItem>
-            })}
-          </Select>
+        <Grid item xs={8}>
+          <InputLabel id="selectSeatingClassLabel">Seating Class</InputLabel>
+            <Select
+              style={
+                {
+                  margin: 8
+                }
+              }
+              fullWidth
+              name="seatingClass"
+              labelId='selectSeatingClassLabel'
+              label='seating class'
+              value={formik.values.seatingClass}
+              onChange={formik.handleChange}>
+                {seatingClasses.map((seatingClass) => {
+                  return <MenuItem value={seatingClass}>{`${seatingClass}`}</MenuItem>
+                })}
+            </Select>
+          </Grid>
+          <Grid item xs={4}>
+            {/* only used to ensure proper alignmenet */}
+          </Grid>
         </React.Fragment>
       )
       }
       {
         formik.values.transportationMode &&
         formik.values.transportationMode === 'Car' && (
+          <>
+          <Grid item xs={8}>
           <TextField
           fullWidth
           style={{ margin: 8 }}
@@ -387,7 +500,7 @@ export function BusinessTripForm(
           variant="outlined"
           id="passengers"
           name="passengers"
-          label="passengers"
+          label="Passengers"
           type="number"
           InputProps={{
             endAdornment: (
@@ -397,12 +510,15 @@ export function BusinessTripForm(
           value={formik.values.passengers}
           onChange={formik.handleChange}
           error={formik.touched.passengers && Boolean(formik.values.passengers)}
-          helperText={formik.touched.passengers && formik.values.passengers}
+          helperText={formik.touched.passengers && formik.errors.passengers}
           />
+          </Grid>
+          <Grid item xs={4}>
+            {/* only used to ensure proper alignmenet */}
+          </Grid>
+          </>
         )
-      }
-        <FormControlLabel control={<Checkbox checked={formik.values.roundTrip} name="roundTrip" onChange={formik.handleChange}/>} label="Round Trip" color="primary"/>
-
+      } 
         <Button
           fullWidth
           style={{ margin: 8 }}
@@ -410,10 +526,23 @@ export function BusinessTripForm(
           color="primary"
           size="large"
           type="submit"
-        >
+          disabled={!formik.dirty || !formik.isValid}
+          >
           Add entry
         </Button>
+        </Grid>
   </form>
-  </div>
+  <Snackbar open={successState} autoHideDuration={6000} onClose={() => setSuccessState(false)}>
+    <Alert onClose={() => setSuccessState(false)} severity="success" sx={{ width: '100%' }}>
+      Successfully added entry!
+    </Alert>
+  </Snackbar>
+  <Snackbar open={errorState} autoHideDuration={6000} onClose={() => setErrorState(false)}>
+    <Alert onClose={() => setErrorState(false)} severity="error" sx={{ width: '100%' }}>
+      Failed to add entry!
+    </Alert>
+  </Snackbar>
+  <UnderConstructionDialog feature="Entering of Addresses"  isOpen={addressMode}  handleDialogClose={()  => setAddressMode(false)}></UnderConstructionDialog>
+  </>
   )
 }

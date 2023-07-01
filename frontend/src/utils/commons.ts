@@ -1,5 +1,5 @@
 export const getCookie = (cname: string): string => {
-  const cookie = window.document.cookie;
+  const cookie = document.cookie;
   var name = cname + "=";
   var ca = cookie.split(";");
   for (var i = 0; i < ca.length; i++) {
