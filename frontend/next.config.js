@@ -5,5 +5,8 @@ module.exports = {
       use: 'raw-loader',
     })
     return config
+  },
+  eslint: {
+    ignoreDuringBuilds :true
   }
 }

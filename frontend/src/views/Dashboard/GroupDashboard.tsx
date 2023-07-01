@@ -45,7 +45,7 @@ export function GroupDashboard(props: DashboardProps){
 
   const { isAuthenticated } = props; 
 
-  const {loading, error, data: userProfile} = useQuery(getUserProfile);
+  const {loading, data: userProfile} = useQuery(getUserProfile);
 
   const styles = useStyles();
 

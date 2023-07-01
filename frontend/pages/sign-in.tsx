@@ -52,7 +52,7 @@ function SignIn() {
     {
     onCompleted: (result) => {
       if(result.tokenAuth.success){
-        authContext?.refresh(true, result.tokenAuth.token,[])
+        authContext.refresh?.(true, result.tokenAuth.token,[])
         setCookie('token', result.tokenAuth.token);
         router.push('/dashboard')
       }

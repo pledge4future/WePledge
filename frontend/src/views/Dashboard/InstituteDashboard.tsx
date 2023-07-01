@@ -48,7 +48,7 @@ export function InstituteDashboard(props: DashboardProps){
 
   const styles = useStyles();
 
-  const {loading, error, data: userProfile} = useQuery(getUserProfile);
+  const {loading, data: userProfile} = useQuery(getUserProfile);
 
   const [showElectricity, setShowElectricity] = useState(true);
   const [showHeating, setShowHeating] = useState(true);

@@ -222,7 +222,7 @@ def test_create_workinggroup_by_representative(test_user3_rep_token):
     data = response.json()
     assert (
         data["errors"][0]["message"]
-        == "This user cannot create a new working group, since they are already the representative of another working group."
+        == "This is wrong cannot create a new working group, since they are already the representative of another working group."
     )
 
 

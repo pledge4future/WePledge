@@ -53,7 +53,7 @@ export function ElectricityForm(
         setErrorState(true);
       }
      },
-     onError(error){
+     onError(){
        setErrorState(true);
      }
    });

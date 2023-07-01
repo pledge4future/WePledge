@@ -13,8 +13,6 @@ import client from "../src/api/apollo-client";
 import { AuthContextProvider } from "../src/providers/Auth";
 import { useRouter } from "next/router";
 
-import * as ga from '../lib/ga';
-
 import { MatomoProvider, createInstance } from '@datapunt/matomo-tracker-react';
 
 const MATOMO_URL = 'https://pledge4future.matomo.cloud/'

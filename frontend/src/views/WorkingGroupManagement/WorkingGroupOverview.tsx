@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react';
-import withRoot from "../../withRoot";
+import React from 'react';
 
 import Grid from '@material-ui/core/Grid'
 import Container from '@material-ui/core/Container';
 import { useQuery } from '@apollo/client';
 import { getUserProfile } from '../../api/Queries/me';
-import { CircularProgress, IconButton, makeStyles, Modal, Tooltip } from '@material-ui/core';
+import { CircularProgress, IconButton, Tooltip } from '@material-ui/core';
 import SearchIcon from '@mui/icons-material/Search';
 import AddIcon from '@mui/icons-material/Add';
 import GroupIcon from '@mui/icons-material/Group';
@@ -15,21 +14,21 @@ import { useRouter } from 'next/router';
 
 export default function WorkingGroupOverview(){
 
-    const { loading, error, data } = useQuery(getUserProfile);
+    const { loading, data } = useQuery(getUserProfile);
 
 
     const router = useRouter()
 
-    const navigateToSearchView = (e: any) => {
+    const navigateToSearchView = (_e: any) => {
         router.push("/find-working-group")
     }
 
-    const navigateToCreateWorkingGroup = (e: any) => {
+    const navigateToCreateWorkingGroup = (_e: any) => {
         router.push("/create-working-group")
     }
 
 
-    const navigateToWorkingGroupDetails = (e: any) => {
+    const navigateToWorkingGroupDetails = (_e: any) => {
         const workingGroupId = data?.me?.workingGroup?.id ?? ''
         router.push(`/working-group-details?id=${workingGroupId}`)
     }

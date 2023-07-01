@@ -22,27 +22,27 @@ function a11yProps(index: any){
 export default function DataFormView(){
   
   const authContext = useContext(AuthContext);
-  const { loading, error, data } = useQuery(getUserProfile);
+  const { data } = useQuery(getUserProfile);
   const showAllTabs = !authContext.isAuthenticated|| data?.me?.isRepresentative
   const [value, setValue] = useState(showAllTabs ? 0 : 2)
 
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number)=>{
+  const handleChange = (_event: React.ChangeEvent<{}>, newValue: number)=>{
     setValue(newValue);
   }
 
-  const onESubmit = (values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const onESubmit = (_values: ElectricityFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     setSubmitting(false);
   }
 
-  const onHSubmit = (values: HeatingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const onHSubmit = (_values: HeatingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     setSubmitting(false)
   }
 
-  const onCSubmit = (values: CommutingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const onCSubmit = (_values: CommutingFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     setSubmitting(false)
   }
 
-  const onBSubmit = (values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
+  const onBSubmit = (_values: BusinessFormValues, setSubmitting: (isSubmitting: boolean) => void) => {
     setSubmitting(false)
   }
   const tabContents = [<ElectricityForm error={false} onSubmit = {onESubmit} />, <HeatingForm error={false} onSubmit={onHSubmit}/>, 

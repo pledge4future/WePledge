@@ -76,7 +76,7 @@ export const WorkingGroupJoinRequestsTable = (props: IWorkingGroupJoinRequestsTa
     return (
         <React.Fragment>
             <TableContainer component={Paper}>
-                <Table sx={{minWidth: 650}} ariea-label="simple table">
+                <Table style={{minWidth: 650}} ariea-label="simple table">
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
