@@ -27,7 +27,6 @@ export default function DataFormView(){
   const [value, setValue] = useState(showAllTabs ? 0 : 2)
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: number)=>{
-    console.log(newValue);
     setValue(newValue);
   }
 
