@@ -23,10 +23,11 @@ export default function DataFormView(){
   
   const authContext = useContext(AuthContext);
   const { data } = useQuery(getUserProfile);
-  const showAllTabs = !authContext.isAuthenticated|| data?.me?.isRepresentative
+  const showAllTabs = !authContext.isAuthenticated || data?.me?.isRepresentative
   const [value, setValue] = useState(showAllTabs ? 0 : 2)
 
   const handleChange = (_event: React.ChangeEvent<{}>, newValue: number)=>{
+    console.log(newValue);
     setValue(newValue);
   }
 
@@ -52,13 +53,13 @@ export default function DataFormView(){
   return <React.Fragment>
     <Tabs value={value} onChange={handleChange} aria-label="forms tabs">
       {showAllTabs && (
-        <>
-        <Tab label="Electricity" {...a11yProps(0)} />
-        <Tab label="Heating" {...a11yProps(1)} />
-        </>
+        <Tab label="Electricity" {...a11yProps(0)} value={0}/>
       )}
-      <Tab label="Commuting" {...a11yProps(2)} />
-      <Tab label="Business Trip" {...a11yProps(3)} />
+      {showAllTabs && (
+        <Tab label="Heating" {...a11yProps(1)}  value={1}/>
+      )}
+      <Tab label="Commuting" {...a11yProps(2)} value={2}/>
+      <Tab label="Business Trip" {...a11yProps(3)} value={3}/>
     </Tabs>
     {
       tabContents.map((content, index) => {

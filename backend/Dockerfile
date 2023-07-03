@@ -9,7 +9,7 @@ RUN addgroup --gid 1006 developers \
 USER python
 RUN mkdir ~/app && mkdir ~/.vscode-server
 WORKDIR /home/python/app
-COPY ./assets/requirements.txt ./
+COPY ./requirements.txt ./
 COPY ./src/co2calculator/requirements.txt ./requirements_co2calculator.txt
 ENV PATH="/home/python/.local/bin:${PATH}"
 RUN pip install -r requirements.txt

@@ -18,7 +18,8 @@ const routes = {
   travelPlanner:  { name: "Travel Planner",   link: "/travel-planner"},
   contact:        { name: "Contact",          link: "/contact" },
   impressum:      { name: "Impressum",        link: "/impressum" },
-  privacyPolicy:  { name: "Privacy Policy",   link: "/privacy-policy" }
+  privacyPolicy:  { name: "Privacy Policy",   link: "/privacy-policy" },
+  addEmissions:   { name: "Add Emissions",    link: "/dataforms"}
 }
 
 export const prodRoutes: Route[] = [
@@ -38,7 +39,8 @@ export const unauthenticatedRoutes: Route[] = [
 export const authenticatedRoutes: Route[] = [
   routes.dashboard,
   routes.travelPlanner,
+  routes.addEmissions,
   routes.workingGroup,
   routes.methodology,
-  routes.aboutUs
+  routes.aboutUs,
 ]
