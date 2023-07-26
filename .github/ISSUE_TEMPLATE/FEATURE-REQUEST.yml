@@ -1,0 +1,42 @@
+name: "Feature Request"
+description: Create a new ticket for a new feature request
+title: "[REQUEST] - <title>"
+labels: [
+  "Feature Request", "needs triage"
+]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: "Summary"
+      description: Provide a brief explanation of the feature
+      placeholder: Describe in a few lines your feature request
+    validations:
+      required: true
+  - type: textarea
+    id: basic_example
+    attributes:
+      label: "Basic Example"
+      description: Indicate here some basic examples of your feature.
+      placeholder: A few specific words about your feature request.
+    validations:
+      required: true
+  - type: textarea
+    id: user_role
+    attributes:
+      label: "Your Role"
+      description: Describe the role you have when using the app.
+      placeholder: Specify for example if you are the representative of a working group or not...
+    validations:
+      required: false
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: How urgent is a fix in your opinion?
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: true
