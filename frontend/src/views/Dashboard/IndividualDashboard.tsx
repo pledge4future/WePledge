@@ -8,13 +8,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { getAllExampleData } from "../../../static/demo/demoDataGenerator";
 import { Button, Grid, Select, MenuItem } from "@material-ui/core";
 import AddIcon from '@material-ui/icons/Add';
-
-
-import { useQuery } from "@apollo/client";
 import { DashboardProps } from "./interfaces/DashboardProps";
-import { mapChartData } from "../../factories/ChartDataFactory";
 import { IChartDataEntry } from "../../interfaces/ChartData";
-import { GET_TOTAL_EMISSIONS } from "../../api/Queries/emissions";
+
 
 
 
