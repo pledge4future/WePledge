@@ -37,7 +37,7 @@ function AboutUs() {
     { title: "Sarah Lohr",               desc: "Researcher (Climate Impacts)",       url: avatarsDir + "SarahLohr.jpeg"},
     { title: "Christina Ludwig",         desc: "Researcher (Geoinformatics)",       url: avatarsDir + "ChristinaLudwig.jpeg"},
     { title: "Veit Ulrich",              desc: "Researcher (Geoinformatics)",                 url: avatarsDir + "VeitUlrich.jpeg"},
-    { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
+    { title: "Fabian Kneissl",           desc: "Computer Scientist",      url: avatarsDir + "FabianKneissl.jpeg"},
   ];
 
   return (
@@ -80,7 +80,7 @@ function AboutUs() {
       <br />
       <Typography variant="body1" gutterBottom align="left">
         We would like to thank Scientists4Future Heidelberg, Goethe Institute and our colleagues from the Institute of Geography at Heidelberg University, HeiGIT and the Max Planck Institute for Astronomy Heidelberg for all their support. 
-        Special thank also go  to our former team members Alex Bercik, María Fernanda Lozano, Guillermo Lozano Onrubia, Nina Krašovec and Sami.
+        Special thanks also go  to our former team members Alex Bercik, María Fernanda Lozano, Guillermo Lozano Onrubia, Nina Krašovec and Sami.
       </Typography>
       <br />
       <br />
