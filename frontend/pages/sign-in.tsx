@@ -159,5 +159,3 @@ function SignIn() {
 }
 
 export default withRoot(SignIn);
-
-export const getServerSideProps = disableOnProd;

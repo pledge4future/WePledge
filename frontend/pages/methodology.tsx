@@ -1,7 +1,6 @@
 import * as React from "react";
 import ReactMarkdown from 'react-markdown';
 import remarkMath from "remark-math";
-import rehypeKatex from 'rehype-katex'
 import remarkGfm from 'remark-gfm'
 import 'katex/dist/katex.min.css';
 import withRoot from "../src/withRoot";
@@ -167,8 +166,6 @@ function Methodology() {
       <Grid container spacing={2}>
         <Grid item xs={10}>
           <ReactMarkdown 
-          remarkPlugins={[[remarkMath], [remarkGfm]]}
-          rehypePlugins={[rehypeKatex]}
           components={components}>
             {methodology}
           </ReactMarkdown>

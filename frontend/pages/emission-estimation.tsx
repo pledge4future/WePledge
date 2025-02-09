@@ -15,5 +15,3 @@ function DashboardPage() {
 }
 
 export default withRoot(DashboardPage);
-
-export const getServerSideProps = disableOnProd;
