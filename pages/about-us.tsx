@@ -33,15 +33,11 @@ function AboutUs() {
   const avatarsDir = "./static/images/avatars/";
 
   const members = [
-    { title: "Hannah Weiser",            desc: "Geography Student",                 url: avatarsDir + "HannahWeiser.jpeg"},
+    { title: "Hannah Weiser",            desc: "Researcher (Geoinformatics)",        url: avatarsDir + "HannahWeiser.jpeg"},
     { title: "Sarah Lohr",               desc: "Researcher (Climate Impacts)",       url: avatarsDir + "SarahLohr.jpeg"},
-    { title: "Nina Krašovec",            desc: "Researcher (Geoinformatics)",       url: avatarsDir + "NinaKrasovec.jpeg"},
     { title: "Christina Ludwig",         desc: "Researcher (Geoinformatics)",       url: avatarsDir + "ChristinaLudwig.jpeg"},
     { title: "Veit Ulrich",              desc: "Researcher (Geoinformatics)",                 url: avatarsDir + "VeitUlrich.jpeg"},
-    { title: "Guillermo Lozano Onrubia", desc: "Researcher (Chemistry)",                 url: avatarsDir + "GuillermoLozanoOnrubia.jpeg"},
     { title: "Fabian Kneissl",           desc: "Computer and Data Science Student", url: avatarsDir + "FabianKneissl.jpeg"},
-    { title: "María Fernanda Lozano",    desc: "Researcher (Physics)",                   url: avatarsDir + "MariaFernandaLozano.jpeg"},
-    { title: "Alex Bercik",              desc: "Researcher (Aerospace Engineering)",     url: avatarsDir + "AlexBercik.jpeg"}
   ];
 
   return (
@@ -83,8 +79,8 @@ function AboutUs() {
       </Grid>
       <br />
       <Typography variant="body1" gutterBottom align="left">
-        Apart from our team members we want to thank Scientists4Future Heidelberg,
-        Goethe Institute and other colleagues from the Institute of Geography of Heidelberg University, HeiGIT and Max Planck Institute for Astronomy Heidelberg for their support.
+        We would like to thank Scientists4Future Heidelberg, Goethe Institute and our colleagues from the Institute of Geography at Heidelberg University, HeiGIT and the Max Planck Institute for Astronomy Heidelberg for all their support. 
+        Special thank also go  to our former team members Alex Bercik, María Fernanda Lozano, Guillermo Lozano Onrubia, Nina Krašovec and Sami.
       </Typography>
       <br />
       <br />
