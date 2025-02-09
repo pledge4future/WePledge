@@ -100,23 +100,15 @@ export function IndividualDashboard(props: DashboardProps){
 
     let chartData: IChartDataEntry[] = [];
 
-    const res = useQuery(GET_TOTAL_EMISSIONS, {
-      variables: {level: "personal", timeInterval: "month"}
-    });
-    if(!res.loading && !res.error) {
-      chartData = mapChartData(res.data, dataYear);
-    }
-
-    if(!isAuthenticated){
-      const sums = calculateSum(exampleData);
-      chartData =  exampleData.map((item, index) => { 
-        let newItem = {
-          total: sums[index],
-          ...item
-        }
-        return newItem
+    const sums = calculateSum(exampleData);
+    chartData =  exampleData.map((item, index) => { 
+    let newItem = {
+      total: sums[index],
+       ...item
+       }
+      return newItem
       });
-    }
+
     if(chartData?.length > 0){
       return (
       <Grid container>
