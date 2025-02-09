@@ -7,6 +7,7 @@ runs:
       uses: actions/setup-node@v4
       with:
         node-version: 20
+        cache-dependency-path: frontend/package-lock.json
 
     - name: Cache dependencies ⚡
       id: cache_dependencies
